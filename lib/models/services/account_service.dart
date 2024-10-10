@@ -15,6 +15,7 @@ class AccountService {
         'firstName': firstName,
         'lastName': lastName,
         'email': firebaseUser.email,
+        'amountOfCoins': 0,
         'password': password, // TODO: Hash passwords
         'role': role == Role.admin ? 'admin' : 'user',
       };
@@ -24,14 +25,7 @@ class AccountService {
           .child(firebaseUser.uid)
           .set(accountData);
 
-      return Account(
-        id: firebaseUser.uid,
-        firstName: firstName,
-        lastName: lastName,
-        email: firebaseUser.email,
-        role: role,
-        password: password,
-      );
+      return Account.fromJson(accountData);
     } catch (e) {
       print("Error saving account in Firebase Realtime Database: $e");
       return null;
@@ -49,16 +43,7 @@ class AccountService {
         Map<String, dynamic> accountData =
             Map<String, dynamic>.from(snapshot.value as Map);
 
-        Role role = accountData['role'] == 'admin' ? Role.admin : Role.user;
-
-        return Account(
-          id: accountId,
-          firstName: accountData['firstName'],
-          lastName: accountData['lastName'],
-          email: accountData['email'],
-          role: role,
-          password: accountData['password'],
-        );
+        return Account.fromJson(accountData);
       } else {
         print("No account found for the user in Firebase Realtime Database.");
         throw ("No account found for the user in Firebase Realtime Database.");

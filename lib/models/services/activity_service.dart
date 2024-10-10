@@ -1,10 +1,7 @@
-
 import 'package:firebase_database/firebase_database.dart';
-import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/activity.dart';
 
 class ActivityService {
-  static int _colorIndex = 0;
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
   Future<List<Activity>> getAllActivitiesFromDatabase() async {
@@ -64,7 +61,6 @@ class ActivityService {
       final DatabaseReference activityRef =
           _database.child('activities').push();
 
-      activityData['color'] = CustomColors.getActivityColor(_colorIndex++);
       activityData['id'] = activityRef.key;
 
       await activityRef.set(activityData);

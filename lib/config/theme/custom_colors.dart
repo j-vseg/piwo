@@ -36,8 +36,10 @@ class CustomColors {
 
   // Menu bar
   static const menuBackground = Color(0xFFFAF9F9);
-  static const selectedMenuColor = Color(0xFFFD7649);
+  static const selectedMenuColor = Color(0xFFE7C25A);
   static const unselectedMenuColor = Color(0xFFA2A5A9);
+
+  static const themePrimary = Color(0xFFFFC176);
 
   // Activities
   static const activityPrimairyColorBlue = Color(0xFF8F98FD);

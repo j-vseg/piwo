@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:piwo/views/home.dart';
+import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,8 +14,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Piwo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        fontFamily: 'Poppins',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: CustomColors.themePrimary,
+        ),
       ),
       home: const MyHomePage(),
     );
@@ -31,15 +35,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            HomePage(),
-          ],
-        ),
-      ),
+    return const CustomScaffold(
+      body: Center(),
     );
   }
 }

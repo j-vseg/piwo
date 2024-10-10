@@ -7,7 +7,7 @@ import 'package:piwo/models/services/account_service.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final AccountService _accountService = AccountService();
-  final _secureStorage = FlutterSecureStorage();
+  final _secureStorage = const FlutterSecureStorage();
 
   Future<Account?> signUp(String email, String password, Role role,
       String firstName, String lastName) async {
