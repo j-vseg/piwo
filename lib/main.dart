@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:piwo/views/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +24,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -31,12 +31,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Hello World!"),
+            HomePage(),
           ],
         ),
       ),

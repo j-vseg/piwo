@@ -67,7 +67,3 @@ class DefaultFirebaseOptions {
     storageBucket: 'piwo-4487e.appspot.com',
   );
 }
-
-await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
