@@ -5,9 +5,9 @@ import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/month.dart';
 import 'package:piwo/models/enums/weekday.dart';
-import 'package:piwo/models/services/account.dart';
-import 'package:piwo/models/services/activity.dart';
-import 'package:piwo/models/services/auth.dart';
+import 'package:piwo/services/account.dart';
+import 'package:piwo/services/activity.dart';
+import 'package:piwo/services/auth.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ActivitiesPage extends StatefulWidget {

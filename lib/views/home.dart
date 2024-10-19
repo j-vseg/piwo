@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
-import 'package:piwo/models/services/account.dart';
-import 'package:piwo/models/services/coin.dart';
+import 'package:piwo/services/account.dart';
+import 'package:piwo/services/coin.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
