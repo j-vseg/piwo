@@ -1,22 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/models/services/auth_service.dart';
 
 class AccountService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
-  Future<Account?> createAccountInDatabase(User firebaseUser, String password,
-      Role role, String firstName, String lastName) async {
+  Future<Account?> createAccountInDatabase(
+      User firebaseUser, Role role, String firstName, String lastName) async {
     try {
       Map<String, dynamic> accountData = {
-        'id': firebaseUser.uid,
         'firstName': firstName,
         'lastName': lastName,
-        'email': firebaseUser.email,
         'amountOfCoins': 0,
-        'password': password, // TODO: Hash passwords
         'role': role == Role.admin ? 'admin' : 'user',
       };
 
@@ -27,7 +26,7 @@ class AccountService {
 
       return Account.fromJson(accountData);
     } catch (e) {
-      print("Error saving account in Firebase Realtime Database: $e");
+      debugPrint("Error saving account in Firebase Realtime Database: $e");
       return null;
     }
   }
@@ -45,11 +44,45 @@ class AccountService {
 
         return Account.fromJson(accountData);
       } else {
-        print("No account found for the user in Firebase Realtime Database.");
+        debugPrint(
+            "No account found for the user in Firebase Realtime Database.");
         throw ("No account found for the user in Firebase Realtime Database.");
       }
     } catch (e) {
-      print("Error fetching account from Firebase Realtime Database: $e");
+      debugPrint("Error fetching account from Firebase Realtime Database: $e");
+      throw ("Error fetching account from Firebase Realtime Database: $e");
+    }
+  }
+
+  Future<Account> getMyAccount() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DatabaseReference accountRef =
+            _database.child('accounts').child(user.uid);
+
+        DataSnapshot snapshot = await accountRef.get();
+
+        if (snapshot.exists) {
+          Map<String, dynamic> accountData =
+              Map<String, dynamic>.from(snapshot.value as Map);
+
+          Account account = Account.fromJson(accountData);
+          account.email = user.email;
+          account.id = user.uid;
+
+          return account;
+        } else {
+          debugPrint(
+              "No account found for the user in Firebase Realtime Database.");
+          throw ("No account found for the user in Firebase Realtime Database.");
+        }
+      } else {
+        debugPrint("No user logged in");
+        throw ("No user logged in");
+      }
+    } catch (e) {
+      debugPrint("Error fetching account from Firebase Realtime Database: $e");
       throw ("Error fetching account from Firebase Realtime Database: $e");
     }
   }
@@ -57,13 +90,12 @@ class AccountService {
   Future<bool> updateAccountCredentials({
     required String accountId,
     String? newEmail,
-    String? newPassword, // TODO: HAsh passwords
+    String? newPassword,
     String? newFirstName,
     String? newLastName,
     Role? newRole,
     String? oldPassword,
   }) async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
 
     try {
@@ -86,28 +118,25 @@ class AccountService {
         await user!.updatePassword(newPassword);
       }
 
-      if (newEmail != null &&
-          newEmail.isNotEmpty &&
-          newPassword != null &&
+      if (newPassword != null &&
           newPassword.isNotEmpty &&
           newLastName != null &&
           newLastName.isNotEmpty &&
           newRole != null) {
         await _database.child('accounts/$accountId').update({
-          'email': newEmail,
           'firstName': newFirstName,
           'lastName': newLastName,
           'role': newRole.name,
         });
       }
 
-      print('Account credentials updated successfully.');
+      debugPrint('Account credentials updated successfully.');
       return true;
     } on FirebaseAuthException catch (e) {
-      print('Error updating account credentials: ${e.message}');
+      debugPrint('Error updating account credentials: ${e.message}');
       return false;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return false;
     }
   }
@@ -130,16 +159,15 @@ class AccountService {
             lastName: value['lastName'],
             email: value['email'],
             role: role,
-            password: value['password'], // TODO: Hash passwords
           ));
         });
         return accounts;
       } else {
-        print("No accounts found.");
+        debugPrint("No accounts found.");
         return [];
       }
     } catch (e) {
-      print("Error fetching all accounts from Firebase: $e");
+      debugPrint("Error fetching all accounts from Firebase: $e");
       throw ("Error fetching all accounts from Firebase: $e");
     }
   }
@@ -150,12 +178,12 @@ class AccountService {
       if (user != null) {
         await _database.child('accounts').child(user.uid).remove();
         await user.delete();
-        print('Account deleted successfully.');
+        debugPrint('Account deleted successfully.');
         return true;
       }
       return false;
     } catch (e) {
-      print("Error deleting account from Firebase: $e");
+      debugPrint("Error deleting account from Firebase: $e");
       return false;
     }
   }
@@ -170,10 +198,10 @@ class AccountService {
       };
       await _database.child('accounts/$accountId').update(updateData);
 
-      print('Account role updated successfully.');
+      debugPrint('Account role updated successfully.');
       return true;
     } catch (e) {
-      print('Error updating account role: $e');
+      debugPrint('Error updating account role: $e');
       return false;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:piwo/models/enums/role.dart';
 
 class Account {
@@ -7,7 +8,6 @@ class Account {
   String? email;
   Role? role;
   int? amountOfCoins;
-  String? password;
 
   Account(
       {this.id,
@@ -15,8 +15,7 @@ class Account {
       this.lastName,
       this.email,
       this.role,
-      this.amountOfCoins,
-      this.password});
+      this.amountOfCoins});
 
   Account.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -31,11 +30,10 @@ class Account {
           role = Role.user;
         }
       } catch (e) {
-        print('Unknown role: ${json['role']}');
+        debugPrint('Unknown role: ${json['role']}');
       }
     }
     amountOfCoins = json['amountOfCoins'];
-    password = json['password'];
   }
 
   Map<String, dynamic> toJson() {
@@ -49,7 +47,7 @@ class Account {
         roleString = "Unknown";
       }
     } catch (e) {
-      print('Error determining role: $e');
+      debugPrint('Error determining role: $e');
     }
 
     return {
@@ -59,7 +57,6 @@ class Account {
       'email': email,
       if (roleString != null) 'role': roleString,
       'amountOfCoins': amountOfCoins,
-      'password': password,
     };
   }
 }

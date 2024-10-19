@@ -1,9 +1,20 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/views/login.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
+import 'package:piwo/widgets/login_notifier.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LoginStateNotifier()..checkLoginStatus(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -25,18 +36,21 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
   Widget build(BuildContext context) {
-    return const CustomScaffold(
-      body: Center(),
-    );
+    final loginState = context.watch<LoginStateNotifier>();
+
+    if (loginState.value) {
+      return const CustomScaffold(body: Center());
+    } else {
+      return const Scaffold(
+        body: Center(
+          child: LoginPage(),
+        ),
+      );
+    }
   }
 }

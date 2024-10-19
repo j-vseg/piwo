@@ -54,11 +54,12 @@ class CustomColors {
   static const secondaryBackgroundColor = Color(0xFF16755F);
 
   static String getActivityColor(index) {
-    if (index % 3 == 0)
+    if (index % 3 == 0) {
       return '0xFF8F98FD';
-    else if (index % 3 == 1)
+    } else if (index % 3 == 1) {
       return '0xFFFD7649';
-    else
+    } else {
       return '0xFF4CC490';
+    }
   }
 }

@@ -1,14 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/models/account.dart';
+import 'package:piwo/models/services/account_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
+  Account? _profile;
+  bool _isLoading = true;
+  String _errorMessage = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileInfo();
+  }
+
+  void _fetchProfileInfo() async {
+    try {
+      final profile = await AccountService().getMyAccount();
+      setState(() {
+        _profile = profile;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Error loading profile";
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -16,13 +43,27 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Welkom, Janne!",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          if (_isLoading) ...[
+            const CircularProgressIndicator()
+          ] else ...[
+            if (_errorMessage.isNotEmpty) ...[
+              Text(
+                _errorMessage,
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.red,
+                ),
+              )
+            ] else ...[
+              Text(
+                "Welkom, ${_profile!.firstName}!",
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ],
           const SizedBox(height: 20),
           const Text(
             "Jouw statistieken",

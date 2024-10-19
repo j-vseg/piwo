@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/services/account_service.dart';
-
-import 'enums/category.dart';
+import 'package:piwo/models/enums/category.dart';
 
 class Activity {
   String? id;
@@ -63,7 +63,7 @@ class Activity {
           category = Category.groepsavond;
         }
       } catch (e) {
-        print('Unknown category: ${json['category']}');
+        debugPrint('Unknown category: ${json['category']}');
       }
     }
 

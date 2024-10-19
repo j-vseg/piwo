@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:piwo/models/activity.dart';
 
 class ActivityService {
@@ -23,11 +24,11 @@ class ActivityService {
 
         return activities;
       } else {
-        print('No activities found.');
+        debugPrint('No activities found.');
         return [];
       }
     } catch (e) {
-      print('Error fetching activities from Firebase: $e');
+      debugPrint('Error fetching activities from Firebase: $e');
       throw Exception('An error occurred while fetching activities.');
     }
   }
@@ -47,11 +48,11 @@ class ActivityService {
 
         return activity;
       } else {
-        print("Activity with ID $activityId not found.");
+        debugPrint("Activity with ID $activityId not found.");
         throw ("Activity with ID $activityId not found.");
       }
     } catch (e) {
-      print("Failed to get activity by ID: $e");
+      debugPrint("Failed to get activity by ID: $e");
       throw ("Failed to get activity by ID: $e");
     }
   }
@@ -65,9 +66,9 @@ class ActivityService {
 
       await activityRef.set(activityData);
 
-      print('Activity created successfully with ID: ${activityRef.key}');
+      debugPrint('Activity created successfully with ID: ${activityRef.key}');
     } catch (e) {
-      print('Failed to create activity: $e');
+      debugPrint('Failed to create activity: $e');
     }
   }
 
@@ -84,7 +85,7 @@ class ActivityService {
   //       Activity activity = await Activity.fromJson(activityData);
 
   //       if (Activity().alreadySignedUp(accountId)) {
-  //         print("Account already signed up for this activity.");
+  //         debugPrint("Account already signed up for this activity.");
   //         return false;
   //       }
 
@@ -112,14 +113,14 @@ class ActivityService {
   //       // Update the activity in the database
   //       await activityRef.set(newActivity);
 
-  //       print("Account signed up for activity successfully.");
+  //       debugPrint("Account signed up for activity successfully.");
   //       return true;
   //     } else {
-  //       print("Activity with ID $activityId not found.");
+  //       debugPrint("Activity with ID $activityId not found.");
   //       return false;
   //     }
   //   } catch (e) {
-  //     print("Failed to sign up for activity: $e");
+  //     debugPrint("Failed to sign up for activity: $e");
   //     return false;
   //   }
   // }
@@ -137,7 +138,7 @@ class ActivityService {
   //       Activity activity = await Activity.fromJson(activityData);
 
   //       if (!Activity.alreadySignedUp(activity.begeleiders!, accountId)) {
-  //         print("Account is not signed up for this activity.");
+  //         debugPrint("Account is not signed up for this activity.");
   //         return false;
   //       }
 
@@ -164,14 +165,14 @@ class ActivityService {
 
   //       await activityRef.set(updatedActivity);
 
-  //       print("Account signed off from activity successfully.");
+  //       debugPrint("Account signed off from activity successfully.");
   //       return true;
   //     } else {
-  //       print("Activity with ID $activityId not found.");
+  //       debugPrint("Activity with ID $activityId not found.");
   //       return false;
   //     }
   //   } catch (e) {
-  //     print("Failed to sign off from activity: $e");
+  //     debugPrint("Failed to sign off from activity: $e");
   //     return false;
   //   }
   // }
@@ -187,7 +188,7 @@ class ActivityService {
   //       List<String> oldBegeleiders = List.from(snapshot.value as Iterable);
 
   //       if (!oldBegeleiders.contains(accountId)) {
-  //         print("Account is not signed up for this activity.");
+  //         debugPrint("Account is not signed up for this activity.");
   //         return false;
   //       }
 
@@ -200,14 +201,14 @@ class ActivityService {
   //       final updatedBegeleidersMap = {"begeleiders": updatedBegeleiders};
   //       await begeleidersRef.update(updatedBegeleidersMap);
 
-  //       print("Account signed off from activity successfully.");
+  //       debugPrint("Account signed off from activity successfully.");
   //       return true;
   //     } else {
-  //       print("Activity with ID $activityId not found.");
+  //       debugPrint("Activity with ID $activityId not found.");
   //       return false;
   //     }
   //   } catch (e) {
-  //     print("Failed to sign off from activity: $e");
+  //     debugPrint("Failed to sign off from activity: $e");
   //     return false;
   //   }
   // }
@@ -220,15 +221,15 @@ class ActivityService {
 
       DataSnapshot snapshot = await activityRef.get();
       if (!snapshot.exists) {
-        print('Activity with ID $activityId not found.');
+        debugPrint('Activity with ID $activityId not found.');
         throw Exception('Activity with ID $activityId not found');
       }
 
       await activityRef.update(updatedData);
 
-      print('Activity updated successfully.');
+      debugPrint('Activity updated successfully.');
     } catch (e) {
-      print('Failed to update activity: $e');
+      debugPrint('Failed to update activity: $e');
       throw Exception('Failed to update activity');
     }
   }
@@ -240,15 +241,15 @@ class ActivityService {
 
       DataSnapshot snapshot = await activityRef.get();
       if (!snapshot.exists) {
-        print('Activity with ID $activityId not found.');
+        debugPrint('Activity with ID $activityId not found.');
         throw Exception('Activity with ID $activityId not found');
       }
 
       await activityRef.remove();
 
-      print('Activity deleted successfully.');
+      debugPrint('Activity deleted successfully.');
     } catch (e) {
-      print('Failed to delete activity: $e');
+      debugPrint('Failed to delete activity: $e');
       throw Exception('Failed to delete activity');
     }
   }
