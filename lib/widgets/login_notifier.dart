@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:piwo/models/services/auth_service.dart';
+import 'package:piwo/models/services/auth.dart';
 
 class LoginStateNotifier extends ValueNotifier<bool> {
   LoginStateNotifier() : super(false);

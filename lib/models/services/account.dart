@@ -3,7 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
-import 'package:piwo/models/services/auth_service.dart';
+import 'package:piwo/models/services/auth.dart';
 
 class AccountService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

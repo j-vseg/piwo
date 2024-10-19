@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
-import 'package:piwo/models/services/account_service.dart';
+import 'package:piwo/models/services/account.dart';
+import 'package:piwo/models/services/coin.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,15 @@ class HomePageState extends State<HomePage> {
   Account? _profile;
   bool _isLoading = true;
   String _errorMessage = "";
+
+  final TextEditingController _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -65,126 +76,172 @@ class HomePageState extends State<HomePage> {
             ],
           ],
           const SizedBox(height: 20),
-          const Text(
-            "Jouw statistieken",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween, // Align items to space out
+            children: [
+              Text(
+                "Jouw munten (${_profile?.amountOfCoins ?? 0})",
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: CustomColors.themePrimary,
+                ),
+                width: 40,
+                height: 40,
+                child: IconButton(
+                  icon: const Icon(Icons.add),
+                  color: Colors.white,
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title:
+                              const Text('Hoeveel bierkaarten wil je kopen?'),
+                          content: SingleChildScrollView(
+                            child: StatefulBuilder(
+                              builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _controller.text.trim().isEmpty
+                                          ? "€ 0.00"
+                                          : "€ ${15 * int.parse(_controller.text.trim())}.00",
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Form(
+                                      key: _formKey,
+                                      child: TextFormField(
+                                        controller: _controller,
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: <TextInputFormatter>[
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
+                                        decoration: const InputDecoration(
+                                          labelText: 'Hoeveelheid',
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {});
+                                        },
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Hoeveel kan niet leeg zijn";
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  int amountOfBierkaarten =
+                                      int.parse(_controller.text.trim());
+                                  CoinService().setCoins(_profile!
+                                          .amountOfCoins! +
+                                      (10 *
+                                          amountOfBierkaarten)); // 10 is the amounf of drinks on one card
+                                  // TODO: Add payment options with IDEAL
+                                  _fetchProfileInfo();
+
+                                  if (!context.mounted) return;
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              child: const Text('Betalen'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           const Text(
-            "Bekijk jouw statistieken.",
+            "Lever je munten in voor een dankje",
             style: TextStyle(
               fontSize: 18,
               color: CustomColors.unselectedMenuColor,
             ),
           ),
-          const SizedBox(height: 20),
-          // Horizontal scrollable row for the statistic containers
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 16.0),
-                  decoration: BoxDecoration(
-                    color: CustomColors.themePrimary,
-                    border: Border.all(
-                      color: CustomColors.themePrimary,
-                      width: 2,
+                if (_profile != null && _profile!.amountOfCoins != null) ...[
+                  for (var i = 0; i < _profile!.amountOfCoins!; i++) ...[
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Weet je het zeker?'),
+                              content: const Text(
+                                "Weet je zeker dat een munt wil inleveren voor een drankje?",
+                                style: TextStyle(
+                                  color: CustomColors.unselectedMenuColor,
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    CoinService().removeCoin(
+                                        _profile!.amountOfCoins! - 1);
+                                    _fetchProfileInfo();
+
+                                    if (!context.mounted) return;
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Ja'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(7),
+                        child: Image.asset(
+                          'assets/images/coin.png',
+                          width: 85,
+                          height: 85,
+                        ),
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: const Column(
-                    children: [
-                      Text(
-                        "13424",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        "drankjes",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(right: 16.0),
-                  decoration: BoxDecoration(
-                    color: CustomColors.themePrimary,
-                    border: Border.all(
-                      color: CustomColors.themePrimary,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: const Column(
-                    children: [
-                      Text(
-                        "124x",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        "aanwezig",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(right: 16.0),
-                  decoration: BoxDecoration(
-                    color: CustomColors.themePrimary,
-                    border: Border.all(
-                      color: CustomColors.themePrimary,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: const Column(
-                    children: [
-                      Text(
-                        "12x",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        "afwezig",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                  ]
+                ],
               ],
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           const Text(
             "Opkomende activiteiten",
             style: TextStyle(
@@ -238,17 +295,7 @@ class HomePageState extends State<HomePage> {
                       "Aanwezig",
                       style: TextStyle(fontSize: 18),
                     ),
-                    // Text(
-                    //   Activity.alreadySignedUp(
-                    //           activity.getBegeleiders, account.getId)
-                    //       ? "Je bent al aangemeld"
-                    //       : peopleNeeded < 1
-                    //           ? "Geen begeleiders meer nodig"
-                    //           : peopleNeeded <= 1
-                    //               ? "$peopleNeeded begeleider"
-                    //               : "$peopleNeeded begeleiders",
-                    //   style: const TextStyle(fontSize: 18),
-                    // ),
+                    // Additional logic can go here
                   ],
                 ),
               ),

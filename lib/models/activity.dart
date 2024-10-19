@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:piwo/models/account.dart';
-import 'package:piwo/models/services/account_service.dart';
+import 'package:piwo/models/services/account.dart';
 import 'package:piwo/models/enums/category.dart';
 
 class Activity {
