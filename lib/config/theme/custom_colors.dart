@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
+
+import 'package:piwo/models/enums/category.dart';
 
 class CustomColors {
   // Main Colors
@@ -53,13 +55,13 @@ class CustomColors {
   static const primaryBackgroundColor = Color(0xFF00664F);
   static const secondaryBackgroundColor = Color(0xFF16755F);
 
-  static String getActivityColor(index) {
-    if (index % 3 == 0) {
-      return '0xFF8F98FD';
-    } else if (index % 3 == 1) {
-      return '0xFFFD7649';
+  static Color getActivityColor(Category category) {
+    if (category == Category.groepsavond) {
+      return CustomColors.themePrimary;
+    } else if (category == Category.weekend) {
+      return CustomColors.activityPrimairyColorBlue;
     } else {
-      return '0xFF4CC490';
+      return CustomColors.activityPrimairyColorGreen;
     }
   }
 }

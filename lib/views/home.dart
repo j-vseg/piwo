@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
+import 'package:piwo/models/activity.dart';
 import 'package:piwo/services/account.dart';
+import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/coin.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,9 +15,12 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  Account? _profile;
-  bool _isLoading = true;
+  Account _profile = Account();
+  bool _isLoadingProfile = true;
   String _errorMessage = "";
+
+  List<Activity> _activities = [];
+  bool _isLoadingActivities = true;
 
   final TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -30,6 +35,7 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _fetchProfileInfo();
+    _fetchActivities();
   }
 
   void _fetchProfileInfo() async {
@@ -37,12 +43,27 @@ class HomePageState extends State<HomePage> {
       final profile = await AccountService().getMyAccount();
       setState(() {
         _profile = profile;
-        _isLoading = false;
+        _isLoadingProfile = false;
       });
     } catch (e) {
       setState(() {
         _errorMessage = "Error loading profile";
-        _isLoading = false;
+        _isLoadingProfile = false;
+      });
+    }
+  }
+
+  void _fetchActivities() async {
+    try {
+      final activities = await ActivityService().getAllActivities();
+      setState(() {
+        _activities = activities;
+        _isLoadingActivities = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Error activties";
+        _isLoadingActivities = false;
       });
     }
   }
@@ -54,7 +75,7 @@ class HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_isLoading) ...[
+          if (_isLoadingProfile) ...[
             const CircularProgressIndicator()
           ] else ...[
             if (_errorMessage.isNotEmpty) ...[
@@ -67,7 +88,7 @@ class HomePageState extends State<HomePage> {
               )
             ] else ...[
               Text(
-                "Welkom, ${_profile!.firstName}!",
+                "Welkom, ${_profile.firstName}!",
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -81,7 +102,7 @@ class HomePageState extends State<HomePage> {
                 MainAxisAlignment.spaceBetween, // Align items to space out
             children: [
               Text(
-                "Jouw munten (${_profile?.amountOfCoins ?? 0})",
+                "Jouw munten (${_profile.amountOfCoins ?? 0})",
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -156,7 +177,7 @@ class HomePageState extends State<HomePage> {
                                 if (_formKey.currentState!.validate()) {
                                   int amountOfBierkaarten =
                                       int.parse(_controller.text.trim());
-                                  CoinService().setCoins(_profile!
+                                  CoinService().setCoins(_profile
                                           .amountOfCoins! +
                                       (10 *
                                           amountOfBierkaarten)); // 10 is the amounf of drinks on one card
@@ -189,8 +210,8 @@ class HomePageState extends State<HomePage> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                if (_profile != null && _profile!.amountOfCoins != null) ...[
-                  for (var i = 0; i < _profile!.amountOfCoins!; i++) ...[
+                if (_profile.amountOfCoins != null) ...[
+                  for (var i = 0; i < _profile.amountOfCoins!; i++) ...[
                     InkWell(
                       onTap: () {
                         showDialog(
@@ -214,7 +235,7 @@ class HomePageState extends State<HomePage> {
                                 TextButton(
                                   onPressed: () async {
                                     CoinService().removeCoin(
-                                        _profile!.amountOfCoins! - 1);
+                                        _profile.amountOfCoins! - 1);
                                     _fetchProfileInfo();
 
                                     if (!context.mounted) return;
@@ -257,52 +278,90 @@ class HomePageState extends State<HomePage> {
             ),
           ),
           const SizedBox(height: 20),
-          InkWell(
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => ActivityPage(activityId: activity.getId),
-              //   ),
-              // );
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: CustomColors.themePrimary,
+          if (_activities.isEmpty) ...[
+            const Text(
+              "Je bent voor geen activiteiten aangemeld.",
+              style: TextStyle(
+                fontSize: 18,
               ),
-              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-              height: 125,
-              width: double.maxFinite,
-              child: const Padding(
-                padding: EdgeInsets.all(15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Groeps avond',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+            ),
+          ] else ...[
+            if (_isLoadingActivities) ...[
+              const CircularProgressIndicator()
+            ] else ...[
+              if (_errorMessage.isNotEmpty) ...[
+                Text(
+                  _errorMessage,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.red,
+                  ),
+                )
+              ] else ...[
+                buildActivities(_activities, _profile, context)
+              ],
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget buildActivities(
+      List<Activity> activities, Account account, BuildContext context) {
+    activities.sort((a, b) => a.getStartDate.compareTo(b.getStartDate));
+
+    return Column(
+      children: activities.map((activity) {
+        final availability = activity.didSubmitAvailibilty(account.id!);
+
+        return InkWell(
+          onTap: () {
+            // TODO: Implement Activity page
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => ActivityPage(activityId: activity.getId),
+            //   ),
+            // );
+          },
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              color: CustomColors.themePrimary,
+            ),
+            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            height: 125,
+            width: double.maxFinite,
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    activity.name ?? "",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(
-                      "10-10-2024 20:00 - 21:00",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Text(
-                      "Aanwezig",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    // Additional logic can go here
-                  ],
-                ),
+                  ),
+                  Text(
+                    activity.getFullDate,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    availability != null
+                        ? "Status: ${availability.status}"
+                        : "Geen status opgegeven",
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        );
+      }).toList(),
     );
   }
 }

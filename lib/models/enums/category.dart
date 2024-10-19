@@ -2,5 +2,10 @@ enum Category {
   groepsavond,
   weekend,
   kamp,
-  actie,
+  actie;
+
+  @override
+  String toString() {
+    return name;
+  }
 }

@@ -25,7 +25,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
   void _initializeFutures() async {
-    activitiesFuture = ActivityService().getAllActivitiesFromDatabase();
+    activitiesFuture = ActivityService().getAllActivities();
 
     final accountId = await AuthService().getUserUID();
     accountFuture = AccountService().getAccountById(accountId ?? "");
@@ -195,8 +195,6 @@ class ActivitiesPageState extends State<ActivitiesPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: activitiesThisDay.map((activity) {
-        final index = activitiesThisDay.indexOf(activity);
-
         bool showDateHeader = dateOfActivity != activity.getStartDate;
         if (showDateHeader) {
           dateOfActivity = activity.getStartDate;
@@ -229,7 +227,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  color: Color(int.parse(CustomColors.getActivityColor(index))),
+                  color: activity.color,
                 ),
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
@@ -245,12 +243,6 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        activity.getFullDate,
-                        style: const TextStyle(
-                          fontSize: 18,
                         ),
                       ),
                     ],

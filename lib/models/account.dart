@@ -37,25 +37,12 @@ class Account {
   }
 
   Map<String, dynamic> toJson() {
-    String? roleString;
-    try {
-      if (role == Role.admin) {
-        roleString = "admin";
-      } else if (role == Role.user) {
-        roleString = "user";
-      } else {
-        roleString = "Unknown";
-      }
-    } catch (e) {
-      debugPrint('Error determining role: $e');
-    }
-
     return {
       'id': id,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
-      if (roleString != null) 'role': roleString,
+      'role': role.toString(),
       'amountOfCoins': amountOfCoins,
     };
   }

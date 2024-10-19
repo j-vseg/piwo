@@ -1,7 +1,7 @@
-enum Role {
-  user,
-  peningmeester,
-  admin;
+enum Status {
+  aanwezig,
+  misschien,
+  afwezig;
 
   @override
   String toString() {

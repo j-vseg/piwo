@@ -43,6 +43,15 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final loginState = context.watch<LoginStateNotifier>();
 
+    // final activity = Activity(
+    //   name: "Groepsavond",
+    //   location: "Blokhut",
+    //   category: Category.groepsavond,
+    //   startDate: DateTime(2024, 11, 16, 20, 30),
+    //   endDate: DateTime(2024, 11, 16, 23, 59),
+    // );
+    // ActivityService().createActivity(activity);
+
     if (loginState.value) {
       return const CustomScaffold(body: Center());
     } else {

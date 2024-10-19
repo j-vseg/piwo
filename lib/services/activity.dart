@@ -1,11 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/activity.dart';
 
 class ActivityService {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
-  Future<List<Activity>> getAllActivitiesFromDatabase() async {
+  Future<List<Activity>> getAllActivities() async {
     try {
       DataSnapshot snapshot = await _database.child('activities').get();
 
@@ -15,10 +16,14 @@ class ActivityService {
         Map<String, dynamic> activityMap =
             Map<String, dynamic>.from(snapshot.value as Map);
 
-        // Await the fromJson call
-        for (var value in activityMap.values) {
+        List<String> keys = activityMap.keys.toList();
+
+        for (var key in keys) {
+          var value = activityMap[key];
+
           Activity activity =
               await Activity.fromJson(Map<String, dynamic>.from(value));
+          activity.id = key;
           activities.add(activity);
         }
 
@@ -57,14 +62,14 @@ class ActivityService {
     }
   }
 
-  Future<void> createActivity(Map<String, dynamic> activityData) async {
+  Future<void> createActivity(Activity activity) async {
     try {
       final DatabaseReference activityRef =
           _database.child('activities').push();
 
-      activityData['id'] = activityRef.key;
+      activity.color = CustomColors.getActivityColor(activity.category!);
 
-      await activityRef.set(activityData);
+      await activityRef.set(activity.toJson());
 
       debugPrint('Activity created successfully with ID: ${activityRef.key}');
     } catch (e) {

@@ -1,5 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart' hide Category;
+import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
+import 'package:piwo/models/availability.dart';
+import 'package:piwo/models/enums/status.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/models/enums/category.dart';
 
@@ -7,45 +12,46 @@ class Activity {
   String? id;
   String? name;
   String? location;
+  Color color;
   Category? category;
   DateTime? startDate;
   DateTime? endDate;
-  List<Account>? available;
-  List<Account>? maybe;
-  List<Account>? unavailable;
+  List<Availability> availabilities;
 
-  Activity(
-      {this.id,
-      this.name,
-      this.location,
-      this.category,
-      this.startDate,
-      this.endDate,
-      this.available,
-      this.maybe,
-      this.unavailable});
+  Activity({
+    this.id,
+    this.name,
+    this.location,
+    this.color = CustomColors.themePrimary,
+    this.category,
+    this.startDate,
+    this.endDate,
+    this.availabilities = const [],
+  });
 
   static Future<Activity> fromJson(Map<String, dynamic> json) async {
-    List<Account> available = [];
-    List<Account> maybe = [];
-    List<Account> unavailable = [];
+    List<Availability> availabilities = [];
 
-    if (json['available'] != null) {
-      for (var e in (json['available'] as List<dynamic>)) {
-        Account account = await AccountService().getAccountById(e);
-        available.add(account);
-      }
-    }
+    if (json['availabilities'] != null) {
+      for (var e in (json['availabilities'] as List<dynamic>)) {
+        String accountId = e['accountId'];
+        Status? status;
 
-    if (json['maybe'] != null) {
-      for (var e in (json['maybe'] as List<dynamic>)) {
-        maybe.add(Account.fromJson(Map<String, dynamic>.from(e as Map)));
-      }
-    }
+        if (e['status'] != null) {
+          status = Status.values.firstWhere(
+            (s) =>
+                s.toString().split('.').last.toLowerCase() ==
+                e['status'].toString().toLowerCase(),
+          );
+        }
 
-    if (json['unavailable'] != null) {
-      for (var e in (json['unavailable'] as List<dynamic>)) {
-        unavailable.add(Account.fromJson(Map<String, dynamic>.from(e as Map)));
+        Account account = await AccountService().getAccountById(accountId);
+
+        if (status != null) {
+          availabilities.add(Availability(account: account, status: status));
+          debugPrint(
+              'Could not create availability for accountId: $accountId. Account or Status is null.');
+        }
       }
     }
 
@@ -53,15 +59,12 @@ class Activity {
 
     if (json['category'] != null) {
       try {
-        if (json['category'].toString().toLowerCase() == "actie") {
-          category = Category.actie;
-        } else if (json['category'].toString().toLowerCase() == "weekend") {
-          category = Category.weekend;
-        } else if (json['category'].toString().toLowerCase() == "kamp") {
-          category = Category.kamp;
-        } else {
-          category = Category.groepsavond;
-        }
+        category = Category.values.firstWhere(
+          (cat) =>
+              cat.toString().split('.').last.toLowerCase() ==
+              json['category'].toString().toLowerCase(),
+          orElse: () => Category.groepsavond, // Default value
+        );
       } catch (e) {
         debugPrint('Unknown category: ${json['category']}');
       }
@@ -71,44 +74,25 @@ class Activity {
       id: json['id'],
       name: json['name'],
       location: json['location'],
+      color: Color(int.parse(json['color'])),
       category: category,
       startDate: json['startDate'] != null
           ? DateTime.tryParse(json['startDate'])
           : null,
       endDate:
           json['endDate'] != null ? DateTime.tryParse(json['endDate']) : null,
-      available: unavailable,
-      maybe: maybe,
-      unavailable: unavailable,
     );
   }
 
   Map<String, dynamic> toJson() {
-    String category = "";
-
-    if (this.category == Category.kamp) {
-      category = 'kamp';
-    } else if (this.category == Category.weekend) {
-      category = 'weekend';
-    } else if (this.category == Category.actie) {
-      category = 'actie';
-    } else {
-      category = 'groepsavond';
-    }
-
     return {
       'id': id,
       'name': name,
       'location': location,
-      'category': category,
+      'color': "0x${color.value.toRadixString(16).toUpperCase()}",
+      'category': category.toString(),
       'startDate': startDate!.toIso8601String(),
       'endDate': endDate!.toIso8601String(),
-      'available':
-          available != null ? available!.map((e) => e.toJson()).toList() : [],
-      'maybe': maybe != null ? maybe!.map((e) => e.toJson()).toList() : [],
-      'unavailable': unavailable != null
-          ? unavailable!.map((e) => e.toJson()).toList()
-          : [],
     };
   }
 
@@ -130,12 +114,14 @@ class Activity {
         : "No Date";
   }
 
-  bool alreadySignedUp(String accountId) {
-    if (available!.any((account) => account.id == accountId) ||
-        maybe!.any((account) => account.id == accountId) ||
-        unavailable!.any((account) => account.id == accountId)) {
-      return true;
+  Availability? didSubmitAvailibilty(String accountId) {
+    for (var i = 0; i < availabilities.length; i++) {
+      if (availabilities[i].account != null) {
+        if (availabilities[i].account!.id == accountId) {
+          return availabilities[i];
+        }
+      }
     }
-    return false;
+    return null;
   }
 }
