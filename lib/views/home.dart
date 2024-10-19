@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/coin.dart';
+import 'package:piwo/services/payment_url.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,18 +19,10 @@ class HomePageState extends State<HomePage> {
   Account _profile = Account();
   bool _isLoadingProfile = true;
   String _errorMessage = "";
+  bool _urlIsClicked = false;
 
   List<Activity> _activities = [];
   bool _isLoadingActivities = true;
-
-  final TextEditingController _controller = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -123,8 +116,7 @@ class HomePageState extends State<HomePage> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title:
-                              const Text('Hoeveel bierkaarten wil je kopen?'),
+                          title: const Text('Koop een bierkaart'),
                           content: SingleChildScrollView(
                             child: StatefulBuilder(
                               builder:
@@ -132,32 +124,30 @@ class HomePageState extends State<HomePage> {
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                      _controller.text.trim().isEmpty
-                                          ? "€ 0.00"
-                                          : "€ ${15 * int.parse(_controller.text.trim())}.00",
-                                    ),
+                                    const Text("€ 15.00"),
                                     const SizedBox(height: 10),
-                                    Form(
-                                      key: _formKey,
-                                      child: TextFormField(
-                                        controller: _controller,
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: <TextInputFormatter>[
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
-                                        decoration: const InputDecoration(
-                                          labelText: 'Hoeveelheid',
-                                        ),
-                                        onChanged: (value) {
-                                          setState(() {});
-                                        },
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return "Hoeveel kan niet leeg zijn";
+                                    GestureDetector(
+                                      onTap: () async {
+                                        final paymentUrl = Uri.parse(
+                                            await PaymentUrlService()
+                                                    .getPaymentUrl() ??
+                                                "");
+                                        if (await canLaunchUrl(paymentUrl)) {
+                                          final launched =
+                                              await launchUrl(paymentUrl);
+                                          if (launched) {
+                                            _urlIsClicked = launched;
+                                            debugPrint(
+                                                "URL launched successfully");
                                           }
-                                          return null;
-                                        },
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Klik hier om te betalen',
+                                        style: TextStyle(
+                                          color: CustomColors.themePrimary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -174,21 +164,20 @@ class HomePageState extends State<HomePage> {
                             ),
                             TextButton(
                               onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  int amountOfBierkaarten =
-                                      int.parse(_controller.text.trim());
-                                  CoinService().setCoins(_profile
-                                          .amountOfCoins! +
-                                      (10 *
-                                          amountOfBierkaarten)); // 10 is the amounf of drinks on one card
-                                  // TODO: Add payment options with IDEAL
-                                  _fetchProfileInfo();
+                                if (_urlIsClicked) {
+                                  setState(() {
+                                    _profile.amountOfCoins =
+                                        (_profile.amountOfCoins ?? 0) + 10;
+                                  });
+
+                                  CoinService()
+                                      .setCoins(_profile.amountOfCoins!);
 
                                   if (!context.mounted) return;
                                   Navigator.of(context).pop();
                                 }
                               },
-                              child: const Text('Betalen'),
+                              child: const Text('Afronden'),
                             ),
                           ],
                         );

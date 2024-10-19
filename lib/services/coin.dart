@@ -31,7 +31,7 @@ class CoinService {
         coinRef.update({
           'amountOfCoins': newAmountOfCoins,
         });
-        debugPrint('Coin was removed successfully');
+        debugPrint('Coins were added successfully');
         return newAmountOfCoins;
       }
       return -1;
