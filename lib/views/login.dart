@@ -36,7 +36,7 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
+          padding: const EdgeInsets.only(top: 200.0, left: 20.0, right: 20.0),
           child: Column(
             children: [
               const Text(
@@ -111,7 +111,7 @@ class LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     MaterialButton(
                       minWidth: double.maxFinite,
-                      color: CustomColors.activityPrimairyColorGreen,
+                      color: CustomColors.themePrimary,
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           final email = _emailController.text.trim();
