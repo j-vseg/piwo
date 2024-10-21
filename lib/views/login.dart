@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/services/auth.dart';
-import 'package:piwo/widgets/login_notifier.dart';
+import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {

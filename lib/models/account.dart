@@ -46,4 +46,8 @@ class Account {
       'amountOfCoins': amountOfCoins,
     };
   }
+
+  String get getFullName {
+    return firstName != null && lastName != null ? "$firstName $lastName" : "";
+  }
 }

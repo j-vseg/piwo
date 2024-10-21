@@ -2,10 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:piwo/config/theme/custom_colors.dart';
-import 'package:piwo/models/account.dart';
 import 'package:piwo/models/availability.dart';
-import 'package:piwo/models/enums/status.dart';
-import 'package:piwo/services/account.dart';
 import 'package:piwo/models/enums/category.dart';
 
 class Activity {
@@ -16,7 +13,7 @@ class Activity {
   Category? category;
   DateTime? startDate;
   DateTime? endDate;
-  List<Availability> availabilities;
+  List<Availability>? availabilities;
 
   Activity({
     this.id,
@@ -26,33 +23,26 @@ class Activity {
     this.category,
     this.startDate,
     this.endDate,
-    this.availabilities = const [],
+    this.availabilities,
   });
 
   static Future<Activity> fromJson(Map<String, dynamic> json) async {
     List<Availability> availabilities = [];
 
-    if (json['availabilities'] != null) {
-      for (var e in (json['availabilities'] as List<dynamic>)) {
-        String accountId = e['accountId'];
-        Status? status;
+    if (json['availabilities'] is List) {
+      for (var availability in (json['availabilities'] as List<dynamic>)) {
+        if (availability is Map) {
+          final availabilityMap = Map<String, dynamic>.from(availability);
+          final newAvailability = await Availability.fromJson(availabilityMap);
 
-        if (e['status'] != null) {
-          status = Status.values.firstWhere(
-            (s) =>
-                s.toString().split('.').last.toLowerCase() ==
-                e['status'].toString().toLowerCase(),
-          );
-        }
-
-        Account account = await AccountService().getAccountById(accountId);
-
-        if (status != null) {
-          availabilities.add(Availability(account: account, status: status));
+          availabilities.add(newAvailability);
+        } else {
           debugPrint(
-              'Could not create availability for accountId: $accountId. Account or Status is null.');
+              'Availability is not in the expected Map format: $availability');
         }
       }
+    } else {
+      debugPrint('availabilities is not a List or is null.');
     }
 
     Category? category;
@@ -63,7 +53,7 @@ class Activity {
           (cat) =>
               cat.toString().split('.').last.toLowerCase() ==
               json['category'].toString().toLowerCase(),
-          orElse: () => Category.groepsavond, // Default value
+          orElse: () => Category.groepsavond,
         );
       } catch (e) {
         debugPrint('Unknown category: ${json['category']}');
@@ -81,6 +71,7 @@ class Activity {
           : null,
       endDate:
           json['endDate'] != null ? DateTime.tryParse(json['endDate']) : null,
+      availabilities: availabilities,
     );
   }
 
@@ -114,11 +105,19 @@ class Activity {
         : "No Date";
   }
 
-  Availability? didSubmitAvailibilty(String accountId) {
-    for (var i = 0; i < availabilities.length; i++) {
-      if (availabilities[i].account != null) {
-        if (availabilities[i].account!.id == accountId) {
-          return availabilities[i];
+  String get getTimes {
+    return startDate != null && endDate != null
+        ? "${startDate!.hour <= 9 ? "0${startDate!.hour}" : startDate!.hour}:${startDate!.minute <= 9 ? "0${startDate!.minute}" : startDate!.minute} - ${endDate!.hour <= 9 ? "0${endDate!.hour}" : endDate!.hour}:${endDate!.minute <= 9 ? "0${endDate!.minute}" : endDate!.minute}"
+        : "Geen tijd beschikbaar";
+  }
+
+  Availability? getYourAvailibilty(String accountId) {
+    if (availabilities != null) {
+      for (var i = 0; i < availabilities!.length; i++) {
+        if (availabilities![i].account != null) {
+          if (availabilities![i].account!.id == accountId) {
+            return availabilities![i];
+          }
         }
       }
     }

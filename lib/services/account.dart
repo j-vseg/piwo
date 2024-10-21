@@ -41,8 +41,10 @@ class AccountService {
       if (snapshot.exists) {
         Map<String, dynamic> accountData =
             Map<String, dynamic>.from(snapshot.value as Map);
+        Account account = Account.fromJson(accountData);
+        account.id = accountId;
 
-        return Account.fromJson(accountData);
+        return account;
       } else {
         debugPrint(
             "No account found for the user in Firebase Realtime Database.");

@@ -3,17 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/views/login.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
-import 'package:piwo/widgets/login_notifier.dart';
+import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => LoginStateNotifier()..checkLoginStatus(),
-      child: const MyApp(),
-    ),
+    const MyApp(),
   );
 }
 
@@ -22,16 +19,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Piwo',
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Poppins',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: CustomColors.themePrimary,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => LoginStateNotifier()..checkLoginStatus(),
         ),
+      ],
+      child: MaterialApp(
+        title: 'Piwo',
+        theme: ThemeData(
+          useMaterial3: true,
+          fontFamily: 'Poppins',
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: CustomColors.themePrimary,
+          ),
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }

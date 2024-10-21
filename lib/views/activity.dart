@@ -1,0 +1,368 @@
+import 'package:flutter/material.dart';
+import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/models/account.dart';
+import 'package:piwo/models/activity.dart';
+import 'package:piwo/models/availability.dart';
+import 'package:piwo/models/enums/month.dart';
+import 'package:piwo/models/enums/status.dart';
+import 'package:piwo/models/enums/weekday.dart';
+import 'package:piwo/services/availability.dart';
+
+class ActivityPage extends StatefulWidget {
+  const ActivityPage({
+    super.key,
+    required this.activity,
+    required this.account,
+  });
+
+  final Activity activity;
+  final Account account;
+
+  @override
+  ActivityPageState createState() => ActivityPageState();
+}
+
+class ActivityPageState extends State<ActivityPage> {
+  Status _selectedStatus = Status.aanwezig;
+  Status? _selectedStatusChange;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // final availabilityProvider =
+    //     Provider.of<AvailabilityProvider>(context, listen: false);
+    // availabilityProvider.addListener(_updateAvailability);
+  }
+
+  // void _updateAvailability() {
+  //   setState(() {});
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    Availability? yourAvailibilty =
+        widget.activity.getYourAvailibilty(widget.account.id!);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.activity.name!),
+        backgroundColor: CustomColors.themePrimary,
+        elevation: 0,
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.activity.name ?? "",
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Icon(Icons.access_time, color: Colors.grey),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${(Weekday.values[widget.activity.startDate!.weekday - 1])}, ${widget.activity.startDate!.day} ${Month.values[widget.activity.startDate!.month - 1].name}",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      Text(
+                        widget.activity.getTimes,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Icon(Icons.place, color: Colors.grey),
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.activity.location!,
+                    style: const TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              Row(
+                children: [
+                  if (yourAvailibilty != null) ...[
+                    if (yourAvailibilty.status == Status.aanwezig) ...[
+                      const Icon(Icons.check_circle, color: Colors.green),
+                    ] else if (yourAvailibilty.status == Status.misschien) ...[
+                      const Icon(Icons.help, color: Colors.orange),
+                    ] else ...[
+                      const Icon(Icons.cancel, color: Colors.red),
+                    ]
+                  ] else ...[
+                    const Icon(Icons.help, color: Colors.grey),
+                  ],
+                  const SizedBox(width: 8),
+                  Text(
+                    yourAvailibilty != null
+                        ? "Jij bent ${yourAvailibilty.status.toString()}"
+                        : "Geen status opgegeven",
+                    style: const TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                ],
+              ),
+              TextButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Aanpassen status'),
+                          content: SingleChildScrollView(
+                            child: StatefulBuilder(
+                              builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    DropdownButton<Status>(
+                                      hint: const Text("Selecteer een status"),
+                                      value: _selectedStatusChange,
+                                      items: [
+                                        const DropdownMenuItem<Status>(
+                                          value: null,
+                                          child: Text(
+                                            "Status verwijderen",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                        ...Status.values.map((Status status) {
+                                          return DropdownMenuItem<Status>(
+                                            value: status,
+                                            child: Text(status.name),
+                                          );
+                                        }),
+                                      ],
+                                      onChanged: (Status? status) {
+                                        setState(() {
+                                          _selectedStatusChange = status;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                final availability = Availability(
+                                  account: widget.account,
+                                  status: _selectedStatusChange,
+                                );
+                                AvailabilityService().changeAvailability(
+                                  widget.activity.id!,
+                                  widget.activity.availabilities!,
+                                  availability,
+                                );
+
+                                setState(() {
+                                  yourAvailibilty!.status =
+                                      _selectedStatusChange;
+                                });
+
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Aanpassen'),
+                            ),
+                          ],
+                        );
+                      });
+                },
+                child: const Text('Status aanpassen'),
+              ),
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 10),
+              const Text(
+                'Aanwezigheid',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedStatus = Status.aanwezig;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: _selectedStatus == Status.aanwezig
+                            ? Colors.green
+                            : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text("Aanwezig"),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedStatus = Status.misschien;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: _selectedStatus == Status.misschien
+                            ? Colors.orange
+                            : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text("Misschien"),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedStatus = Status.afwezig;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: _selectedStatus == Status.afwezig
+                            ? Colors.red
+                            : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text("Afwezig"),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Divider(),
+              const SizedBox(height: 10),
+              _buildOverviewSection(widget.activity.availabilities!),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOverviewSection(List<Availability> availabilities) {
+    List<String> people = [];
+    List<String> aanwezig = [];
+    List<String> misschien = [];
+    List<String> afwezig = [];
+
+    for (var availability in availabilities) {
+      if (availability.status != null) {
+        if (availability.status! == Status.aanwezig) {
+          aanwezig.add(availability.account!.getFullName);
+        } else if (availability.status! == Status.misschien) {
+          misschien.add(availability.account!.getFullName);
+        } else {
+          afwezig.add(availability.account!.getFullName);
+        }
+      }
+    }
+
+    if (_selectedStatus == Status.aanwezig) {
+      people = aanwezig;
+    } else if (_selectedStatus == Status.misschien) {
+      people = misschien;
+    } else if (_selectedStatus == Status.afwezig) {
+      people = afwezig;
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _selectedStatus == Status.aanwezig
+                ? "Aanwezig"
+                : _selectedStatus == Status.misschien
+                    ? "Misschien"
+                    : "Afwezig",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 15),
+          if (people.isEmpty) ...[
+            const Text(
+              'Geen mensen geregistreerd',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+            )
+          ] else ...[
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: people.length,
+              itemBuilder: (context, index) {
+                final person = people[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    person,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}

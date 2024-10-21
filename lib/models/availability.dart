@@ -1,5 +1,6 @@
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/status.dart';
+import 'package:piwo/services/account.dart';
 
 class Availability {
   Account? account;
@@ -10,10 +11,11 @@ class Availability {
     this.status,
   });
 
-  factory Availability.fromJson(Map<String, dynamic> json) {
+  static Future<Availability> fromJson(Map<String, dynamic> json) async {
     return Availability(
-      account:
-          json['account'] != null ? Account.fromJson(json['account']) : null,
+      account: json['accountId'] != null
+          ? await AccountService().getAccountById(json['accountId'])
+          : null,
       status: json['status'] != null
           ? Status.values.firstWhere(
               (s) =>
@@ -23,9 +25,10 @@ class Availability {
           : null,
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
-      'account': account?.toJson(),
+      'accountId': account?.id.toString(),
       'status': status?.toString(),
     };
   }

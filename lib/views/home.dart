@@ -6,6 +6,7 @@ import 'package:piwo/services/account.dart';
 import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/coin.dart';
 import 'package:piwo/services/payment_url.dart';
+import 'package:piwo/widgets/activity.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -91,8 +92,7 @@ class HomePageState extends State<HomePage> {
           ],
           const SizedBox(height: 20),
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween, // Align items to space out
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "Jouw munten (${_profile.amountOfCoins ?? 0})",
@@ -287,70 +287,15 @@ class HomePageState extends State<HomePage> {
                   ),
                 )
               ] else ...[
-                buildActivities(_activities, _profile, context)
+                ActivityWidget(
+                  activities: _activities,
+                  account: _profile,
+                )
               ],
             ],
           ],
         ],
       ),
-    );
-  }
-
-  Widget buildActivities(
-      List<Activity> activities, Account account, BuildContext context) {
-    activities.sort((a, b) => a.getStartDate.compareTo(b.getStartDate));
-
-    return Column(
-      children: activities.map((activity) {
-        final availability = activity.didSubmitAvailibilty(account.id!);
-
-        return InkWell(
-          onTap: () {
-            // TODO: Implement Activity page
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => ActivityPage(activityId: activity.getId),
-            //   ),
-            // );
-          },
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: CustomColors.themePrimary,
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            height: 125,
-            width: double.maxFinite,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    activity.name ?? "",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    activity.getFullDate,
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  Text(
-                    availability != null
-                        ? "Status: ${availability.status}"
-                        : "Geen status opgegeven",
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }).toList(),
     );
   }
 }
