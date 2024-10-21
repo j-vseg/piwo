@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
@@ -76,7 +75,6 @@ class _CustomScaffoldState extends State<CustomScaffold> {
                 backgroundColor: widget.appBarBackgroundColor,
                 titleTextStyle:
                     CustomTheme(context).themeData.textTheme.headlineMedium,
-                toolbarHeight: Platform.isIOS ? 55 : 85,
                 centerTitle: true,
                 elevation: 0,
                 leading: widget.appBarLeading,

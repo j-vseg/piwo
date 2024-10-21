@@ -55,6 +55,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '55318025403',
     projectId: 'piwo-4487e',
     authDomain: 'piwo-4487e.firebaseapp.com',
+    databaseURL:
+        'https://piwo-4487e-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'piwo-4487e.appspot.com',
     measurementId: 'G-LEWMQNTD0R',
   );
@@ -64,6 +66,8 @@ class DefaultFirebaseOptions {
     appId: '1:55318025403:android:53e9b513e163c47e11859e',
     messagingSenderId: '55318025403',
     projectId: 'piwo-4487e',
+    databaseURL:
+        'https://piwo-4487e-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'piwo-4487e.appspot.com',
   );
 }

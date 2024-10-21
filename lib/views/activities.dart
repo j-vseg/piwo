@@ -6,8 +6,9 @@ import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/month.dart';
 import 'package:piwo/models/enums/weekday.dart';
 import 'package:piwo/services/account.dart';
-import 'package:piwo/services/activity.dart';
 import 'package:piwo/widgets/activity.dart';
+import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ActivitiesPage extends StatefulWidget {
@@ -18,29 +19,29 @@ class ActivitiesPage extends StatefulWidget {
 }
 
 class ActivitiesPageState extends State<ActivitiesPage> {
-  List<Activity> _activities = [];
-  Account _account = Account();
   DateTime _selectedDate = DateTime.now();
-  Map<DateTime, List<Activity>> _groupedActivities = {};
   CalendarFormat _calendarFormat = CalendarFormat.month;
+  Account _account = Account();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeDateFormatting();
+    _initializeFutures();
+
+    final activityProvider =
+        Provider.of<ActivityProvider>(context, listen: false);
+    activityProvider.fetchActivities();
+  }
 
   void _initializeFutures() async {
     try {
-      _activities = await ActivityService().getAllActivities();
       _account = await AccountService().getMyAccount();
-      _groupedActivities = _groupActivitiesByDay(_activities);
     } catch (e) {
       debugPrint("Error fetching data: $e");
     } finally {
       setState(() {});
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeFutures();
-    _initializeDateFormatting();
   }
 
   Future<void> _initializeDateFormatting() async {
@@ -53,13 +54,20 @@ class ActivitiesPageState extends State<ActivitiesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20.0),
-          Column(
+    return Consumer<ActivityProvider>(
+      builder: (context, activityProvider, child) {
+        final activities = activityProvider.activities;
+        if (activities.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final groupedActivities = _groupActivitiesByDay(activities);
+
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 20.0),
               TableCalendar(
                 firstDay: DateTime.now().subtract(const Duration(days: 365)),
                 lastDay: DateTime.now().add(const Duration(days: 365)),
@@ -88,8 +96,8 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                   markerBuilder: (context, day, events) {
                     final normalizedDate =
                         DateTime(day.year, day.month, day.day);
-                    if (_groupedActivities.containsKey(normalizedDate)) {
-                      final activitiesList = _groupedActivities[normalizedDate];
+                    if (groupedActivities.containsKey(normalizedDate)) {
+                      final activitiesList = groupedActivities[normalizedDate];
                       return buildMarkers(
                           activitiesList ?? [], _account.id ?? "", day);
                     }
@@ -112,11 +120,11 @@ class ActivitiesPageState extends State<ActivitiesPage> {
               ),
               const SizedBox(height: 20),
               buildActivitiesForDay(
-                  _groupedActivities, _selectedDate, context, _account),
+                  groupedActivities, _selectedDate, context, _account),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

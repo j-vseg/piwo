@@ -12,7 +12,7 @@ class AvailabilityService {
   ) async {
     try {
       final DatabaseReference availabilityRef =
-          _database.child('activities/$activityId/availabilities');
+          _database.child('activities/$activityId/availabilities/');
       DataSnapshot snapshot = await availabilityRef.get();
 
       if (snapshot.exists) {
@@ -32,7 +32,9 @@ class AvailabilityService {
         await availabilityRef.set(availabilitiesJson);
         debugPrint('Availability successfully updated');
       } else {
-        await createAvailability(activityId, availabilities, availability);
+        if (availability.status != null) {
+          await createAvailability(activityId, availabilities, availability);
+        }
       }
     } catch (e) {
       debugPrint('Error updating availability: $e');

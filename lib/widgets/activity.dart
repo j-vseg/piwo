@@ -66,7 +66,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   ),
                   Row(
                     children: [
-                      if (yourAvailibilty != null) ...[
+                      if (yourAvailibilty != null &&
+                          yourAvailibilty.status != null) ...[
                         if (yourAvailibilty.status == Status.aanwezig) ...[
                           const Icon(Icons.check_circle, color: Colors.green),
                         ] else if (yourAvailibilty.status ==
@@ -80,7 +81,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       ],
                       const SizedBox(width: 8),
                       Text(
-                        yourAvailibilty != null
+                        yourAvailibilty != null &&
+                                yourAvailibilty.status != null
                             ? "Jij bent ${yourAvailibilty.status.toString()}"
                             : "Geen status opgegeven",
                         style: const TextStyle(
