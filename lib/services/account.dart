@@ -89,56 +89,93 @@ class AccountService {
     }
   }
 
-  Future<bool> updateAccountCredentials({
-    required String accountId,
-    String? newEmail,
-    String? newPassword,
-    String? newFirstName,
-    String? newLastName,
-    Role? newRole,
-    String? oldPassword,
-  }) async {
+  Future<bool> updateEmail(String email, String oldPassword) async {
+    User? user = _auth.currentUser;
+    try {
+      if (user == null) {
+        throw Exception("No user is currently signed in.");
+      }
+
+      String? userEmail = user.email;
+      if (oldPassword.isEmpty) {
+        throw Exception("Password is required for reauthentication.");
+      }
+
+      await AuthService().reauthenticateUser(userEmail!, oldPassword);
+
+      if (email.isNotEmpty && email != user.email) {
+        await user.verifyBeforeUpdateEmail(email);
+        debugPrint('Verification email sent. Please verify the new email.');
+        return true;
+      } else {
+        debugPrint('Email is not valid or has not changed.');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Error during updating email: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updatePassword(String newPassword, String oldPassword) async {
     User? user = _auth.currentUser;
 
     try {
-      if (user != null) {
-        String? userEmail = user.email;
-        if (oldPassword == '') {
-          throw Exception("Password is required for reauthentication.");
-        }
-
-        await AuthService().reauthenticateUser(userEmail!, oldPassword!);
+      if (user == null) {
+        throw Exception("No user is currently signed in.");
       }
 
-      if (newEmail != null && newEmail.isNotEmpty) {
-        await user!.verifyBeforeUpdateEmail(newEmail);
-        await user.reload();
-        user = _auth.currentUser;
+      String? userEmail = user.email;
+      if (oldPassword.isEmpty) {
+        throw Exception("Password is required for reauthentication.");
       }
 
-      if (newPassword != null && newPassword.isNotEmpty) {
-        await user!.updatePassword(newPassword);
+      await AuthService().reauthenticateUser(userEmail!, oldPassword);
+
+      if (newPassword.isNotEmpty && newPassword != oldPassword) {
+        await user.updatePassword(newPassword);
+        debugPrint('Password updated successfully.');
+        return true;
       }
 
-      if (newPassword != null &&
-          newPassword.isNotEmpty &&
-          newLastName != null &&
-          newLastName.isNotEmpty &&
-          newRole != null) {
-        await _database.child('accounts/$accountId').update({
-          'firstName': newFirstName,
-          'lastName': newLastName,
-          'role': newRole.name,
+      return false;
+    } catch (e) {
+      debugPrint('General error updating password: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateAccountCredentials(
+    String firstName,
+    String lastName,
+    String oldPassword,
+  ) async {
+    User? user = _auth.currentUser;
+
+    try {
+      if (user == null) {
+        throw Exception("No user is currently signed in.");
+      }
+
+      String? userEmail = user.email;
+      if (oldPassword.isEmpty) {
+        throw Exception("Password is required for reauthentication.");
+      }
+
+      await AuthService().reauthenticateUser(userEmail!, oldPassword);
+
+      if (firstName.isNotEmpty && lastName.isNotEmpty) {
+        await _database.child('accounts/${user.uid}').update({
+          'firstName': firstName,
+          'lastName': lastName,
         });
+        debugPrint('First name updated successfully.');
       }
 
       debugPrint('Account credentials updated successfully.');
       return true;
-    } on FirebaseAuthException catch (e) {
-      debugPrint('Error updating account credentials: ${e.message}');
-      return false;
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('General error updating account credentials: $e');
       return false;
     }
   }

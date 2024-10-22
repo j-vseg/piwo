@@ -8,7 +8,6 @@ class ActivityProvider with ChangeNotifier {
 
   List<Activity> get activities => _activities;
 
-  // Fetch activities asynchronously
   Future<void> fetchActivities() async {
     _activities = await ActivityService().getAllActivities();
     notifyListeners();
@@ -54,10 +53,5 @@ class ActivityProvider with ChangeNotifier {
       // Notify listeners after updating the state
       notifyListeners();
     }
-  }
-
-  Activity? getActivityById(String activityId) {
-    return _activities.firstWhere((activity) => activity.id == activityId,
-        orElse: () => Activity());
   }
 }

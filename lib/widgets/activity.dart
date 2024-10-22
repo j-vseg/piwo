@@ -25,7 +25,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
 
     return Column(
       children: widget.activities.map((activity) {
-        final yourAvailibilty = activity.getYourAvailibilty(widget.account.id!);
+        final yourAvailibilty =
+            activity.getYourAvailibilty(widget.account.id ?? "");
 
         return InkWell(
           onTap: () {

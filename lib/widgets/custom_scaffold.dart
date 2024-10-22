@@ -5,6 +5,7 @@ import 'package:piwo/config/theme/custom_theme.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/views/activities.dart';
 import 'package:piwo/views/home.dart';
+import 'package:piwo/views/settings/settings.dart';
 
 class CustomScaffold extends StatefulWidget {
   const CustomScaffold({
@@ -56,6 +57,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
   final List<Widget> pages = [
     const ActivitiesPage(),
     const HomePage(),
+    const SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -103,6 +105,10 @@ class _CustomScaffoldState extends State<CustomScaffold> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
                   label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: 'Instellingen',
                 ),
               ],
             ),
