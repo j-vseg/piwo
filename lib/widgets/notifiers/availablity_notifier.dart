@@ -13,6 +13,19 @@ class ActivityProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<Activity?> fetchActivity(String activityId) async {
+    final activityIndex =
+        _activities.indexWhere((activity) => activity.id == activityId);
+    if (activityIndex != -1) {
+      _activities[activityIndex] =
+          await ActivityService().getActivityById(activityId);
+      return _activities[activityIndex];
+    }
+    notifyListeners();
+
+    return null;
+  }
+
   void updateAvailability(
       String activityId, List<Availability> newAvailabilities) {
     final activityIndex =
@@ -21,6 +34,17 @@ class ActivityProvider with ChangeNotifier {
       _activities[activityIndex].availabilities = newAvailabilities;
       notifyListeners();
     }
+  }
+
+  Future<void> updateActivity(String activityId, Activity newActivity) async {
+    final activityIndex =
+        _activities.indexWhere((activity) => activity.id == activityId);
+    if (activityIndex >= 0) {
+      newActivity.id = activityId;
+      _activities[activityIndex] = newActivity;
+    }
+    // Notify listeners after updating the state
+    notifyListeners();
   }
 
   Future<void> changeAvailability(

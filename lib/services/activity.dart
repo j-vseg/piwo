@@ -80,8 +80,7 @@ class ActivityService {
     }
   }
 
-  Future<void> updateActivity(
-      String activityId, Map<String, dynamic> updatedData) async {
+  Future<void> updateActivity(String activityId, Activity newActivity) async {
     try {
       final DatabaseReference activityRef =
           _database.child('activities/$activityId');
@@ -92,7 +91,7 @@ class ActivityService {
         throw Exception('Activity with ID $activityId not found');
       }
 
-      await activityRef.update(updatedData);
+      await activityRef.update(newActivity.toJson());
 
       debugPrint('Activity updated successfully.');
     } catch (e) {

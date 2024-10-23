@@ -47,7 +47,9 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Consumer<ActivityProvider>(
       builder: (context, activityProvider, child) {
-        final activities = activityProvider.activities;
+        final activities = activityProvider.activities
+            .where((activity) => activity.startDate!.isAfter(DateTime.now()))
+            .toList();
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -239,14 +241,14 @@ class HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 20),
               const Text(
-                "Opkomende activiteiten",
+                "Toekomstige activiteiten",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const Text(
-                "Bekijk de meest recent opkomende activiteiten.",
+                "Bekijk de meest recent toekomstige activiteiten.",
                 style: TextStyle(
                   fontSize: 18,
                   color: CustomColors.unselectedMenuColor,

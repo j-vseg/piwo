@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/status.dart';
-import 'package:piwo/views/activity.dart';
+import 'package:piwo/views/activity/activity.dart';
 
 class ActivityWidget extends StatefulWidget {
   const ActivityWidget({

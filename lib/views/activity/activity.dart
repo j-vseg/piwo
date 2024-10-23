@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/services/availability.dart';
+import 'package:piwo/views/activity/edit_activity.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
-import 'package:provider/provider.dart'; // Import Provider package
+import 'package:provider/provider.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
@@ -25,23 +26,31 @@ class ActivityPage extends StatefulWidget {
 }
 
 class ActivityPageState extends State<ActivityPage> {
+  Activity? _activity;
   Status _selectedStatus = Status.aanwezig;
   Status? _selectedStatusChange;
 
   @override
   void initState() {
     super.initState();
+
+    _activity = widget.activity;
   }
 
   @override
   Widget build(BuildContext context) {
     final activityProvider = Provider.of<ActivityProvider>(context);
+
+    if (_activity == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     Availability? yourAvailability =
-        widget.activity.getYourAvailibilty(widget.account.id!);
+        _activity!.getYourAvailibilty(widget.account.id!);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.activity.name!),
+        title: Text(_activity!.name!),
         backgroundColor: CustomColors.themePrimary,
         elevation: 0,
         leading: IconButton(
@@ -51,6 +60,38 @@ class ActivityPageState extends State<ActivityPage> {
             Navigator.of(context).pop();
           },
         ),
+        actions: [
+          PopupMenuButton<String>(
+            padding: EdgeInsets.zero,
+            icon: const Icon(Icons.more_vert, color: Colors.black),
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Text('Aanpassen'),
+                ),
+              ];
+            },
+            onSelected: (value) {
+              if (value == 'edit') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditActivityPage(
+                      activity: _activity!,
+                    ),
+                  ),
+                ).then((activity) {
+                  if (activity != null) {
+                    setState(() {
+                      _activity = activity;
+                    });
+                  }
+                });
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -59,7 +100,7 @@ class ActivityPageState extends State<ActivityPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.activity.name ?? "",
+                _activity!.name ?? "",
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -75,14 +116,14 @@ class ActivityPageState extends State<ActivityPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${(Weekday.values[widget.activity.startDate!.weekday - 1])}, ${widget.activity.startDate!.day} ${Month.values[widget.activity.startDate!.month - 1].name}",
+                        "${(Weekday.values[_activity!.startDate!.weekday - 1])}, ${_activity!.startDate!.day} ${Month.values[_activity!.startDate!.month - 1].name}",
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black87,
                         ),
                       ),
                       Text(
-                        widget.activity.getTimes,
+                        _activity!.getTimes,
                         style: const TextStyle(
                           fontSize: 15,
                           color: Colors.grey,
@@ -98,7 +139,7 @@ class ActivityPageState extends State<ActivityPage> {
                   const Icon(Icons.place, color: Colors.grey),
                   const SizedBox(width: 8),
                   Text(
-                    widget.activity.location!,
+                    _activity!.location!,
                     style: const TextStyle(fontSize: 16, color: Colors.black87),
                   ),
                 ],
@@ -188,13 +229,13 @@ class ActivityPageState extends State<ActivityPage> {
                               );
 
                               await AvailabilityService().changeAvailability(
-                                widget.activity.id!,
-                                widget.activity.availabilities ?? [],
+                                _activity!.id!,
+                                _activity!.availabilities ?? [],
                                 availability,
                               );
 
                               await activityProvider.changeAvailability(
-                                widget.activity.id!,
+                                _activity!.id!,
                                 availability,
                               );
 
@@ -287,9 +328,7 @@ class ActivityPageState extends State<ActivityPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              const Divider(),
-              const SizedBox(height: 10),
-              _buildOverviewSection(widget.activity.availabilities!),
+              _buildOverviewSection(_activity!.availabilities!),
             ],
           ),
         ),
@@ -327,14 +366,6 @@ class ActivityPageState extends State<ActivityPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _selectedStatus == Status.aanwezig
-                ? "Aanwezig"
-                : _selectedStatus == Status.misschien
-                    ? "Misschien"
-                    : "Afwezig",
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
           const SizedBox(height: 15),
           if (people.isEmpty) ...[
             const Text(

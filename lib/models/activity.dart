@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/availability.dart';
 import 'package:piwo/models/enums/category.dart';
+import 'package:piwo/models/enums/recurrance.dart';
 
 class Activity {
   String? id;
   String? name;
   String? location;
   Color color;
+  Recurrence? recurrence;
   Category? category;
   DateTime? startDate;
   DateTime? endDate;
@@ -20,6 +22,7 @@ class Activity {
     this.name,
     this.location,
     this.color = CustomColors.themePrimary,
+    this.recurrence,
     this.category,
     this.startDate,
     this.endDate,
@@ -45,6 +48,21 @@ class Activity {
       debugPrint('availabilities is not a List or is null.');
     }
 
+    Recurrence? recurrence;
+
+    if (json['recurrence'] != null) {
+      try {
+        recurrence = Recurrence.values.firstWhere(
+          (cat) =>
+              cat.toString().split('.').last.toLowerCase() ==
+              json['recurrence'].toString().toLowerCase(),
+          orElse: () => Recurrence.geen,
+        );
+      } catch (e) {
+        debugPrint('Unknown recurrence: ${json['recurrence']}');
+      }
+    }
+
     Category? category;
 
     if (json['category'] != null) {
@@ -65,6 +83,7 @@ class Activity {
       name: json['name'],
       location: json['location'],
       color: Color(int.parse(json['color'])),
+      recurrence: recurrence,
       category: category,
       startDate: json['startDate'] != null
           ? DateTime.tryParse(json['startDate'])
@@ -81,6 +100,7 @@ class Activity {
       'name': name,
       'location': location,
       'color': "0x${color.value.toRadixString(16).toUpperCase()}",
+      'recurrence': recurrence.toString(),
       'category': category.toString(),
       'startDate': startDate!.toIso8601String(),
       'endDate': endDate!.toIso8601String(),
@@ -102,7 +122,7 @@ class Activity {
   String get getFullDate {
     return startDate != null && endDate != null
         ? "${startDate!.day}-${startDate!.month}-${startDate!.year} ${startDate!.hour <= 9 ? "0${startDate!.hour}" : startDate!.hour}:${startDate!.minute <= 9 ? "0${startDate!.minute}" : startDate!.minute} - ${endDate!.hour <= 9 ? "0${endDate!.hour}" : endDate!.hour}:${endDate!.minute <= 9 ? "0${endDate!.minute}" : endDate!.minute}"
-        : "No Date";
+        : "Geen datum beschikbaar";
   }
 
   String get getTimes {
