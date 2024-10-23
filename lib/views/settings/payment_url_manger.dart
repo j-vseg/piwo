@@ -1,0 +1,159 @@
+import 'package:flutter/material.dart';
+import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/services/payment_url.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class PaymentUrlManagerPage extends StatefulWidget {
+  const PaymentUrlManagerPage({super.key});
+
+  @override
+  PaymentUrlManagerPageState createState() => PaymentUrlManagerPageState();
+}
+
+class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
+  String? _paymentUrl = "";
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _paymentUrlController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializePaymentUrl();
+  }
+
+  void _initializePaymentUrl() async {
+    try {
+      _paymentUrl = await PaymentUrlService().getPaymentUrl();
+    } catch (e) {
+      debugPrint("Error fetching data: $e");
+    } finally {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _paymentUrlController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              color: CustomColors.themePrimary,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
+          child: Column(
+            children: [
+              const Text(
+                "Wijzig de bierkaart URL",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Text(
+                "Wijzing de bierkaart betaal URL.",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: CustomColors.unselectedMenuColor,
+                ),
+              ),
+              const SizedBox(height: 40),
+              const Text(
+                "Het huidige betaalverzoek link is:",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  final paymentUrl = Uri.parse(_paymentUrl ?? "");
+                  if (await canLaunchUrl(paymentUrl)) {
+                    await launchUrl(paymentUrl);
+                  }
+                },
+                child: Text(
+                  _paymentUrl ?? "",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: CustomColors.themePrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _paymentUrlController,
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'Nieuwe betaalzoek URL*',
+                          hintText: _paymentUrl ?? ""),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veld kan niet leeg zijn';
+                        }
+
+                        String pattern =
+                            r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+';
+                        RegExp regex = RegExp(pattern);
+
+                        if (!regex.hasMatch(value)) {
+                          return 'Geef een geldige link op.';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    MaterialButton(
+                      minWidth: double.maxFinite,
+                      color: CustomColors.themePrimary,
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          final paymentUrl = _paymentUrlController.text.trim();
+                          PaymentUrlService().updatePaymentUrl(paymentUrl);
+                          setState(() {
+                            _paymentUrl = paymentUrl;
+                          });
+                        }
+                      },
+                      child: const Text('Wijzig het betaalverzoek'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

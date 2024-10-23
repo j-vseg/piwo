@@ -9,13 +9,19 @@ class Account {
   Role? role;
   int? amountOfCoins;
 
-  Account(
-      {this.id,
-      this.firstName,
-      this.lastName,
-      this.email,
-      this.role,
-      this.amountOfCoins});
+  bool? isApproved;
+  bool? isConfirmed;
+
+  Account({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.role,
+    this.amountOfCoins,
+    this.isApproved,
+    this.isConfirmed,
+  });
 
   Account.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -34,6 +40,8 @@ class Account {
       }
     }
     amountOfCoins = json['amountOfCoins'];
+    isApproved = json['isApproved'];
+    isConfirmed = json['isConfirmed'];
   }
 
   Map<String, dynamic> toJson() {
@@ -44,6 +52,8 @@ class Account {
       'email': email,
       'role': role.toString(),
       'amountOfCoins': amountOfCoins,
+      'isApproved': isApproved,
+      'isConfirmed': isConfirmed,
     };
   }
 

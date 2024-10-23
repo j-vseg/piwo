@@ -83,6 +83,7 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
+                    isCreatingAccount: false,
                     emailController: TextEditingController(),
                   ),
                 ),
@@ -98,6 +99,7 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
+                    isCreatingAccount: false,
                     passwordController: TextEditingController(),
                   ),
                 ),
@@ -113,6 +115,7 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
+                    isCreatingAccount: false,
                     firstNameController: TextEditingController(),
                     lastNameController: TextEditingController(),
                   ),

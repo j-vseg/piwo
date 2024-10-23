@@ -20,4 +20,16 @@ class PaymentUrlService {
       throw ('Error during coin removal: $e');
     }
   }
+
+  Future<void> updatePaymentUrl(String paymentUrl) async {
+    try {
+      await _database.update({
+        'paymentUrl': paymentUrl,
+      });
+      debugPrint('Payment URL updated successfully.');
+    } catch (e) {
+      debugPrint("Error during updating paymentUrl: $e");
+      throw ('Error during updating paymentUrl: $e');
+    }
+  }
 }

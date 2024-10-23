@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
+import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/views/settings/account_manager.dart';
+import 'package:piwo/views/settings/payment_url_manger.dart';
 import 'package:piwo/views/settings/profile.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -48,8 +49,18 @@ class SettingsPageState extends State<SettingsPage> {
             fontSize: 18,
           ),
         ),
-        const SizedBox(height: 20),
-        InkWell(
+        const SizedBox(height: 40),
+        const Text(
+          "Jouw account",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.person),
+          trailing: const Icon(Icons.chevron_right),
+          title: const Text("Mijn profiel"),
           onTap: () {
             Navigator.push(
               context,
@@ -58,80 +69,19 @@ class SettingsPageState extends State<SettingsPage> {
               ),
             );
           },
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: CustomColors.themePrimary,
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            height: 105,
-            width: double.maxFinite,
-            child: const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Beheer je account",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "Maak wijzingen aan je account.",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          "Beheren",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        InkWell(
-          onTap: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => ActivityManagerPage(),
-            //   ),
-            // );
-          },
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: CustomColors.themePrimary,
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            height: 125,
-            width: double.maxFinite,
-            child: const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Beheer activiteiten",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "Maak wijzingen aan de activiteiten.",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        InkWell(
+        ListTile(
+          leading: const Icon(Icons.groups),
+          trailing: const Icon(Icons.chevron_right),
+          title: const Text("Beheer accounts"),
           onTap: () {
             Navigator.push(
               context,
@@ -140,38 +90,23 @@ class SettingsPageState extends State<SettingsPage> {
               ),
             );
           },
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: CustomColors.themePrimary,
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            height: 125,
-            width: double.maxFinite,
-            child: const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Beheer account rechten",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "Maak wijzingen aan accounts rechten.",
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ),
+        if (_account.role == Role.peningmeester ||
+            _account.role == Role.admin) ...[
+          ListTile(
+            leading: const Icon(Icons.payment),
+            trailing: const Icon(Icons.chevron_right),
+            title: const Text("Wijzing bierkaart URL"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PaymentUrlManagerPage(),
+                ),
+              );
+            },
+          ),
+        ]
       ],
     );
   }

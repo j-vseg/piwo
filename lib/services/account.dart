@@ -17,6 +17,8 @@ class AccountService {
         'lastName': lastName,
         'amountOfCoins': 0,
         'role': role == Role.admin ? 'admin' : 'user',
+        'isApproved': false,
+        'isConfirmed': false,
       };
 
       await _database
@@ -198,6 +200,9 @@ class AccountService {
             lastName: value['lastName'],
             email: value['email'],
             role: role,
+            amountOfCoins: value['amountOfCoins'],
+            isApproved: value['isApproved'],
+            isConfirmed: value['isConfirmed'],
           ));
         });
         return accounts;

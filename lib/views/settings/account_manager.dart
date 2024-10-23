@@ -1,8 +1,10 @@
+import 'package:accordion/accordion.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
+import 'package:piwo/views/settings/account_approval.dart';
 
 class AccountManagerPage extends StatefulWidget {
   const AccountManagerPage({
@@ -58,112 +60,160 @@ class AccountManagerPageState extends State<AccountManagerPage> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Beheer account rechten",
+          const Text(
+            "Beheer accounts",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ListTile(
+            leading: const Icon(Icons.mark_email_read),
+            trailing: const Icon(Icons.chevron_right),
+            title: const Text("Bekijk nieuwe accounts"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AccountApprovalPage(),
+                ),
+              );
+            },
+          ),
+          Accordion(
+            headerBorderColor: Colors.transparent,
+            headerBorderColorOpened: Colors.transparent,
+            headerBackgroundColor: Colors.transparent,
+            headerBackgroundColorOpened: Colors.transparent,
+            contentBackgroundColor: Colors.transparent,
+            contentBorderColor: Colors.transparent,
+            headerPadding: const EdgeInsets.only(
+              top: 8,
+              bottom: 8,
+              left: 4,
+              right: 16,
+            ),
+            children: [
+              AccordionSection(
+                isOpen: true,
+                contentVerticalPadding: 20,
+                rightIcon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.black54,
+                ),
+                leftIcon: const Icon(Icons.work, color: Colors.black54),
+                header: const Text(
+                  "Update account rechten",
                   style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
-                DropdownButton<Account>(
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                  hint: const Text("Selecteer een account"),
-                  value: selectedAccount,
-                  items: [
-                    const DropdownMenuItem<Account>(
-                      value: null,
-                      child: Text(
-                        "Geen account geselecteerd",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
-                        ),
+                content: Column(
+                  children: [
+                    const Text(
+                      "Update account rechten",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    ...accounts.map((Account account) {
-                      return DropdownMenuItem<Account>(
-                        value: account,
-                        child: Text(
-                          account.getFullName,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
+                    const SizedBox(height: 10),
+                    DropdownButton<Account>(
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                      hint: const Text("Selecteer een account"),
+                      value: selectedAccount,
+                      items: [
+                        const DropdownMenuItem<Account>(
+                          value: null,
+                          child: Text(
+                            "Geen account geselecteerd",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
-                      );
-                    }),
-                  ],
-                  onChanged: (Account? newValue) {
-                    setState(() {
-                      selectedAccount = newValue;
+                        ...accounts.map((Account account) {
+                          return DropdownMenuItem<Account>(
+                            value: account,
+                            child: Text(
+                              account.getFullName,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.black,
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                      onChanged: (Account? newValue) {
+                        setState(() {
+                          selectedAccount = newValue;
 
-                      if (newValue == null) {
-                        _role = null;
-                      } else {
-                        _role = newValue.role;
-                      }
-                    });
-                  },
-                ),
-                const SizedBox(height: 10.0),
-                DropdownButton<Role>(
-                  hint: const Text("Selecteer een rol"),
-                  value: _role,
-                  items: Role.values.map((Role role) {
-                    return DropdownMenuItem<Role>(
-                      value: role,
-                      child: Text(role.name),
-                    );
-                  }).toList(),
-                  onChanged: (Role? role) {
-                    setState(() {
-                      _role = role;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                MaterialButton(
-                  minWidth: double.maxFinite,
-                  color: CustomColors.themePrimary,
-                  onPressed: () async {
-                    if (_role != null) {
-                      final role = _role;
+                          if (newValue == null) {
+                            _role = null;
+                          } else {
+                            _role = newValue.role;
+                          }
+                        });
+                      },
+                    ),
+                    DropdownButton<Role>(
+                      hint: const Text("Selecteer een rol"),
+                      value: _role,
+                      items: Role.values.map((Role role) {
+                        return DropdownMenuItem<Role>(
+                          value: role,
+                          child: Text(role.name),
+                        );
+                      }).toList(),
+                      onChanged: (Role? role) {
+                        setState(() {
+                          _role = role;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    MaterialButton(
+                      minWidth: double.maxFinite,
+                      color: CustomColors.themePrimary,
+                      onPressed: () async {
+                        if (_role != null) {
+                          final role = _role;
 
-                      if (selectedAccount != null) {
-                        if (await AccountService().updateAccountRole(
-                          accountId: selectedAccount!.id ?? "",
-                          newRole: role ?? Role.user,
-                        )) {
-                          _showSuccessDialog("De wijzigen zijn aangebracht");
+                          if (selectedAccount != null) {
+                            if (await AccountService().updateAccountRole(
+                              accountId: selectedAccount!.id ?? "",
+                              newRole: role ?? Role.user,
+                            )) {
+                              _showSuccessDialog(
+                                  "De wijzigen zijn aangebracht");
+                            } else {
+                              _showErrorDialog(
+                                  "Het lijkt er op dat er iets mis is gegaan.");
+                            }
+                          }
                         } else {
                           _showErrorDialog(
-                              "Het lijkt er op dat er iets mis is gegaan.");
+                              "Het lijkt er op dat er iets mis is gegaan. Controleer uw gegevens en probeer het nog een keer.");
                         }
-                      }
-                    } else {
-                      _showErrorDialog(
-                          "Het lijkt er op dat er iets mis is gegaan. Controleer uw gegevens en probeer het nog een keer.");
-                    }
-                  },
-                  child: const Text("Update account rechten"),
+                      },
+                      child: const Text("Update account rechten"),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  // Function to show success dialog
   void _showSuccessDialog(String message) {
     showDialog(
       context: context,

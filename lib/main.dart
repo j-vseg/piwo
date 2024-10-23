@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
-import 'package:piwo/views/login.dart';
+import 'package:piwo/views/login/login.dart';
+import 'package:piwo/views/login/verification.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
@@ -52,8 +53,19 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final loginState = context.watch<LoginStateNotifier>();
 
-    if (loginState.value) {
-      return const CustomScaffold(body: Center());
+    if (loginState.value.getIsLoggedIn) {
+      if (loginState.value.getIsApproved) {
+        return const CustomScaffold(body: Center());
+      } else {
+        return Scaffold(
+          body: Center(
+            child: VerificationPage(
+              isApproved: loginState.value.getIsApproved,
+              isComfired: loginState.value.isComfired,
+            ),
+          ),
+        );
+      }
     } else {
       return const Scaffold(
         body: Center(

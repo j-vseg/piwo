@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/services/auth.dart';
+import 'package:piwo/views/settings/account.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -123,6 +124,9 @@ class LoginPageState extends State<LoginPage> {
                             debugPrint('Sign In Successful');
 
                             if (!context.mounted) return;
+                            context
+                                .read<LoginStateNotifier>()
+                                .checkLoginStatus();
                             context.read<LoginStateNotifier>().logIn();
                           } else {
                             if (!context.mounted) return;
@@ -149,6 +153,31 @@ class LoginPageState extends State<LoginPage> {
                         }
                       },
                       child: const Text('Login'),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AccountPage(
+                              isCreatingAccount: true,
+                              title: "Maak een account",
+                              description:
+                                  "Maak een account aan om de app te kunnen gebruiken.",
+                              emailController: TextEditingController(),
+                              passwordController: TextEditingController(),
+                              firstNameController: TextEditingController(),
+                              lastNameController: TextEditingController(),
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Mog geen account?',
+                        style: TextStyle(
+                          color: CustomColors.themePrimary,
+                        ),
+                      ),
                     ),
                   ],
                 ),
