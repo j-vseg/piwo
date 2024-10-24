@@ -43,7 +43,16 @@ class ActivityProvider with ChangeNotifier {
       newActivity.id = activityId;
       _activities[activityIndex] = newActivity;
     }
-    // Notify listeners after updating the state
+    notifyListeners();
+  }
+
+  Future<void> createActivity(String activityId, Activity newActivity) async {
+    final activityIndex =
+        _activities.indexWhere((activity) => activity.id == activityId);
+    if (activityIndex < 0) {
+      newActivity.id = activityId;
+      _activities.add(newActivity);
+    }
     notifyListeners();
   }
 

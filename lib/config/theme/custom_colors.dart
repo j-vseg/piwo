@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import 'package:piwo/models/enums/category.dart';
 
 class CustomColors {
@@ -59,9 +58,11 @@ class CustomColors {
     if (category == Category.groepsavond) {
       return CustomColors.themePrimary;
     } else if (category == Category.weekend) {
-      return CustomColors.activityPrimairyColorBlue;
+      return Colors.red;
+    } else if (category == Category.actie) {
+      return Colors.orange;
     } else {
-      return CustomColors.activityPrimairyColorGreen;
+      return Colors.purple;
     }
   }
 }

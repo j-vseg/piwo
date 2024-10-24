@@ -65,7 +65,7 @@ class ActivityService {
     }
   }
 
-  Future<void> createActivity(Activity activity) async {
+  Future<String> createActivity(Activity activity) async {
     try {
       final DatabaseReference activityRef =
           _database.child('activities').push();
@@ -75,8 +75,10 @@ class ActivityService {
       await activityRef.set(activity.toJson());
 
       debugPrint('Activity created successfully with ID: ${activityRef.key}');
+      return activityRef.key ?? "";
     } catch (e) {
       debugPrint('Failed to create activity: $e');
+      throw ('Failed to create activity: $e');
     }
   }
 

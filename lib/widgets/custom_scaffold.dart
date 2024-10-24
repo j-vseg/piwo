@@ -4,6 +4,7 @@ import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/config/theme/custom_theme.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/views/activities.dart';
+import 'package:piwo/views/activity/edit_activity.dart';
 import 'package:piwo/views/home.dart';
 import 'package:piwo/views/settings/settings.dart';
 
@@ -112,6 +113,22 @@ class _CustomScaffoldState extends State<CustomScaffold> {
                 ),
               ],
             ),
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EditActivityPage(
+                      activity: null,
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: CustomColors.themePrimary,
+              child: const Icon(Icons.add),
+            )
+          : const SizedBox(),
       body: SafeArea(
         top: widget.topSafeArea,
         bottom: widget.bottomSafeArea,

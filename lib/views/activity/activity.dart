@@ -3,7 +3,6 @@ import 'package:piwo/services/availability.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:provider/provider.dart';
-import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/availability.dart';
@@ -51,7 +50,7 @@ class ActivityPageState extends State<ActivityPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_activity!.name!),
-        backgroundColor: CustomColors.themePrimary,
+        backgroundColor: _activity!.color,
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.zero,
@@ -107,7 +106,22 @@ class ActivityPageState extends State<ActivityPage> {
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 2),
+              Row(
+                children: [
+                  Icon(
+                    Icons.category,
+                    color: _activity!.color,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _activity!.category.toString(),
+                    style: const TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
               Row(
                 children: [
                   const Icon(Icons.access_time, color: Colors.grey),
@@ -134,17 +148,21 @@ class ActivityPageState extends State<ActivityPage> {
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(Icons.place, color: Colors.grey),
-                  const SizedBox(width: 8),
-                  Text(
-                    _activity!.location!,
-                    style: const TextStyle(fontSize: 16, color: Colors.black87),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
+              if (widget.activity.location != null &&
+                  widget.activity.location!.isNotEmpty) ...[
+                Row(
+                  children: [
+                    const Icon(Icons.place, color: Colors.grey),
+                    const SizedBox(width: 8),
+                    Text(
+                      _activity!.location!,
+                      style:
+                          const TextStyle(fontSize: 16, color: Colors.black87),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+              ],
               Row(
                 children: [
                   if (yourAvailability != null &&
@@ -168,94 +186,96 @@ class ActivityPageState extends State<ActivityPage> {
                   ),
                 ],
               ),
-              TextButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Aanpassen status'),
-                        content: SingleChildScrollView(
-                          child: StatefulBuilder(
-                            builder:
-                                (BuildContext context, StateSetter setState) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  DropdownButton<Status>(
-                                    hint: const Text("Selecteer een status"),
-                                    value: _selectedStatusChange,
-                                    items: [
-                                      const DropdownMenuItem<Status>(
-                                        value: null,
-                                        child: Text(
-                                          "Status verwijderen",
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.grey,
+              if (!widget.activity.endDate!.isBefore(DateTime.now())) ...[
+                TextButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Aanpassen status'),
+                          content: SingleChildScrollView(
+                            child: StatefulBuilder(
+                              builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    DropdownButton<Status>(
+                                      hint: const Text("Selecteer een status"),
+                                      value: _selectedStatusChange,
+                                      items: [
+                                        const DropdownMenuItem<Status>(
+                                          value: null,
+                                          child: Text(
+                                            "Status verwijderen",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      ...Status.values.map((Status status) {
-                                        return DropdownMenuItem<Status>(
-                                          value: status,
-                                          child: Text(status.name),
-                                        );
-                                      }),
-                                    ],
-                                    onChanged: (Status? status) {
-                                      setState(() {
-                                        _selectedStatusChange = status;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
+                                        ...Status.values.map((Status status) {
+                                          return DropdownMenuItem<Status>(
+                                            value: status,
+                                            child: Text(status.name),
+                                          );
+                                        }),
+                                      ],
+                                      onChanged: (Status? status) {
+                                        setState(() {
+                                          _selectedStatusChange = status;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              final availability = Availability(
-                                account: widget.account,
-                                status: _selectedStatusChange,
-                              );
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                final availability = Availability(
+                                  account: widget.account,
+                                  status: _selectedStatusChange,
+                                );
 
-                              await AvailabilityService().changeAvailability(
-                                _activity!.id!,
-                                _activity!.availabilities ?? [],
-                                availability,
-                              );
+                                await AvailabilityService().changeAvailability(
+                                  _activity!.id!,
+                                  _activity!.availabilities ?? [],
+                                  availability,
+                                );
 
-                              await activityProvider.changeAvailability(
-                                _activity!.id!,
-                                availability,
-                              );
+                                await activityProvider.changeAvailability(
+                                  _activity!.id!,
+                                  availability,
+                                );
 
-                              setState(() {
-                                yourAvailability?.status =
-                                    _selectedStatusChange;
-                              });
+                                setState(() {
+                                  yourAvailability?.status =
+                                      _selectedStatusChange;
+                                });
 
-                              if (!context.mounted) return;
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Aanpassen'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: const Text('Status aanpassen'),
-              ),
+                                if (!context.mounted) return;
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Aanpassen'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Text('Status aanpassen'),
+                ),
+              ],
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 10),
@@ -328,7 +348,7 @@ class ActivityPageState extends State<ActivityPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              _buildOverviewSection(_activity!.availabilities!),
+              _buildOverviewSection(_activity!.availabilities),
             ],
           ),
         ),
@@ -336,20 +356,22 @@ class ActivityPageState extends State<ActivityPage> {
     );
   }
 
-  Widget _buildOverviewSection(List<Availability> availabilities) {
+  Widget _buildOverviewSection(List<Availability>? availabilities) {
     List<String> people = [];
     List<String> aanwezig = [];
     List<String> misschien = [];
     List<String> afwezig = [];
 
-    for (var availability in availabilities) {
-      if (availability.status != null) {
-        if (availability.status! == Status.aanwezig) {
-          aanwezig.add(availability.account!.getFullName);
-        } else if (availability.status! == Status.misschien) {
-          misschien.add(availability.account!.getFullName);
-        } else {
-          afwezig.add(availability.account!.getFullName);
+    if (availabilities != null) {
+      for (var availability in availabilities) {
+        if (availability.status != null) {
+          if (availability.status! == Status.aanwezig) {
+            aanwezig.add(availability.account!.getFullName);
+          } else if (availability.status! == Status.misschien) {
+            misschien.add(availability.account!.getFullName);
+          } else {
+            afwezig.add(availability.account!.getFullName);
+          }
         }
       }
     }

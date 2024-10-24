@@ -49,7 +49,10 @@ class HomePageState extends State<HomePage> {
       builder: (context, activityProvider, child) {
         final activities = activityProvider.activities
             .where((activity) => activity.startDate!.isAfter(DateTime.now()))
-            .toList();
+            .toList()
+          ..sort((a, b) => a.startDate!.compareTo(b.startDate!));
+
+        final limitedActivities = activities.reversed.take(3).toList();
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -255,7 +258,7 @@ class HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              if (activities.isEmpty) ...[
+              if (limitedActivities.isEmpty) ...[
                 const Text(
                   "Je bent voor geen activiteiten aangemeld.",
                   style: TextStyle(
@@ -273,7 +276,7 @@ class HomePageState extends State<HomePage> {
                   )
                 ] else ...[
                   ActivityWidget(
-                    activities: activities,
+                    activities: limitedActivities,
                     account: _profile,
                   )
                 ],
