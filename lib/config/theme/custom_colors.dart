@@ -43,12 +43,9 @@ class CustomColors {
   static const themePrimary = Color(0xFFFFC176);
 
   // Activities
-  static const activityPrimairyColorBlue = Color(0xFF8F98FD);
-  static const activitySecondaryColorBlue = Color(0xFF182B87);
-  static const activityPrimairyColorOrange = Color(0xFFFD7649);
-  static const activitySecondaryColorOrange = Color(0xFFFFC176);
-  static const activityPrimairyColorGreen = Color(0xFF4CC490);
-  static const activitySecondaryColorGreen = Color(0xFF00664F);
+  static const activityAction = Color(0xFFFFE15C);
+  static const activityKamp = Color(0xFFFF7B00);
+  static const actionWeekend = Color(0xFFFF9500);
 
   // Background colors
   static const primaryBackgroundColor = Color(0xFF00664F);
@@ -58,11 +55,11 @@ class CustomColors {
     if (category == Category.groepsavond) {
       return CustomColors.themePrimary;
     } else if (category == Category.weekend) {
-      return Colors.red;
+      return CustomColors.actionWeekend;
     } else if (category == Category.actie) {
-      return Colors.orange;
+      return CustomColors.activityAction;
     } else {
-      return Colors.purple;
+      return CustomColors.activityKamp;
     }
   }
 }

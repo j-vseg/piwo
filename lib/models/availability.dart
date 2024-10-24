@@ -32,4 +32,19 @@ class Availability {
       'status': status?.toString(),
     };
   }
+
+  static String formatDateTime(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  static DateTime parseFormattedDateTime(String formattedDate) {
+    List<String> dateAndTime = formattedDate.split('_');
+    List<String> dateParts = dateAndTime[0].split('-');
+
+    int year = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2]);
+
+    return DateTime(year, month, day);
+  }
 }

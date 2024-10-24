@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
+import 'package:piwo/models/activity.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:piwo/services/account.dart';
@@ -48,11 +49,12 @@ class HomePageState extends State<HomePage> {
     return Consumer<ActivityProvider>(
       builder: (context, activityProvider, child) {
         final activities = activityProvider.activities
-            .where((activity) => activity.startDate!.isAfter(DateTime.now()))
+            .where((activity) => DateTime.now().isBefore(activity.startDate!))
             .toList()
           ..sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
-        final limitedActivities = activities.reversed.take(3).toList();
+        List<Activity> limitedActivities =
+            activities.isNotEmpty ? activities.take(3).toList() : [];
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

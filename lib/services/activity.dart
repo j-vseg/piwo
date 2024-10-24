@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/activity.dart';
+import 'package:piwo/models/availability.dart';
 
 class ActivityService {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
@@ -57,11 +58,11 @@ class ActivityService {
         return activity;
       } else {
         debugPrint("Activity with ID $activityId not found.");
-        throw ("Activity with ID $activityId not found.");
+        throw Exception("Activity with ID $activityId not found.");
       }
     } catch (e) {
       debugPrint("Failed to get activity by ID: $e");
-      throw ("Failed to get activity by ID: $e");
+      throw Exception("Failed to get activity by ID: $e");
     }
   }
 
@@ -78,7 +79,7 @@ class ActivityService {
       return activityRef.key ?? "";
     } catch (e) {
       debugPrint('Failed to create activity: $e');
-      throw ('Failed to create activity: $e');
+      throw Exception('Failed to create activity: $e');
     }
   }
 
@@ -119,6 +120,58 @@ class ActivityService {
     } catch (e) {
       debugPrint('Failed to delete activity: $e');
       throw Exception('Failed to delete activity');
+    }
+  }
+
+  Future<void> updateAvailability(
+    String activityId,
+    DateTime date,
+    List<Availability> availabilities,
+  ) async {
+    try {
+      final DatabaseReference availabilityRef = _database.child(
+          'activities/$activityId/availabilities/${date.toIso8601String()}');
+
+      List<Map<String, dynamic>> availabilitiesJson =
+          availabilities.map((availability) => availability.toJson()).toList();
+
+      await availabilityRef.set(availabilitiesJson);
+
+      debugPrint(
+          'Availability updated for activity ID: $activityId on date: $date');
+    } catch (e) {
+      debugPrint('Error updating availability: $e');
+      throw Exception('Error updating availability');
+    }
+  }
+
+  Future<List<Availability>> getAvailabilities(
+      String activityId, DateTime date) async {
+    try {
+      final DatabaseReference availabilityRef = _database.child(
+          'activities/$activityId/availabilities/${date.toIso8601String()}');
+
+      DataSnapshot snapshot = await availabilityRef.get();
+
+      if (snapshot.exists && snapshot.value != null) {
+        List<Availability> availabilityList = [];
+
+        List<dynamic> availabilitiesData = snapshot.value as List;
+
+        for (var availabilityJson in availabilitiesData) {
+          availabilityList.add(await Availability.fromJson(
+              Map<String, dynamic>.from(availabilityJson)));
+        }
+
+        return availabilityList;
+      } else {
+        debugPrint(
+            "No availabilities found for activity ID: $activityId on date: $date.");
+        return [];
+      }
+    } catch (e) {
+      debugPrint("Failed to get availabilities: $e");
+      throw Exception("Failed to get availabilities: $e");
     }
   }
 }

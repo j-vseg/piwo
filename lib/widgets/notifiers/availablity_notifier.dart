@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/availability.dart';
+import 'package:piwo/models/enums/recurrance.dart';
 import 'package:piwo/services/activity.dart';
+import 'package:piwo/services/availability.dart';
 
 class ActivityProvider with ChangeNotifier {
   List<Activity> _activities = [];
@@ -10,28 +12,97 @@ class ActivityProvider with ChangeNotifier {
 
   Future<void> fetchActivities() async {
     _activities = await ActivityService().getAllActivities();
+
+    List<Activity> occurrencesToAdd = [];
+
+    for (var activity in _activities) {
+      if (activity.recurrence == Recurrence.wekelijks) {
+        List<Activity> occurrences = await _generateWeeklyOccurrences(
+          activity,
+          activity.startDate!,
+          activity.endDate!,
+          26,
+        );
+
+        occurrencesToAdd.addAll(occurrences);
+      }
+    }
+    _activities.addAll(occurrencesToAdd);
+
     notifyListeners();
+  }
+
+  Future<List<Activity>> _generateWeeklyOccurrences(Activity activity,
+      DateTime startDate, DateTime endDate, int weeks) async {
+    List<Activity> occurrences = [];
+    DateTime now = DateTime.now();
+
+    int startDayOfWeek = startDate.weekday;
+
+    DateTime firstUpcomingDay =
+        now.add(Duration(days: (startDayOfWeek - now.weekday + 7) % 7));
+    print(firstUpcomingDay);
+
+    DateTime recurrenceStart =
+        startDate.isAfter(now) ? startDate : firstUpcomingDay;
+
+    Duration duration = endDate.difference(startDate);
+
+    for (int i = 0; i < weeks; i++) {
+      DateTime occurrenceDate = recurrenceStart.add(Duration(days: i * 7));
+
+      Map<DateTime, List<Availability>> availabilities = {};
+      List<Availability> availabilityList = await AvailabilityService()
+          .getAvailabilitiesByDate(activity.id!, occurrenceDate);
+
+      if (availabilityList.isNotEmpty) {
+        availabilities[DateTime(
+          occurrenceDate.year,
+          occurrenceDate.month,
+          occurrenceDate.day,
+        )] = availabilityList;
+      }
+
+      occurrences.add(Activity(
+        id: activity.id,
+        name: activity.name,
+        startDate: occurrenceDate,
+        endDate: occurrenceDate.add(duration),
+        color: activity.color,
+        category: activity.category,
+        recurrence: activity.recurrence,
+        availabilities: availabilities,
+      ));
+    }
+
+    return occurrences;
   }
 
   Future<Activity?> fetchActivity(String activityId) async {
     final activityIndex =
         _activities.indexWhere((activity) => activity.id == activityId);
+
     if (activityIndex != -1) {
       _activities[activityIndex] =
           await ActivityService().getActivityById(activityId);
+      notifyListeners();
       return _activities[activityIndex];
     }
-    notifyListeners();
-
     return null;
   }
 
   void updateAvailability(
-      String activityId, List<Availability> newAvailabilities) {
+      String activityId, DateTime date, List<Availability> newAvailabilities) {
     final activityIndex =
         _activities.indexWhere((activity) => activity.id == activityId);
     if (activityIndex != -1) {
-      _activities[activityIndex].availabilities = newAvailabilities;
+      final activity = _activities[activityIndex];
+
+      activity.availabilities ??= {};
+
+      // Update availabilities for the given date
+      activity.availabilities![date] = newAvailabilities;
+      _activities[activityIndex] = activity;
       notifyListeners();
     }
   }
@@ -40,50 +111,47 @@ class ActivityProvider with ChangeNotifier {
     final activityIndex =
         _activities.indexWhere((activity) => activity.id == activityId);
     if (activityIndex >= 0) {
-      newActivity.id = activityId;
+      newActivity.id = activityId; // Ensure the ID is set correctly
       _activities[activityIndex] = newActivity;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> createActivity(String activityId, Activity newActivity) async {
-    final activityIndex =
-        _activities.indexWhere((activity) => activity.id == activityId);
-    if (activityIndex < 0) {
-      newActivity.id = activityId;
+    if (!_activities.any((activity) => activity.id == activityId)) {
       _activities.add(newActivity);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> changeAvailability(
-      String activityId, Availability newAvailability) async {
+      String activityId, DateTime date, Availability newAvailability) async {
     final activityIndex =
         _activities.indexWhere((activity) => activity.id == activityId);
     if (activityIndex >= 0) {
       final activity = _activities[activityIndex];
-      final existingAvailabilityIndex = activity.availabilities!.indexWhere(
-          (availability) =>
-              availability.account!.id == newAvailability.account!.id);
+      activity.availabilities ??= {};
+
+      final availabilityList = activity.availabilities![date] ?? [];
+      final existingAvailabilityIndex = availabilityList.indexWhere(
+        (availability) =>
+            availability.account?.id == newAvailability.account?.id,
+      );
 
       if (existingAvailabilityIndex >= 0) {
-        // Update existing availability
         if (newAvailability.status != null) {
-          activity.availabilities![existingAvailabilityIndex] = newAvailability;
+          availabilityList[existingAvailabilityIndex] = newAvailability;
         } else {
-          // Remove the availability if status is null
-          activity.availabilities!.removeAt(existingAvailabilityIndex);
+          availabilityList.removeAt(existingAvailabilityIndex);
         }
       } else {
-        // Add new availability
         if (newAvailability.status != null) {
-          activity.availabilities!.add(newAvailability);
+          availabilityList.add(newAvailability);
         }
       }
 
+      activity.availabilities![date] = availabilityList;
       _activities[activityIndex] = activity;
-
-      // Notify listeners after updating the state
       notifyListeners();
     }
   }

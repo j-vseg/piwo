@@ -25,8 +25,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
 
     return Column(
       children: widget.activities.map((activity) {
-        final yourAvailibilty =
-            activity.getYourAvailibilty(widget.account.id ?? "");
+        final yourAvailability = activity.getYourAvailability(
+            activity.getStartDate, widget.account.id!);
 
         return InkWell(
           onTap: () {
@@ -47,7 +47,6 @@ class _ActivityWidgetState extends State<ActivityWidget> {
             ),
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            height: 125,
             width: double.maxFinite,
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -67,11 +66,11 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   ),
                   Row(
                     children: [
-                      if (yourAvailibilty != null &&
-                          yourAvailibilty.status != null) ...[
-                        if (yourAvailibilty.status == Status.aanwezig) ...[
+                      if (yourAvailability != null &&
+                          yourAvailability.status != null) ...[
+                        if (yourAvailability.status == Status.aanwezig) ...[
                           const Icon(Icons.check_circle, color: Colors.green),
-                        ] else if (yourAvailibilty.status ==
+                        ] else if (yourAvailability.status ==
                             Status.misschien) ...[
                           const Icon(Icons.help, color: Colors.orange),
                         ] else ...[
@@ -82,9 +81,9 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       ],
                       const SizedBox(width: 8),
                       Text(
-                        yourAvailibilty != null &&
-                                yourAvailibilty.status != null
-                            ? "Jij bent ${yourAvailibilty.status.toString()}"
+                        yourAvailability != null &&
+                                yourAvailability.status != null
+                            ? "Jij bent ${yourAvailability.status.toString()}"
                             : "Geen status opgegeven",
                         style: const TextStyle(
                             fontSize: 16, color: Colors.black87),

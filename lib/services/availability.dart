@@ -7,33 +7,53 @@ class AvailabilityService {
 
   Future<void> changeAvailability(
     String activityId,
-    List<Availability> availabilities,
+    Map<DateTime, List<Availability>> availabilities,
+    DateTime date,
     Availability availability,
   ) async {
     try {
-      final DatabaseReference availabilityRef =
-          _database.child('activities/$activityId/availabilities/');
+      final DatabaseReference availabilityRef = _database.child(
+          'activities/$activityId/availabilities/${Availability.formatDateTime(date)}');
+
       DataSnapshot snapshot = await availabilityRef.get();
 
+      List<Availability> availabilityList = availabilities[date] ?? [];
+
       if (snapshot.exists) {
-        for (var i = 0; i < availabilities.length; i++) {
-          if (availabilities[i].account!.id == availability.account!.id) {
+        bool availabilityUpdated = false;
+        for (int i = 0; i < availabilityList.length; i++) {
+          if (availabilityList[i].account!.id == availability.account!.id) {
             if (availability.status != null) {
-              availabilities[i] = availability;
+              availabilityList[i] = availability;
             } else {
-              availabilities.removeAt(i);
+              availabilityList.removeAt(i);
+            }
+            availabilityUpdated = true;
+            break;
+          } else {
+            if (availability.status != null) {
+              await createAvailability(
+                  activityId, availabilities, date, availability);
             }
           }
         }
 
-        List<Map<String, dynamic>> availabilitiesJson = availabilities
+        if (!availabilityUpdated && availability.status != null) {
+          availabilityList.add(availability);
+        }
+
+        availabilities[date] = availabilityList;
+
+        List<Map<String, dynamic>> availabilitiesJson = availabilityList
             .map((availability) => availability.toJson())
             .toList();
         await availabilityRef.set(availabilitiesJson);
+
         debugPrint('Availability successfully updated');
       } else {
         if (availability.status != null) {
-          await createAvailability(activityId, availabilities, availability);
+          await createAvailability(
+              activityId, availabilities, date, availability);
         }
       }
     } catch (e) {
@@ -43,24 +63,60 @@ class AvailabilityService {
 
   Future<void> createAvailability(
     String activityId,
-    List<Availability> availabilities,
+    Map<DateTime, List<Availability>> availabilities,
+    DateTime date,
     Availability availability,
   ) async {
     try {
-      final DatabaseReference availabilityRef =
-          _database.child('activities/$activityId/availabilities');
-      List<Availability> modifiableAvailabilities = List.from(availabilities);
+      final DatabaseReference availabilityRef = _database.child(
+          'activities/$activityId/availabilities/${Availability.formatDateTime(date)}');
 
-      modifiableAvailabilities.add(availability);
+      List<Availability> availabilityList = availabilities[date] ?? [];
 
-      List<Map<String, dynamic>> availabilitiesJson = modifiableAvailabilities
+      availabilityList.add(availability);
+
+      availabilities[date] = availabilityList;
+
+      List<Map<String, dynamic>> availabilitiesJson = availabilityList
           .map((availability) => availability.toJson())
           .toList();
-
       await availabilityRef.set(availabilitiesJson);
+
       debugPrint('Availability successfully created');
     } catch (e) {
       debugPrint('Error creating availability: $e');
+    }
+  }
+
+  Future<List<Availability>> getAvailabilitiesByDate(
+    String activityId,
+    DateTime date,
+  ) async {
+    try {
+      final DatabaseReference availabilityRef = _database.child(
+        'activities/$activityId/availabilities/${Availability.formatDateTime(date)}',
+      );
+
+      DataSnapshot snapshot = await availabilityRef.get();
+      if (snapshot.exists && snapshot.value != null) {
+        List<Availability> availabilityList = [];
+
+        final availabilityData = snapshot.value as List<Object?>;
+
+        for (var availabilityJson in availabilityData) {
+          final availabilityMap = Map<String, dynamic>.from(
+              availabilityJson as Map<Object?, Object?>);
+          final availability = await Availability.fromJson(availabilityMap);
+          availabilityList.add(availability);
+        }
+
+        return availabilityList;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      debugPrint("Error fetching availabilities: $e");
+      throw Exception("Failed to get availabilities: $e");
     }
   }
 }

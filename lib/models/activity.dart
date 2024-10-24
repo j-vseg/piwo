@@ -15,7 +15,7 @@ class Activity {
   Category? category;
   DateTime? startDate;
   DateTime? endDate;
-  List<Availability>? availabilities;
+  Map<DateTime, List<Availability>>? availabilities;
 
   Activity({
     this.id,
@@ -30,26 +30,34 @@ class Activity {
   });
 
   static Future<Activity> fromJson(Map<String, dynamic> json) async {
-    List<Availability> availabilities = [];
+    Map<DateTime, List<Availability>> availabilities = {};
 
-    if (json['availabilities'] is List) {
-      for (var availability in (json['availabilities'] as List<dynamic>)) {
-        if (availability is Map) {
-          final availabilityMap = Map<String, dynamic>.from(availability);
-          final newAvailability = await Availability.fromJson(availabilityMap);
+    if (json['availabilities'] != null) {
+      final availabilitiesData =
+          json['availabilities'] as Map<Object?, Object?>;
 
-          availabilities.add(newAvailability);
-        } else {
-          debugPrint(
-              'Availability is not in the expected Map format: $availability');
+      for (var entry in availabilitiesData.entries) {
+        if (entry.key is String) {
+          DateTime date =
+              Availability.parseFormattedDateTime(entry.key as String);
+          List<Availability> availabilityList = [];
+
+          if (entry.value is List) {
+            for (var availabilityJson in entry.value as List) {
+              final availabilityMap = Map<String, dynamic>.from(
+                  availabilityJson as Map<Object?, Object?>);
+              final newAvailability =
+                  await Availability.fromJson(availabilityMap);
+              availabilityList.add(newAvailability);
+            }
+          }
+
+          availabilities[date] = availabilityList;
         }
       }
-    } else {
-      debugPrint('availabilities is not a List or is null.');
     }
 
     Recurrence? recurrence;
-
     if (json['recurrence'] != null) {
       try {
         recurrence = Recurrence.values.firstWhere(
@@ -64,7 +72,6 @@ class Activity {
     }
 
     Category? category;
-
     if (json['category'] != null) {
       try {
         category = Category.values.firstWhere(
@@ -100,10 +107,12 @@ class Activity {
       'name': name,
       'location': location,
       'color': "0x${color.value.toRadixString(16).toUpperCase()}",
-      'recurrence': recurrence.toString(),
-      'category': category.toString(),
-      'startDate': startDate!.toIso8601String(),
-      'endDate': endDate!.toIso8601String(),
+      'recurrence': recurrence?.toString().split('.').last,
+      'category': category?.toString().split('.').last,
+      'startDate': startDate?.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
+      'availabilities': availabilities?.map((date, availList) => MapEntry(
+          date.toIso8601String(), availList.map((e) => e.toJson()).toList())),
     };
   }
 
@@ -115,7 +124,7 @@ class Activity {
     return DateTime(startDate!.year, startDate!.month, startDate!.day);
   }
 
-  DateTime get endStartDate {
+  DateTime get getEndDate {
     return DateTime(endDate!.year, endDate!.month, endDate!.day);
   }
 
@@ -131,12 +140,14 @@ class Activity {
         : "Geen tijd beschikbaar";
   }
 
-  Availability? getYourAvailibilty(String accountId) {
-    if (availabilities != null) {
-      for (var i = 0; i < availabilities!.length; i++) {
-        if (availabilities![i].account != null) {
-          if (availabilities![i].account!.id == accountId) {
-            return availabilities![i];
+  Availability? getYourAvailability(DateTime date, String accountId) {
+    if (availabilities != null && availabilities!.containsKey(date)) {
+      List<Availability>? availabilityList = availabilities![date];
+
+      if (availabilityList != null) {
+        for (var availability in availabilityList) {
+          if (availability.account?.id == accountId) {
+            return availability;
           }
         }
       }

@@ -153,7 +153,6 @@ class ActivitiesPageState extends State<ActivitiesPage> {
   ) {
     DateTime selectedDay =
         DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
-
     List<Activity>? activitiesThisDay = activitiesByDay[selectedDay];
 
     if (activitiesThisDay == null || activitiesThisDay.isEmpty) {
@@ -162,6 +161,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
         style: TextStyle(fontSize: 18),
       );
     }
+
     activitiesThisDay.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
     return Column(

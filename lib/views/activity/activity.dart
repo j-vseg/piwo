@@ -44,8 +44,8 @@ class ActivityPageState extends State<ActivityPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    Availability? yourAvailability =
-        _activity!.getYourAvailibilty(widget.account.id!);
+    Availability? yourAvailability = _activity!
+        .getYourAvailability(_activity!.getStartDate, widget.account.id!);
 
     return Scaffold(
       appBar: AppBar(
@@ -249,12 +249,14 @@ class ActivityPageState extends State<ActivityPage> {
 
                                 await AvailabilityService().changeAvailability(
                                   _activity!.id!,
-                                  _activity!.availabilities ?? [],
+                                  _activity!.availabilities ?? {},
+                                  _activity!.getStartDate,
                                   availability,
                                 );
 
                                 await activityProvider.changeAvailability(
                                   _activity!.id!,
+                                  _activity!.getStartDate,
                                   availability,
                                 );
 
@@ -347,8 +349,13 @@ class ActivityPageState extends State<ActivityPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              _buildOverviewSection(_activity!.availabilities),
+              const SizedBox(height: 10),
+              if (_activity!.availabilities != null) ...[
+                _buildOverviewSection(
+                    _activity!.availabilities![_activity!.getStartDate]),
+              ] else ...[
+                _buildOverviewSection([]),
+              ],
             ],
           ),
         ),
@@ -404,9 +411,9 @@ class ActivityPageState extends State<ActivityPage> {
               itemCount: people.length,
               itemBuilder: (context, index) {
                 final person = people[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Text(
+                return ListTile(
+                  leading: const Icon(Icons.person),
+                  title: Text(
                     person,
                     style: const TextStyle(
                       fontSize: 16,
