@@ -174,4 +174,30 @@ class ActivityService {
       throw Exception("Failed to get availabilities: $e");
     }
   }
+
+  Future<void> createExceptions(String activityId, DateTime date) async {
+    try {
+      final DatabaseReference activityRef =
+          _database.child('activities/$activityId/exceptions');
+
+      DataSnapshot snapshot = await activityRef.get();
+
+      List<String> exceptions = [];
+
+      if (snapshot.exists) {
+        Map<dynamic, dynamic>? currentData = snapshot.value as Map?;
+        if (currentData != null) {
+          exceptions = List<String>.from(currentData.values);
+        }
+      }
+
+      exceptions.add(date.toIso8601String());
+      await activityRef.set(exceptions);
+
+      debugPrint('Date added to exceptions successfully.');
+    } catch (e) {
+      debugPrint('Failed to update exceptions: $e');
+      throw Exception('Failed to update exceptions');
+    }
+  }
 }

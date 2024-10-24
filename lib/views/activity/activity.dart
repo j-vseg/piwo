@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:piwo/models/enums/recurrance.dart';
+import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/availability.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
@@ -69,9 +71,19 @@ class ActivityPageState extends State<ActivityPage> {
                   value: 'edit',
                   child: Text('Aanpassen'),
                 ),
+                if (_activity!.recurrence != Recurrence.geen) ...[
+                  const PopupMenuItem<String>(
+                    value: 'delete-only',
+                    child: Text('Verwijder deze activiteit'),
+                  ),
+                ],
+                const PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Text('Verwijderen'),
+                ),
               ];
             },
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'edit') {
                 Navigator.push(
                   context,
@@ -87,6 +99,11 @@ class ActivityPageState extends State<ActivityPage> {
                     });
                   }
                 });
+              } else if (value == 'delete-only') {
+                await ActivityService().createExceptions(
+                    _activity!.id ?? "", _activity!.getStartDate);
+              } else if (value == 'delete') {
+                await ActivityService().deleteActivity(_activity!.id ?? "");
               }
             },
           ),

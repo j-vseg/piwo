@@ -41,7 +41,8 @@ class ActivityProvider with ChangeNotifier {
 
     DateTime firstUpcomingDay =
         now.add(Duration(days: (startDayOfWeek - now.weekday + 7) % 7));
-    print(firstUpcomingDay);
+    firstUpcomingDay = DateTime(firstUpcomingDay.year, firstUpcomingDay.month,
+        firstUpcomingDay.day, startDate.hour + 1, startDate.minute);
 
     DateTime recurrenceStart =
         startDate.isAfter(now) ? startDate : firstUpcomingDay;
@@ -51,28 +52,35 @@ class ActivityProvider with ChangeNotifier {
     for (int i = 0; i < weeks; i++) {
       DateTime occurrenceDate = recurrenceStart.add(Duration(days: i * 7));
 
-      Map<DateTime, List<Availability>> availabilities = {};
-      List<Availability> availabilityList = await AvailabilityService()
-          .getAvailabilitiesByDate(activity.id!, occurrenceDate);
+      if (activity.exceptions != null &&
+          !activity.exceptions!.contains(DateTime(
+            occurrenceDate.year,
+            occurrenceDate.month,
+            occurrenceDate.day,
+          ))) {
+        Map<DateTime, List<Availability>> availabilities = {};
+        List<Availability> availabilityList = await AvailabilityService()
+            .getAvailabilitiesByDate(activity.id!, occurrenceDate);
 
-      if (availabilityList.isNotEmpty) {
-        availabilities[DateTime(
-          occurrenceDate.year,
-          occurrenceDate.month,
-          occurrenceDate.day,
-        )] = availabilityList;
+        if (availabilityList.isNotEmpty) {
+          availabilities[DateTime(
+            occurrenceDate.year,
+            occurrenceDate.month,
+            occurrenceDate.day,
+          )] = availabilityList;
+        }
+
+        occurrences.add(Activity(
+          id: activity.id,
+          name: activity.name,
+          startDate: occurrenceDate,
+          endDate: occurrenceDate.add(duration),
+          color: activity.color,
+          category: activity.category,
+          recurrence: activity.recurrence,
+          availabilities: availabilities,
+        ));
       }
-
-      occurrences.add(Activity(
-        id: activity.id,
-        name: activity.name,
-        startDate: occurrenceDate,
-        endDate: occurrenceDate.add(duration),
-        color: activity.color,
-        category: activity.category,
-        recurrence: activity.recurrence,
-        availabilities: availabilities,
-      ));
     }
 
     return occurrences;

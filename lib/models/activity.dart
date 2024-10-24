@@ -16,6 +16,7 @@ class Activity {
   DateTime? startDate;
   DateTime? endDate;
   Map<DateTime, List<Availability>>? availabilities;
+  List<DateTime>? exceptions;
 
   Activity({
     this.id,
@@ -27,6 +28,7 @@ class Activity {
     this.startDate,
     this.endDate,
     this.availabilities,
+    this.exceptions,
   });
 
   static Future<Activity> fromJson(Map<String, dynamic> json) async {
@@ -98,6 +100,14 @@ class Activity {
       endDate:
           json['endDate'] != null ? DateTime.tryParse(json['endDate']) : null,
       availabilities: availabilities,
+      exceptions: (json['exceptions'] as List<dynamic>?)?.map((e) {
+            if (e != null) {
+              return DateTime.parse(e as String);
+            } else {
+              throw Exception("Null exception value found");
+            }
+          }).toList() ??
+          [],
     );
   }
 
@@ -113,6 +123,7 @@ class Activity {
       'endDate': endDate?.toIso8601String(),
       'availabilities': availabilities?.map((date, availList) => MapEntry(
           date.toIso8601String(), availList.map((e) => e.toJson()).toList())),
+      'exceptions': exceptions,
     };
   }
 
