@@ -109,6 +109,30 @@ class LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 5),
+                    GestureDetector(
+                      onTap: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AccountPage(
+                              isResetingPassword: true,
+                              isCreatingAccount: false,
+                              title: "Reset wachtwoord",
+                              description:
+                                  "Reset je wachtwoord om opnieuw toegang tot je account te krijgen.",
+                              emailController: TextEditingController(),
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Wachtwoord vergeten?',
+                        style: TextStyle(
+                          color: CustomColors.themePrimary,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     MaterialButton(
                       minWidth: double.maxFinite,
@@ -154,12 +178,14 @@ class LoginPageState extends State<LoginPage> {
                       },
                       child: const Text('Login'),
                     ),
+                    const SizedBox(height: 10),
                     GestureDetector(
                       onTap: () async {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => AccountPage(
+                              isResetingPassword: null,
                               isCreatingAccount: true,
                               title: "Maak een account",
                               description:

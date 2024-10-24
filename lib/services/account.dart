@@ -249,4 +249,13 @@ class AccountService {
       return false;
     }
   }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      debugPrint('Reset password successful');
+    } catch (e) {
+      throw ("Reset password failed: $e");
+    }
+  }
 }

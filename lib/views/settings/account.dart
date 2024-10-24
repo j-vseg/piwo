@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 class AccountPage extends StatefulWidget {
   final bool isCreatingAccount;
+  final bool? isResetingPassword;
   final String title;
   final String description;
   final TextEditingController? emailController;
@@ -18,6 +19,7 @@ class AccountPage extends StatefulWidget {
   const AccountPage({
     super.key,
     required this.isCreatingAccount,
+    required this.isResetingPassword,
     String? title,
     String? description,
     this.emailController,
@@ -116,7 +118,9 @@ class AccountPageState extends State<AccountPage> {
                       controller: widget.emailController,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        labelText: widget.isCreatingAccount
+                        labelText: widget.isCreatingAccount ||
+                                (widget.isResetingPassword != null &&
+                                    widget.isResetingPassword!)
                             ? 'Email*'
                             : 'Nieuwe email*',
                       ),
@@ -203,35 +207,37 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  TextFormField(
-                    controller: _oldPasswordController,
-                    obscureText: !_isOldPasswordVisible,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Wachtwoord*',
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isOldPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                  if (widget.isResetingPassword == null) ...[
+                    TextFormField(
+                      controller: _oldPasswordController,
+                      obscureText: !_isOldPasswordVisible,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        labelText: 'Wachtwoord*',
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isOldPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isOldPasswordVisible = !_isOldPasswordVisible;
+                            });
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _isOldPasswordVisible = !_isOldPasswordVisible;
-                          });
-                        },
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veld kan niet leeg zijn';
+                        }
+                        if (value.length < 8) {
+                          return "Wachtwoord moet minimaal 8 characters lang zijn";
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Veld kan niet leeg zijn';
-                      }
-                      if (value.length < 8) {
-                        return "Wachtwoord moet minimaal 8 characters lang zijn";
-                      }
-                      return null;
-                    },
-                  ),
+                  ],
                   const SizedBox(height: 10),
                   MaterialButton(
                     minWidth: double.maxFinite,
@@ -244,7 +250,8 @@ class AccountPageState extends State<AccountPage> {
                         String? lastName;
                         final oldPassword = _oldPasswordController.text.trim();
 
-                        if (!widget.isCreatingAccount) {
+                        if (!widget.isCreatingAccount &&
+                            widget.isResetingPassword == null) {
                           if (widget.emailController != null) {
                             email = widget.emailController!.text.trim();
 
@@ -333,6 +340,21 @@ class AccountPageState extends State<AccountPage> {
                               );
                             }
                           }
+                        } else if (widget.isResetingPassword != null &&
+                            widget.isResetingPassword!) {
+                          email = widget.emailController!.text.trim();
+
+                          await AccountService().resetPassword(email);
+
+                          if (!context.mounted) return;
+                          _showDialog(
+                            context,
+                            "Email verstuurd",
+                            "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",
+                            () {
+                              Navigator.of(context).pop();
+                            },
+                          );
                         } else {
                           email = widget.emailController!.text.trim();
                           newPassword = widget.passwordController!.text.trim();
@@ -373,7 +395,10 @@ class AccountPageState extends State<AccountPage> {
                     },
                     child: Text(widget.isCreatingAccount
                         ? 'Creer je account'
-                        : 'Wijzig je account'),
+                        : widget.isResetingPassword != null &&
+                                widget.isResetingPassword!
+                            ? "Reset wachtwoord"
+                            : 'Wijzig je account'),
                   ),
                 ],
               ),
