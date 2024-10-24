@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
-import 'package:piwo/config/theme/custom_theme.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/views/activities.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
@@ -70,23 +69,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: !widget.useAppBar
-          ? null
-          : widget.appBar ??
-              AppBar(
-                title: widget.appBarTitle,
-                backgroundColor: widget.appBarBackgroundColor,
-                titleTextStyle:
-                    CustomTheme(context).themeData.textTheme.headlineMedium,
-                centerTitle: true,
-                elevation: 0,
-                leading: widget.appBarLeading,
-                actions: widget.actions,
-                leadingWidth: 40 + SizeSetter.getHorizontalScreenPadding(),
-                systemOverlayStyle: widget.systemOverlayStyle,
-                automaticallyImplyLeading: widget.automaticallyImplyLeading,
-                iconTheme: const IconThemeData(color: CustomColors.light),
-              ),
+      appBar: !widget.useAppBar ? null : widget.appBar,
       bottomNavigationBar: widget.isAuthenticated
           ? const SizedBox()
           : BottomNavigationBar(
@@ -133,8 +116,11 @@ class _CustomScaffoldState extends State<CustomScaffold> {
         top: widget.topSafeArea,
         bottom: widget.bottomSafeArea,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: SizeSetter.getHorizontalScreenPadding()),
+          padding: EdgeInsets.only(
+            top: 50,
+            left: SizeSetter.getHorizontalScreenPadding(),
+            right: SizeSetter.getHorizontalScreenPadding(),
+          ),
           child: IndexedStack(
             index: _selectedIndex,
             children: widget.isAuthenticated ? [widget.body] : pages,
