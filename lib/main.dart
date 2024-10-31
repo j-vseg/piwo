@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/views/home/home_view.dart';
 import 'package:piwo/views/login/login.dart';
 import 'package:piwo/views/login/verification.dart';
-import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +55,7 @@ class MyHomePage extends StatelessWidget {
 
     if (loginState.value.getIsLoggedIn) {
       if (loginState.value.getIsApproved) {
-        return const CustomScaffold(body: Center());
+        return const HomeView();
       } else {
         return Scaffold(
           body: Center(

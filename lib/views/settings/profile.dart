@@ -4,6 +4,7 @@ import 'package:piwo/models/account.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
 import 'package:piwo/views/settings/account.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +36,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -90,6 +91,7 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
               );
             },
+            contentPadding: const EdgeInsets.all(0.0),
           ),
           ListTile(
             leading: const Icon(Icons.lock),
@@ -107,6 +109,7 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
               );
             },
+            contentPadding: const EdgeInsets.all(0.0),
           ),
           ListTile(
             leading: const Icon(Icons.person),
@@ -125,6 +128,7 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
               );
             },
+            contentPadding: const EdgeInsets.all(0.0),
           ),
           const SizedBox(
             height: 40,
@@ -157,6 +161,7 @@ class ProfilePageState extends State<ProfilePage> {
                 },
               );
             },
+            contentPadding: const EdgeInsets.all(0.0),
           ),
           ListTile(
             leading: const Icon(
@@ -186,6 +191,7 @@ class ProfilePageState extends State<ProfilePage> {
                 },
               );
             },
+            contentPadding: const EdgeInsets.all(0.0),
           ),
         ],
       ),

@@ -6,7 +6,9 @@ import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/month.dart';
 import 'package:piwo/models/enums/weekday.dart';
 import 'package:piwo/services/account.dart';
+import 'package:piwo/views/activity/edit_activity.dart';
 import 'package:piwo/widgets/activity.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -63,65 +65,82 @@ class ActivitiesPageState extends State<ActivitiesPage> {
 
         final groupedActivities = _groupActivitiesByDay(activities);
 
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20.0),
-              TableCalendar(
-                firstDay: DateTime.now().subtract(const Duration(days: 365)),
-                lastDay: DateTime.now().add(const Duration(days: 365)),
-                focusedDay: _selectedDate,
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDate, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDate = selectedDay;
-                  });
-                },
-                calendarFormat: _calendarFormat,
-                locale: 'nl_NL',
-                availableCalendarFormats: const {
-                  CalendarFormat.month: 'Maand',
-                  CalendarFormat.twoWeeks: '2 Weken',
-                  CalendarFormat.week: 'Week',
-                },
-                onFormatChanged: (format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                },
-                calendarBuilders: CalendarBuilders(
-                  markerBuilder: (context, day, events) {
-                    final normalizedDate =
-                        DateTime(day.year, day.month, day.day);
-                    if (groupedActivities.containsKey(normalizedDate)) {
-                      final activitiesList = groupedActivities[normalizedDate];
-                      return buildMarkers(
-                          activitiesList ?? [], _account.id ?? "", day);
-                    }
-                    return null;
+        return CustomScaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditActivityPage(
+                    activity: null,
+                  ),
+                ),
+              );
+            },
+            backgroundColor: CustomColors.themePrimary,
+            child: const Icon(Icons.add),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20.0),
+                TableCalendar(
+                  firstDay: DateTime.now().subtract(const Duration(days: 365)),
+                  lastDay: DateTime.now().add(const Duration(days: 365)),
+                  focusedDay: _selectedDate,
+                  selectedDayPredicate: (day) {
+                    return isSameDay(_selectedDate, day);
                   },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDate = selectedDay;
+                    });
+                  },
+                  calendarFormat: _calendarFormat,
+                  locale: 'nl_NL',
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Maand',
+                    CalendarFormat.twoWeeks: '2 Weken',
+                    CalendarFormat.week: 'Week',
+                  },
+                  onFormatChanged: (format) {
+                    setState(() {
+                      _calendarFormat = format;
+                    });
+                  },
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, day, events) {
+                      final normalizedDate =
+                          DateTime(day.year, day.month, day.day);
+                      if (groupedActivities.containsKey(normalizedDate)) {
+                        final activitiesList =
+                            groupedActivities[normalizedDate];
+                        return buildMarkers(
+                            activitiesList ?? [], _account.id ?? "", day);
+                      }
+                      return null;
+                    },
+                  ),
+                  calendarStyle: CalendarStyle(
+                    selectedDecoration: const BoxDecoration(
+                      color: CustomColors.themePrimary,
+                      shape: BoxShape.circle,
+                    ),
+                    todayDecoration: BoxDecoration(
+                      color: CustomColors.themePrimary.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    todayTextStyle: const TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-                calendarStyle: CalendarStyle(
-                  selectedDecoration: const BoxDecoration(
-                    color: CustomColors.themePrimary,
-                    shape: BoxShape.circle,
-                  ),
-                  todayDecoration: BoxDecoration(
-                    color: CustomColors.themePrimary.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  todayTextStyle: const TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              buildActivitiesForDay(
-                  groupedActivities, _selectedDate, context, _account),
-            ],
+                const SizedBox(height: 20),
+                buildActivitiesForDay(
+                    groupedActivities, _selectedDate, context, _account),
+              ],
+            ),
           ),
         );
       },

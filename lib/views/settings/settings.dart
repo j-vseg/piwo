@@ -5,6 +5,7 @@ import 'package:piwo/services/account.dart';
 import 'package:piwo/views/settings/account_manager.dart';
 import 'package:piwo/views/settings/payment_url_manger.dart';
 import 'package:piwo/views/settings/profile.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -34,80 +35,85 @@ class SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text(
-          "Instellingen",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+    return CustomScaffold(
+      body: Column(
+        children: [
+          const Text(
+            "Instellingen",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        Text(
-          _account.getFullName,
-          style: const TextStyle(
-            fontSize: 18,
+          Text(
+            _account.getFullName,
+            style: const TextStyle(
+              fontSize: 18,
+            ),
           ),
-        ),
-        const SizedBox(height: 40),
-        const Text(
-          "Jouw account",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          const SizedBox(height: 40),
+          const Text(
+            "Jouw account",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        ListTile(
-          leading: const Icon(Icons.person),
-          trailing: const Icon(Icons.chevron_right),
-          title: const Text("Mijn profiel"),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ProfilePage(),
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 20),
-        const Text(
-          "Beheren",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        ListTile(
-          leading: const Icon(Icons.groups),
-          trailing: const Icon(Icons.chevron_right),
-          title: const Text("Beheer accounts"),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AccountManagerPage(),
-              ),
-            );
-          },
-        ),
-        if (_account.role == Role.peningmeester ||
-            _account.role == Role.admin) ...[
           ListTile(
-            leading: const Icon(Icons.payment),
+            leading: const Icon(Icons.person),
             trailing: const Icon(Icons.chevron_right),
-            title: const Text("Wijzing bierkaart URL"),
+            title: const Text("Mijn profiel"),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const PaymentUrlManagerPage(),
+                  builder: (context) => const ProfilePage(),
                 ),
               );
             },
+            contentPadding: const EdgeInsets.all(0.0),
           ),
-        ]
-      ],
+          const SizedBox(height: 20),
+          const Text(
+            "Beheren",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.groups),
+            trailing: const Icon(Icons.chevron_right),
+            title: const Text("Beheer accounts"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AccountManagerPage(),
+                ),
+              );
+            },
+            contentPadding: const EdgeInsets.all(0.0),
+          ),
+          if (_account.role == Role.peningmeester ||
+              _account.role == Role.admin) ...[
+            ListTile(
+              leading: const Icon(Icons.payment),
+              trailing: const Icon(Icons.chevron_right),
+              title: const Text("Wijzing bierkaart URL"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentUrlManagerPage(),
+                  ),
+                );
+              },
+              contentPadding: const EdgeInsets.all(0.0),
+            ),
+          ]
+        ],
+      ),
     );
   }
 }
