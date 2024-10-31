@@ -199,7 +199,7 @@ class LoginPageState extends State<LoginPage> {
                         );
                       },
                       child: const Text(
-                        'Mog geen account?',
+                        'Nog geen account?',
                         style: TextStyle(
                           color: CustomColors.themePrimary,
                         ),

@@ -4,6 +4,7 @@ import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
+import 'package:piwo/widgets/restart.dart';
 import 'package:provider/provider.dart';
 
 class AccountPage extends StatefulWidget {
@@ -268,6 +269,7 @@ class AccountPageState extends State<AccountPage> {
                                   if (!context.mounted) return;
                                   context.read<LoginStateNotifier>().logOut();
                                   Navigator.of(context).pop();
+                                  RestartWidget.restartApp(context);
                                 },
                               );
                             } else {

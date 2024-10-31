@@ -16,7 +16,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  int selectedIndex = 0;
+  int selectedIndex = 1;
 
   void onItemTapped(int index) {
     setState(() {

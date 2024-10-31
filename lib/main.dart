@@ -6,6 +6,7 @@ import 'package:piwo/views/login/login.dart';
 import 'package:piwo/views/login/verification.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
+import 'package:piwo/widgets/restart.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
@@ -14,7 +15,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(const RestartWidget(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -51,17 +52,23 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginState = context.watch<LoginStateNotifier>();
+    final loginState = context.watch<LoginStateNotifier>().value;
 
-    if (loginState.value.getIsLoggedIn) {
-      if (loginState.value.getIsApproved) {
+    if (loginState.getIsLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else if (loginState.getIsLoggedIn) {
+      if (loginState.getIsApproved) {
         return const HomeView();
       } else {
         return Scaffold(
           body: Center(
             child: VerificationPage(
-              isApproved: loginState.value.getIsApproved,
-              isComfired: loginState.value.isComfired,
+              isApproved: loginState.getIsApproved,
+              isComfired: loginState.getIsComfired,
             ),
           ),
         );

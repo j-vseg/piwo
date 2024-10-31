@@ -6,6 +6,7 @@ import 'package:piwo/services/auth.dart';
 import 'package:piwo/views/settings/account.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
+import 'package:piwo/widgets/restart.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -158,6 +159,7 @@ class ProfilePageState extends State<ProfilePage> {
                   if (!context.mounted) return;
                   context.read<LoginStateNotifier>().logOut();
                   Navigator.of(context).pop();
+                  RestartWidget.restartApp(context);
                 },
               );
             },
@@ -188,6 +190,7 @@ class ProfilePageState extends State<ProfilePage> {
                   if (!context.mounted) return;
                   context.read<LoginStateNotifier>().logOut();
                   Navigator.of(context).pop();
+                  RestartWidget.restartApp(context);
                 },
               );
             },

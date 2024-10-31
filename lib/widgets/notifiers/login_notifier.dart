@@ -6,22 +6,28 @@ class LoginState {
   final bool isLoggedIn;
   final bool isApproved;
   final bool isComfired;
+  final bool isLoading;
 
   LoginState({
     required this.isLoggedIn,
     required this.isApproved,
     required this.isComfired,
+    this.isLoading = true,
   });
 
   bool get getIsLoggedIn => isLoggedIn;
   bool get getIsApproved => isApproved;
   bool get getIsComfired => isComfired;
+  bool get getIsLoading => isLoading;
 }
 
 class LoginStateNotifier extends ValueNotifier<LoginState> {
   LoginStateNotifier()
       : super(LoginState(
-            isLoggedIn: false, isApproved: false, isComfired: false));
+            isLoggedIn: false,
+            isApproved: false,
+            isComfired: false,
+            isLoading: true));
 
   Future<void> checkLoginStatus() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -34,22 +40,20 @@ class LoginStateNotifier extends ValueNotifier<LoginState> {
         isLoggedIn: true,
         isApproved: isApproved,
         isComfired: isComfired,
+        isLoading: false,
       );
     } else {
       value = LoginState(
         isLoggedIn: false,
         isApproved: false,
         isComfired: false,
+        isLoading: false,
       );
     }
   }
 
-  void logIn() {
-    value = LoginState(
-      isLoggedIn: true,
-      isApproved: value.isApproved,
-      isComfired: value.isComfired,
-    );
+  void logIn() async {
+    await checkLoginStatus();
   }
 
   void logOut() {
@@ -57,6 +61,7 @@ class LoginStateNotifier extends ValueNotifier<LoginState> {
       isLoggedIn: false,
       isApproved: false,
       isComfired: false,
+      isLoading: false,
     );
   }
 }
