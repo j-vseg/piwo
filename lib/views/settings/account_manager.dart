@@ -4,11 +4,15 @@ import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
+import 'package:piwo/services/role.dart';
 import 'package:piwo/views/settings/account_approval.dart';
 
 class AccountManagerPage extends StatefulWidget {
+  final Account account;
+
   const AccountManagerPage({
     super.key,
+    required this.account,
   });
 
   @override
@@ -17,7 +21,8 @@ class AccountManagerPage extends StatefulWidget {
 
 class AccountManagerPageState extends State<AccountManagerPage> {
   List<Account> accounts = [];
-  Account? selectedAccount;
+  Account? _selectedAccount;
+  Role? _selectedRole;
 
   @override
   void initState() {
@@ -30,8 +35,6 @@ class AccountManagerPageState extends State<AccountManagerPage> {
 
     setState(() {});
   }
-
-  Role? _role;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +128,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                         color: Colors.black,
                       ),
                       hint: const Text("Selecteer een account"),
-                      value: selectedAccount,
+                      value: _selectedAccount,
                       items: [
                         const DropdownMenuItem<Account>(
                           value: null,
@@ -137,7 +140,9 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                             ),
                           ),
                         ),
-                        ...accounts.map((Account account) {
+                        ...accounts
+                            .where((account) => account.id != widget.account.id)
+                            .map((Account account) {
                           return DropdownMenuItem<Account>(
                             value: account,
                             child: Text(
@@ -152,19 +157,16 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                       ],
                       onChanged: (Account? newValue) {
                         setState(() {
-                          selectedAccount = newValue;
-
-                          if (newValue == null) {
-                            _role = null;
-                          } else {
-                            _role = newValue.role;
-                          }
+                          _selectedAccount = newValue;
                         });
                       },
                     ),
+                    Text(_selectedAccount != null
+                        ? "${_selectedAccount!.firstName} heeft de volgende rolen: ${_selectedAccount!.roles!.map((role) => role.name)}"
+                        : ""),
                     DropdownButton<Role>(
                       hint: const Text("Selecteer een rol"),
-                      value: _role,
+                      value: _selectedRole,
                       items: Role.values.map((Role role) {
                         return DropdownMenuItem<Role>(
                           value: role,
@@ -173,7 +175,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                       }).toList(),
                       onChanged: (Role? role) {
                         setState(() {
-                          _role = role;
+                          _selectedRole = role;
                         });
                       },
                     ),
@@ -182,27 +184,42 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                       minWidth: double.maxFinite,
                       color: CustomColors.themePrimary,
                       onPressed: () async {
-                        if (_role != null) {
-                          final role = _role;
+                        if (_selectedRole != null) {
+                          final role = _selectedRole;
 
-                          if (selectedAccount != null) {
-                            if (await AccountService().updateAccountRole(
-                              accountId: selectedAccount!.id ?? "",
-                              newRole: role ?? Role.user,
-                            )) {
-                              _showSuccessDialog(
-                                  "De wijzigen zijn aangebracht");
+                          if (_selectedAccount != null) {
+                            if (_selectedAccount!.roles!.contains(role)) {
+                              if (await RoleService().removeRole(
+                                _selectedAccount!.id ?? "",
+                                role ?? Role.user,
+                              )) {
+                                _showSuccessDialog("De rol is verwijderd");
+                              } else {
+                                _showErrorDialog(
+                                    "Het lijkt er op dat er iets mis is gegaan.");
+                              }
                             } else {
-                              _showErrorDialog(
-                                  "Het lijkt er op dat er iets mis is gegaan.");
+                              if (await RoleService().addRole(
+                                _selectedAccount!,
+                                role ?? Role.user,
+                              )) {
+                                _showSuccessDialog("De rol is toegevoegd");
+                              } else {
+                                _showErrorDialog(
+                                    "Het lijkt er op dat er iets mis is gegaan.");
+                              }
                             }
+                          } else {
+                            _showErrorDialog(
+                                "Het lijkt er op dat er iets mis is gegaan. Controleer uw gegevens en probeer het nog een keer.");
                           }
-                        } else {
-                          _showErrorDialog(
-                              "Het lijkt er op dat er iets mis is gegaan. Controleer uw gegevens en probeer het nog een keer.");
                         }
                       },
-                      child: const Text("Update account rechten"),
+                      child: Text(_selectedAccount != null
+                          ? _selectedAccount!.roles!.contains(_selectedRole)
+                              ? "Verwijder rol"
+                              : "Voeg rol toe"
+                          : "Voeg rol toe"),
                     ),
                   ],
                 ),

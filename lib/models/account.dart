@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:piwo/models/enums/role.dart';
 
 class Account {
@@ -6,9 +5,8 @@ class Account {
   String? firstName;
   String? lastName;
   String? email;
-  Role? role;
+  List<Role>? roles;
   int? amountOfCoins;
-
   bool? isApproved;
   bool? isConfirmed;
 
@@ -17,7 +15,7 @@ class Account {
     this.firstName,
     this.lastName,
     this.email,
-    this.role,
+    this.roles,
     this.amountOfCoins,
     this.isApproved,
     this.isConfirmed,
@@ -28,17 +26,18 @@ class Account {
     firstName = json['firstName'];
     lastName = json['lastName'];
     email = json['email'];
-    if (json['role'] != null) {
-      try {
-        if (json['role'].toString().toLowerCase() == "admin") {
-          role = Role.admin;
-        } else {
-          role = Role.user;
-        }
-      } catch (e) {
-        debugPrint('Unknown role: ${json['role']}');
+
+    roles = (json['roles'] as List<dynamic>?)?.map((roleString) {
+      if (roleString != null && roleString is String) {
+        return Role.values.firstWhere(
+          (role) => role.name == roleString,
+          orElse: () => throw Exception("Invalid role: $roleString"),
+        );
+      } else {
+        throw Exception("Null or invalid role found in roles list");
       }
-    }
+    }).toList();
+
     amountOfCoins = json['amountOfCoins'];
     isApproved = json['isApproved'];
     isConfirmed = json['isConfirmed'];
@@ -50,7 +49,7 @@ class Account {
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
-      'role': role.toString(),
+      'roles': roles?.map((role) => role.name).toList(),
       'amountOfCoins': amountOfCoins,
       'isApproved': isApproved,
       'isConfirmed': isConfirmed,

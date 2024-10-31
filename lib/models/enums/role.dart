@@ -1,6 +1,7 @@
 enum Role {
   user,
-  peningmeester,
+  penningmeester,
+  beheerder,
   admin;
 
   @override

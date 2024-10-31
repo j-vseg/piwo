@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:piwo/models/account.dart';
-import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/auth.dart';
 
 class AccountService {
@@ -10,23 +9,14 @@ class AccountService {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
   Future<Account?> createAccountInDatabase(
-      User firebaseUser, Role role, String firstName, String lastName) async {
+      User firebaseUser, Account account) async {
     try {
-      Map<String, dynamic> accountData = {
-        'firstName': firstName,
-        'lastName': lastName,
-        'amountOfCoins': 0,
-        'role': role == Role.admin ? 'admin' : 'user',
-        'isApproved': false,
-        'isConfirmed': false,
-      };
-
       await _database
           .child('accounts')
           .child(firebaseUser.uid)
-          .set(accountData);
+          .set(account.toJson());
 
-      return Account.fromJson(accountData);
+      return account;
     } catch (e) {
       debugPrint("Error saving account in Firebase Realtime Database: $e");
       return null;
@@ -188,23 +178,16 @@ class AccountService {
       DataSnapshot snapshot = await accountsRef.get();
 
       if (snapshot.exists) {
-        List<Account> accounts = [];
         Map<String, dynamic> accountsData =
             Map<String, dynamic>.from(snapshot.value as Map);
 
-        accountsData.forEach((key, value) {
-          Role role = value['role'] == 'admin' ? Role.admin : Role.user;
-          accounts.add(Account(
-            id: key,
-            firstName: value['firstName'],
-            lastName: value['lastName'],
-            email: value['email'],
-            role: role,
-            amountOfCoins: value['amountOfCoins'],
-            isApproved: value['isApproved'],
-            isConfirmed: value['isConfirmed'],
-          ));
-        });
+        List<Account> accounts = accountsData.entries.map((entry) {
+          Map<String, dynamic> accountData =
+              Map<String, dynamic>.from(entry.value as Map);
+          accountData['id'] = entry.key;
+          return Account.fromJson(accountData);
+        }).toList();
+
         return accounts;
       } else {
         debugPrint("No accounts found.");
@@ -228,24 +211,6 @@ class AccountService {
       return false;
     } catch (e) {
       debugPrint("Error deleting account from Firebase: $e");
-      return false;
-    }
-  }
-
-  Future<bool> updateAccountRole({
-    required String accountId,
-    required Role newRole,
-  }) async {
-    try {
-      Map<String, dynamic> updateData = {
-        'role': newRole == Role.admin ? 'admin' : 'user',
-      };
-      await _database.child('accounts/$accountId').update(updateData);
-
-      debugPrint('Account role updated successfully.');
-      return true;
-    } catch (e) {
-      debugPrint('Error updating account role: $e');
       return false;
     }
   }

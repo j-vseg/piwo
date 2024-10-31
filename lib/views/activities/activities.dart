@@ -4,6 +4,7 @@ import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/month.dart';
+import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/models/enums/weekday.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
@@ -66,20 +67,23 @@ class ActivitiesPageState extends State<ActivitiesPage> {
         final groupedActivities = _groupActivitiesByDay(activities);
 
         return CustomScaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditActivityPage(
-                    activity: null,
-                  ),
-                ),
-              );
-            },
-            backgroundColor: CustomColors.themePrimary,
-            child: const Icon(Icons.add),
-          ),
+          floatingActionButton: _account.roles!.contains(Role.admin) ||
+                  _account.roles!.contains(Role.beheerder)
+              ? FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EditActivityPage(
+                          activity: null,
+                        ),
+                      ),
+                    );
+                  },
+                  backgroundColor: CustomColors.themePrimary,
+                  child: const Icon(Icons.add),
+                )
+              : null,
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

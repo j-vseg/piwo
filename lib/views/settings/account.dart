@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
@@ -362,14 +363,20 @@ class AccountPageState extends State<AccountPage> {
                           newPassword = widget.passwordController!.text.trim();
                           firstName = widget.firstNameController!.text.trim();
                           lastName = widget.lastNameController!.text.trim();
-                          const role = Role.user;
+
+                          final account = Account(
+                            firstName: firstName,
+                            lastName: lastName,
+                            amountOfCoins: 0,
+                            isApproved: false,
+                            isConfirmed: false,
+                            roles: [Role.user],
+                          );
 
                           if (await AuthService().signUp(
+                                account,
                                 email,
                                 oldPassword,
-                                role,
-                                firstName,
-                                lastName,
                               ) !=
                               null) {
                             if (!context.mounted) return;

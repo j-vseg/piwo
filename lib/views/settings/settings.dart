@@ -81,22 +81,29 @@ class SettingsPageState extends State<SettingsPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.groups),
-            trailing: const Icon(Icons.chevron_right),
-            title: const Text("Beheer accounts"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AccountManagerPage(),
-                ),
-              );
-            },
-            contentPadding: const EdgeInsets.all(0.0),
-          ),
-          if (_account.role == Role.peningmeester ||
-              _account.role == Role.admin) ...[
+          if (_account.roles != null &&
+              (_account.roles!.contains(Role.beheerder) ||
+                  _account.roles!.contains(Role.admin))) ...[
+            ListTile(
+              leading: const Icon(Icons.groups),
+              trailing: const Icon(Icons.chevron_right),
+              title: const Text("Beheer accounts"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AccountManagerPage(
+                      account: _account,
+                    ),
+                  ),
+                );
+              },
+              contentPadding: const EdgeInsets.all(0.0),
+            ),
+          ],
+          if (_account.roles != null &&
+              (_account.roles!.contains(Role.penningmeester) ||
+                  _account.roles!.contains(Role.admin))) ...[
             ListTile(
               leading: const Icon(Icons.payment),
               trailing: const Icon(Icons.chevron_right),

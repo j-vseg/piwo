@@ -1,30 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:piwo/models/account.dart';
-import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final AccountService _accountService = AccountService();
 
-  Future<Account?> signUp(String email, String password, Role role,
-      String firstName, String lastName) async {
+  Future<Account?> signUp(
+      Account account, String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User? firebaseUser = result.user;
 
       if (firebaseUser != null) {
-        Account? account = await _accountService.createAccountInDatabase(
+        Account? createdAccount = await _accountService.createAccountInDatabase(
           firebaseUser,
-          role,
-          firstName,
-          lastName,
+          account,
         );
 
-        if (account != null) {
-          return account;
+        if (createdAccount != null) {
+          return createdAccount;
         }
       }
       return null;
