@@ -67,6 +67,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
         final groupedActivities = _groupActivitiesByDay(activities);
 
         return CustomScaffold(
+          useAppBar: false,
           floatingActionButton: _account.roles!.contains(Role.admin) ||
                   _account.roles!.contains(Role.beheerder)
               ? FloatingActionButton(

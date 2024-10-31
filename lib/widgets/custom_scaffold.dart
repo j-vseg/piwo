@@ -71,8 +71,11 @@ class _CustomScaffoldState extends State<CustomScaffold> {
         top: widget.topSafeArea,
         bottom: widget.bottomSafeArea,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: SizeSetter.getHorizontalScreenPadding()),
+          padding: EdgeInsets.only(
+            top: widget.useAppBar ? 0.0 : 55.0,
+            left: SizeSetter.getHorizontalScreenPadding(),
+            right: SizeSetter.getHorizontalScreenPadding(),
+          ),
           child: widget.body,
         ),
       ),

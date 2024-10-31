@@ -58,6 +58,7 @@ class HomePageState extends State<HomePage> {
             activities.isNotEmpty ? activities.take(3).toList() : [];
 
         return CustomScaffold(
+          useAppBar: false,
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

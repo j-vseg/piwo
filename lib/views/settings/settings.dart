@@ -36,6 +36,7 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      useAppBar: false,
       body: Column(
         children: [
           const Text(
