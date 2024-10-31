@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:piwo/managers/occurrence.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/availability.dart';
-import 'package:piwo/models/enums/recurrance.dart';
 import 'package:piwo/services/activity.dart';
-import 'package:piwo/services/availability.dart';
 
 class ActivityProvider with ChangeNotifier {
   List<Activity> _activities = [];
@@ -13,77 +12,10 @@ class ActivityProvider with ChangeNotifier {
   Future<void> fetchActivities() async {
     _activities = await ActivityService().getAllActivities();
 
-    List<Activity> occurrencesToAdd = [];
-
-    for (var activity in _activities) {
-      if (activity.recurrence == Recurrence.wekelijks) {
-        List<Activity> occurrences = await _generateWeeklyOccurrences(
-          activity,
-          activity.startDate!,
-          activity.endDate!,
-          26,
-        );
-
-        occurrencesToAdd.addAll(occurrences);
-      }
-    }
-    _activities.addAll(occurrencesToAdd);
+    _activities
+        .addAll(await OccurrenceManager().generateOccurrences(activities));
 
     notifyListeners();
-  }
-
-  Future<List<Activity>> _generateWeeklyOccurrences(Activity activity,
-      DateTime startDate, DateTime endDate, int weeks) async {
-    List<Activity> occurrences = [];
-    DateTime now = DateTime.now();
-
-    int startDayOfWeek = startDate.weekday;
-
-    DateTime firstUpcomingDay =
-        now.add(Duration(days: (startDayOfWeek - now.weekday + 7) % 7));
-    firstUpcomingDay = DateTime(firstUpcomingDay.year, firstUpcomingDay.month,
-        firstUpcomingDay.day, startDate.hour + 1, startDate.minute);
-
-    DateTime recurrenceStart =
-        startDate.isAfter(now) ? startDate : firstUpcomingDay;
-
-    Duration duration = endDate.difference(startDate);
-
-    for (int i = 0; i < weeks; i++) {
-      DateTime occurrenceDate = recurrenceStart.add(Duration(days: i * 7));
-
-      if (activity.exceptions != null &&
-          !activity.exceptions!.contains(DateTime(
-            occurrenceDate.year,
-            occurrenceDate.month,
-            occurrenceDate.day,
-          ))) {
-        Map<DateTime, List<Availability>> availabilities = {};
-        List<Availability> availabilityList = await AvailabilityService()
-            .getAvailabilitiesByDate(activity.id!, occurrenceDate);
-
-        if (availabilityList.isNotEmpty) {
-          availabilities[DateTime(
-            occurrenceDate.year,
-            occurrenceDate.month,
-            occurrenceDate.day,
-          )] = availabilityList;
-        }
-
-        occurrences.add(Activity(
-          id: activity.id,
-          name: activity.name,
-          startDate: occurrenceDate,
-          endDate: occurrenceDate.add(duration),
-          color: activity.color,
-          category: activity.category,
-          recurrence: activity.recurrence,
-          availabilities: availabilities,
-        ));
-      }
-    }
-
-    return occurrences;
   }
 
   Future<Activity?> fetchActivity(String activityId) async {

@@ -95,14 +95,15 @@ class Activity {
       recurrence: recurrence,
       category: category,
       startDate: json['startDate'] != null
-          ? DateTime.tryParse(json['startDate'])
+          ? DateTime.tryParse(json['startDate'])!.toUtc()
           : null,
-      endDate:
-          json['endDate'] != null ? DateTime.tryParse(json['endDate']) : null,
+      endDate: json['endDate'] != null
+          ? DateTime.tryParse(json['endDate'])!.toUtc()
+          : null,
       availabilities: availabilities,
       exceptions: (json['exceptions'] as List<dynamic>?)?.map((e) {
             if (e != null) {
-              return DateTime.parse(e as String);
+              return DateTime.parse(e as String).toUtc();
             } else {
               throw Exception("Null exception value found");
             }
@@ -127,27 +128,24 @@ class Activity {
     };
   }
 
-  String get getFullName {
-    return "$name | ${startDate!.year}-${startDate!.month}-${startDate!.day} ${startDate!.hour}:${startDate!.minute <= 9 ? "0${startDate!.minute}" : startDate!.minute}";
-  }
-
   DateTime get getStartDate {
     return DateTime(startDate!.year, startDate!.month, startDate!.day);
   }
 
-  DateTime get getEndDate {
-    return DateTime(endDate!.year, endDate!.month, endDate!.day);
+  DateTime get getEndDateTimes {
+    return DateTime(endDate!.year, endDate!.month, endDate!.day, endDate!.hour,
+        endDate!.minute);
   }
 
   String get getFullDate {
     return startDate != null && endDate != null
-        ? "${startDate!.day}-${startDate!.month}-${startDate!.year} ${startDate!.hour <= 9 ? "0${startDate!.hour}" : startDate!.hour}:${startDate!.minute <= 9 ? "0${startDate!.minute}" : startDate!.minute} - ${endDate!.hour <= 9 ? "0${endDate!.hour}" : endDate!.hour}:${endDate!.minute <= 9 ? "0${endDate!.minute}" : endDate!.minute}"
+        ? "${startDate!.toLocal().day}-${startDate!.toLocal().month}-${startDate!.toLocal().year} ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
         : "Geen datum beschikbaar";
   }
 
   String get getTimes {
     return startDate != null && endDate != null
-        ? "${startDate!.hour <= 9 ? "0${startDate!.hour}" : startDate!.hour}:${startDate!.minute <= 9 ? "0${startDate!.minute}" : startDate!.minute} - ${endDate!.hour <= 9 ? "0${endDate!.hour}" : endDate!.hour}:${endDate!.minute <= 9 ? "0${endDate!.minute}" : endDate!.minute}"
+        ? "${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
         : "Geen tijd beschikbaar";
   }
 

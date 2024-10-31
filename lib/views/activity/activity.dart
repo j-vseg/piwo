@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/enums/recurrance.dart';
 import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/availability.dart';
@@ -182,18 +183,19 @@ class ActivityPageState extends State<ActivityPage> {
               ],
               Row(
                 children: [
-                  if (yourAvailability != null &&
-                      yourAvailability.status != null) ...[
-                    if (yourAvailability.status == Status.aanwezig) ...[
-                      const Icon(Icons.check_circle, color: Colors.green),
-                    ] else if (yourAvailability.status == Status.misschien) ...[
-                      const Icon(Icons.help, color: Colors.orange),
-                    ] else ...[
-                      const Icon(Icons.cancel, color: Colors.red),
-                    ]
-                  ] else ...[
-                    const Icon(Icons.help, color: Colors.grey),
-                  ],
+                  Icon(
+                    yourAvailability != null
+                        ? yourAvailability.status == Status.aanwezig
+                            ? Icons.check_circle
+                            : yourAvailability.status == Status.misschien
+                                ? Icons.help
+                                : Icons.cancel
+                        : Icons.help,
+                    color: yourAvailability != null
+                        ? CustomColors.getAvailabilityColor(
+                            yourAvailability.status)
+                        : Colors.grey,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     yourAvailability != null && yourAvailability.status != null

@@ -191,7 +191,7 @@ class ActivityService {
         }
       }
 
-      exceptions.add(date.toIso8601String());
+      exceptions.add(date.toUtc().toIso8601String());
       await activityRef.set(exceptions);
 
       debugPrint('Date added to exceptions successfully.');

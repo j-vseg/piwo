@@ -116,7 +116,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                       if (groupedActivities.containsKey(normalizedDate)) {
                         final activitiesList =
                             groupedActivities[normalizedDate];
-                        return buildMarkers(
+                        return _buildMarkers(
                             activitiesList ?? [], _account.id ?? "", day);
                       }
                       return null;
@@ -137,7 +137,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                buildActivitiesForDay(
+                _buildActivitiesForDay(
                     groupedActivities, _selectedDate, context, _account),
               ],
             ),
@@ -164,7 +164,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
     return activitiesByDate;
   }
 
-  Widget buildActivitiesForDay(
+  Widget _buildActivitiesForDay(
     Map<DateTime, List<Activity>> activitiesByDay,
     DateTime selectedDate,
     BuildContext context,
@@ -199,7 +199,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
     );
   }
 
-  Widget buildMarkers(
+  Widget _buildMarkers(
       List<Activity> activities, String accountId, DateTime day) {
     List<Widget> markers = [];
     double markerSize = 7;
@@ -215,43 +215,52 @@ class ActivitiesPageState extends State<ActivitiesPage> {
 
     double startPosition = (50 - totalWidth) / 2;
 
-    List<Activity> otherActivities = [];
-
     for (var activity in activities) {
-      otherActivities.add(activity);
-    }
-
-    if (DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-        .isBefore(day)) {
-      for (var i = 0; i < otherActivities.length; i++) {
-        if (markers.length >= 4) break;
-
+      if (DateTime.now().isBefore(activity.getEndDateTimes)) {
+        if (activity.getYourAvailability(activity.getStartDate, accountId) !=
+            null) {
+          markers.add(Positioned(
+            bottom: 1,
+            left: startPosition,
+            child: Container(
+              width: markerSize,
+              height: markerSize,
+              decoration: BoxDecoration(
+                color: CustomColors.getAvailabilityColor(activity
+                    .getYourAvailability(activity.getStartDate, accountId)!
+                    .status),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ));
+        } else {
+          markers.add(Positioned(
+            bottom: 1,
+            left: startPosition + markers.length * (markerSize + markerSpacing),
+            child: Container(
+              width: markerSize,
+              height: markerSize,
+              decoration: const BoxDecoration(
+                color: CustomColors.themePrimary,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ));
+        }
+      } else {
         markers.add(Positioned(
           bottom: 1,
-          left: startPosition + markers.length * (markerSize + markerSpacing),
+          left: startPosition,
           child: Container(
             width: markerSize,
             height: markerSize,
-            decoration: BoxDecoration(
-              color: otherActivities[i].color,
+            decoration: const BoxDecoration(
+              color: Colors.grey,
               shape: BoxShape.circle,
             ),
           ),
         ));
       }
-    } else {
-      markers.add(Positioned(
-        bottom: 1,
-        left: startPosition,
-        child: Container(
-          width: markerSize,
-          height: markerSize,
-          decoration: const BoxDecoration(
-            color: Colors.grey,
-            shape: BoxShape.circle,
-          ),
-        ),
-      ));
     }
 
     return Stack(

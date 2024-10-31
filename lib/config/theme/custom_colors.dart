@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/models/enums/category.dart';
+import 'package:piwo/models/enums/status.dart';
 
 class CustomColors {
   // Main Colors
@@ -60,6 +61,22 @@ class CustomColors {
       return CustomColors.activityAction;
     } else {
       return CustomColors.activityKamp;
+    }
+  }
+
+  static Color getAvailabilityColor(Status? status) {
+    if (status != null) {
+      if (status == Status.aanwezig) {
+        return Colors.green;
+      } else if (status == Status.misschien) {
+        return Colors.orange;
+      } else if (status == Status.afwezig) {
+        return Colors.red;
+      } else {
+        return CustomColors.themePrimary;
+      }
+    } else {
+      return CustomColors.themePrimary;
     }
   }
 }
