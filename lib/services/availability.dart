@@ -19,26 +19,23 @@ class AvailabilityService {
 
       List<Availability> availabilityList = availabilities[date] ?? [];
 
+      bool found = false;
+
       if (snapshot.exists) {
-        bool availabilityUpdated = false;
         for (int i = 0; i < availabilityList.length; i++) {
           if (availabilityList[i].account!.id == availability.account!.id) {
-            if (availability.status != null) {
+            found = true;
+            if (availability.status != null &&
+                availabilityList[i].status != availability.status) {
               availabilityList[i] = availability;
-            } else {
+            } else if (availability.status == null) {
               availabilityList.removeAt(i);
             }
-            availabilityUpdated = true;
             break;
-          } else {
-            if (availability.status != null) {
-              await createAvailability(
-                  activityId, availabilities, date, availability);
-            }
           }
         }
 
-        if (!availabilityUpdated && availability.status != null) {
+        if (!found && availability.status != null) {
           availabilityList.add(availability);
         }
 
