@@ -126,11 +126,42 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
                               isSelected[buttonIndex] = buttonIndex == newIndex;
                             }
 
-                            await VerificationService().updateAccountApproval(
-                                isSelected[0], account.id!);
-                            setState(() {
-                              _initializeAccounts();
-                            });
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Weet je het zeker?'),
+                                  content: Text(
+                                    "Weet je zeker dat je dit account wil ${isSelected[0] ? "toestaan" : "afkeuren"}?",
+                                    style: const TextStyle(
+                                      color: CustomColors.unselectedMenuColor,
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await VerificationService()
+                                            .updateAccountApproval(
+                                                isSelected[0], account.id!);
+                                        setState(() {
+                                          _initializeAccounts();
+                                        });
+
+                                        if (!context.mounted) return;
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Ja'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                         ),
                         title: Text(account.getFullName),

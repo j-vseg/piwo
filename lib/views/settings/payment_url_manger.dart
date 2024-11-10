@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/services/payment_url.dart';
+import 'package:piwo/widgets/dialogs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PaymentUrlManagerPage extends StatefulWidget {
@@ -139,7 +140,23 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           final paymentUrl = _paymentUrlController.text.trim();
-                          PaymentUrlService().updatePaymentUrl(paymentUrl);
+                          final result = await PaymentUrlService()
+                              .updatePaymentUrl(paymentUrl);
+
+                          if (result.isSuccess) {
+                            if (!context.mounted) return;
+                            SuccessDialog.showSuccessDialog(
+                              context,
+                              "De betaalverzoek URL is gewijzigd.",
+                            );
+                          } else {
+                            if (!context.mounted) return;
+                            ErrorDialog.showErrorDialog(
+                              context,
+                              result.error ??
+                                  "Het is onduidelijk wat er mis is gegaan.",
+                            );
+                          }
                           setState(() {
                             _paymentUrl = paymentUrl;
                           });

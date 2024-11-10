@@ -21,7 +21,7 @@ class AccountManagerPage extends StatefulWidget {
 }
 
 class AccountManagerPageState extends State<AccountManagerPage> {
-  List<Account> accounts = [];
+  List<Account> _accounts = [];
   Account? _selectedAccount;
   Role? _selectedRole;
 
@@ -32,7 +32,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
   }
 
   void _initializeFutures() async {
-    accounts = (await AccountService().getAllAccounts()).data!;
+    _accounts = (await AccountService().getAllAccounts()).data!;
 
     setState(() {});
   }
@@ -74,7 +74,34 @@ class AccountManagerPageState extends State<AccountManagerPage> {
           const SizedBox(height: 20),
           ListTile(
             leading: const Icon(Icons.mark_email_read),
-            trailing: const Icon(Icons.chevron_right),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_accounts
+                    .where((account) => account.isConfirmed == false)
+                    .isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: CustomColors.selectedMenuColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      _accounts
+                          .where((account) => account.isConfirmed == false)
+                          .length
+                          .toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                const SizedBox(width: 8),
+                const Icon(Icons.chevron_right),
+              ],
+            ),
             title: const Text("Bekijk nieuwe accounts"),
             onTap: () {
               Navigator.push(
@@ -141,7 +168,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                             ),
                           ),
                         ),
-                        ...accounts
+                        ..._accounts
                             .where((account) => account.id != widget.account.id)
                             .map((Account account) {
                           return DropdownMenuItem<Account>(

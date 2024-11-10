@@ -74,17 +74,17 @@ class SettingsPageState extends State<SettingsPage> {
             },
             contentPadding: const EdgeInsets.all(0.0),
           ),
-          const SizedBox(height: 20),
-          const Text(
-            "Beheren",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
           if (_account.roles != null &&
               (_account.roles!.contains(Role.beheerder) ||
                   _account.roles!.contains(Role.admin))) ...[
+            const SizedBox(height: 20),
+            const Text(
+              "Beheren",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             ListTile(
               leading: const Icon(Icons.groups),
               trailing: const Icon(Icons.chevron_right),
@@ -105,6 +105,14 @@ class SettingsPageState extends State<SettingsPage> {
           if (_account.roles != null &&
               (_account.roles!.contains(Role.penningmeester) ||
                   _account.roles!.contains(Role.admin))) ...[
+            const SizedBox(height: 20),
+            const Text(
+              "Penningmeester",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             ListTile(
               leading: const Icon(Icons.payment),
               trailing: const Icon(Icons.chevron_right),
