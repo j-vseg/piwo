@@ -32,7 +32,7 @@ class LoginStateNotifier extends ValueNotifier<LoginState> {
   Future<void> checkLoginStatus() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      var account = await AccountService().getMyAccount();
+      var account = (await AccountService().getMyAccount()).data!;
       bool isApproved = account.isApproved ?? false;
       bool isComfired = account.isConfirmed ?? false;
 

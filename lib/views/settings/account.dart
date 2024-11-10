@@ -4,6 +4,7 @@ import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
+import 'package:piwo/widgets/dialogs.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:piwo/widgets/restart.dart';
 import 'package:provider/provider.dart';
@@ -257,12 +258,13 @@ class AccountPageState extends State<AccountPage> {
                           if (widget.emailController != null) {
                             email = widget.emailController!.text.trim();
 
-                            if (await AccountService()
-                                .updateEmail(email, oldPassword)) {
+                            final result = await AccountService()
+                                .updateEmail(email, oldPassword);
+
+                            if (result.isSuccess) {
                               if (!context.mounted) return;
-                              _showDialog(
+                              SuccessDialog.showSuccessDialogWithOnPressed(
                                 context,
-                                "Email verstuurd",
                                 "Er is een email verstuurd om je nieuwe email: $email te verifieeren. Je moet weer opnieuw inloggen om het nieuwe email address te bevestigen.",
                                 () async {
                                   await AuthService().signOut();
@@ -275,13 +277,10 @@ class AccountPageState extends State<AccountPage> {
                               );
                             } else {
                               if (!context.mounted) return;
-                              _showDialog(
+                              ErrorDialog.showErrorDialog(
                                 context,
-                                "Er is iets mis gegaan",
-                                'Controleer je gegevens en probeer het nog eens.',
-                                () {
-                                  Navigator.of(context).pop();
-                                },
+                                result.error ??
+                                    "Het is onduidelijk wat er mis is gegaan.",
                               );
                             }
                           }
@@ -289,26 +288,21 @@ class AccountPageState extends State<AccountPage> {
                             newPassword =
                                 widget.passwordController!.text.trim();
 
-                            if (await AccountService()
-                                .updatePassword(newPassword, oldPassword)) {
+                            final result = await AccountService()
+                                .updatePassword(newPassword, oldPassword);
+
+                            if (result.isSuccess) {
                               if (!context.mounted) return;
-                              _showDialog(
+                              SuccessDialog.showSuccessDialog(
                                 context,
-                                "Wachtwoord is gewijzigd",
                                 "We hebben successful je wachtwoord gewijzigd.",
-                                () {
-                                  Navigator.of(context).pop();
-                                },
                               );
                             } else {
                               if (!context.mounted) return;
-                              _showDialog(
+                              ErrorDialog.showErrorDialog(
                                 context,
-                                "Er is iets mis gegaan",
-                                'Controleer je gegevens en probeer het nog eens.',
-                                () {
-                                  Navigator.of(context).pop();
-                                },
+                                result.error ??
+                                    "Het is onduidelijk wat er mis is gegaan.",
                               );
                             }
                           }
@@ -317,29 +311,24 @@ class AccountPageState extends State<AccountPage> {
                             firstName = widget.firstNameController!.text.trim();
                             lastName = widget.lastNameController!.text.trim();
 
-                            if (await AccountService().updateAccountCredentials(
+                            final result =
+                                await AccountService().updateAccountCredentials(
                               firstName,
                               lastName,
                               oldPassword,
-                            )) {
+                            );
+                            if (result.isSuccess) {
                               if (!context.mounted) return;
-                              _showDialog(
+                              SuccessDialog.showSuccessDialog(
                                 context,
-                                "Account credentials zijn gewijzigd",
-                                "We hebben successful je account credentials zijn gewijzigd.",
-                                () {
-                                  Navigator.of(context).pop();
-                                },
+                                "Het updaten van je account informatie is gelukt!",
                               );
                             } else {
                               if (!context.mounted) return;
-                              _showDialog(
+                              ErrorDialog.showErrorDialog(
                                 context,
-                                "Er is iets mis gegaan",
-                                'Controleer je gegevens en probeer het nog eens.',
-                                () {
-                                  Navigator.of(context).pop();
-                                },
+                                result.error ??
+                                    "Het is onduidelijk wat er mis is gegaan.",
                               );
                             }
                           }
@@ -347,17 +336,23 @@ class AccountPageState extends State<AccountPage> {
                             widget.isResetingPassword!) {
                           email = widget.emailController!.text.trim();
 
-                          await AccountService().resetPassword(email);
+                          final result =
+                              await AccountService().resetPassword(email);
 
-                          if (!context.mounted) return;
-                          _showDialog(
-                            context,
-                            "Email verstuurd",
-                            "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",
-                            () {
-                              Navigator.of(context).pop();
-                            },
-                          );
+                          if (result.isSuccess) {
+                            if (!context.mounted) return;
+                            SuccessDialog.showSuccessDialog(
+                              context,
+                              "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",
+                            );
+                          } else {
+                            if (!context.mounted) return;
+                            ErrorDialog.showErrorDialog(
+                              context,
+                              result.error ??
+                                  "Het is onduidelijk wat er mis is gegaan.",
+                            );
+                          }
                         } else {
                           email = widget.emailController!.text.trim();
                           newPassword = widget.passwordController!.text.trim();
@@ -373,30 +368,24 @@ class AccountPageState extends State<AccountPage> {
                             roles: [Role.user],
                           );
 
-                          if (await AuthService().signUp(
-                                account,
-                                email,
-                                oldPassword,
-                              ) !=
-                              null) {
+                          final result = await AuthService().signUp(
+                            account,
+                            email,
+                            oldPassword,
+                          );
+
+                          if (result.isSuccess) {
                             if (!context.mounted) return;
-                            _showDialog(
+                            SuccessDialog.showSuccessDialog(
                               context,
-                              "Account gecreerd",
-                              "We hebben successful je account aangemaakt.",
-                              () {
-                                Navigator.of(context).pop();
-                              },
+                              "Het aanmaken van een account is gelukt! Je kan nu inloggen.",
                             );
                           } else {
                             if (!context.mounted) return;
-                            _showDialog(
+                            ErrorDialog.showErrorDialog(
                               context,
-                              "Er is iets mis gegaan",
-                              'Controleer je gegevens en probeer het nog eens.',
-                              () {
-                                Navigator.of(context).pop();
-                              },
+                              result.error ??
+                                  "Het is onduidelijk wat er mis is gegaan.",
                             );
                           }
                         }
@@ -418,7 +407,7 @@ class AccountPageState extends State<AccountPage> {
     );
   }
 
-  void _showDialog(
+  void showErrorDialog(
     BuildContext context,
     String title,
     String description,

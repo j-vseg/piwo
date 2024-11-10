@@ -32,7 +32,7 @@ class HomePageState extends State<HomePage> {
 
   void _fetchProfileInfo() async {
     try {
-      final profile = await AccountService().getMyAccount();
+      final profile = (await AccountService().getMyAccount()).data!;
       setState(() {
         _profile = profile;
         _isLoadingProfile = false;
@@ -123,8 +123,9 @@ class HomePageState extends State<HomePage> {
                                           GestureDetector(
                                             onTap: () async {
                                               final paymentUrl = Uri.parse(
-                                                  await PaymentUrlService()
-                                                          .getPaymentUrl() ??
+                                                  (await PaymentUrlService()
+                                                              .getPaymentUrl())
+                                                          .data ??
                                                       "");
                                               if (await canLaunchUrl(
                                                   paymentUrl)) {

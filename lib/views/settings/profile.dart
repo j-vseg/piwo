@@ -27,7 +27,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   void _initializeAccount() async {
     try {
-      _account = await AccountService().getMyAccount();
+      _account = (await AccountService().getMyAccount()).data!;
     } catch (e) {
       debugPrint("Error fetching data: $e");
     } finally {

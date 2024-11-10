@@ -123,8 +123,9 @@ class Activity {
       'startDate': startDate?.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
       'availabilities': availabilities?.map((date, availList) => MapEntry(
-          date.toIso8601String(), availList.map((e) => e.toJson()).toList())),
-      'exceptions': exceptions,
+          Availability.formatDateTime(date),
+          availList.map((e) => e.toJson()).toList())),
+      'exceptions': exceptions?.map((date) => date.toIso8601String()).toList(),
     };
   }
 

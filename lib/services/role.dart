@@ -2,12 +2,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
+import 'package:piwo/models/error_handling/result.dart';
 
 class RoleService {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
-  // Adds a role to the account's role list
-  Future<bool> addRole(
+  Future<Result<bool>> addRole(
     Account account,
     Role newRole,
   ) async {
@@ -21,13 +21,7 @@ class RoleService {
         roles = List<String>.from(snapshot.value as List<dynamic>);
       }
 
-      String newRoleString = newRole == Role.admin
-          ? 'admin'
-          : newRole == Role.beheerder
-              ? 'beheerder'
-              : newRole == Role.penningmeester
-                  ? 'penningmeester'
-                  : 'user';
+      String newRoleString = newRole.name;
       if (!roles.contains(newRoleString)) {
         roles.add(newRoleString);
       }
@@ -35,14 +29,14 @@ class RoleService {
       await rolesRef.set(roles);
 
       debugPrint('Account role added successfully.');
-      return true;
+      return Result.success(true);
     } catch (e) {
       debugPrint('Error adding account role: $e');
-      return false;
+      return Result.failure(e.toString());
     }
   }
 
-  Future<bool> removeRole(
+  Future<Result<bool>> removeRole(
     String accountId,
     Role role,
   ) async {
@@ -55,22 +49,16 @@ class RoleService {
         roles = List<String>.from(snapshot.value as List<dynamic>);
       }
 
-      String roleString = role == Role.admin
-          ? 'admin'
-          : role == Role.beheerder
-              ? 'beheerder'
-              : role == Role.penningmeester
-                  ? 'penningmeester'
-                  : 'user';
+      String roleString = role.name;
       roles.remove(roleString);
 
       await rolesRef.set(roles);
 
       debugPrint('Account role removed successfully.');
-      return true;
+      return Result.success(true);
     } catch (e) {
       debugPrint('Error removing account role: $e');
-      return false;
+      return Result.failure(e.toString());
     }
   }
 }

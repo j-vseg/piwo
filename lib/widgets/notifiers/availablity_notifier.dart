@@ -10,7 +10,7 @@ class ActivityProvider with ChangeNotifier {
   List<Activity> get activities => _activities;
 
   Future<void> fetchActivities() async {
-    _activities = await ActivityService().getAllActivities();
+    _activities = (await ActivityService().getAllActivities()).data!;
 
     _activities
         .addAll(await OccurrenceManager().generateOccurrences(activities));
@@ -24,7 +24,7 @@ class ActivityProvider with ChangeNotifier {
 
     if (activityIndex != -1) {
       _activities[activityIndex] =
-          await ActivityService().getActivityById(activityId);
+          (await ActivityService().getActivityById(activityId)).data!;
       notifyListeners();
       return _activities[activityIndex];
     }
@@ -40,7 +40,6 @@ class ActivityProvider with ChangeNotifier {
 
       activity.availabilities ??= {};
 
-      // Update availabilities for the given date
       activity.availabilities![date] = newAvailabilities;
       _activities[activityIndex] = activity;
       notifyListeners();
@@ -51,14 +50,24 @@ class ActivityProvider with ChangeNotifier {
     final activityIndex =
         _activities.indexWhere((activity) => activity.id == activityId);
     if (activityIndex >= 0) {
-      newActivity.id = activityId; // Ensure the ID is set correctly
+      newActivity.id = activityId;
       _activities[activityIndex] = newActivity;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteActivity(String activityId) async {
+    final activityIndex =
+        _activities.indexWhere((activity) => activity.id == activityId);
+    if (activityIndex >= 0) {
+      _activities.removeAt(activityIndex);
       notifyListeners();
     }
   }
 
   Future<void> createActivity(String activityId, Activity newActivity) async {
     if (!_activities.any((activity) => activity.id == activityId)) {
+      newActivity.id = activityId;
       _activities.add(newActivity);
       notifyListeners();
     }

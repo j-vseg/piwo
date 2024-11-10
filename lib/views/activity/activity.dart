@@ -4,6 +4,7 @@ import 'package:piwo/models/enums/recurrance.dart';
 import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/availability.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
+import 'package:piwo/widgets/dialogs.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:piwo/models/account.dart';
@@ -101,10 +102,44 @@ class ActivityPageState extends State<ActivityPage> {
                   }
                 });
               } else if (value == 'delete-only') {
-                await ActivityService().createExceptions(
+                final result = await ActivityService().createExceptions(
                     _activity!.id ?? "", _activity!.getStartDate);
+                if (result.isSuccess) {
+                  if (!context.mounted) return;
+                  SuccessDialog.showSuccessDialog(
+                    context,
+                    "Activiteit is verwijderd.",
+                  );
+                } else {
+                  if (!context.mounted) return;
+                  ErrorDialog.showErrorDialog(
+                    context,
+                    result.error ?? "Het is onduidelijk wat er mis is gegaan.",
+                  );
+                }
               } else if (value == 'delete') {
-                await ActivityService().deleteActivity(_activity!.id ?? "");
+                final result =
+                    await ActivityService().deleteActivity(_activity!.id ?? "");
+                if (result.isSuccess) {
+                  if (!context.mounted) return;
+                  SuccessDialog.showSuccessDialogWithOnPressed(
+                    context,
+                    "Activiteit is verwijderd.",
+                    () async {
+                      await activityProvider
+                          .deleteActivity(widget.activity.id ?? "");
+
+                      if (!context.mounted) return;
+                      Navigator.of(context).pop();
+                    },
+                  );
+                } else {
+                  if (!context.mounted) return;
+                  ErrorDialog.showErrorDialog(
+                    context,
+                    result.error ?? "Het is onduidelijk wat er mis is gegaan.",
+                  );
+                }
               }
             },
           ),

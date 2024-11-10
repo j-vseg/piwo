@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
-import 'package:piwo/models/account.dart';
 import 'package:piwo/services/auth.dart';
 import 'package:piwo/views/settings/account.dart';
+import 'package:piwo/widgets/dialogs.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -142,11 +142,10 @@ class LoginPageState extends State<LoginPage> {
                           final email = _emailController.text.trim();
                           final password = _passwordController.text.trim();
 
-                          Account? account =
+                          final result =
                               await _authService.signIn(email, password);
-                          if (account != null) {
-                            debugPrint('Sign In Successful');
 
+                          if (result.isSuccess) {
                             if (!context.mounted) return;
                             context
                                 .read<LoginStateNotifier>()
@@ -154,24 +153,10 @@ class LoginPageState extends State<LoginPage> {
                             context.read<LoginStateNotifier>().logIn();
                           } else {
                             if (!context.mounted) return;
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Er is iets misgegaan'),
-                                  content: const Text(
-                                      'Het lijkt er op dat er iets mis is gegaan. Controleer uw gegevens en probeer het nog een keer.'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
+                            ErrorDialog.showErrorDialog(
+                              context,
+                              result.error ??
+                                  "Het is onduidelijk wat er mis is gegaan.",
                             );
                           }
                         }

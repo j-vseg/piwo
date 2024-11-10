@@ -13,8 +13,7 @@ class AccountApprovalPage extends StatefulWidget {
 
 class AccountApprovalPageState extends State<AccountApprovalPage> {
   List<Account> _accounts = [];
-  List<List<bool>> _selectionStatus =
-      []; // To store the selection status for each account
+  List<List<bool>> _selectionStatus = [];
 
   @override
   void initState() {
@@ -25,6 +24,7 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
   void _initializeAccounts() async {
     try {
       _accounts = (await AccountService().getAllAccounts())
+          .data!
           .where((account) => !account.isApproved! && !account.isConfirmed!)
           .toList();
 

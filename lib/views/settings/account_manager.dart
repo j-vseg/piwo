@@ -6,6 +6,7 @@ import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/role.dart';
 import 'package:piwo/views/settings/account_approval.dart';
+import 'package:piwo/widgets/dialogs.dart';
 
 class AccountManagerPage extends StatefulWidget {
   final Account account;
@@ -31,7 +32,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
   }
 
   void _initializeFutures() async {
-    accounts = await AccountService().getAllAccounts();
+    accounts = (await AccountService().getAllAccounts()).data!;
 
     setState(() {});
   }
@@ -184,35 +185,52 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                       minWidth: double.maxFinite,
                       color: CustomColors.themePrimary,
                       onPressed: () async {
-                        if (_selectedRole != null) {
+                        if (_selectedRole != null && _selectedAccount != null) {
                           final role = _selectedRole;
-
-                          if (_selectedAccount != null) {
-                            if (_selectedAccount!.roles!.contains(role)) {
-                              if (await RoleService().removeRole(
-                                _selectedAccount!.id ?? "",
-                                role ?? Role.user,
-                              )) {
-                                _showSuccessDialog("De rol is verwijderd");
-                              } else {
-                                _showErrorDialog(
-                                    "Het lijkt er op dat er iets mis is gegaan.");
-                              }
+                          if (_selectedAccount!.roles!.contains(role)) {
+                            final result = await RoleService().removeRole(
+                              _selectedAccount!.id ?? "",
+                              role ?? Role.user,
+                            );
+                            if (result.isSuccess) {
+                              if (!context.mounted) return;
+                              SuccessDialog.showSuccessDialog(
+                                context,
+                                "We hebben successful je wachtwoord gewijzigd.",
+                              );
                             } else {
-                              if (await RoleService().addRole(
-                                _selectedAccount!,
-                                role ?? Role.user,
-                              )) {
-                                _showSuccessDialog("De rol is toegevoegd");
-                              } else {
-                                _showErrorDialog(
-                                    "Het lijkt er op dat er iets mis is gegaan.");
-                              }
+                              if (!context.mounted) return;
+                              ErrorDialog.showErrorDialog(
+                                context,
+                                result.error ??
+                                    "Het is onduidelijk wat er mis is gegaan.",
+                              );
                             }
                           } else {
-                            _showErrorDialog(
-                                "Het lijkt er op dat er iets mis is gegaan. Controleer uw gegevens en probeer het nog een keer.");
+                            final result = await RoleService().addRole(
+                              _selectedAccount!,
+                              role ?? Role.user,
+                            );
+                            if (result.isSuccess) {
+                              if (!context.mounted) return;
+                              SuccessDialog.showSuccessDialog(
+                                context,
+                                "We hebben successful je wachtwoord gewijzigd.",
+                              );
+                            } else {
+                              if (!context.mounted) return;
+                              ErrorDialog.showErrorDialog(
+                                context,
+                                result.error ??
+                                    "Het is onduidelijk wat er mis is gegaan.",
+                              );
+                            }
                           }
+                        } else {
+                          ErrorDialog.showErrorDialog(
+                            context,
+                            "Zorg ervoor dat een account en rol geselecteerd hebt.",
+                          );
                         }
                       },
                       child: Text(_selectedAccount != null
@@ -228,47 +246,6 @@ class AccountManagerPageState extends State<AccountManagerPage> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showSuccessDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Succes'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Function to show error dialog
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Fout'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

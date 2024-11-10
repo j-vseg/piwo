@@ -24,7 +24,7 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
 
   void _initializePaymentUrl() async {
     try {
-      _paymentUrl = await PaymentUrlService().getPaymentUrl();
+      _paymentUrl = (await PaymentUrlService().getPaymentUrl()).data;
     } catch (e) {
       debugPrint("Error fetching data: $e");
     } finally {

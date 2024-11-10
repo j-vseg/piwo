@@ -14,7 +14,7 @@ class Availability {
   static Future<Availability> fromJson(Map<String, dynamic> json) async {
     return Availability(
       account: json['accountId'] != null
-          ? await AccountService().getAccountById(json['accountId'])
+          ? (await AccountService().getAccountById(json['accountId'])).data
           : null,
       status: json['status'] != null
           ? Status.values.firstWhere(

@@ -5,6 +5,7 @@ import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/category.dart';
 import 'package:piwo/models/enums/recurrance.dart';
 import 'package:piwo/services/activity.dart';
+import 'package:piwo/widgets/dialogs.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +23,8 @@ class EditActivityPage extends StatefulWidget {
 
 class EditActivityPageState extends State<EditActivityPage> {
   final _nameController = TextEditingController();
-  DateTime _startDate = DateTime.now();
-  DateTime _endDate = DateTime.now().add(const Duration(hours: 1));
+  DateTime _startDate = DateTime.now().add(const Duration(hours: 1)).toLocal();
+  DateTime _endDate = DateTime.now().add(const Duration(hours: 2)).toLocal();
   Recurrence _selectedRecurrence = Recurrence.geen;
   Category _selectedCategory = Category.groepsavond;
   final _locationController = TextEditingController();
@@ -77,8 +78,8 @@ class EditActivityPageState extends State<EditActivityPage> {
 
     if (widget.activity != null) {
       _nameController.text = widget.activity!.name ?? "";
-      _startDate = widget.activity!.startDate ?? DateTime.now();
-      _endDate = widget.activity!.endDate ?? DateTime.now();
+      _startDate = widget.activity!.startDate!.toLocal();
+      _endDate = widget.activity!.endDate!.toLocal();
       _selectedRecurrence = widget.activity!.recurrence ?? Recurrence.geen;
       _selectedCategory = widget.activity!.category ?? Category.groepsavond;
       _locationController.text = widget.activity!.location ?? "";
@@ -127,18 +128,36 @@ class EditActivityPageState extends State<EditActivityPage> {
                       recurrence: _selectedRecurrence,
                       category: _selectedCategory,
                       location: location,
+                      exceptions: widget.activity!.exceptions,
                       availabilities: widget.activity!.availabilities,
                     );
-                    await ActivityService()
-                        .updateActivity(widget.activity!.id!, activty);
 
-                    await activityProvider.updateActivity(
-                      widget.activity!.id!,
-                      activty,
-                    );
+                    final result = await ActivityService()
+                        .updateActivity(widget.activity!.id ?? "", activty);
 
-                    if (!context.mounted) return;
-                    Navigator.of(context).pop(activty);
+                    if (result.isSuccess) {
+                      if (!context.mounted) return;
+                      SuccessDialog.showSuccessDialogWithOnPressed(
+                        context,
+                        "Activiteit is aangepast.",
+                        () async {
+                          await activityProvider.updateActivity(
+                            widget.activity!.id!,
+                            activty,
+                          );
+
+                          if (!context.mounted) return;
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    } else {
+                      if (!context.mounted) return;
+                      ErrorDialog.showErrorDialog(
+                        context,
+                        result.error ??
+                            "Het is onduidelijk wat er mis is gegaan.",
+                      );
+                    }
                   } else {
                     final activty = Activity(
                       name: name,
@@ -149,16 +168,33 @@ class EditActivityPageState extends State<EditActivityPage> {
                       location: location,
                     );
 
-                    String activityId =
+                    final result =
                         await ActivityService().createActivity(activty);
 
-                    await activityProvider.createActivity(
-                      activityId,
-                      activty,
-                    );
+                    if (result.isSuccess) {
+                      print(result.data);
+                      if (!context.mounted) return;
+                      SuccessDialog.showSuccessDialogWithOnPressed(
+                        context,
+                        "Activiteit is gecreëerd.",
+                        () async {
+                          await activityProvider.createActivity(
+                            result.data ?? "",
+                            activty,
+                          );
 
-                    if (!context.mounted) return;
-                    Navigator.of(context).pop();
+                          if (!context.mounted) return;
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    } else {
+                      if (!context.mounted) return;
+                      ErrorDialog.showErrorDialog(
+                        context,
+                        result.error ??
+                            "Het is onduidelijk wat er mis is gegaan.",
+                      );
+                    }
                   }
                 } else {
                   showDialog(
