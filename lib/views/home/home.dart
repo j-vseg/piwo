@@ -221,9 +221,16 @@ class HomePageState extends State<HomePage> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          CoinService().removeCoin(
-                                              _profile.amountOfCoins! - 1);
-                                          _fetchProfileInfo();
+                                          final result = await CoinService()
+                                              .removeCoin(
+                                                  _profile.amountOfCoins! - 1);
+
+                                          if (result.isSuccess) {
+                                            setState(() {
+                                              _profile.amountOfCoins =
+                                                  result.data!;
+                                            });
+                                          }
 
                                           if (!context.mounted) return;
                                           Navigator.of(context).pop();
