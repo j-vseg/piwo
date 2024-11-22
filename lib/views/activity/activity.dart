@@ -29,32 +29,55 @@ class ActivityPage extends StatefulWidget {
 }
 
 class ActivityPageState extends State<ActivityPage> {
-  Activity? _activity;
-  Status _selectedStatus = Status.aanwezig;
-  Status? _selectedStatusChange;
+  Activity _activity = Activity();
+  // ignore: unused_field
+  Status? _selectedStatus;
+  Status _selectedStatusOverview = Status.aanwezig;
+
+  final List<String> _aanwezig = [];
+  final List<String> _misschien = [];
+  final List<String> _afwezig = [];
 
   @override
   void initState() {
     super.initState();
 
     _activity = widget.activity;
+    _buildAvailabilities(_activity.availabilities?[_activity.getStartDate]);
+  }
+
+  void _buildAvailabilities(List<Availability>? availabilities) {
+    _aanwezig.clear();
+    _misschien.clear();
+    _afwezig.clear();
+
+    if (availabilities != null) {
+      for (var availability in availabilities) {
+        if (availability.status != null) {
+          if (availability.status! == Status.aanwezig) {
+            _aanwezig.add(availability.account!.getFullName);
+          } else if (availability.status! == Status.misschien) {
+            _misschien.add(availability.account!.getFullName);
+          } else {
+            _afwezig.add(availability.account!.getFullName);
+          }
+        }
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final activityProvider = Provider.of<ActivityProvider>(context);
-
-    if (_activity == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    Availability? yourAvailability = _activity!
-        .getYourAvailability(_activity!.getStartDate, widget.account.id!);
+    final activityHasBeen =
+        widget.activity.endDate!.isBefore(DateTime.now().toUtc());
+    final yourAvailability = widget.activity
+        .getYourAvailability(widget.activity.getStartDate, widget.account.id!);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_activity!.name!),
-        backgroundColor: _activity!.color,
+        title: Text(_activity.name!),
+        backgroundColor: _activity.color,
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.zero,
@@ -73,7 +96,7 @@ class ActivityPageState extends State<ActivityPage> {
                   value: 'edit',
                   child: Text('Aanpassen'),
                 ),
-                if (_activity!.recurrence != Recurrence.geen) ...[
+                if (_activity.recurrence != Recurrence.geen) ...[
                   const PopupMenuItem<String>(
                     value: 'delete-only',
                     child: Text('Verwijder deze activiteit'),
@@ -91,7 +114,7 @@ class ActivityPageState extends State<ActivityPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditActivityPage(
-                      activity: _activity!,
+                      activity: _activity,
                     ),
                   ),
                 ).then((activity) {
@@ -103,7 +126,7 @@ class ActivityPageState extends State<ActivityPage> {
                 });
               } else if (value == 'delete-only') {
                 final result = await ActivityService().createExceptions(
-                    _activity!.id ?? "", _activity!.getStartDate);
+                    _activity.id ?? "", _activity.getStartDate);
                 if (result.isSuccess) {
                   if (!context.mounted) return;
                   SuccessDialog.showSuccessDialog(
@@ -119,7 +142,7 @@ class ActivityPageState extends State<ActivityPage> {
                 }
               } else if (value == 'delete') {
                 final result =
-                    await ActivityService().deleteActivity(_activity!.id ?? "");
+                    await ActivityService().deleteActivity(_activity.id ?? "");
                 if (result.isSuccess) {
                   if (!context.mounted) return;
                   SuccessDialog.showSuccessDialogWithOnPressed(
@@ -152,7 +175,7 @@ class ActivityPageState extends State<ActivityPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _activity!.name ?? "",
+                _activity.name ?? "",
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -164,12 +187,12 @@ class ActivityPageState extends State<ActivityPage> {
                 children: [
                   Icon(
                     Icons.category,
-                    color: _activity!.color,
+                    color: _activity.color,
                     size: 16,
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    _activity!.category.toString(),
+                    _activity.category.toString(),
                     style: const TextStyle(fontSize: 16, color: Colors.black87),
                   ),
                 ],
@@ -183,14 +206,14 @@ class ActivityPageState extends State<ActivityPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${(Weekday.values[_activity!.startDate!.weekday - 1])}, ${_activity!.startDate!.day} ${Month.values[_activity!.startDate!.month - 1].name}",
+                        "${(Weekday.values[_activity.startDate!.weekday - 1])}, ${_activity.startDate!.day} ${Month.values[_activity.startDate!.month - 1].name}",
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black87,
                         ),
                       ),
                       Text(
-                        _activity!.getTimes,
+                        _activity.getTimes,
                         style: const TextStyle(
                           fontSize: 15,
                           color: Colors.grey,
@@ -208,7 +231,7 @@ class ActivityPageState extends State<ActivityPage> {
                     const Icon(Icons.place, color: Colors.grey),
                     const SizedBox(width: 8),
                     Text(
-                      _activity!.location!,
+                      _activity.location!,
                       style:
                           const TextStyle(fontSize: 16, color: Colors.black87),
                     ),
@@ -216,122 +239,88 @@ class ActivityPageState extends State<ActivityPage> {
                 ),
                 const SizedBox(height: 15),
               ],
+              const Divider(),
+              const SizedBox(height: 15),
+              const Text(
+                'Jouw aanwezigheid',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Icon(
-                    yourAvailability != null
-                        ? yourAvailability.status == Status.aanwezig
-                            ? Icons.check_circle
-                            : yourAvailability.status == Status.misschien
-                                ? Icons.help
-                                : Icons.cancel
-                        : Icons.help,
-                    color: yourAvailability != null
-                        ? CustomColors.getAvailabilityColor(
-                            yourAvailability.status)
-                        : Colors.grey,
+                  GestureDetector(
+                    onTap: () {
+                      _updateAvailability(activityProvider, Status.aanwezig);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: !activityHasBeen
+                            ? yourAvailability != null &&
+                                    yourAvailability.status == Status.aanwezig
+                                ? Colors.green
+                                : Colors.grey[300]
+                            : yourAvailability != null &&
+                                    yourAvailability.status == Status.aanwezig
+                                ? Colors.grey
+                                : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text("Aanwezig"),
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    yourAvailability != null && yourAvailability.status != null
-                        ? "Jij bent ${yourAvailability.status.toString()}"
-                        : "Geen status opgegeven",
-                    style: const TextStyle(fontSize: 16, color: Colors.black87),
+                  GestureDetector(
+                    onTap: () {
+                      _updateAvailability(activityProvider, Status.misschien);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: !activityHasBeen
+                            ? yourAvailability != null &&
+                                    yourAvailability.status == Status.misschien
+                                ? Colors.orange
+                                : Colors.grey[300]
+                            : yourAvailability != null &&
+                                    yourAvailability.status == Status.misschien
+                                ? Colors.grey
+                                : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text("Misschien"),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _updateAvailability(activityProvider, Status.afwezig);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: !activityHasBeen
+                            ? yourAvailability != null &&
+                                    yourAvailability.status == Status.afwezig
+                                ? Colors.red
+                                : Colors.grey[300]
+                            : yourAvailability != null &&
+                                    yourAvailability.status == Status.afwezig
+                                ? Colors.grey
+                                : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text("Afwezig"),
+                    ),
                   ),
                 ],
               ),
-              if (!widget.activity.endDate!.isBefore(DateTime.now())) ...[
-                TextButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Aanpassen status'),
-                          content: SingleChildScrollView(
-                            child: StatefulBuilder(
-                              builder:
-                                  (BuildContext context, StateSetter setState) {
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    DropdownButton<Status>(
-                                      hint: const Text("Selecteer een status"),
-                                      value: _selectedStatusChange,
-                                      items: [
-                                        const DropdownMenuItem<Status>(
-                                          value: null,
-                                          child: Text(
-                                            "Status verwijderen",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                        ...Status.values.map((Status status) {
-                                          return DropdownMenuItem<Status>(
-                                            value: status,
-                                            child: Text(status.name),
-                                          );
-                                        }),
-                                      ],
-                                      onChanged: (Status? status) {
-                                        setState(() {
-                                          _selectedStatusChange = status;
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                final availability = Availability(
-                                  account: widget.account,
-                                  status: _selectedStatusChange,
-                                );
-
-                                await AvailabilityService().changeAvailability(
-                                  _activity!.id!,
-                                  _activity!.availabilities ?? {},
-                                  _activity!.getStartDate,
-                                  availability,
-                                );
-
-                                await activityProvider.changeAvailability(
-                                  _activity!.id!,
-                                  _activity!.getStartDate,
-                                  availability,
-                                );
-
-                                setState(() {
-                                  yourAvailability?.status =
-                                      _selectedStatusChange;
-                                });
-
-                                if (!context.mounted) return;
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Aanpassen'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: const Text('Status aanpassen'),
-                ),
-              ],
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 10),
@@ -350,66 +339,124 @@ class ActivityPageState extends State<ActivityPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        _selectedStatus = Status.aanwezig;
+                        _selectedStatusOverview = Status.aanwezig;
                       });
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: _selectedStatus == Status.aanwezig
+                        color: _selectedStatusOverview == Status.aanwezig
                             ? Colors.green
                             : Colors.grey[300],
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: const Text("Aanwezig"),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text("Aanwezig"),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: CustomColors.selectedMenuColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              _aanwezig.length.toString(),
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        _selectedStatus = Status.misschien;
+                        _selectedStatusOverview = Status.misschien;
                       });
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: _selectedStatus == Status.misschien
+                        color: _selectedStatusOverview == Status.misschien
                             ? Colors.orange
                             : Colors.grey[300],
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: const Text("Misschien"),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text("Misschien"),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: CustomColors.selectedMenuColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              _misschien.length.toString(),
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        _selectedStatus = Status.afwezig;
+                        _selectedStatusOverview = Status.afwezig;
                       });
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: _selectedStatus == Status.afwezig
+                        color: _selectedStatusOverview == Status.afwezig
                             ? Colors.red
                             : Colors.grey[300],
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: const Text("Afwezig"),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text("Afwezig"),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: CustomColors.selectedMenuColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              _afwezig.length.toString(),
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-              if (_activity!.availabilities != null) ...[
-                _buildOverviewSection(
-                    _activity!.availabilities![_activity!.getStartDate]),
-              ] else ...[
-                _buildOverviewSection([]),
-              ],
+              _buildOverviewSection(),
             ],
           ),
         ),
@@ -417,32 +464,45 @@ class ActivityPageState extends State<ActivityPage> {
     );
   }
 
-  Widget _buildOverviewSection(List<Availability>? availabilities) {
-    List<String> people = [];
-    List<String> aanwezig = [];
-    List<String> misschien = [];
-    List<String> afwezig = [];
+  void _updateAvailability(
+    ActivityProvider activityProvider,
+    Status status,
+  ) async {
+    if (!widget.activity.endDate!.isBefore(DateTime.now().toUtc())) {
+      final availability = Availability(
+        account: widget.account,
+        status: status,
+      );
 
-    if (availabilities != null) {
-      for (var availability in availabilities) {
-        if (availability.status != null) {
-          if (availability.status! == Status.aanwezig) {
-            aanwezig.add(availability.account!.getFullName);
-          } else if (availability.status! == Status.misschien) {
-            misschien.add(availability.account!.getFullName);
-          } else {
-            afwezig.add(availability.account!.getFullName);
-          }
-        }
-      }
+      await AvailabilityService().changeAvailability(
+        widget.activity.id!,
+        widget.activity.availabilities ?? {},
+        widget.activity.getStartDate,
+        availability,
+      );
+
+      await activityProvider.changeAvailability(
+        widget.activity.id!,
+        widget.activity.getStartDate,
+        availability,
+      );
+
+      setState(() {
+        _selectedStatus = status;
+        _buildAvailabilities(_activity.availabilities?[_activity.getStartDate]);
+      });
     }
+  }
 
-    if (_selectedStatus == Status.aanwezig) {
-      people = aanwezig;
-    } else if (_selectedStatus == Status.misschien) {
-      people = misschien;
-    } else if (_selectedStatus == Status.afwezig) {
-      people = afwezig;
+  Widget _buildOverviewSection() {
+    List<String> people = [];
+
+    if (_selectedStatusOverview == Status.aanwezig) {
+      people = _aanwezig;
+    } else if (_selectedStatusOverview == Status.misschien) {
+      people = _misschien;
+    } else if (_selectedStatusOverview == Status.afwezig) {
+      people = _afwezig;
     }
 
     return SingleChildScrollView(

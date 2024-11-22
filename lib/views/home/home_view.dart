@@ -16,7 +16,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  int selectedIndex = 1;
+  int selectedIndex = 0;
 
   void onItemTapped(int index) {
     setState(() {
@@ -32,8 +32,8 @@ class _HomeViewState extends State<HomeView> {
           IndexedStack(
             index: selectedIndex,
             children: const [
-              ActivitiesPage(),
               HomePage(),
+              ActivitiesPage(),
               SettingsPage(),
             ],
           ),
@@ -50,14 +50,14 @@ class _HomeViewState extends State<HomeView> {
               child: BottomNavigationBar(
                 items: const [
                   BottomNavigationBarItem(
-                    key: Key('activities_view_button'),
-                    icon: Icon(Icons.calendar_month),
-                    label: 'Activiteiten',
-                  ),
-                  BottomNavigationBarItem(
                     key: Key('home_view_button'),
                     icon: Icon(Icons.home),
                     label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    key: Key('activities_view_button'),
+                    icon: Icon(Icons.calendar_month),
+                    label: 'Activiteiten',
                   ),
                   BottomNavigationBarItem(
                     key: Key('settings_view_button'),
