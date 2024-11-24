@@ -67,13 +67,13 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   Text(
                     activity.name ?? "",
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     activity.getFullDate,
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 10),
                   Row(

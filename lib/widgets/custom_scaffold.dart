@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
-import 'package:piwo/config/theme/custom_theme.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 
 class CustomScaffold extends StatefulWidget {
@@ -49,22 +48,20 @@ class _CustomScaffoldState extends State<CustomScaffold> {
     return Scaffold(
       appBar: !widget.useAppBar
           ? null
-          : widget.appBar ??
-              AppBar(
-                title: widget.appBarTitle,
-                backgroundColor: widget.appBarBackgroundColor,
-                titleTextStyle:
-                    CustomTheme(context).themeData.textTheme.headlineMedium,
-                toolbarHeight: 85,
-                centerTitle: true,
-                elevation: 0,
-                leading: widget.appBarLeading,
-                actions: widget.actions,
-                leadingWidth: 40 + SizeSetter.getHorizontalScreenPadding(),
-                systemOverlayStyle: widget.systemOverlayStyle,
-                automaticallyImplyLeading: widget.automaticallyImplyLeading,
-                iconTheme: const IconThemeData(color: CustomColors.light),
-              ),
+          : AppBar(
+              title: widget.appBar!.title,
+              leading: widget.appBar!.leading,
+              backgroundColor: widget.appBarBackgroundColor,
+              toolbarHeight: 85,
+              centerTitle: true,
+              elevation: 0,
+              actions: widget.actions,
+              leadingWidth: 40 + SizeSetter.getHorizontalScreenPadding(),
+              systemOverlayStyle: widget.systemOverlayStyle,
+              automaticallyImplyLeading: widget.automaticallyImplyLeading,
+              iconTheme: const IconThemeData(color: CustomColors.light),
+            ),
+      //backgroundColor: CustomColors.themeBackground,
       floatingActionButton:
           widget.floatingActionButton ?? widget.floatingActionButton,
       body: SafeArea(

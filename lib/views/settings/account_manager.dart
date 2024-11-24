@@ -61,17 +61,16 @@ class AccountManagerPageState extends State<AccountManagerPage> {
             ),
           ),
         ),
+        title: const Text(
+          "Beheer accounts",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Column(
         children: [
-          const Text(
-            "Beheer accounts",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
           ListTile(
             leading: const Icon(Icons.mark_email_read),
             trailing: Row(

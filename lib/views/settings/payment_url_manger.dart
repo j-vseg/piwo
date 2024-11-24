@@ -64,19 +64,19 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
             ),
           ),
         ),
+        title: const Text(
+          "Wijzig de bierkaart URL",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
           child: Column(
             children: [
-              const Text(
-                "Wijzig de bierkaart URL",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const Text(
                 "Wijzing de bierkaart betaal URL.",
                 style: TextStyle(

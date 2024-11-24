@@ -58,7 +58,16 @@ class HomePageState extends State<HomePage> {
             activities.isNotEmpty ? activities.take(3).toList() : [];
 
         return CustomScaffold(
-          useAppBar: false,
+          useAppBar: true,
+          appBar: AppBar(
+            title: const Text(
+              "Home",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +87,7 @@ class HomePageState extends State<HomePage> {
                     Text(
                       "Welkom, ${_profile.firstName}!",
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -91,7 +100,7 @@ class HomePageState extends State<HomePage> {
                     Text(
                       "Jouw munten (${_profile.amountOfCoins ?? 0})",
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -189,7 +198,7 @@ class HomePageState extends State<HomePage> {
                 const Text(
                   "Lever je munten in voor een dankje",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: CustomColors.unselectedMenuColor,
                   ),
                 ),
@@ -260,14 +269,14 @@ class HomePageState extends State<HomePage> {
                 const Text(
                   "Toekomstige activiteiten",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const Text(
                   "Bekijk de meest recent toekomstige activiteiten.",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: CustomColors.unselectedMenuColor,
                   ),
                 ),

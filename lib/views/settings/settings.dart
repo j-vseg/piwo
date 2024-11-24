@@ -36,23 +36,18 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      useAppBar: false,
+      useAppBar: true,
+      appBar: AppBar(
+        title: const Text(
+          "Instellingen",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Column(
         children: [
-          const Text(
-            "Instellingen",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            _account.getFullName,
-            style: const TextStyle(
-              fontSize: 18,
-            ),
-          ),
-          const SizedBox(height: 40),
           const Text(
             "Jouw account",
             style: TextStyle(

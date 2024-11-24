@@ -61,19 +61,19 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
             ),
           ),
         ),
+        title: const Text(
+          "Nieuwe accounts",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
           child: Column(
             children: [
-              const Text(
-                "Nieuwe accounts",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const Text(
                 "Beheer de accounts die toegang hebben tot de app",
                 style: TextStyle(

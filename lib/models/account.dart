@@ -56,6 +56,15 @@ class Account {
     };
   }
 
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Account && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
   String get getFullName {
     return firstName != null && lastName != null ? "$firstName $lastName" : "";
   }

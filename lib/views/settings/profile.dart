@@ -59,20 +59,21 @@ class ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
+        title: const Text(
+          "Profiel",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Column(
         children: [
-          const Text(
-            "Profiel",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
           Text(
             _account.getFullName,
             style: const TextStyle(
-              fontSize: 18,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 20),
