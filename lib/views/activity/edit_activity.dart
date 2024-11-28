@@ -172,7 +172,6 @@ class EditActivityPageState extends State<EditActivityPage> {
                         await ActivityService().createActivity(activty);
 
                     if (result.isSuccess) {
-                      print(result.data);
                       if (!context.mounted) return;
                       SuccessDialog.showSuccessDialogWithOnPressed(
                         context,

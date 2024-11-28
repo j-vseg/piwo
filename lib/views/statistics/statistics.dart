@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/status.dart';
@@ -53,31 +54,38 @@ class StatisticsPageState extends State<StatisticsPage> {
             ),
           ),
           body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: CustomColors.light700,
-                    borderRadius: BorderRadius.circular(15.0),
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: 0.0,
+                left: SizeSetter.getHorizontalScreenPadding(),
+                right: SizeSetter.getHorizontalScreenPadding(),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _buildAvailabilityByYearChart(),
+                    ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildAvailabilityByYearChart(),
+                  const SizedBox(height: 40),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: _buildAvailabilityByStatusChart(),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 40),
-                Container(
-                  decoration: BoxDecoration(
-                    color: CustomColors.light700,
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildAvailabilityByStatusChart(),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -158,7 +166,7 @@ class StatisticsPageState extends State<StatisticsPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _selectedYear == year
                           ? CustomColors.themePrimary
-                          : Colors.grey[300],
+                          : CustomColors.greyYellow,
                     ),
                     child: Text(year.toString()),
                   ),

@@ -43,16 +43,17 @@ class CustomColors {
   static const unselectedMenuColor = Color(0xFFA2A5A9);
 
   static const themePrimary = Color(0xFFFFC176);
-  static const themeBackground = Color(0xFFf2dfcd);
+  static const themeBackground = Color(
+      0xFFFFD9AD); // Current theme background: const Color.fromARGB(255, 242, 223, 205)
+  static const background100 = Color(0xFFFFF5EB);
+  static const background200 = Color(0xFFFFE1C2);
+
+  static const greyYellow = Color(0xFFCDC0B4);
 
   // Activities
   static const activityAction = Color(0xFFFFE15C);
   static const activityKamp = Color(0xFFFF7B00);
   static const actionWeekend = Color(0xFFFF9500);
-
-  // Background colors
-  static const primaryBackgroundColor = Color(0xFF00664F);
-  static const secondaryBackgroundColor = Color(0xFF16755F);
 
   static Color getActivityColor(Category category) {
     if (category == Category.groepsavond) {

@@ -4,29 +4,32 @@ import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 
 class CustomScaffold extends StatefulWidget {
-  const CustomScaffold(
-      {super.key,
-      required this.body,
-      this.appBarTitle,
-      this.appBackgroundColor = CustomColors.dark,
-      this.appBarLeading,
-      this.actions,
-      this.appBarBackgroundColor = Colors.transparent,
-      this.automaticallyImplyLeading = false,
-      this.systemOverlayStyle = SystemUiOverlayStyle.light,
-      this.extendBehindAppBar = false,
-      this.appBar,
-      this.floatingActionButton,
-      this.drawer,
-      this.useAppBar = true,
-      this.bottomSafeArea = true,
-      this.topSafeArea = true,
-      this.floatingActionButtonLocation});
+  const CustomScaffold({
+    super.key,
+    required this.body,
+    this.appBarTitle,
+    this.appBackgroundColor = CustomColors.dark,
+    this.appBarLeading,
+    this.actions,
+    this.appBarBackgroundColor = Colors.transparent,
+    this.backgroundColor = CustomColors.themeBackground,
+    this.automaticallyImplyLeading = false,
+    this.systemOverlayStyle = SystemUiOverlayStyle.light,
+    this.extendBehindAppBar = false,
+    this.appBar,
+    this.floatingActionButton,
+    this.drawer,
+    this.useAppBar = true,
+    this.bottomSafeArea = true,
+    this.topSafeArea = true,
+    this.floatingActionButtonLocation,
+  });
   final Widget body;
   final Widget? appBarTitle;
   final Widget? appBarLeading;
   final List<Widget>? actions;
   final Color appBarBackgroundColor;
+  final Color? backgroundColor;
   final Color appBackgroundColor;
   final bool automaticallyImplyLeading;
   final SystemUiOverlayStyle systemOverlayStyle;
@@ -38,6 +41,7 @@ class CustomScaffold extends StatefulWidget {
   final bool bottomSafeArea;
   final bool topSafeArea;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
+
   @override
   State<CustomScaffold> createState() => _CustomScaffoldState();
 }
@@ -51,7 +55,8 @@ class _CustomScaffoldState extends State<CustomScaffold> {
           : AppBar(
               title: widget.appBar!.title,
               leading: widget.appBar!.leading,
-              backgroundColor: widget.appBarBackgroundColor,
+              backgroundColor: widget.appBar!.backgroundColor ??
+                  CustomColors.themeBackground,
               toolbarHeight: 85,
               centerTitle: true,
               elevation: 0,
@@ -59,22 +64,17 @@ class _CustomScaffoldState extends State<CustomScaffold> {
               leadingWidth: 40 + SizeSetter.getHorizontalScreenPadding(),
               systemOverlayStyle: widget.systemOverlayStyle,
               automaticallyImplyLeading: widget.automaticallyImplyLeading,
-              iconTheme: const IconThemeData(color: CustomColors.light),
+              iconTheme: const IconThemeData(
+                color: CustomColors.light,
+              ),
             ),
-      //backgroundColor: CustomColors.themeBackground,
+      backgroundColor: widget.backgroundColor,
       floatingActionButton:
           widget.floatingActionButton ?? widget.floatingActionButton,
       body: SafeArea(
         top: widget.topSafeArea,
         bottom: widget.bottomSafeArea,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: widget.useAppBar ? 0.0 : 55.0,
-            left: SizeSetter.getHorizontalScreenPadding(),
-            right: SizeSetter.getHorizontalScreenPadding(),
-          ),
-          child: widget.body,
-        ),
+        child: widget.body,
       ),
     );
   }

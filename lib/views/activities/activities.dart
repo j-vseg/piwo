@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
-import 'package:piwo/models/enums/month.dart';
 import 'package:piwo/models/enums/role.dart';
-import 'package:piwo/models/enums/weekday.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
-import 'package:piwo/widgets/activity.dart';
+import 'package:piwo/widgets/activity_overview.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
 import 'package:provider/provider.dart';
@@ -22,9 +21,9 @@ class ActivitiesPage extends StatefulWidget {
 }
 
 class ActivitiesPageState extends State<ActivitiesPage> {
+  Account _account = Account();
   DateTime _selectedDate = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  Account _account = Account();
 
   @override
   void initState() {
@@ -67,7 +66,6 @@ class ActivitiesPageState extends State<ActivitiesPage> {
         final groupedActivities = _groupActivitiesByDay(activities);
 
         return CustomScaffold(
-          useAppBar: true,
           appBar: AppBar(
             title: const Text(
               "Activiteiten",
@@ -94,67 +92,91 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                   child: const Icon(Icons.add),
                 )
               : null,
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20.0),
-                TableCalendar(
-                  firstDay: DateTime.now().subtract(const Duration(days: 365)),
-                  lastDay: DateTime.now().add(const Duration(days: 365)),
-                  focusedDay: _selectedDate,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDate, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDate = selectedDay;
-                    });
-                  },
-                  calendarFormat: _calendarFormat,
-                  locale: 'nl_NL',
-                  availableCalendarFormats: const {
-                    CalendarFormat.month: 'Maand',
-                    CalendarFormat.twoWeeks: '2 Weken',
-                    CalendarFormat.week: 'Week',
-                  },
-                  onFormatChanged: (format) {
-                    setState(() {
-                      _calendarFormat = format;
-                    });
-                  },
-                  calendarBuilders: CalendarBuilders(
-                    markerBuilder: (context, day, events) {
-                      final normalizedDate =
-                          DateTime(day.year, day.month, day.day);
-                      if (groupedActivities.containsKey(normalizedDate)) {
-                        final activitiesList =
-                            groupedActivities[normalizedDate];
-                        return _buildMarkers(
-                            activitiesList ?? [], _account.id ?? "", day);
-                      }
-                      return null;
-                    },
-                  ),
-                  calendarStyle: CalendarStyle(
-                    selectedDecoration: const BoxDecoration(
-                      color: CustomColors.themePrimary,
-                      shape: BoxShape.circle,
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: CustomColors.themePrimary.withOpacity(0.5),
-                      shape: BoxShape.circle,
-                    ),
-                    todayTextStyle: const TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
+          backgroundColor: Colors.white,
+          body: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: CustomColors.themeBackground,
                 ),
-                const SizedBox(height: 20),
-                _buildActivitiesForDay(
-                    groupedActivities, _selectedDate, context, _account),
-              ],
-            ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: SizeSetter.getHorizontalScreenPadding(),
+                        vertical: 10.0,
+                      ),
+                      child: TableCalendar(
+                        firstDay:
+                            DateTime.now().subtract(const Duration(days: 365)),
+                        lastDay: DateTime.now().add(const Duration(days: 365)),
+                        focusedDay: _selectedDate,
+                        selectedDayPredicate: (day) {
+                          return isSameDay(_selectedDate, day);
+                        },
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            _calendarFormat = CalendarFormat.week;
+                            _selectedDate = selectedDay;
+                          });
+                        },
+                        calendarFormat: _calendarFormat,
+                        locale: 'nl_NL',
+                        availableCalendarFormats: const {
+                          CalendarFormat.month: 'Maand',
+                          CalendarFormat.week: 'Week',
+                        },
+                        onFormatChanged: (format) {
+                          setState(() {
+                            _calendarFormat = format;
+                          });
+                        },
+                        calendarBuilders: CalendarBuilders(
+                          markerBuilder: (context, day, events) {
+                            final normalizedDate =
+                                DateTime(day.year, day.month, day.day);
+                            if (groupedActivities.containsKey(normalizedDate)) {
+                              final activitiesList =
+                                  groupedActivities[normalizedDate];
+                              return _buildMarkers(
+                                  activitiesList ?? [], _account.id ?? "", day);
+                            }
+                            return null;
+                          },
+                        ),
+                        calendarStyle: const CalendarStyle(
+                          selectedDecoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          selectedTextStyle: TextStyle(
+                            color: CustomColors.themePrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          todayDecoration: BoxDecoration(
+                            color: Colors.transparent,
+                            shape: BoxShape.circle,
+                          ),
+                          todayTextStyle: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              ActivityOverview(
+                activities: groupedActivities[DateTime(_selectedDate.year,
+                        _selectedDate.month, _selectedDate.day)] ??
+                    [],
+                selectedDate: _selectedDate,
+                account: _account,
+              ),
+            ],
           ),
         );
       },
@@ -176,41 +198,6 @@ class ActivitiesPageState extends State<ActivitiesPage> {
     }
 
     return activitiesByDate;
-  }
-
-  Widget _buildActivitiesForDay(
-    Map<DateTime, List<Activity>> activitiesByDay,
-    DateTime selectedDate,
-    BuildContext context,
-    Account account,
-  ) {
-    DateTime selectedDay =
-        DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
-    List<Activity>? activitiesThisDay = activitiesByDay[selectedDay];
-
-    if (activitiesThisDay == null || activitiesThisDay.isEmpty) {
-      return const Text(
-        "Geen activiteiten op deze dag",
-        style: TextStyle(fontSize: 18),
-      );
-    }
-
-    activitiesThisDay.sort((a, b) => a.startDate!.compareTo(b.startDate!));
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "${(Weekday.values[selectedDate.weekday - 1])}, ${selectedDay.day} ${Month.values[selectedDate.month - 1].name}",
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 20),
-        ActivityWidget(activities: activitiesThisDay, account: account),
-      ],
-    );
   }
 
   Widget _buildMarkers(
