@@ -93,6 +93,8 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                 )
               : null,
           backgroundColor: Colors.white,
+          bodyPadding:
+              const Padding(padding: EdgeInsets.symmetric(horizontal: 0.0)),
           body: Column(
             children: [
               Container(

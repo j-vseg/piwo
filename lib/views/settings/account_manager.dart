@@ -6,6 +6,7 @@ import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/role.dart';
 import 'package:piwo/views/settings/account_approval.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/dialogs.dart';
 
 class AccountManagerPage extends StatefulWidget {
@@ -39,27 +40,20 @@ class AccountManagerPageState extends State<AccountManagerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: CustomColors.themePrimary,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
           ),
+          iconSize: 25.0,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
         title: const Text(
           "Beheer accounts",
@@ -126,6 +120,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
             ),
             children: [
               AccordionSection(
+                contentBackgroundColor: CustomColors.background100,
                 isOpen: true,
                 contentVerticalPadding: 20,
                 rightIcon: const Icon(

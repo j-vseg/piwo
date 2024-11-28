@@ -103,7 +103,11 @@ class EditActivityPageState extends State<EditActivityPage> {
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.zero,
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
+          ),
+          iconSize: 25.0,
           onPressed: () {
             Navigator.of(context).pop();
           },

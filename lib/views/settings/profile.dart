@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
@@ -41,23 +40,16 @@ class ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: CustomColors.themePrimary,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
           ),
+          iconSize: 25.0,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
         title: const Text(
           "Profiel",
