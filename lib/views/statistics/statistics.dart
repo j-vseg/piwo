@@ -245,8 +245,8 @@ class StatisticsPageState extends State<StatisticsPage> {
   List<Widget> _getLeaderboardButtons() {
     List<Widget> buttons = [];
 
-    if (yearlyData.containsKey(_selectedYear) ||
-        !yearlyData[_selectedYear]!.containsKey(_account)) {
+    if (yearlyData.containsKey(_selectedYear) &&
+        yearlyData[_selectedYear]!.containsKey(_account)) {
       for (var index = 0; index < 3; index++) {
         // Check if the button is selected and set color accordingly
         bool isSelected = _selectedAvailability == Status.values[index];
