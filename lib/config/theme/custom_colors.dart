@@ -51,9 +51,9 @@ class CustomColors {
   static const greyYellow = Color(0xFFCDC0B4);
 
   // Activities
-  static const activityAction = Color(0xFFFFE15C);
-  static const activityKamp = Color(0xFFFF7B00);
-  static const actionWeekend = Color(0xFFFF9500);
+  static const activityAction = Color(0xFFFF4D4D);
+  static const activityKamp = Color(0xFF9C27B0);
+  static const actionWeekend = Color(0xFF2196F3);
 
   static Color getActivityColor(Category category) {
     if (category == Category.groepsavond) {

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/availability.dart';
 import 'package:piwo/models/enums/category.dart';
+import 'package:piwo/models/enums/month.dart';
 import 'package:piwo/models/enums/recurrance.dart';
 
 class Activity {
@@ -140,13 +141,17 @@ class Activity {
 
   String get getFullDate {
     return startDate != null && endDate != null
-        ? "${startDate!.toLocal().day}-${startDate!.toLocal().month}-${startDate!.toLocal().year} ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
+        ? doesActivitySpanMultipleDays(this)
+            ? "${startDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
+            : "${startDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
         : "Geen datum beschikbaar";
   }
 
   String get getTimes {
     return startDate != null && endDate != null
-        ? "${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
+        ? doesActivitySpanMultipleDays(this)
+            ? " Start om ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - Eindigd op ${endDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
+            : "${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
         : "Geen tijd beschikbaar";
   }
 
@@ -163,5 +168,14 @@ class Activity {
       }
     }
     return null;
+  }
+
+  static bool doesActivitySpanMultipleDays(Activity activity) {
+    DateTime startDate = DateTime(activity.getStartDate.year,
+        activity.getStartDate.month, activity.getStartDate.day);
+    DateTime endDate = DateTime(activity.getEndDateTimes.year,
+        activity.getEndDateTimes.month, activity.getEndDateTimes.day);
+
+    return endDate.isAfter(startDate);
   }
 }

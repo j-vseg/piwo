@@ -95,90 +95,98 @@ class ActivitiesPageState extends State<ActivitiesPage> {
           backgroundColor: Colors.white,
           bodyPadding:
               const Padding(padding: EdgeInsets.symmetric(horizontal: 0.0)),
-          body: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: CustomColors.themeBackground,
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: SizeSetter.getHorizontalScreenPadding(),
-                        vertical: 10.0,
-                      ),
-                      child: TableCalendar(
-                        firstDay:
-                            DateTime.now().subtract(const Duration(days: 365)),
-                        lastDay: DateTime.now().add(const Duration(days: 365)),
-                        focusedDay: _selectedDate,
-                        selectedDayPredicate: (day) {
-                          return isSameDay(_selectedDate, day);
-                        },
-                        onDaySelected: (selectedDay, focusedDay) {
-                          setState(() {
-                            _calendarFormat = CalendarFormat.week;
-                            _selectedDate = selectedDay;
-                          });
-                        },
-                        calendarFormat: _calendarFormat,
-                        locale: 'nl_NL',
-                        availableCalendarFormats: const {
-                          CalendarFormat.month: 'Maand',
-                          CalendarFormat.week: 'Week',
-                        },
-                        onFormatChanged: (format) {
-                          setState(() {
-                            _calendarFormat = format;
-                          });
-                        },
-                        calendarBuilders: CalendarBuilders(
-                          markerBuilder: (context, day, events) {
-                            final normalizedDate =
-                                DateTime(day.year, day.month, day.day);
-                            if (groupedActivities.containsKey(normalizedDate)) {
-                              final activitiesList =
-                                  groupedActivities[normalizedDate];
-                              return _buildMarkers(
-                                  activitiesList ?? [], _account.id ?? "", day);
-                            }
-                            return null;
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: CustomColors.themeBackground,
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: SizeSetter.getHorizontalScreenPadding(),
+                          vertical: 10.0,
+                        ),
+                        child: TableCalendar(
+                          firstDay: DateTime.now()
+                              .subtract(const Duration(days: 365)),
+                          lastDay:
+                              DateTime.now().add(const Duration(days: 365)),
+                          focusedDay: _selectedDate,
+                          selectedDayPredicate: (day) {
+                            return isSameDay(_selectedDate, day);
                           },
-                        ),
-                        calendarStyle: const CalendarStyle(
-                          selectedDecoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              _calendarFormat = CalendarFormat.week;
+                              _selectedDate = selectedDay;
+                            });
+                          },
+                          calendarFormat: _calendarFormat,
+                          locale: 'nl_NL',
+                          availableCalendarFormats: const {
+                            CalendarFormat.month: 'Maand',
+                            CalendarFormat.week: 'Week',
+                          },
+                          onFormatChanged: (format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          },
+                          calendarBuilders: CalendarBuilders(
+                            markerBuilder: (context, day, events) {
+                              final normalizedDate =
+                                  DateTime(day.year, day.month, day.day);
+                              if (groupedActivities
+                                  .containsKey(normalizedDate)) {
+                                final activitiesList =
+                                    groupedActivities[normalizedDate];
+                                return Align(
+                                  alignment: Alignment
+                                      .bottomCenter, // Markers at the bottom of the cell
+                                  child: _buildMarkers(activitiesList ?? [],
+                                      _account.id ?? "", day),
+                                );
+                              }
+                              return null; // No marker for days without activities
+                            },
                           ),
-                          selectedTextStyle: TextStyle(
-                            color: CustomColors.themePrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          todayDecoration: BoxDecoration(
-                            color: Colors.transparent,
-                            shape: BoxShape.circle,
-                          ),
-                          todayTextStyle: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          calendarStyle: const CalendarStyle(
+                            selectedDecoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            selectedTextStyle: TextStyle(
+                              color: CustomColors.themePrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            todayDecoration: BoxDecoration(
+                              color: Colors.transparent,
+                              shape: BoxShape.circle,
+                            ),
+                            todayTextStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
-              ),
-              ActivityOverview(
-                activities: groupedActivities[DateTime(_selectedDate.year,
-                        _selectedDate.month, _selectedDate.day)] ??
-                    [],
-                selectedDate: _selectedDate,
-                account: _account,
-              ),
-            ],
+                ActivityOverview(
+                  activities: groupedActivities[DateTime(_selectedDate.year,
+                          _selectedDate.month, _selectedDate.day)] ??
+                      [],
+                  selectedDate: _selectedDate,
+                  account: _account,
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -190,13 +198,18 @@ class ActivitiesPageState extends State<ActivitiesPage> {
     Map<DateTime, List<Activity>> activitiesByDate = {};
 
     for (var activity in activities) {
-      DateTime activityDate = DateTime(activity.getStartDate.year,
+      DateTime currentDay = DateTime(activity.getStartDate.year,
           activity.getStartDate.month, activity.getStartDate.day);
+      DateTime endDay = DateTime(activity.getEndDateTimes.year,
+          activity.getEndDateTimes.month, activity.getEndDateTimes.day);
 
-      if (!activitiesByDate.containsKey(activityDate)) {
-        activitiesByDate[activityDate] = [];
+      while (!currentDay.isAfter(endDay)) {
+        if (!activitiesByDate.containsKey(currentDay)) {
+          activitiesByDate[currentDay] = [];
+        }
+        activitiesByDate[currentDay]!.add(activity);
+        currentDay = currentDay.add(const Duration(days: 1));
       }
-      activitiesByDate[activityDate]!.add(activity);
     }
 
     return activitiesByDate;
@@ -204,70 +217,75 @@ class ActivitiesPageState extends State<ActivitiesPage> {
 
   Widget _buildMarkers(
       List<Activity> activities, String accountId, DateTime day) {
-    List<Widget> markers = [];
-    double markerSize = 7;
-    double markerSpacing = 4;
-    double totalWidth;
-
-    if (activities.length >= 4) {
-      totalWidth = 4 * markerSize + (4 - 1) * markerSpacing;
-    } else {
-      totalWidth = activities.length * markerSize +
-          (activities.length - 1) * markerSpacing;
-    }
-
-    double startPosition = (50 - totalWidth) / 2;
+    List<Color> singleDayColors = [];
+    List<Color> multiDayColors = [];
+    List<Activity> singleDayActivities = [];
+    List<Activity> multiDayActivities = [];
 
     for (var activity in activities) {
-      if (DateTime.now().isBefore(activity.getEndDateTimes)) {
-        if (activity.getYourAvailability(activity.getStartDate, accountId) !=
-            null) {
-          markers.add(Positioned(
-            bottom: 1,
-            left: startPosition,
-            child: Container(
-              width: markerSize,
-              height: markerSize,
-              decoration: BoxDecoration(
-                color: CustomColors.getAvailabilityColor(activity
-                    .getYourAvailability(activity.getStartDate, accountId)!
-                    .status),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ));
-        } else {
-          markers.add(Positioned(
-            bottom: 1,
-            left: startPosition + markers.length * (markerSize + markerSpacing),
-            child: Container(
-              width: markerSize,
-              height: markerSize,
-              decoration: const BoxDecoration(
-                color: CustomColors.themePrimary,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ));
-        }
+      bool isMultiDay = Activity.doesActivitySpanMultipleDays(activity);
+      final color =
+          activity.getYourAvailability(activity.getStartDate, accountId) != null
+              ? CustomColors.getAvailabilityColor(activity
+                  .getYourAvailability(activity.getStartDate, accountId)!
+                  .status)
+              : activity.color;
+
+      if (isMultiDay) {
+        multiDayActivities.add(activity);
+        multiDayColors.add(color);
       } else {
-        markers.add(Positioned(
-          bottom: 1,
-          left: startPosition,
-          child: Container(
-            width: markerSize,
-            height: markerSize,
-            decoration: const BoxDecoration(
-              color: Colors.grey,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ));
+        singleDayActivities.add(activity);
+        singleDayColors.add(color);
       }
     }
 
-    return Stack(
-      children: markers,
+    return Center(
+      child: Stack(
+        children: [
+          if (multiDayColors.isNotEmpty)
+            Positioned(
+              bottom: 6,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 3,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: multiDayColors,
+                    stops: List.generate(multiDayColors.length,
+                        (index) => index / multiDayColors.length.toDouble()),
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+              ),
+            ),
+          if (singleDayActivities.isNotEmpty)
+            Positioned(
+              bottom: 12,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    singleDayActivities.length,
+                    (index) {
+                      return Container(
+                        width: (1 / 4) * 50,
+                        height: 3,
+                        decoration: BoxDecoration(
+                          color: singleDayColors[index],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

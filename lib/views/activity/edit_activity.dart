@@ -64,6 +64,9 @@ class EditActivityPageState extends State<EditActivityPage> {
         setState(() {
           if (isStart) {
             _startDate = finalPickedDateTime;
+            if (widget.activity == null) {
+              _endDate = finalPickedDateTime.add(const Duration(hours: 1));
+            }
           } else {
             _endDate = finalPickedDateTime;
           }

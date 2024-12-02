@@ -206,24 +206,30 @@ class ActivityPageState extends State<ActivityPage> {
                 children: [
                   const Icon(Icons.access_time, color: Colors.grey),
                   const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${(Weekday.values[_activity.startDate!.weekday - 1])}, ${_activity.startDate!.day} ${Month.values[_activity.startDate!.month - 1].name}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${(Weekday.values[_activity.startDate!.weekday - 1])}, ${_activity.startDate!.day} ${Month.values[_activity.startDate!.month - 1].name}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                          softWrap: true,
+                          overflow: TextOverflow.clip,
                         ),
-                      ),
-                      Text(
-                        _activity.getTimes,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
+                        Text(
+                          _activity.getTimes,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                          ),
+                          softWrap: true,
+                          overflow: TextOverflow.clip,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -234,10 +240,12 @@ class ActivityPageState extends State<ActivityPage> {
                   children: [
                     const Icon(Icons.place, color: Colors.grey),
                     const SizedBox(width: 8),
-                    Text(
-                      _activity.location!,
-                      style:
-                          const TextStyle(fontSize: 16, color: Colors.black87),
+                    Flexible(
+                      child: Text(
+                        _activity.location!,
+                        style: const TextStyle(
+                            fontSize: 16, color: Colors.black87),
+                      ),
                     ),
                   ],
                 ),
