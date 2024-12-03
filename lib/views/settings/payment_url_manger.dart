@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/services/payment_url.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/dialogs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,26 +43,26 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: CustomColors.themePrimary,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
+          ),
+          iconSize: 25.0,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: const Text(
+          "Wijzig de bierkaart URL",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -70,13 +71,6 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
           padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
           child: Column(
             children: [
-              const Text(
-                "Wijzig de bierkaart URL",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const Text(
                 "Wijzing de bierkaart betaal URL.",
                 style: TextStyle(
@@ -102,7 +96,7 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
                   _paymentUrl ?? "",
                   style: const TextStyle(
                     fontSize: 16,
-                    color: CustomColors.themePrimary,
+                    color: Colors.orange,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

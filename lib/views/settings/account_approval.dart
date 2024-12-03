@@ -3,6 +3,7 @@ import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/verification.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 
 class AccountApprovalPage extends StatefulWidget {
   const AccountApprovalPage({super.key});
@@ -39,26 +40,26 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: CustomColors.themePrimary,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
+          ),
+          iconSize: 25.0,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: const Text(
+          "Nieuwe accounts",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -67,13 +68,6 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
           padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
           child: Column(
             children: [
-              const Text(
-                "Nieuwe accounts",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const Text(
                 "Beheer de accounts die toegang hebben tot de app",
                 style: TextStyle(

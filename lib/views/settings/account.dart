@@ -4,6 +4,7 @@ import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/dialogs.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
 import 'package:piwo/widgets/restart.dart';
@@ -68,26 +69,26 @@ class AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: CustomColors.themePrimary,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
+          ),
+          iconSize: 25.0,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -96,13 +97,6 @@ class AccountPageState extends State<AccountPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.title,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
             Text(
               widget.description,
               style: const TextStyle(

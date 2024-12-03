@@ -81,7 +81,11 @@ class ActivityPageState extends State<ActivityPage> {
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.zero,
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
+          ),
+          iconSize: 25.0,
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -202,24 +206,30 @@ class ActivityPageState extends State<ActivityPage> {
                 children: [
                   const Icon(Icons.access_time, color: Colors.grey),
                   const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${(Weekday.values[_activity.startDate!.weekday - 1])}, ${_activity.startDate!.day} ${Month.values[_activity.startDate!.month - 1].name}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${(Weekday.values[_activity.startDate!.weekday - 1])}, ${_activity.startDate!.day} ${Month.values[_activity.startDate!.month - 1].name}",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                          softWrap: true,
+                          overflow: TextOverflow.clip,
                         ),
-                      ),
-                      Text(
-                        _activity.getTimes,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
+                        Text(
+                          _activity.getTimes,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                          ),
+                          softWrap: true,
+                          overflow: TextOverflow.clip,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -230,10 +240,12 @@ class ActivityPageState extends State<ActivityPage> {
                   children: [
                     const Icon(Icons.place, color: Colors.grey),
                     const SizedBox(width: 8),
-                    Text(
-                      _activity.location!,
-                      style:
-                          const TextStyle(fontSize: 16, color: Colors.black87),
+                    Flexible(
+                      child: Text(
+                        _activity.location!,
+                        style: const TextStyle(
+                            fontSize: 16, color: Colors.black87),
+                      ),
                     ),
                   ],
                 ),
@@ -261,15 +273,12 @@ class ActivityPageState extends State<ActivityPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: !activityHasBeen
-                            ? yourAvailability != null &&
-                                    yourAvailability.status == Status.aanwezig
-                                ? Colors.green
-                                : Colors.grey[300]
-                            : yourAvailability != null &&
-                                    yourAvailability.status == Status.aanwezig
-                                ? Colors.grey
-                                : Colors.grey[300],
+                        color: CustomColors.getActivityButtonColor(
+                          Status.aanwezig,
+                          yourAvailability,
+                          activityHasBeen,
+                          _activity.category!,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text("Aanwezig"),
@@ -283,15 +292,12 @@ class ActivityPageState extends State<ActivityPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: !activityHasBeen
-                            ? yourAvailability != null &&
-                                    yourAvailability.status == Status.misschien
-                                ? Colors.orange
-                                : Colors.grey[300]
-                            : yourAvailability != null &&
-                                    yourAvailability.status == Status.misschien
-                                ? Colors.grey
-                                : Colors.grey[300],
+                        color: CustomColors.getActivityButtonColor(
+                          Status.misschien,
+                          yourAvailability,
+                          activityHasBeen,
+                          _activity.category!,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text("Misschien"),
@@ -305,15 +311,12 @@ class ActivityPageState extends State<ActivityPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: !activityHasBeen
-                            ? yourAvailability != null &&
-                                    yourAvailability.status == Status.afwezig
-                                ? Colors.red
-                                : Colors.grey[300]
-                            : yourAvailability != null &&
-                                    yourAvailability.status == Status.afwezig
-                                ? Colors.grey
-                                : Colors.grey[300],
+                        color: CustomColors.getActivityButtonColor(
+                          Status.afwezig,
+                          yourAvailability,
+                          activityHasBeen,
+                          _activity.category!,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text("Afwezig"),
@@ -348,7 +351,8 @@ class ActivityPageState extends State<ActivityPage> {
                       decoration: BoxDecoration(
                         color: _selectedStatusOverview == Status.aanwezig
                             ? Colors.green
-                            : Colors.grey[300],
+                            : CustomColors.getButtonColorForCategory(
+                                _activity.category!),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Row(
@@ -387,7 +391,8 @@ class ActivityPageState extends State<ActivityPage> {
                       decoration: BoxDecoration(
                         color: _selectedStatusOverview == Status.misschien
                             ? Colors.orange
-                            : Colors.grey[300],
+                            : CustomColors.getButtonColorForCategory(
+                                _activity.category!),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Row(
@@ -426,7 +431,8 @@ class ActivityPageState extends State<ActivityPage> {
                       decoration: BoxDecoration(
                         color: _selectedStatusOverview == Status.afwezig
                             ? Colors.red
-                            : Colors.grey[300],
+                            : CustomColors.getButtonColorForCategory(
+                                _activity.category!),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Row(

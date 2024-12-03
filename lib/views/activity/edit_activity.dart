@@ -64,6 +64,9 @@ class EditActivityPageState extends State<EditActivityPage> {
         setState(() {
           if (isStart) {
             _startDate = finalPickedDateTime;
+            if (widget.activity == null) {
+              _endDate = finalPickedDateTime.add(const Duration(hours: 1));
+            }
           } else {
             _endDate = finalPickedDateTime;
           }
@@ -103,7 +106,11 @@ class EditActivityPageState extends State<EditActivityPage> {
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.zero,
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(
+            Icons.chevron_left,
+            color: Colors.black,
+          ),
+          iconSize: 25.0,
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -126,6 +133,7 @@ class EditActivityPageState extends State<EditActivityPage> {
                       startDate: _startDate,
                       endDate: _endDate,
                       recurrence: _selectedRecurrence,
+                      color: CustomColors.getActivityColor(_selectedCategory),
                       category: _selectedCategory,
                       location: location,
                       exceptions: widget.activity!.exceptions,
@@ -172,7 +180,6 @@ class EditActivityPageState extends State<EditActivityPage> {
                         await ActivityService().createActivity(activty);
 
                     if (result.isSuccess) {
-                      print(result.data);
                       if (!context.mounted) return;
                       SuccessDialog.showSuccessDialogWithOnPressed(
                         context,
