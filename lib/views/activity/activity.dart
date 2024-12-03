@@ -273,15 +273,12 @@ class ActivityPageState extends State<ActivityPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: !activityHasBeen
-                            ? yourAvailability != null &&
-                                    yourAvailability.status == Status.aanwezig
-                                ? Colors.green
-                                : Colors.grey[300]
-                            : yourAvailability != null &&
-                                    yourAvailability.status == Status.aanwezig
-                                ? Colors.grey
-                                : Colors.grey[300],
+                        color: CustomColors.getActivityButtonColor(
+                          Status.aanwezig,
+                          yourAvailability,
+                          activityHasBeen,
+                          _activity.category!,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text("Aanwezig"),
@@ -295,15 +292,12 @@ class ActivityPageState extends State<ActivityPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: !activityHasBeen
-                            ? yourAvailability != null &&
-                                    yourAvailability.status == Status.misschien
-                                ? Colors.orange
-                                : Colors.grey[300]
-                            : yourAvailability != null &&
-                                    yourAvailability.status == Status.misschien
-                                ? Colors.grey
-                                : Colors.grey[300],
+                        color: CustomColors.getActivityButtonColor(
+                          Status.misschien,
+                          yourAvailability,
+                          activityHasBeen,
+                          _activity.category!,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text("Misschien"),
@@ -317,15 +311,12 @@ class ActivityPageState extends State<ActivityPage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
-                        color: !activityHasBeen
-                            ? yourAvailability != null &&
-                                    yourAvailability.status == Status.afwezig
-                                ? Colors.red
-                                : Colors.grey[300]
-                            : yourAvailability != null &&
-                                    yourAvailability.status == Status.afwezig
-                                ? Colors.grey
-                                : Colors.grey[300],
+                        color: CustomColors.getActivityButtonColor(
+                          Status.afwezig,
+                          yourAvailability,
+                          activityHasBeen,
+                          _activity.category!,
+                        ),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text("Afwezig"),
@@ -360,7 +351,8 @@ class ActivityPageState extends State<ActivityPage> {
                       decoration: BoxDecoration(
                         color: _selectedStatusOverview == Status.aanwezig
                             ? Colors.green
-                            : Colors.grey[300],
+                            : CustomColors.getButtonColorForCategory(
+                                _activity.category!),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Row(
@@ -399,7 +391,8 @@ class ActivityPageState extends State<ActivityPage> {
                       decoration: BoxDecoration(
                         color: _selectedStatusOverview == Status.misschien
                             ? Colors.orange
-                            : Colors.grey[300],
+                            : CustomColors.getButtonColorForCategory(
+                                _activity.category!),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Row(
@@ -438,7 +431,8 @@ class ActivityPageState extends State<ActivityPage> {
                       decoration: BoxDecoration(
                         color: _selectedStatusOverview == Status.afwezig
                             ? Colors.red
-                            : Colors.grey[300],
+                            : CustomColors.getButtonColorForCategory(
+                                _activity.category!),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: Row(

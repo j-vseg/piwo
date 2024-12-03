@@ -115,6 +115,7 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                               .subtract(const Duration(days: 365)),
                           lastDay:
                               DateTime.now().add(const Duration(days: 365)),
+                          startingDayOfWeek: StartingDayOfWeek.monday,
                           focusedDay: _selectedDate,
                           selectedDayPredicate: (day) {
                             return isSameDay(_selectedDate, day);
@@ -145,13 +146,12 @@ class ActivitiesPageState extends State<ActivitiesPage> {
                                 final activitiesList =
                                     groupedActivities[normalizedDate];
                                 return Align(
-                                  alignment: Alignment
-                                      .bottomCenter, // Markers at the bottom of the cell
+                                  alignment: Alignment.bottomCenter,
                                   child: _buildMarkers(activitiesList ?? [],
                                       _account.id ?? "", day),
                                 );
                               }
-                              return null; // No marker for days without activities
+                              return null;
                             },
                           ),
                           calendarStyle: const CalendarStyle(
@@ -226,9 +226,12 @@ class ActivitiesPageState extends State<ActivitiesPage> {
       bool isMultiDay = Activity.doesActivitySpanMultipleDays(activity);
       final color =
           activity.getYourAvailability(activity.getStartDate, accountId) != null
-              ? CustomColors.getAvailabilityColor(activity
-                  .getYourAvailability(activity.getStartDate, accountId)!
-                  .status)
+              ? CustomColors.getAvailabilityColor(
+                  activity
+                      .getYourAvailability(activity.getStartDate, accountId)!
+                      .status,
+                  activity.category!,
+                )
               : activity.color;
 
       if (isMultiDay) {

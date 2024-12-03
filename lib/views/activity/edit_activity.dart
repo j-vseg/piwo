@@ -133,6 +133,7 @@ class EditActivityPageState extends State<EditActivityPage> {
                       startDate: _startDate,
                       endDate: _endDate,
                       recurrence: _selectedRecurrence,
+                      color: CustomColors.getActivityColor(_selectedCategory),
                       category: _selectedCategory,
                       location: location,
                       exceptions: widget.activity!.exceptions,

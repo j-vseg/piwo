@@ -115,10 +115,11 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                             );
                           },
                           child: Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              color: CustomColors.background100,
+                                  const BorderRadius.all(Radius.circular(20)),
+                              color: CustomColors.getActivityBackgroundColor(
+                                  activity.category!),
                             ),
                             margin: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 10),
@@ -137,6 +138,24 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.category,
+                                        color: activity.color,
+                                        size: 14,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        activity.category.toString(),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
                                   Text(
                                     activity.getFullDate,
                                     style: const TextStyle(fontSize: 16),
@@ -155,20 +174,13 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 8.0, horizontal: 16.0),
                                           decoration: BoxDecoration(
-                                            color: !activityHasBeen
-                                                ? yourAvailability != null &&
-                                                        yourAvailability
-                                                                .status ==
-                                                            Status.aanwezig
-                                                    ? Colors.green
-                                                    : CustomColors.background200
-                                                : yourAvailability != null &&
-                                                        yourAvailability
-                                                                .status ==
-                                                            Status.aanwezig
-                                                    ? CustomColors.greyYellow
-                                                    : CustomColors
-                                                        .background200,
+                                            color: CustomColors
+                                                .getActivityButtonColor(
+                                              Status.aanwezig,
+                                              yourAvailability,
+                                              activityHasBeen,
+                                              activity.category!,
+                                            ),
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
@@ -184,20 +196,13 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 8.0, horizontal: 16.0),
                                           decoration: BoxDecoration(
-                                            color: !activityHasBeen
-                                                ? yourAvailability != null &&
-                                                        yourAvailability
-                                                                .status ==
-                                                            Status.misschien
-                                                    ? Colors.orange
-                                                    : CustomColors.background200
-                                                : yourAvailability != null &&
-                                                        yourAvailability
-                                                                .status ==
-                                                            Status.misschien
-                                                    ? CustomColors.greyYellow
-                                                    : CustomColors
-                                                        .background200,
+                                            color: CustomColors
+                                                .getActivityButtonColor(
+                                              Status.misschien,
+                                              yourAvailability,
+                                              activityHasBeen,
+                                              activity.category!,
+                                            ),
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
@@ -213,20 +218,13 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 8.0, horizontal: 16.0),
                                           decoration: BoxDecoration(
-                                            color: !activityHasBeen
-                                                ? yourAvailability != null &&
-                                                        yourAvailability
-                                                                .status ==
-                                                            Status.afwezig
-                                                    ? Colors.red
-                                                    : CustomColors.background200
-                                                : yourAvailability != null &&
-                                                        yourAvailability
-                                                                .status ==
-                                                            Status.afwezig
-                                                    ? CustomColors.greyYellow
-                                                    : CustomColors
-                                                        .background200,
+                                            color: CustomColors
+                                                .getActivityButtonColor(
+                                              Status.afwezig,
+                                              yourAvailability,
+                                              activityHasBeen,
+                                              activity.category!,
+                                            ),
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                           ),
