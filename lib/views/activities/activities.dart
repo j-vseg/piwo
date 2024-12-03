@@ -224,15 +224,17 @@ class ActivitiesPageState extends State<ActivitiesPage> {
 
     for (var activity in activities) {
       bool isMultiDay = Activity.doesActivitySpanMultipleDays(activity);
-      final color =
-          activity.getYourAvailability(activity.getStartDate, accountId) != null
+      final color = activity.endDate!.isAfter(DateTime.now().toUtc())
+          ? activity.getYourAvailability(activity.getStartDate, accountId) !=
+                  null
               ? CustomColors.getAvailabilityColor(
                   activity
                       .getYourAvailability(activity.getStartDate, accountId)!
                       .status,
                   activity.category!,
                 )
-              : activity.color;
+              : activity.color
+          : Colors.grey;
 
       if (isMultiDay) {
         multiDayActivities.add(activity);
