@@ -362,6 +362,7 @@ class AccountPageState extends State<AccountPage> {
                             amountOfCoins: 0,
                             isApproved: false,
                             isConfirmed: false,
+                            isFirstLogin: true,
                             roles: [Role.user],
                           );
 

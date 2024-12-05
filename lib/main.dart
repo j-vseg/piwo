@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
+import 'package:piwo/views/home/home_view.dart';
 import 'package:piwo/views/login/verification.dart';
 import 'package:piwo/views/onboarding/onboarding.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
@@ -65,14 +66,18 @@ class MyHomePageState extends State<MyHomePage> {
         ),
       );
     } else if (loginState.getIsLoggedIn) {
-      return Scaffold(
-        body: Center(
-          child: VerificationPage(
-            isApproved: loginState.getIsApproved,
-            isComfired: loginState.getIsComfired,
+      if (loginState.isFirstLogin) {
+        return Scaffold(
+          body: Center(
+            child: VerificationPage(
+              isApproved: loginState.getIsApproved,
+              isComfired: loginState.getIsComfired,
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        return const HomeView();
+      }
     } else {
       return const Scaffold(
         body: Center(

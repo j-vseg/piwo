@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
 import 'package:piwo/services/onboarding.dart';
+import 'package:piwo/services/verification.dart';
 import 'package:piwo/views/home/home_view.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
@@ -86,6 +88,8 @@ class VerificationPageState extends State<VerificationPage> {
                   minWidth: double.maxFinite,
                   color: CustomColors.themePrimary,
                   onPressed: () async {
+                    VerificationService().updateFirstLogin(
+                        FirebaseAuth.instance.currentUser?.uid ?? "");
                     if (!context.mounted) return;
                     Navigator.pushAndRemoveUntil(
                       context,
