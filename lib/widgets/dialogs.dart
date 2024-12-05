@@ -45,60 +45,81 @@ class ErrorDialog extends StatelessWidget {
   }
 }
 
-class SuccessDialog extends StatelessWidget {
-  final String successMessage;
-  final Function? onPressed;
-
-  const SuccessDialog({
-    super.key,
-    required this.successMessage,
-    this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Row(
+class SuccessDialog {
+  static void show(
+    BuildContext context, {
+    required String message,
+    VoidCallback? onPressed,
+    String? buttonLabel,
+  }) {
+    final snackBar = SnackBar(
+      content: Row(
         children: [
-          Icon(Icons.check_circle, color: CustomColors.success),
-          SizedBox(width: 8),
-          Text("Het is gelukt!", style: TextStyle(color: CustomColors.success)),
+          const Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ),
         ],
       ),
-      content: Text(
-        successMessage,
-        style: const TextStyle(color: Colors.black87),
-      ),
-      backgroundColor: Colors.white,
-      actions: [
-        TextButton(
-          onPressed: () {
-            onPressed != null ? onPressed!() : Navigator.of(context).pop();
-          },
-          child: const Text(
-            "OK",
-            style: TextStyle(color: CustomColors.success),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.green[100],
+      action: (onPressed != null && buttonLabel != null)
+          ? SnackBarAction(
+              label: buttonLabel,
+              textColor: Colors.black87,
+              onPressed: onPressed,
+            )
+          : null,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+}
+
+class InfoDialog {
+  static void show(
+    BuildContext context, {
+    required String message,
+    VoidCallback? onPressed,
+    String? buttonLabel,
+    Duration? duration,
+  }) {
+    final snackBar = SnackBar(
+      content: Row(
+        children: [
+          const Icon(
+            Icons.info,
+            color: Colors.blue,
           ),
-        ),
-      ],
-    );
-  }
-
-  static void showSuccessDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => SuccessDialog(successMessage: message),
-    );
-  }
-
-  static void showSuccessDialogWithOnPressed(
-      BuildContext context, String message, Function onPressed) {
-    showDialog(
-      context: context,
-      builder: (context) => SuccessDialog(
-        successMessage: message,
-        onPressed: onPressed,
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ),
+        ],
       ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.blue[100],
+      duration: duration ?? const Duration(seconds: 3),
+      action: (onPressed != null)
+          ? SnackBarAction(
+              label: buttonLabel ?? "OK",
+              textColor: Colors.black87,
+              onPressed: onPressed,
+            )
+          : null,
     );
+
+    // Display the snackbar
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

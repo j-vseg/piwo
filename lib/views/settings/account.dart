@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 class AccountPage extends StatefulWidget {
   final bool isCreatingAccount;
-  final bool? isResetingPassword;
+  final bool isResetingPassword;
   final String title;
   final String description;
   final TextEditingController? emailController;
@@ -116,8 +116,7 @@ class AccountPageState extends State<AccountPage> {
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         labelText: widget.isCreatingAccount ||
-                                (widget.isResetingPassword != null &&
-                                    widget.isResetingPassword!)
+                                widget.isResetingPassword
                             ? 'Email*'
                             : 'Nieuwe email*',
                       ),
@@ -137,14 +136,16 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (!widget.isCreatingAccount &&
+                  if (widget.isCreatingAccount ||
                       widget.passwordController != null) ...[
                     TextFormField(
                       controller: widget.passwordController,
                       obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        labelText: 'Nieuw wachtwoord*',
+                        labelText: widget.isCreatingAccount
+                            ? 'Wachtwoord*'
+                            : 'Nieuw wachtwoord*',
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
@@ -204,7 +205,7 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isResetingPassword == null) ...[
+                  if (widget.isResetingPassword) ...[
                     TextFormField(
                       controller: _oldPasswordController,
                       obscureText: !_isOldPasswordVisible,
@@ -247,8 +248,7 @@ class AccountPageState extends State<AccountPage> {
                         String? lastName;
                         final oldPassword = _oldPasswordController.text.trim();
 
-                        if (!widget.isCreatingAccount &&
-                            widget.isResetingPassword == null) {
+                        if (!widget.isCreatingAccount) {
                           if (widget.emailController != null) {
                             email = widget.emailController!.text.trim();
 
@@ -257,10 +257,11 @@ class AccountPageState extends State<AccountPage> {
 
                             if (result.isSuccess) {
                               if (!context.mounted) return;
-                              SuccessDialog.showSuccessDialogWithOnPressed(
+                              SuccessDialog.show(
                                 context,
-                                "Er is een email verstuurd om je nieuwe email: $email te verifieeren. Je moet weer opnieuw inloggen om het nieuwe email address te bevestigen.",
-                                () async {
+                                message:
+                                    "Er is een email verstuurd om je nieuwe email: $email te verifieeren. Je moet weer opnieuw inloggen om het nieuwe email address te bevestigen.",
+                                onPressed: () async {
                                   await AuthService().signOut();
 
                                   if (!context.mounted) return;
@@ -287,9 +288,10 @@ class AccountPageState extends State<AccountPage> {
 
                             if (result.isSuccess) {
                               if (!context.mounted) return;
-                              SuccessDialog.showSuccessDialog(
+                              SuccessDialog.show(
                                 context,
-                                "We hebben successful je wachtwoord gewijzigd.",
+                                message:
+                                    "We hebben successful je wachtwoord gewijzigd.",
                               );
                             } else {
                               if (!context.mounted) return;
@@ -313,9 +315,10 @@ class AccountPageState extends State<AccountPage> {
                             );
                             if (result.isSuccess) {
                               if (!context.mounted) return;
-                              SuccessDialog.showSuccessDialog(
+                              SuccessDialog.show(
                                 context,
-                                "Het updaten van je account informatie is gelukt!",
+                                message:
+                                    "Het updaten van je account informatie is gelukt!",
                               );
                             } else {
                               if (!context.mounted) return;
@@ -326,8 +329,7 @@ class AccountPageState extends State<AccountPage> {
                               );
                             }
                           }
-                        } else if (widget.isResetingPassword != null &&
-                            widget.isResetingPassword!) {
+                        } else if (widget.isResetingPassword) {
                           email = widget.emailController!.text.trim();
 
                           final result =
@@ -335,9 +337,10 @@ class AccountPageState extends State<AccountPage> {
 
                           if (result.isSuccess) {
                             if (!context.mounted) return;
-                            SuccessDialog.showSuccessDialog(
+                            SuccessDialog.show(
                               context,
-                              "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",
+                              message:
+                                  "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",
                             );
                           } else {
                             if (!context.mounted) return;
@@ -365,14 +368,15 @@ class AccountPageState extends State<AccountPage> {
                           final result = await AuthService().signUp(
                             account,
                             email,
-                            oldPassword,
+                            newPassword,
                           );
 
                           if (result.isSuccess) {
                             if (!context.mounted) return;
-                            SuccessDialog.showSuccessDialog(
+                            SuccessDialog.show(
                               context,
-                              "Het aanmaken van een account is gelukt! Je kan nu inloggen.",
+                              message:
+                                  "Het aanmaken van een account is gelukt! Je kan nu inloggen.",
                             );
                           } else {
                             if (!context.mounted) return;
@@ -387,8 +391,7 @@ class AccountPageState extends State<AccountPage> {
                     },
                     child: Text(widget.isCreatingAccount
                         ? 'Creer je account'
-                        : widget.isResetingPassword != null &&
-                                widget.isResetingPassword!
+                        : widget.isResetingPassword
                             ? "Reset wachtwoord"
                             : 'Wijzig je account'),
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/auth.dart';
+import 'package:piwo/services/onboarding.dart';
 import 'package:piwo/views/settings/account.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
@@ -78,7 +79,7 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: null,
+                    isResetingPassword: true,
                     isCreatingAccount: false,
                     emailController: TextEditingController(),
                   ),
@@ -96,7 +97,7 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: null,
+                    isResetingPassword: true,
                     isCreatingAccount: false,
                     passwordController: TextEditingController(),
                   ),
@@ -114,7 +115,7 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: null,
+                    isResetingPassword: true,
                     isCreatingAccount: false,
                     firstNameController: TextEditingController(),
                     lastNameController: TextEditingController(),
@@ -149,6 +150,7 @@ class ProfilePageState extends State<ProfilePage> {
                 () async {
                   await AuthService().signOut();
 
+                  await OnboardingService.saveOnboardingCompleted(false);
                   if (!context.mounted) return;
                   context.read<LoginStateNotifier>().logOut();
                   Navigator.of(context).pop();
@@ -180,6 +182,7 @@ class ProfilePageState extends State<ProfilePage> {
                 () async {
                   AccountService().deleteAccount();
 
+                  await OnboardingService.saveOnboardingCompleted(false);
                   if (!context.mounted) return;
                   context.read<LoginStateNotifier>().logOut();
                   Navigator.of(context).pop();

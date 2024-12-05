@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/services/auth.dart';
 import 'package:piwo/views/settings/account.dart';
+import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/dialogs.dart';
-import 'package:piwo/widgets/notifiers/login_notifier.dart';
-import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
     super.key,
+    this.onPressed,
   });
+
+  final Function? onPressed;
 
   @override
   LoginPageState createState() => LoginPageState();
@@ -34,7 +36,8 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
+      bodyPadding: const Padding(padding: EdgeInsets.all(0)),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 200.0, left: 20.0, right: 20.0),
@@ -129,7 +132,9 @@ class LoginPageState extends State<LoginPage> {
                       child: const Text(
                         'Wachtwoord vergeten?',
                         style: TextStyle(
-                          color: CustomColors.themePrimary,
+                          color: Colors.orange,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.orange,
                         ),
                       ),
                     ),
@@ -146,11 +151,7 @@ class LoginPageState extends State<LoginPage> {
                               await _authService.signIn(email, password);
 
                           if (result.isSuccess) {
-                            if (!context.mounted) return;
-                            context
-                                .read<LoginStateNotifier>()
-                                .checkLoginStatus();
-                            context.read<LoginStateNotifier>().logIn();
+                            if (widget.onPressed != null) widget.onPressed!();
                           } else {
                             if (!context.mounted) return;
                             ErrorDialog.showErrorDialog(
@@ -163,14 +164,13 @@ class LoginPageState extends State<LoginPage> {
                       },
                       child: const Text('Login'),
                     ),
-                    const SizedBox(height: 10),
                     GestureDetector(
                       onTap: () async {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => AccountPage(
-                              isResetingPassword: null,
+                              isResetingPassword: false,
                               isCreatingAccount: true,
                               title: "Maak een account",
                               description:
@@ -186,7 +186,9 @@ class LoginPageState extends State<LoginPage> {
                       child: const Text(
                         'Nog geen account?',
                         style: TextStyle(
-                          color: CustomColors.themePrimary,
+                          color: Colors.orange,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Colors.orange,
                         ),
                       ),
                     ),

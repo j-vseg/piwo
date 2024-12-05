@@ -133,9 +133,9 @@ class ActivityPageState extends State<ActivityPage> {
                     _activity.id ?? "", _activity.getStartDate);
                 if (result.isSuccess) {
                   if (!context.mounted) return;
-                  SuccessDialog.showSuccessDialog(
+                  SuccessDialog.show(
                     context,
-                    "Activiteit is verwijderd.",
+                    message: "Activiteit is verwijderd.",
                   );
                 } else {
                   if (!context.mounted) return;
@@ -149,10 +149,10 @@ class ActivityPageState extends State<ActivityPage> {
                     await ActivityService().deleteActivity(_activity.id ?? "");
                 if (result.isSuccess) {
                   if (!context.mounted) return;
-                  SuccessDialog.showSuccessDialogWithOnPressed(
+                  SuccessDialog.show(
                     context,
-                    "Activiteit is verwijderd.",
-                    () async {
+                    message: "Activiteit is verwijderd.",
+                    onPressed: () async {
                       await activityProvider
                           .deleteActivity(widget.activity.id ?? "");
 
