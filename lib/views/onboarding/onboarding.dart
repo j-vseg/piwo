@@ -36,7 +36,7 @@ class OnboardingPage extends StatelessWidget {
       ),
       OnboardingCard(
         asset: 'assets/images/campfire.json',
-        title: "Maak een account aan",
+        title: "Inloggen",
         description:
             "Om de app te gebruiken moet je een account hebben of kun je er een aanmaken.",
         buttonText: "Login met een account",

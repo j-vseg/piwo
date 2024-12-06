@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/services/account.dart';
+import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/auth.dart';
 import 'package:piwo/services/onboarding.dart';
 import 'package:piwo/services/verification.dart';
 import 'package:piwo/views/home/home_view.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
+import 'package:piwo/widgets/restart.dart';
 import 'package:provider/provider.dart';
 
 class VerificationPage extends StatefulWidget {
@@ -26,6 +28,8 @@ class VerificationPage extends StatefulWidget {
 }
 
 class VerificationPageState extends State<VerificationPage> {
+  bool _isPasswordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -75,11 +79,21 @@ class VerificationPageState extends State<VerificationPage> {
                   minWidth: double.maxFinite,
                   color: Colors.red,
                   onPressed: () async {
-                    OnboardingService.saveOnboardingCompleted(false);
-                    AccountService().deleteAccount();
+                    _showYesNoDialog(
+                      context,
+                      (String password) async {
+                        await ActivityService()
+                            .deleteAllAvailabilitiesOfAccount(
+                                FirebaseAuth.instance.currentUser?.uid ?? "");
+                        await AccountService().deleteAccount(password);
 
-                    if (!context.mounted) return;
-                    context.read<LoginStateNotifier>().logOut();
+                        await OnboardingService.saveOnboardingCompleted(false);
+                        if (!context.mounted) return;
+                        context.read<LoginStateNotifier>().logOut();
+                        Navigator.of(context).pop();
+                        RestartWidget.restartApp(context);
+                      },
+                    );
                   },
                   child: const Text('Verwijder je account'),
                 ),
@@ -106,6 +120,79 @@ class VerificationPageState extends State<VerificationPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showYesNoDialog(
+    BuildContext context,
+    Function onPressed,
+  ) {
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController passwordController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Weet je het zeker?"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                  "Weet je zeker dat je account wilt verwijderen? Al je account informatie wordt hiermee verwijderd."),
+              const SizedBox(height: 8),
+              Form(
+                key: formKey,
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: !_isPasswordVisible,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: 'Wachtwoord*',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veld kan niet leeg zijn';
+                    }
+                    if (value.length < 8) {
+                      return "Wachtwoord moet minimaal 8 characters lang zijn";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Nee'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Ja'),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  onPressed(passwordController.text.trim());
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
