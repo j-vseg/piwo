@@ -67,20 +67,22 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
                 "Beheer de accounts die toegang hebben tot de app",
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   color: CustomColors.unselectedMenuColor,
                 ),
               ),
               const SizedBox(height: 20),
               if (_accounts.isEmpty) ...[
                 const Text(
-                  "Geen nieuwe accounts",
+                  "Geen nieuwe accounts.",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                   ),
                 )
               ] else ...[

@@ -49,9 +49,9 @@ class LoginPageState extends State<LoginPage> {
               ),
             ),
             const Text(
-              "Login in je account",
+              "Login met je account",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 color: CustomColors.unselectedMenuColor,
               ),
             ),

@@ -200,9 +200,9 @@ class ActivityService {
 
       for (var activity in activities) {
         if (activity.availabilities != null) {
-          activity.availabilities!.forEach((date, availability) {
-            availability
-                .removeWhere((availa) => availa.account?.id == accountId);
+          activity.availabilities!.forEach((date, availabilities) {
+            availabilities.removeWhere(
+                (availability) => availability.account?.id == accountId);
           });
         }
       }

@@ -81,7 +81,8 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: true,
+                    account: _account,
+                    isResetingPassword: false,
                     isCreatingAccount: false,
                     emailController: TextEditingController(),
                   ),
@@ -99,7 +100,8 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: true,
+                    account: _account,
+                    isResetingPassword: false,
                     isCreatingAccount: false,
                     passwordController: TextEditingController(),
                   ),
@@ -117,7 +119,8 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: true,
+                    account: _account,
+                    isResetingPassword: false,
                     isCreatingAccount: false,
                     firstNameController: TextEditingController(),
                     lastNameController: TextEditingController(),
@@ -215,7 +218,6 @@ class ProfilePageState extends State<ProfilePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // Local state for visibility toggle
         bool isPasswordVisible = false;
 
         return StatefulBuilder(

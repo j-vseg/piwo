@@ -19,6 +19,7 @@ class AccountPage extends StatefulWidget {
   final TextEditingController? passwordController;
   final TextEditingController? firstNameController;
   final TextEditingController? lastNameController;
+  final Account? account;
 
   const AccountPage({
     super.key,
@@ -30,6 +31,7 @@ class AccountPage extends StatefulWidget {
     this.passwordController,
     this.firstNameController,
     this.lastNameController,
+    this.account,
   })  : title = title ?? "Beheer je account",
         description = description ?? "Maak hier wijzingen aan je account.";
 
@@ -69,6 +71,18 @@ class AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.account != null) {
+      if (widget.emailController != null) {
+        widget.emailController!.text = widget.account!.email ?? "";
+      }
+      if (widget.firstNameController != null) {
+        widget.firstNameController!.text = widget.account!.firstName ?? "";
+      }
+      if (widget.lastNameController != null) {
+        widget.lastNameController!.text = widget.account!.lastName ?? "";
+      }
+    }
+
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -95,12 +109,13 @@ class AccountPageState extends State<AccountPage> {
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               widget.description,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 color: CustomColors.unselectedMenuColor,
               ),
             ),
@@ -109,8 +124,7 @@ class AccountPageState extends State<AccountPage> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  if (widget.isCreatingAccount ||
-                      widget.emailController != null) ...[
+                  if (widget.emailController != null) ...[
                     TextFormField(
                       controller: widget.emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -137,8 +151,7 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isCreatingAccount ||
-                      widget.passwordController != null) ...[
+                  if (widget.passwordController != null) ...[
                     TextFormField(
                       controller: widget.passwordController,
                       obscureText: !_isPasswordVisible,
@@ -172,8 +185,7 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isCreatingAccount ||
-                      widget.firstNameController != null) ...[
+                  if (widget.firstNameController != null) ...[
                     TextFormField(
                       controller: widget.firstNameController,
                       decoration: const InputDecoration(
@@ -189,8 +201,7 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isCreatingAccount ||
-                      widget.lastNameController != null) ...[
+                  if (widget.lastNameController != null) ...[
                     TextFormField(
                       controller: widget.lastNameController,
                       decoration: const InputDecoration(
@@ -206,7 +217,8 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isResetingPassword) ...[
+                  if (!widget.isResetingPassword &&
+                      !widget.isCreatingAccount) ...[
                     TextFormField(
                       controller: _oldPasswordController,
                       obscureText: !_isOldPasswordVisible,
@@ -258,7 +270,7 @@ class AccountPageState extends State<AccountPage> {
 
                             if (result.isSuccess) {
                               if (!context.mounted) return;
-                              SuccessDialog.show(
+                              InfoDialog.show(
                                 context,
                                 message:
                                     "Er is een email verstuurd om je nieuwe email: $email te verifieeren. Je moet weer opnieuw inloggen om het nieuwe email address te bevestigen.",
@@ -338,7 +350,7 @@ class AccountPageState extends State<AccountPage> {
 
                           if (result.isSuccess) {
                             if (!context.mounted) return;
-                            SuccessDialog.show(
+                            InfoDialog.show(
                               context,
                               message:
                                   "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",

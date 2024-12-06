@@ -74,7 +74,7 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
               const Text(
                 "Wijzing de bierkaart betaal URL.",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   color: CustomColors.unselectedMenuColor,
                 ),
               ),

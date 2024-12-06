@@ -218,7 +218,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                               SuccessDialog.show(
                                 context,
                                 message:
-                                    "We hebben successful je wachtwoord gewijzigd.",
+                                    "We hebben successful de rechten van het account gewijzigd.",
                               );
                             } else {
                               if (!context.mounted) return;
@@ -238,7 +238,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                               SuccessDialog.show(
                                 context,
                                 message:
-                                    "We hebben successful je wachtwoord gewijzigd.",
+                                    "We hebben successful de rechten van het account gewijzigd.",
                               );
                             } else {
                               if (!context.mounted) return;

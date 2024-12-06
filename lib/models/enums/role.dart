@@ -1,5 +1,6 @@
 enum Role {
   user,
+  adviseur,
   penningmeester,
   beheerder,
   admin;
