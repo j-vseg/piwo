@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
             seedColor: CustomColors.themePrimary,
           ),
         ),
+        debugShowCheckedModeBanner: false,
         home: const MyHomePage(),
       ),
     );

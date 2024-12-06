@@ -113,6 +113,7 @@ class AccountPageState extends State<AccountPage> {
                       widget.emailController != null) ...[
                     TextFormField(
                       controller: widget.emailController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         labelText: widget.isCreatingAccount ||
