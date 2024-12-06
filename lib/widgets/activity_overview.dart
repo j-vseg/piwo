@@ -90,7 +90,7 @@ class _ActivityOverviewState extends State<ActivityOverview> {
               ...widget.activities.isEmpty
                   ? [
                       const Text(
-                        "Geen activiteiten.",
+                        "Geen activiteiten op deze dag.",
                         style: TextStyle(fontSize: 16),
                       ),
                     ]

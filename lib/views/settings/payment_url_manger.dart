@@ -74,7 +74,7 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
               const Text(
                 "Wijzing de bierkaart betaal URL.",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   color: CustomColors.unselectedMenuColor,
                 ),
               ),
@@ -139,9 +139,9 @@ class PaymentUrlManagerPageState extends State<PaymentUrlManagerPage> {
 
                           if (result.isSuccess) {
                             if (!context.mounted) return;
-                            SuccessDialog.showSuccessDialog(
+                            SuccessDialog.show(
                               context,
-                              "De betaalverzoek URL is gewijzigd.",
+                              message: "De betaalverzoek URL is gewijzigd.",
                             );
                           } else {
                             if (!context.mounted) return;

@@ -12,13 +12,14 @@ import 'package:provider/provider.dart';
 
 class AccountPage extends StatefulWidget {
   final bool isCreatingAccount;
-  final bool? isResetingPassword;
+  final bool isResetingPassword;
   final String title;
   final String description;
   final TextEditingController? emailController;
   final TextEditingController? passwordController;
   final TextEditingController? firstNameController;
   final TextEditingController? lastNameController;
+  final Account? account;
 
   const AccountPage({
     super.key,
@@ -30,6 +31,7 @@ class AccountPage extends StatefulWidget {
     this.passwordController,
     this.firstNameController,
     this.lastNameController,
+    this.account,
   })  : title = title ?? "Beheer je account",
         description = description ?? "Maak hier wijzingen aan je account.";
 
@@ -69,6 +71,18 @@ class AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.account != null) {
+      if (widget.emailController != null) {
+        widget.emailController!.text = widget.account!.email ?? "";
+      }
+      if (widget.firstNameController != null) {
+        widget.firstNameController!.text = widget.account!.firstName ?? "";
+      }
+      if (widget.lastNameController != null) {
+        widget.lastNameController!.text = widget.account!.lastName ?? "";
+      }
+    }
+
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -95,12 +109,13 @@ class AccountPageState extends State<AccountPage> {
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               widget.description,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 color: CustomColors.unselectedMenuColor,
               ),
             ),
@@ -109,15 +124,14 @@ class AccountPageState extends State<AccountPage> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  if (widget.isCreatingAccount ||
-                      widget.emailController != null) ...[
+                  if (widget.emailController != null) ...[
                     TextFormField(
                       controller: widget.emailController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         labelText: widget.isCreatingAccount ||
-                                (widget.isResetingPassword != null &&
-                                    widget.isResetingPassword!)
+                                widget.isResetingPassword
                             ? 'Email*'
                             : 'Nieuwe email*',
                       ),
@@ -137,14 +151,15 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (!widget.isCreatingAccount &&
-                      widget.passwordController != null) ...[
+                  if (widget.passwordController != null) ...[
                     TextFormField(
                       controller: widget.passwordController,
                       obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
-                        labelText: 'Nieuw wachtwoord*',
+                        labelText: widget.isCreatingAccount
+                            ? 'Wachtwoord*'
+                            : 'Nieuw wachtwoord*',
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
@@ -170,8 +185,7 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isCreatingAccount ||
-                      widget.firstNameController != null) ...[
+                  if (widget.firstNameController != null) ...[
                     TextFormField(
                       controller: widget.firstNameController,
                       decoration: const InputDecoration(
@@ -187,8 +201,7 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isCreatingAccount ||
-                      widget.lastNameController != null) ...[
+                  if (widget.lastNameController != null) ...[
                     TextFormField(
                       controller: widget.lastNameController,
                       decoration: const InputDecoration(
@@ -204,7 +217,8 @@ class AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (widget.isResetingPassword == null) ...[
+                  if (!widget.isResetingPassword &&
+                      !widget.isCreatingAccount) ...[
                     TextFormField(
                       controller: _oldPasswordController,
                       obscureText: !_isOldPasswordVisible,
@@ -247,8 +261,7 @@ class AccountPageState extends State<AccountPage> {
                         String? lastName;
                         final oldPassword = _oldPasswordController.text.trim();
 
-                        if (!widget.isCreatingAccount &&
-                            widget.isResetingPassword == null) {
+                        if (!widget.isCreatingAccount) {
                           if (widget.emailController != null) {
                             email = widget.emailController!.text.trim();
 
@@ -257,10 +270,11 @@ class AccountPageState extends State<AccountPage> {
 
                             if (result.isSuccess) {
                               if (!context.mounted) return;
-                              SuccessDialog.showSuccessDialogWithOnPressed(
+                              InfoDialog.show(
                                 context,
-                                "Er is een email verstuurd om je nieuwe email: $email te verifieeren. Je moet weer opnieuw inloggen om het nieuwe email address te bevestigen.",
-                                () async {
+                                message:
+                                    "Er is een email verstuurd om je nieuwe email: $email te verifieeren. Je moet weer opnieuw inloggen om het nieuwe email address te bevestigen.",
+                                onPressed: () async {
                                   await AuthService().signOut();
 
                                   if (!context.mounted) return;
@@ -287,9 +301,10 @@ class AccountPageState extends State<AccountPage> {
 
                             if (result.isSuccess) {
                               if (!context.mounted) return;
-                              SuccessDialog.showSuccessDialog(
+                              SuccessDialog.show(
                                 context,
-                                "We hebben successful je wachtwoord gewijzigd.",
+                                message:
+                                    "We hebben successful je wachtwoord gewijzigd.",
                               );
                             } else {
                               if (!context.mounted) return;
@@ -313,9 +328,10 @@ class AccountPageState extends State<AccountPage> {
                             );
                             if (result.isSuccess) {
                               if (!context.mounted) return;
-                              SuccessDialog.showSuccessDialog(
+                              SuccessDialog.show(
                                 context,
-                                "Het updaten van je account informatie is gelukt!",
+                                message:
+                                    "Het updaten van je account informatie is gelukt!",
                               );
                             } else {
                               if (!context.mounted) return;
@@ -326,8 +342,7 @@ class AccountPageState extends State<AccountPage> {
                               );
                             }
                           }
-                        } else if (widget.isResetingPassword != null &&
-                            widget.isResetingPassword!) {
+                        } else if (widget.isResetingPassword) {
                           email = widget.emailController!.text.trim();
 
                           final result =
@@ -335,9 +350,10 @@ class AccountPageState extends State<AccountPage> {
 
                           if (result.isSuccess) {
                             if (!context.mounted) return;
-                            SuccessDialog.showSuccessDialog(
+                            InfoDialog.show(
                               context,
-                              "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",
+                              message:
+                                  "Er is een email verstuurd naar: $email om je wachtwoord te resetten.",
                             );
                           } else {
                             if (!context.mounted) return;
@@ -359,20 +375,22 @@ class AccountPageState extends State<AccountPage> {
                             amountOfCoins: 0,
                             isApproved: false,
                             isConfirmed: false,
+                            isFirstLogin: true,
                             roles: [Role.user],
                           );
 
                           final result = await AuthService().signUp(
                             account,
                             email,
-                            oldPassword,
+                            newPassword,
                           );
 
                           if (result.isSuccess) {
                             if (!context.mounted) return;
-                            SuccessDialog.showSuccessDialog(
+                            SuccessDialog.show(
                               context,
-                              "Het aanmaken van een account is gelukt! Je kan nu inloggen.",
+                              message:
+                                  "Het aanmaken van een account is gelukt! Je kan nu inloggen.",
                             );
                           } else {
                             if (!context.mounted) return;
@@ -387,8 +405,7 @@ class AccountPageState extends State<AccountPage> {
                     },
                     child: Text(widget.isCreatingAccount
                         ? 'Creer je account'
-                        : widget.isResetingPassword != null &&
-                                widget.isResetingPassword!
+                        : widget.isResetingPassword
                             ? "Reset wachtwoord"
                             : 'Wijzig je account'),
                   ),

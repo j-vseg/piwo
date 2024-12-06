@@ -3,6 +3,7 @@ import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
+import 'package:piwo/views/activities/widgets/inverted_rounded_corners.dart';
 import 'package:piwo/widgets/activity_overview.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
@@ -98,13 +99,28 @@ class HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                ActivityOverview(
-                  activities: limitedActivities,
-                  account: _profile,
-                  title: "Toekomstige activiteiten",
-                  description:
-                      "Bekijk de meest recent toekomstige activiteiten.",
-                )
+                limitedActivities.isEmpty
+                    ? CustomPaint(
+                        size: MediaQuery.of(context).size,
+                        painter: InvertedRoundedRectanglePainter(
+                          color: Colors.white,
+                          radius: 35,
+                          backgroundColor: CustomColors.themeBackground,
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(50.0),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      )
+                    : ActivityOverview(
+                        activities: limitedActivities,
+                        account: _profile,
+                        title: "Toekomstige activiteiten",
+                        description:
+                            "Bekijk de meest recent toekomstige activiteiten.",
+                      )
               ],
             ),
           ),

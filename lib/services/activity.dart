@@ -193,4 +193,35 @@ class ActivityService {
       return Result.failure(e.toString());
     }
   }
+
+  Future<void> deleteAllAvailabilitiesOfAccount(String accountId) async {
+    try {
+      List<Activity> activities = (await getAllActivities()).data ?? [];
+
+      for (var activity in activities) {
+        if (activity.availabilities != null) {
+          activity.availabilities!.forEach((date, availabilities) {
+            availabilities.removeWhere(
+                (availability) => availability.account?.id == accountId);
+          });
+        }
+      }
+
+      final DatabaseReference activitiesRef = _database.child('activities');
+
+      Map<String, dynamic> updates = {
+        for (var activity in activities)
+          if (activity.id != null) activity.id!: activity.toJson(),
+      };
+
+      if (updates.isEmpty) {
+        debugPrint('No updates to send to the database.');
+        return;
+      }
+
+      await activitiesRef.update(updates);
+    } catch (e) {
+      debugPrint("Failed to delete availability from all activities: $e");
+    }
+  }
 }

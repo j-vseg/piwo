@@ -145,10 +145,10 @@ class EditActivityPageState extends State<EditActivityPage> {
 
                     if (result.isSuccess) {
                       if (!context.mounted) return;
-                      SuccessDialog.showSuccessDialogWithOnPressed(
+                      SuccessDialog.show(
                         context,
-                        "Activiteit is aangepast.",
-                        () async {
+                        message: "Activiteit is aangepast.",
+                        onPressed: () async {
                           await activityProvider.updateActivity(
                             widget.activity!.id!,
                             activty,
@@ -181,10 +181,10 @@ class EditActivityPageState extends State<EditActivityPage> {
 
                     if (result.isSuccess) {
                       if (!context.mounted) return;
-                      SuccessDialog.showSuccessDialogWithOnPressed(
+                      SuccessDialog.show(
                         context,
-                        "Activiteit is gecreëerd.",
-                        () async {
+                        message: "Activiteit is gecreëerd.",
+                        onPressed: () async {
                           await activityProvider.createActivity(
                             result.data ?? "",
                             activty,

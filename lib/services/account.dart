@@ -183,19 +183,21 @@ class AccountService {
     }
   }
 
-  Future<Result<bool>> deleteAccount() async {
+  Future<Result<bool>> deleteAccount(String password) async {
     try {
-      User? user = _auth.currentUser;
-      if (user != null) {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.email != null) {
+        await AuthService().reauthenticateUser(user.email!, password);
         await _database.child('accounts').child(user.uid).remove();
         await user.delete();
         debugPrint('Account deleted successfully.');
         return Result.success(true);
       }
-      return Result.failure("No user is currently signed in.");
+      return Result.failure(
+          "Error deleting account from Firebase: User is null");
     } catch (e) {
-      debugPrint("Error deleting account: $e");
-      return Result.failure("Error deleting account: ${e.toString()}");
+      debugPrint("Error deleting account from Firebase: $e");
+      return Result.failure(e.toString());
     }
   }
 

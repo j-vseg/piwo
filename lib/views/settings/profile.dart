@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/services/account.dart';
+import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/auth.dart';
+import 'package:piwo/services/onboarding.dart';
 import 'package:piwo/views/settings/account.dart';
 import 'package:piwo/widgets/custom_scaffold.dart';
 import 'package:piwo/widgets/notifiers/login_notifier.dart';
@@ -78,7 +81,8 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: null,
+                    account: _account,
+                    isResetingPassword: false,
                     isCreatingAccount: false,
                     emailController: TextEditingController(),
                   ),
@@ -96,7 +100,8 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: null,
+                    account: _account,
+                    isResetingPassword: false,
                     isCreatingAccount: false,
                     passwordController: TextEditingController(),
                   ),
@@ -114,7 +119,8 @@ class ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountPage(
-                    isResetingPassword: null,
+                    account: _account,
+                    isResetingPassword: false,
                     isCreatingAccount: false,
                     firstNameController: TextEditingController(),
                     lastNameController: TextEditingController(),
@@ -149,11 +155,13 @@ class ProfilePageState extends State<ProfilePage> {
                 () async {
                   await AuthService().signOut();
 
+                  await OnboardingService.saveOnboardingCompleted(false);
                   if (!context.mounted) return;
                   context.read<LoginStateNotifier>().logOut();
                   Navigator.of(context).pop();
                   RestartWidget.restartApp(context);
                 },
+                false,
               );
             },
             contentPadding: const EdgeInsets.all(0.0),
@@ -176,15 +184,19 @@ class ProfilePageState extends State<ProfilePage> {
             onTap: () {
               _showYesNoDialog(
                 context,
-                "Weet je zeker dat je account wilt verwijderen?",
-                () async {
-                  AccountService().deleteAccount();
+                "Weet je zeker dat je account wilt verwijderen? Al je account informatie wordt hiermee verwijderd.",
+                (String password) async {
+                  await ActivityService().deleteAllAvailabilitiesOfAccount(
+                      FirebaseAuth.instance.currentUser?.uid ?? "");
+                  await AccountService().deleteAccount(password);
+                  await OnboardingService.saveOnboardingCompleted(false);
 
                   if (!context.mounted) return;
                   context.read<LoginStateNotifier>().logOut();
                   Navigator.of(context).pop();
                   RestartWidget.restartApp(context);
                 },
+                true,
               );
             },
             contentPadding: const EdgeInsets.all(0.0),
@@ -198,27 +210,86 @@ class ProfilePageState extends State<ProfilePage> {
     BuildContext context,
     String description,
     Function onPressed,
+    bool isDeletingAccount,
   ) {
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController passwordController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Weet je het zeker?"),
-          content: Text(description),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Nee'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Ja'),
-              onPressed: () {
-                onPressed();
-              },
-            ),
-          ],
+        bool isPasswordVisible = false;
+
+        return StatefulBuilder(
+          builder:
+              (BuildContext context, void Function(void Function()) setState) {
+            return AlertDialog(
+              title: const Text("Weet je het zeker?"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(description),
+                  if (isDeletingAccount) ...[
+                    const SizedBox(height: 8),
+                    Form(
+                      key: formKey,
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: !isPasswordVisible,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'Wachtwoord*',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isPasswordVisible = !isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Veld kan niet leeg zijn';
+                          }
+                          if (value.length < 8) {
+                            return "Wachtwoord moet minimaal 8 characters lang zijn";
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Nee'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Ja'),
+                  onPressed: () {
+                    if (isDeletingAccount) {
+                      if (formKey.currentState!.validate()) {
+                        onPressed(passwordController.text.trim());
+                        Navigator.of(context).pop();
+                      }
+                    } else {
+                      onPressed();
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );

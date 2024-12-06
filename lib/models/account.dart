@@ -9,6 +9,7 @@ class Account {
   int? amountOfCoins;
   bool? isApproved;
   bool? isConfirmed;
+  bool? isFirstLogin;
 
   Account({
     this.id,
@@ -19,6 +20,7 @@ class Account {
     this.amountOfCoins,
     this.isApproved,
     this.isConfirmed,
+    this.isFirstLogin,
   });
 
   Account.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class Account {
     amountOfCoins = json['amountOfCoins'];
     isApproved = json['isApproved'];
     isConfirmed = json['isConfirmed'];
+    isFirstLogin = json['isFirstLogin'];
   }
 
   Map<String, dynamic> toJson() {
@@ -53,6 +56,7 @@ class Account {
       'amountOfCoins': amountOfCoins,
       'isApproved': isApproved,
       'isConfirmed': isConfirmed,
+      'isFirstLogin': isFirstLogin,
     };
   }
 
