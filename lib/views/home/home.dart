@@ -46,7 +46,8 @@ class HomePageState extends State<HomePage> {
     return Consumer<ActivityProvider>(
       builder: (context, activityProvider, child) {
         final activities = activityProvider.activities
-            .where((activity) => DateTime.now().isBefore(activity.startDate!))
+            .where((activity) =>
+                DateTime.now().toLocal().isBefore(activity.endDate!.toLocal()))
             .toList()
           ..sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
