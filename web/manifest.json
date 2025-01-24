@@ -1,11 +1,11 @@
 {
-    "name": "piwo",
-    "short_name": "piwo",
+    "name": "Piwo",
+    "short_name": "Piwo",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#EEC042",
-    "theme_color": "#EEC042",
-    "description": "A new Flutter project.",
+    "background_color": "#FFC176",
+    "theme_color": "#FFC176",
+    "description": "Deze web app is voor de Pivo's van Scouting Mierlo.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
