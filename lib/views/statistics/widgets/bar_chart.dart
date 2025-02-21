@@ -19,13 +19,22 @@ class BarChartWidget extends StatefulWidget {
 }
 
 class BarChartWidgetState extends State<BarChartWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    if (widget.chartData.isEmpty) {
+      return const SizedBox(
+        height: 300,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final sortedChartData = List<BarChartGroupData>.from(widget.chartData)
+      ..sort((a, b) => b.barRods.first.toY.compareTo(a.barRods.first.toY));
+
     return Column(
       children: [
         if (widget.buttons != null && widget.buttons!.isNotEmpty) ...[
@@ -34,57 +43,88 @@ class BarChartWidgetState extends State<BarChartWidget> {
               color: CustomColors.background200,
               borderRadius: BorderRadius.circular(25.0),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (var button in widget.buttons!)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: button,
-                    ),
-                ],
-              ),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var button in widget.buttons!)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: button,
+                  ),
+              ],
             ),
           ),
           const SizedBox(height: 15),
         ],
-        SizedBox(
-          height: 300,
-          child: BarChart(
-            BarChartData(
-              alignment: BarChartAlignment.spaceAround,
-              barGroups: widget.chartData,
-              titlesData: FlTitlesData(
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    interval: 5,
-                    getTitlesWidget: (value, meta) {
-                      return Text(
-                        value.toInt().toString(),
-                        style: const TextStyle(fontSize: 12),
-                      );
-                    },
+        LayoutBuilder(
+          builder: (context, constraints) {
+            double availableWidth = constraints.maxWidth;
+            double barWidth = 18;
+            double chartHeight = 300;
+            double chartWidth = (barWidth + 40) * widget.chartData.length;
+            double totalChartWidth =
+                chartWidth < availableWidth ? availableWidth : chartWidth;
+
+            return SizedBox(
+              height: chartHeight,
+              child: Scrollbar(
+                controller: _scrollController,
+                thickness: 8,
+                radius: const Radius.circular(10),
+                thumbVisibility: true,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    scrollDirection: Axis.horizontal,
+                    child: SizedBox(
+                      width: totalChartWidth,
+                      child: BarChart(
+                        BarChartData(
+                          alignment: BarChartAlignment.spaceEvenly,
+                          barGroups: sortedChartData.map((group) {
+                            return group.copyWith(
+                              barRods: group.barRods.map((rod) {
+                                return rod.copyWith(width: barWidth);
+                              }).toList(),
+                            );
+                          }).toList(),
+                          titlesData: FlTitlesData(
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                interval: 5,
+                                getTitlesWidget: (value, meta) {
+                                  return Text(value.toInt().toString());
+                                },
+                              ),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                getTitlesWidget: (value, meta) {
+                                  return Text(
+                                    widget.labels[value.toInt()],
+                                    style: const TextStyle(fontSize: 12),
+                                  );
+                                },
+                              ),
+                            ),
+                            topTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false)),
+                            rightTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false)),
+                          ),
+                          borderData: FlBorderData(show: false),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) {
-                      return Text(widget.labels[value.toInt()]);
-                    },
-                  ),
-                ),
-                topTitles:
-                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                rightTitles:
-                    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
               ),
-              borderData: FlBorderData(show: false),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );

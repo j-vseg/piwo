@@ -162,7 +162,7 @@ class StatisticsPageState extends State<StatisticsPage> {
                             labels: _getLeaderboardLabel(),
                           )
                         ],
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 15),
                       ],
                     ),
                   ),
