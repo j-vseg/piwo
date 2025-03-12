@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/availability.dart';
@@ -31,6 +32,87 @@ class Activity {
     this.availabilities,
     this.exceptions,
   });
+
+  static Future<Activity> fromFirestore(DocumentSnapshot doc) async {
+    final data = doc.data() as Map<String, dynamic>;
+
+    Map<DateTime, List<Availability>> availabilities = {};
+
+    if (data['availabilities'] != null) {
+      final availabilitiesData = data['availabilities'] as Map<String, dynamic>;
+
+      for (var entry in availabilitiesData.entries) {
+        DateTime date = Availability.parseFormattedDateTime(entry.key);
+        List<Availability> availabilityList = [];
+
+        if (entry.value is List) {
+          for (var availabilityJson in entry.value as List) {
+            final availabilityMap = Map<String, dynamic>.from(availabilityJson);
+            final newAvailability =
+                await Availability.fromJson(availabilityMap);
+            availabilityList.add(newAvailability);
+          }
+        }
+
+        availabilities[date] = availabilityList;
+      }
+    }
+
+    // Parsing Recurrence
+    Recurrence? recurrence;
+    if (data['recurrence'] != null) {
+      try {
+        recurrence = Recurrence.values.firstWhere(
+          (cat) =>
+              cat.toString().split('.').last.toLowerCase() ==
+              data['recurrence'].toString().toLowerCase(),
+          orElse: () => Recurrence.geen,
+        );
+      } catch (e) {
+        debugPrint('Unknown recurrence: ${data['recurrence']}');
+      }
+    }
+
+    // Parsing Category
+    Category? category;
+    if (data['category'] != null) {
+      try {
+        category = Category.values.firstWhere(
+          (cat) =>
+              cat.toString().split('.').last.toLowerCase() ==
+              data['category'].toString().toLowerCase(),
+          orElse: () => Category.groepsavond,
+        );
+      } catch (e) {
+        debugPrint('Unknown category: ${data['category']}');
+      }
+    }
+
+    // Constructing the Activity object
+    return Activity(
+      id: data['id'],
+      name: data['name'],
+      location: data['location'],
+      color: Color(int.parse(data['color'])),
+      recurrence: recurrence,
+      category: category,
+      startDate: data['startDate'] != null
+          ? DateTime.tryParse(data['startDate'])?.toUtc()
+          : null,
+      endDate: data['endDate'] != null
+          ? DateTime.tryParse(data['endDate'])?.toUtc()
+          : null,
+      availabilities: availabilities,
+      exceptions: (data['exceptions'] as List<dynamic>?)?.map((e) {
+            if (e != null) {
+              return DateTime.parse(e as String).toUtc();
+            } else {
+              throw Exception("Null exception value found");
+            }
+          }).toList() ??
+          [],
+    );
+  }
 
   static Future<Activity> fromJson(Map<String, dynamic> json) async {
     Map<DateTime, List<Availability>> availabilities = {};
@@ -114,20 +196,33 @@ class Activity {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'location': location,
-      'color': "0x${color.value.toRadixString(16).toUpperCase()}",
-      'recurrence': recurrence?.toString().split('.').last,
-      'category': category?.toString().split('.').last,
-      'startDate': startDate?.toIso8601String(),
-      'endDate': endDate?.toIso8601String(),
-      'availabilities': availabilities?.map((date, availList) => MapEntry(
-          Availability.formatDateTime(date),
-          availList.map((e) => e.toJson()).toList())),
-      'exceptions': exceptions?.map((date) => date.toIso8601String()).toList(),
-    };
+    final Map<String, dynamic> data = {};
+
+    // Add fields to the map only if they are not null
+    if (id != null) data['id'] = id;
+    if (name != null) data['name'] = name;
+    if (location != null) data['location'] = location;
+    data['color'] = "0x${color.value.toRadixString(16).toUpperCase()}";
+
+    if (recurrence != null) {
+      data['recurrence'] = recurrence?.toString().split('.').last;
+    }
+    if (category != null) {
+      data['category'] = category?.toString().split('.').last;
+    }
+    if (startDate != null) data['startDate'] = startDate?.toIso8601String();
+    if (endDate != null) data['endDate'] = endDate?.toIso8601String();
+    if (availabilities != null) {
+      data['availabilities'] = availabilities?.map((date, availList) =>
+          MapEntry(Availability.formatDateTime(date),
+              availList.map((e) => e.toJson()).toList()));
+    }
+    if (exceptions != null) {
+      data['exceptions'] =
+          exceptions?.map((date) => date.toIso8601String()).toList();
+    }
+
+    return data;
   }
 
   DateTime get getStartDate {

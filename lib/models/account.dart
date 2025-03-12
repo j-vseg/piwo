@@ -47,17 +47,16 @@ class Account {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'firstName': firstName,
-      'lastName': lastName,
-      'email': email,
-      'roles': roles?.map((role) => role.name).toList(),
-      'amountOfCoins': amountOfCoins,
-      'isApproved': isApproved,
-      'isConfirmed': isConfirmed,
-      'isFirstLogin': isFirstLogin,
-    };
+    final Map<String, dynamic> data = {};
+
+    if (firstName != null) data['firstName'] = firstName;
+    if (lastName != null) data['lastName'] = lastName;
+    if (isApproved != null) data['isApproved'] = isApproved;
+    if (isConfirmed != null) data['isConfirmed'] = isConfirmed;
+    if (isFirstLogin != null) data['isFirstLogin'] = isFirstLogin;
+    if (roles != null) data['roles'] = roles?.map((role) => role.name).toList();
+
+    return data;
   }
 
   @override

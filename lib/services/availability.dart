@@ -1,9 +1,9 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/models/availability.dart';
 
 class AvailabilityService {
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> changeAvailability(
     String activityId,
@@ -12,16 +12,27 @@ class AvailabilityService {
     Availability availability,
   ) async {
     try {
-      final DatabaseReference availabilityRef = _database.child(
-          'activities/$activityId/availabilities/${Availability.formatDateTime(date)}');
+      String formattedDate = Availability.formatDateTime(date);
+      DocumentReference availabilityDoc = _firestore
+          .collection('activities')
+          .doc(activityId)
+          .collection('availabilities')
+          .doc(formattedDate);
 
-      DataSnapshot snapshot = await availabilityRef.get();
+      DocumentSnapshot snapshot = await availabilityDoc.get();
 
       List<Availability> availabilityList = availabilities[date] ?? [];
 
       bool found = false;
 
-      if (snapshot.exists) {
+      if (snapshot.exists && snapshot.data() != null) {
+        List<dynamic> data =
+            (snapshot.data() as Map<String, dynamic>)['availabilities'] ?? [];
+        availabilityList = data
+            .map((e) => Availability.fromJson(Map<String, dynamic>.from(e)))
+            .cast<Availability>()
+            .toList();
+
         for (int i = 0; i < availabilityList.length; i++) {
           if (availabilityList[i].account!.id == availability.account!.id) {
             found = true;
@@ -34,25 +45,19 @@ class AvailabilityService {
             break;
           }
         }
-
-        if (!found && availability.status != null) {
-          availabilityList.add(availability);
-        }
-
-        availabilities[date] = availabilityList;
-
-        List<Map<String, dynamic>> availabilitiesJson = availabilityList
-            .map((availability) => availability.toJson())
-            .toList();
-        await availabilityRef.set(availabilitiesJson);
-
-        debugPrint('Availability successfully updated');
-      } else {
-        if (availability.status != null) {
-          await createAvailability(
-              activityId, availabilities, date, availability);
-        }
       }
+
+      if (!found && availability.status != null) {
+        availabilityList.add(availability);
+      }
+
+      availabilities[date] = availabilityList;
+
+      await availabilityDoc.set({
+        'availabilities': availabilityList.map((a) => a.toJson()).toList(),
+      });
+
+      debugPrint('Availability successfully updated');
     } catch (e) {
       debugPrint('Error updating availability: $e');
     }
@@ -65,19 +70,20 @@ class AvailabilityService {
     Availability availability,
   ) async {
     try {
-      final DatabaseReference availabilityRef = _database.child(
-          'activities/$activityId/availabilities/${Availability.formatDateTime(date)}');
+      String formattedDate = Availability.formatDateTime(date);
+      DocumentReference availabilityDoc = _firestore
+          .collection('activities')
+          .doc(activityId)
+          .collection('availabilities')
+          .doc(formattedDate);
 
       List<Availability> availabilityList = availabilities[date] ?? [];
-
       availabilityList.add(availability);
-
       availabilities[date] = availabilityList;
 
-      List<Map<String, dynamic>> availabilitiesJson = availabilityList
-          .map((availability) => availability.toJson())
-          .toList();
-      await availabilityRef.set(availabilitiesJson);
+      await availabilityDoc.set({
+        'availabilities': availabilityList.map((a) => a.toJson()).toList(),
+      });
 
       debugPrint('Availability successfully created');
     } catch (e) {
@@ -90,22 +96,23 @@ class AvailabilityService {
     DateTime date,
   ) async {
     try {
-      final DatabaseReference availabilityRef = _database.child(
-        'activities/$activityId/availabilities/${Availability.formatDateTime(date)}',
-      );
+      String formattedDate = Availability.formatDateTime(date);
+      DocumentReference availabilityDoc = _firestore
+          .collection('activities')
+          .doc(activityId)
+          .collection('availabilities')
+          .doc(formattedDate);
 
-      DataSnapshot snapshot = await availabilityRef.get();
-      if (snapshot.exists && snapshot.value != null) {
-        List<Availability> availabilityList = [];
+      DocumentSnapshot snapshot = await availabilityDoc.get();
 
-        final availabilityData = snapshot.value as List<Object?>;
+      if (snapshot.exists && snapshot.data() != null) {
+        List<dynamic> data =
+            (snapshot.data() as Map<String, dynamic>)['availabilities'] ?? [];
 
-        for (var availabilityJson in availabilityData) {
-          final availabilityMap = Map<String, dynamic>.from(
-              availabilityJson as Map<Object?, Object?>);
-          final availability = await Availability.fromJson(availabilityMap);
-          availabilityList.add(availability);
-        }
+        List<Availability> availabilityList = await Future.wait(
+          data.map((e) async =>
+              await Availability.fromJson(Map<String, dynamic>.from(e))),
+        );
 
         return availabilityList;
       } else {

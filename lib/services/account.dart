@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/error_handling/result.dart';
@@ -7,31 +7,30 @@ import 'package:piwo/services/auth.dart';
 
 class AccountService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<Result<void>> createAccountInDatabase(
       User firebaseUser, Account account) async {
     try {
-      await _database
-          .child('accounts')
-          .child(firebaseUser.uid)
+      await _firestore
+          .collection('accounts')
+          .doc(firebaseUser.uid)
           .set(account.toJson());
       return Result.success(null);
     } catch (e) {
-      debugPrint("Error saving account in Firebase Realtime Database: $e");
+      debugPrint("Error saving account in Firestore: $e");
       return Result.failure("Error saving account: ${e.toString()}");
     }
   }
 
   Future<Result<Account>> getAccountById(String accountId) async {
     try {
-      DatabaseReference accountRef =
-          _database.child('accounts').child(accountId);
-      DataSnapshot snapshot = await accountRef.get();
+      DocumentSnapshot snapshot =
+          await _firestore.collection('accounts').doc(accountId).get();
 
       if (snapshot.exists) {
         Map<String, dynamic> accountData =
-            Map<String, dynamic>.from(snapshot.value as Map);
+            snapshot.data() as Map<String, dynamic>;
         Account account = Account.fromJson(accountData)..id = accountId;
         return Result.success(account);
       } else {
@@ -50,13 +49,12 @@ class AccountService {
         return Result.failure("No user is logged in.");
       }
 
-      DatabaseReference accountRef =
-          _database.child('accounts').child(user.uid);
-      DataSnapshot snapshot = await accountRef.get();
+      DocumentSnapshot snapshot =
+          await _firestore.collection('accounts').doc(user.uid).get();
 
       if (snapshot.exists) {
         Map<String, dynamic> accountData =
-            Map<String, dynamic>.from(snapshot.value as Map);
+            snapshot.data() as Map<String, dynamic>;
         Account account = Account.fromJson(accountData)
           ..email = user.email
           ..id = user.uid;
@@ -144,7 +142,7 @@ class AccountService {
       await AuthService().reauthenticateUser(userEmail!, oldPassword);
 
       if (firstName.isNotEmpty && lastName.isNotEmpty) {
-        await _database.child('accounts/${user.uid}').update({
+        await _firestore.collection('accounts').doc(user.uid).update({
           'firstName': firstName,
           'lastName': lastName,
         });
@@ -161,16 +159,12 @@ class AccountService {
 
   Future<Result<List<Account>>> getAllAccounts() async {
     try {
-      DatabaseReference accountsRef = _database.child('accounts');
-      DataSnapshot snapshot = await accountsRef.get();
+      QuerySnapshot snapshot = await _firestore.collection('accounts').get();
 
-      if (snapshot.exists) {
-        Map<String, dynamic> accountsData =
-            Map<String, dynamic>.from(snapshot.value as Map);
-        List<Account> accounts = accountsData.entries.map((entry) {
-          Map<String, dynamic> accountData =
-              Map<String, dynamic>.from(entry.value as Map);
-          accountData['id'] = entry.key;
+      if (snapshot.docs.isNotEmpty) {
+        List<Account> accounts = snapshot.docs.map((doc) {
+          Map<String, dynamic> accountData = doc.data() as Map<String, dynamic>;
+          accountData['id'] = doc.id;
           return Account.fromJson(accountData);
         }).toList();
         return Result.success(accounts);
@@ -185,18 +179,20 @@ class AccountService {
 
   Future<Result<bool>> deleteAccount(String password) async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null && user.email != null) {
-        await AuthService().reauthenticateUser(user.email!, password);
-        await _database.child('accounts').child(user.uid).remove();
-        await user.delete();
-        debugPrint('Account deleted successfully.');
-        return Result.success(true);
+      User? user = _auth.currentUser;
+      if (user == null || user.email == null) {
+        return Result.failure("Error deleting account: User is null");
       }
-      return Result.failure(
-          "Error deleting account from Firebase: User is null");
+
+      await AuthService().reauthenticateUser(user.email!, password);
+
+      await _firestore.collection('accounts').doc(user.uid).delete();
+      await user.delete();
+
+      debugPrint('Account deleted successfully.');
+      return Result.success(true);
     } catch (e) {
-      debugPrint("Error deleting account from Firebase: $e");
+      debugPrint("Error deleting account: $e");
       return Result.failure(e.toString());
     }
   }

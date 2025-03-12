@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:piwo/models/error_handling/result.dart';
 
 class CoinService {
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<Result<int>> removeCoin(int newAmountOfCoins) async {
@@ -12,10 +12,11 @@ class CoinService {
       User? user = _auth.currentUser;
 
       if (user != null) {
-        DatabaseReference coinRef = _database.child('accounts/${user.uid}');
-        await coinRef.update({
-          'amountOfCoins': newAmountOfCoins,
-        });
+        DocumentReference userRef =
+            _firestore.collection('accounts').doc(user.uid);
+
+        await userRef.update({'amountOfCoins': newAmountOfCoins});
+
         debugPrint('Coin was removed successfully');
         return Result.success(newAmountOfCoins);
       } else {
@@ -33,10 +34,11 @@ class CoinService {
       User? user = _auth.currentUser;
 
       if (user != null) {
-        DatabaseReference coinRef = _database.child('accounts/${user.uid}');
-        await coinRef.update({
-          'amountOfCoins': newAmountOfCoins,
-        });
+        DocumentReference userRef =
+            _firestore.collection('accounts').doc(user.uid);
+
+        await userRef.update({'amountOfCoins': newAmountOfCoins});
+
         debugPrint('Coins were set successfully');
         return Result.success(newAmountOfCoins);
       } else {
