@@ -28,10 +28,9 @@ class AvailabilityService {
       if (snapshot.exists && snapshot.data() != null) {
         List<dynamic> data =
             (snapshot.data() as Map<String, dynamic>)['availabilities'] ?? [];
-        availabilityList = data
-            .map((e) => Availability.fromJson(Map<String, dynamic>.from(e)))
-            .cast<Availability>()
-            .toList();
+        availabilityList = await Future.wait(
+          data.map((e) => Availability.fromJson(Map<String, dynamic>.from(e))),
+        );
 
         for (int i = 0; i < availabilityList.length; i++) {
           if (availabilityList[i].account!.id == availability.account!.id) {

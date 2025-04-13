@@ -404,7 +404,7 @@ class AccountPageState extends State<AccountPage> {
                       }
                     },
                     child: Text(widget.isCreatingAccount
-                        ? 'Creer je account'
+                        ? 'Creëer je account'
                         : widget.isResetingPassword
                             ? "Reset wachtwoord"
                             : 'Wijzig je account'),

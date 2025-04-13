@@ -100,7 +100,7 @@ class EditActivityPageState extends State<EditActivityPage> {
               ? _nameController.text.isNotEmpty
                   ? _nameController.text
                   : widget.activity!.name!
-              : "Creer activiteit",
+              : "Creëer activiteit",
         ),
         backgroundColor: CustomColors.themePrimary,
         elevation: 0,
@@ -229,7 +229,7 @@ class EditActivityPageState extends State<EditActivityPage> {
               backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
             ),
             child: Text(
-              widget.activity != null ? 'Opslaan' : 'Creer',
+              widget.activity != null ? 'Opslaan' : 'Creëer',
             ),
           ),
         ],

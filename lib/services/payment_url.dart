@@ -6,7 +6,7 @@ class PaymentUrlService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // The name of the collection where payment URLs are stored
-  final String _paymentUrlCollection = 'paymentUrls';
+  final String _paymentUrlCollection = 'payment-url';
   final String _paymentUrlDoc = 'url'; // The document name
 
   Future<Result<String>> getPaymentUrl() async {
