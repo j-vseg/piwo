@@ -311,7 +311,8 @@ class StatisticsPageState extends State<StatisticsPage> {
           activity.availabilities![activity.getStartDate] != null) {
         for (var availability
             in activity.availabilities![activity.getStartDate]!) {
-          final account = availability.account!;
+          final account =
+              availability.account ?? Account(firstName: 'Unknown user');
           final status = availability.status;
 
           if (!yearlyData.containsKey(year)) {
