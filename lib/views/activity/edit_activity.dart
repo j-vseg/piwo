@@ -6,8 +6,6 @@ import 'package:piwo/models/enums/category.dart';
 import 'package:piwo/models/enums/recurrance.dart';
 import 'package:piwo/services/activity.dart';
 import 'package:piwo/widgets/dialogs.dart';
-import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
-import 'package:provider/provider.dart';
 
 class EditActivityPage extends StatefulWidget {
   const EditActivityPage({
@@ -80,18 +78,18 @@ class EditActivityPageState extends State<EditActivityPage> {
     super.initState();
 
     if (widget.activity != null) {
-      _nameController.text = widget.activity!.name ?? "";
-      _startDate = widget.activity!.startDate!.toLocal();
-      _endDate = widget.activity!.endDate!.toLocal();
-      _selectedRecurrence = widget.activity!.recurrence ?? Recurrence.geen;
-      _selectedCategory = widget.activity!.category ?? Category.groepsavond;
+      _nameController.text = widget.activity!.name;
+      _startDate = widget.activity!.startDate.toLocal();
+      _endDate = widget.activity!.endDate.toLocal();
+      _selectedRecurrence = widget.activity!.recurrence;
+      _selectedCategory = widget.activity!.category;
       _locationController.text = widget.activity!.location ?? "";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final activityProvider = Provider.of<ActivityProvider>(context);
+    // final activityProvider = Provider.of<ActivityProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -99,7 +97,7 @@ class EditActivityPageState extends State<EditActivityPage> {
           widget.activity != null
               ? _nameController.text.isNotEmpty
                   ? _nameController.text
-                  : widget.activity!.name!
+                  : widget.activity!.name
               : "Creëer activiteit",
         ),
         backgroundColor: CustomColors.themePrimary,
@@ -129,19 +127,20 @@ class EditActivityPageState extends State<EditActivityPage> {
                     !_endDate.isBefore(_startDate)) {
                   if (widget.activity != null) {
                     final activty = Activity(
+                      id: "",
                       name: name,
+                      location: location,
+                      color: CustomColors.getActivityColor(_selectedCategory),
+                      recurrence: _selectedRecurrence,
+                      category: _selectedCategory,
                       startDate: _startDate,
                       endDate: _endDate,
-                      recurrence: _selectedRecurrence,
-                      color: CustomColors.getActivityColor(_selectedCategory),
-                      category: _selectedCategory,
-                      location: location,
-                      exceptions: widget.activity!.exceptions,
                       availabilities: widget.activity!.availabilities,
+                      exceptions: widget.activity!.exceptions,
                     );
 
                     final result = await ActivityService()
-                        .updateActivity(widget.activity!.id ?? "", activty);
+                        .updateActivity(widget.activity!.id, activty);
 
                     if (result.isSuccess) {
                       if (!context.mounted) return;
@@ -149,10 +148,10 @@ class EditActivityPageState extends State<EditActivityPage> {
                         context,
                         message: "Activiteit is aangepast.",
                         onPressed: () async {
-                          await activityProvider.updateActivity(
-                            widget.activity!.id!,
-                            activty,
-                          );
+                          // await activityProvider.updateActivity(
+                          //   widget.activity!.id!,
+                          //   activty,
+                          // );
 
                           if (!context.mounted) return;
                           Navigator.of(context).pop();
@@ -168,7 +167,9 @@ class EditActivityPageState extends State<EditActivityPage> {
                     }
                   } else {
                     final activty = Activity(
+                      id: '',
                       name: name,
+                      color: CustomColors.getActivityColor(_selectedCategory),
                       startDate: _startDate,
                       endDate: _endDate,
                       recurrence: _selectedRecurrence,
@@ -185,10 +186,10 @@ class EditActivityPageState extends State<EditActivityPage> {
                         context,
                         message: "Activiteit is gecreëerd.",
                         onPressed: () async {
-                          await activityProvider.createActivity(
-                            result.data ?? "",
-                            activty,
-                          );
+                          // await activityProvider.createActivity(
+                          //   result.data ?? "",
+                          //   activty,
+                          // );
 
                           if (!context.mounted) return;
                           Navigator.of(context).pop();

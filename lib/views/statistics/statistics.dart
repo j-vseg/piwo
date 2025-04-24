@@ -6,6 +6,7 @@ import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/enums/status.dart';
 import 'package:piwo/services/account.dart';
+import 'package:piwo/services/availability.dart';
 import 'package:piwo/views/activities/widgets/inverted_rounded_corners.dart';
 import 'package:piwo/views/statistics/widgets/bar_chart.dart';
 import 'package:piwo/views/statistics/widgets/chart_data.dart';
@@ -28,25 +29,32 @@ class StatisticsPageState extends State<StatisticsPage> {
   int _selectedYear = DateTime.now().toUtc().year;
   Status _selectedAvailability = Status.aanwezig;
 
+  final int currentYear = DateTime.now().toUtc().year;
+
   @override
   void initState() {
     super.initState();
-    _fetchAccountInfo();
+    _initializeData();
   }
 
-  void _fetchAccountInfo() async {
+  void _initializeData() async {
     final account = (await AccountService().getMyAccount()).data!;
-    setState(() {
-      _account = account;
-    });
+    if (mounted) {
+      setState(() {
+        _account = account;
+      });
+    }
+    await _processData(
+        Provider.of<ActivityProvider>(context, listen: false).activities);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ActivityProvider>(
       builder: (context, activityProvider, child) {
-        _processData(activityProvider.activities);
-
         return CustomScaffold(
           useAppBar: true,
           appBar: AppBar(
@@ -78,16 +86,6 @@ class StatisticsPageState extends State<StatisticsPage> {
                     ),
                     child: Column(
                       children: [
-                        // const SizedBox(
-                        //   height: 65,
-                        //   child: Text(
-                        //     "Statistieken",
-                        //     style: TextStyle(
-                        //       fontSize: 24,
-                        //       fontWeight: FontWeight.bold,
-                        //     ),
-                        //   ),
-                        // ),
                         Container(
                           decoration: BoxDecoration(
                             color: CustomColors.background200,
@@ -181,13 +179,12 @@ class StatisticsPageState extends State<StatisticsPage> {
                     ),
                     child: _selectedCategory == "leaderboard"
                         ? ChartDataWidget(
-                            leaderboardChartData:
-                                yearlyData[DateTime.now().toUtc().year] ?? {},
+                            leaderboardChartData: yearlyData[currentYear] ?? {},
                             selectedButton: _selectedAvailability.name,
                           )
                         : ChartDataWidget(
                             accountChartData:
-                                yearlyData[_selectedYear]![_account] ?? {},
+                                yearlyData[_selectedYear]?[_account] ?? {},
                             selectedButton: _selectedAvailability.name,
                           ),
                   ),
@@ -245,27 +242,15 @@ class StatisticsPageState extends State<StatisticsPage> {
   List<Widget> _getLeaderboardButtons() {
     List<Widget> buttons = [];
 
-    if (yearlyData.containsKey(_selectedYear) &&
-        yearlyData[_selectedYear]!.containsKey(_account)) {
+    if (yearlyData[_selectedYear]?[_account] != null) {
       for (var index = 0; index < 3; index++) {
-        // Check if the button is selected and set color accordingly
         bool isSelected = _selectedAvailability == Status.values[index];
 
         buttons.add(
           GestureDetector(
             onTap: () {
               setState(() {
-                switch (index) {
-                  case 0:
-                    _selectedAvailability = Status.aanwezig;
-                    break;
-                  case 1:
-                    _selectedAvailability = Status.misschien;
-                    break;
-                  case 2:
-                    _selectedAvailability = Status.afwezig;
-                    break;
-                }
+                _selectedAvailability = Status.values[index];
               });
             },
             child: Container(
@@ -283,11 +268,7 @@ class StatisticsPageState extends State<StatisticsPage> {
                 borderRadius: BorderRadius.circular(25.0),
               ),
               child: Text(
-                index == 0
-                    ? "Aanwezig"
-                    : index == 1
-                        ? "Misschien"
-                        : "Afwezig",
+                Status.values[index].name,
                 style: TextStyle(
                   color: isSelected ? Colors.white : Colors.black87,
                   fontSize: 14.0,
@@ -301,7 +282,7 @@ class StatisticsPageState extends State<StatisticsPage> {
     return buttons;
   }
 
-  void _processData(List<Activity> activities) {
+  Future<void> _processData(List<Activity> activities) async {
     yearlyData.clear();
 
     for (var activity in activities) {
@@ -309,33 +290,28 @@ class StatisticsPageState extends State<StatisticsPage> {
 
       if (activity.availabilities != null &&
           activity.availabilities![activity.getStartDate] != null) {
-        for (var availability
+        for (var availabilityRef
             in activity.availabilities![activity.getStartDate]!) {
-          final account =
-              availability.account ?? Account(firstName: 'Unknown user');
-          final status = availability.status;
+          var availability =
+              await AvailabilityService().getAvailability(availabilityRef.id);
 
-          if (!yearlyData.containsKey(year)) {
-            yearlyData[year] = {};
-          }
+          if (availability != null) {
+            final account =
+                (await AccountService().getAccountById(availability.account.id))
+                        .data ??
+                    Account(firstName: 'Unknown user');
+            final status = availability.status;
 
-          if (!yearlyData[year]!.containsKey(account)) {
-            yearlyData[year]![account] = {
+            yearlyData[year] ??= {};
+            yearlyData[year]![account] ??= {
               "aanwezig": 0,
               "misschien": 0,
               "afwezig": 0,
             };
-          }
 
-          if (status == Status.aanwezig) {
-            yearlyData[year]![account]!["aanwezig"] =
-                yearlyData[year]![account]!["aanwezig"]! + 1;
-          } else if (status == Status.misschien) {
-            yearlyData[year]![account]!["misschien"] =
-                yearlyData[year]![account]!["misschien"]! + 1;
-          } else if (status == Status.afwezig) {
-            yearlyData[year]![account]!["afwezig"] =
-                yearlyData[year]![account]!["afwezig"]! + 1;
+            final statusKey = status.name;
+            yearlyData[year]![account]![statusKey] =
+                (yearlyData[year]![account]![statusKey] ?? 0) + 1;
           }
         }
       }
@@ -343,11 +319,9 @@ class StatisticsPageState extends State<StatisticsPage> {
   }
 
   List<BarChartGroupData> _getAccountBars() {
-    if (!yearlyData[_selectedYear]!.containsKey(_account)) {
-      return [];
-    }
+    final data = yearlyData[_selectedYear]?[_account];
+    if (data == null) return [];
 
-    final data = yearlyData[_selectedYear]![_account]!;
     const double barWidth = 20.0;
 
     return [
@@ -390,10 +364,10 @@ class StatisticsPageState extends State<StatisticsPage> {
   List<BarChartGroupData> _getLeaderboardBars() {
     List<BarChartGroupData> barGroups = [];
 
-    final accountsData = yearlyData[DateTime.now().toUtc().year] ?? {};
+    final accountsData = yearlyData[currentYear] ?? {};
 
     int index = 0;
-    accountsData.forEach((accountName, availability) {
+    accountsData.forEach((account, availability) {
       final count = availability[_selectedAvailability.name] ?? 0;
 
       barGroups.add(
@@ -421,8 +395,8 @@ class StatisticsPageState extends State<StatisticsPage> {
 
   List<String> _getLeaderboardLabel() {
     List<String> labels = [];
-    if (yearlyData.containsKey(DateTime.now().toUtc().year)) {
-      for (var account in yearlyData[DateTime.now().toUtc().year]!.keys) {
+    if (yearlyData[currentYear] != null) {
+      for (var account in yearlyData[currentYear]!.keys) {
         labels.add(account.firstName ?? "");
       }
     }

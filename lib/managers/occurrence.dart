@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:piwo/models/activity.dart';
-import 'package:piwo/models/availability.dart';
 import 'package:piwo/models/enums/recurrance.dart';
 import 'package:piwo/services/availability.dart';
 
@@ -13,29 +13,29 @@ class OccurrenceManager {
       if (activity.recurrence == Recurrence.dagelijks) {
         List<Activity> occurrences = await _generateDailyOccurrences(
           activity,
-          activity.startDate!,
-          activity.endDate!,
+          activity.startDate,
+          activity.endDate,
         );
         occurrencesToAdd.addAll(occurrences);
       } else if (activity.recurrence == Recurrence.wekelijks) {
         List<Activity> occurrences = await _generateWeeklyOccurrences(
           activity,
-          activity.startDate!,
-          activity.endDate!,
+          activity.startDate,
+          activity.endDate,
         );
         occurrencesToAdd.addAll(occurrences);
       } else if (activity.recurrence == Recurrence.maandelijks) {
         List<Activity> occurrences = await _generateMonthlyOccurrences(
           activity,
-          activity.startDate!,
-          activity.endDate!,
+          activity.startDate,
+          activity.endDate,
         );
         occurrencesToAdd.addAll(occurrences);
       } else if (activity.recurrence == Recurrence.jaarlijks) {
         List<Activity> occurrences = await _generateYearlyOccurrences(
           activity,
-          activity.startDate!,
-          activity.endDate!,
+          activity.startDate,
+          activity.endDate,
         );
         occurrencesToAdd.addAll(occurrences);
       }
@@ -213,33 +213,39 @@ class OccurrenceManager {
     Activity activity,
     Duration duration,
   ) async {
+    // Check if the activity occurrence is not in exceptions
     if (activity.exceptions != null &&
         !activity.exceptions!.contains(DateTime(
           occurrenceDate.year,
           occurrenceDate.month,
           occurrenceDate.day,
         ))) {
-      Map<DateTime, List<Availability>> availabilities = {};
-      List<Availability> availabilityList = await AvailabilityService()
-          .getAvailabilitiesByDate(activity.id!, occurrenceDate);
+      Map<DateTime, List<DocumentReference>> availabilities = {};
 
-      if (availabilityList.isNotEmpty) {
-        availabilities[DateTime(
-          occurrenceDate.year,
-          occurrenceDate.month,
-          occurrenceDate.day,
-        )] = availabilityList;
-      }
+      // Fetch availabilities using the newly implemented method
+      List<DocumentReference> availabilityReferences =
+          await AvailabilityService().getAvailabilitiesByDate(
+        activity.id,
+        DateTime(occurrenceDate.year, occurrenceDate.month, occurrenceDate.day),
+      );
 
+      // Add the fetched availabilities to the map
+      availabilities[DateTime(
+        occurrenceDate.year,
+        occurrenceDate.month,
+        occurrenceDate.day,
+      )] = availabilityReferences;
+
+      // Generate and return the new activity with the updated date and availabilities
       return Activity(
         id: activity.id,
         name: activity.name,
         location: activity.location,
-        startDate: occurrenceDate,
-        endDate: occurrenceDate.add(duration),
         color: activity.color,
         recurrence: activity.recurrence,
         category: activity.category,
+        startDate: occurrenceDate,
+        endDate: occurrenceDate.add(duration),
         availabilities: availabilities,
         exceptions: activity.exceptions,
       );

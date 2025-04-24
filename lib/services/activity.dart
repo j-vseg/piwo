@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:piwo/managers/occurrence.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/availability.dart';
 import 'package:piwo/models/error_handling/result.dart';
@@ -11,16 +12,27 @@ class ActivityService {
     try {
       QuerySnapshot snapshot = await _firestore.collection('activities').get();
 
-      List<Activity> activities =
-          await Future.wait(snapshot.docs.map((doc) async {
-        Activity activity = await Activity.fromFirestore(doc);
-        activity.id = doc.id;
-        return activity;
-      }).toList());
+      if (snapshot.docs.isNotEmpty) {
+        List<Activity> activities = [];
 
-      return Result.success(activities);
+        // Loop through all the documents in the snapshot
+        for (var doc in snapshot.docs) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          Activity activity = await Activity.fromJson(data);
+          activity.id = doc.id; // Assign the Firestore document ID
+          activities.add(activity);
+        }
+
+        activities
+            .addAll(await OccurrenceManager().generateOccurrences(activities));
+
+        return Result.success(activities);
+      } else {
+        debugPrint('No activities found.');
+        return Result.success([]);
+      }
     } catch (e) {
-      debugPrint('Error fetching activities from Firestore: $e');
+      debugPrint('Error fetching activities from Firebase: $e');
       return Result.failure(e.toString());
     }
   }

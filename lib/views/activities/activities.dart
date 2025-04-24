@@ -4,6 +4,7 @@ import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
+import 'package:piwo/models/availability.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
@@ -224,25 +225,30 @@ class ActivitiesPageState extends State<ActivitiesPage> {
 
     for (var activity in activities) {
       bool isMultiDay = Activity.doesActivitySpanMultipleDays(activity);
-      final color = activity.endDate!.isAfter(DateTime.now().toUtc())
-          ? activity.getYourAvailability(activity.getStartDate, accountId) !=
-                  null
-              ? CustomColors.getAvailabilityColor(
-                  activity
-                      .getYourAvailability(activity.getStartDate, accountId)!
-                      .status,
-                  activity.category!,
-                )
-              : activity.color
-          : Colors.grey;
 
-      if (isMultiDay) {
-        multiDayActivities.add(activity);
-        multiDayColors.add(color);
-      } else {
-        singleDayActivities.add(activity);
-        singleDayColors.add(color);
-      }
+      // Fetch the user's availability for the activity (this is now an async operation)
+      Future<Availability?> yourAvailabilityFuture =
+          activity.getYourAvailability(activity.getStartDate, accountId);
+
+      // Use FutureBuilder or await the Future if you need to perform async operations
+      yourAvailabilityFuture.then((yourAvailability) {
+        if (yourAvailability != null) {
+          // Now that you have the availability, access the status
+          final color = activity.endDate.isAfter(DateTime.now().toUtc())
+              ? CustomColors.getAvailabilityColor(
+                  yourAvailability.status, activity.category)
+              : activity.color;
+
+          // Separate multi-day and single-day activities
+          if (isMultiDay) {
+            multiDayActivities.add(activity);
+            multiDayColors.add(color);
+          } else {
+            singleDayActivities.add(activity);
+            singleDayColors.add(color);
+          }
+        }
+      });
     }
 
     return Center(
