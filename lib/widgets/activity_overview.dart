@@ -12,8 +12,6 @@ import 'package:piwo/models/enums/weekday.dart';
 import 'package:piwo/services/availability.dart';
 import 'package:piwo/views/activities/widgets/inverted_rounded_corners.dart';
 import 'package:piwo/views/activity/activity.dart';
-import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
-import 'package:provider/provider.dart';
 
 class ActivityOverview extends StatefulWidget {
   const ActivityOverview({
@@ -47,7 +45,6 @@ class _ActivityOverviewState extends State<ActivityOverview> {
   }
 
   Future<void> _handleAvailabilityChange(
-    ActivityProvider activityProvider,
     Status status,
     Activity activity,
   ) async {
@@ -96,8 +93,6 @@ class _ActivityOverviewState extends State<ActivityOverview> {
 
   @override
   Widget build(BuildContext context) {
-    final activityProvider = Provider.of<ActivityProvider>(context);
-
     // Don't mutate widget.activities directly
     final sortedActivities = [...widget.activities]
       ..sort((a, b) => a.getStartDate.compareTo(b.getStartDate));
@@ -239,9 +234,7 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                                       hasPassed: activityHasBeen,
                                       category: activity.category,
                                       onTap: () => _handleAvailabilityChange(
-                                          activityProvider,
-                                          Status.aanwezig,
-                                          activity),
+                                          Status.aanwezig, activity),
                                     ),
                                     _buildAvailabilityButton(
                                       status: Status.misschien,
@@ -249,9 +242,7 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                                       hasPassed: activityHasBeen,
                                       category: activity.category,
                                       onTap: () => _handleAvailabilityChange(
-                                          activityProvider,
-                                          Status.misschien,
-                                          activity),
+                                          Status.misschien, activity),
                                     ),
                                     _buildAvailabilityButton(
                                       status: Status.afwezig,
@@ -259,9 +250,7 @@ class _ActivityOverviewState extends State<ActivityOverview> {
                                       hasPassed: activityHasBeen,
                                       category: activity.category,
                                       onTap: () => _handleAvailabilityChange(
-                                          activityProvider,
-                                          Status.afwezig,
-                                          activity),
+                                          Status.afwezig, activity),
                                     ),
                                   ],
                                 ),

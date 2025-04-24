@@ -7,8 +7,6 @@ import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/availability.dart';
 import 'package:piwo/views/activity/edit_activity.dart';
 import 'package:piwo/widgets/dialogs.dart';
-import 'package:piwo/widgets/notifiers/availablity_notifier.dart';
-import 'package:provider/provider.dart';
 import 'package:piwo/models/account.dart';
 import 'package:piwo/models/activity.dart';
 import 'package:piwo/models/availability.dart';
@@ -33,7 +31,6 @@ class ActivityPage extends StatefulWidget {
 }
 
 class ActivityPageState extends State<ActivityPage> {
-  Status? _selectedStatus;
   Status _selectedStatusOverview = Status.aanwezig;
 
   final List<String> _aanwezig = [];
@@ -43,8 +40,13 @@ class ActivityPageState extends State<ActivityPage> {
   @override
   void initState() {
     super.initState();
-    _buildAvailabilities(
+    _loadInitialData();
+  }
+
+  void _loadInitialData() async {
+    await _buildAvailabilities(
         widget.activity.availabilities?[widget.activity.getStartDate]);
+    if (mounted) setState(() {});
   }
 
   Future<void> _buildAvailabilities(
@@ -76,7 +78,6 @@ class ActivityPageState extends State<ActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final activityProvider = Provider.of<ActivityProvider>(context);
     final activityHasBeen =
         widget.activity.endDate.isBefore(DateTime.now().toUtc());
 
@@ -225,8 +226,7 @@ class ActivityPageState extends State<ActivityPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     GestureDetector(
-                      onTap: () => _updateAvailability(
-                          activityProvider, Status.aanwezig),
+                      onTap: () => _updateAvailability(Status.aanwezig),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
@@ -238,12 +238,11 @@ class ActivityPageState extends State<ActivityPage> {
                               widget.activity.category),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: const Text("Aanwezig"),
+                        child: const Text("aanwezig"),
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => _updateAvailability(
-                          activityProvider, Status.misschien),
+                      onTap: () => _updateAvailability(Status.misschien),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
@@ -255,12 +254,11 @@ class ActivityPageState extends State<ActivityPage> {
                               widget.activity.category),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: const Text("Misschien"),
+                        child: const Text("misschien"),
                       ),
                     ),
                     GestureDetector(
-                      onTap: () =>
-                          _updateAvailability(activityProvider, Status.afwezig),
+                      onTap: () => _updateAvailability(Status.afwezig),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
@@ -272,7 +270,7 @@ class ActivityPageState extends State<ActivityPage> {
                               widget.activity.category),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: const Text("Afwezig"),
+                        child: const Text("afwezig"),
                       ),
                     ),
                   ],
@@ -294,27 +292,52 @@ class ActivityPageState extends State<ActivityPage> {
     );
   }
 
-  void _updateAvailability(
-      ActivityProvider activityProvider, Status status) async {
+  void _updateAvailability(Status status) async {
     if (!widget.activity.endDate.isBefore(DateTime.now().toUtc())) {
+      // Create new availability object
       final availability = Availability(
-          account:
-              FirebaseFirestore.instance.doc('accounts/${widget.account.id}'),
-          status: status);
+        account:
+            FirebaseFirestore.instance.doc('accounts/${widget.account.id}'),
+        status: status,
+      );
 
-      // await AvailabilityService().changeAvailability(availability);
+      // Save availability to Firestore and get ID
+      final id = await AvailabilityService().changeAvailability(
+        availability,
+        widget.activity.id,
+        widget.activity.getStartDate,
+      );
+      final newRef = FirebaseFirestore.instance.doc('availabilities/$id');
 
-      // await activityProvider.changeAvailability(
-      //   widget.activity.id!,
-      //   widget.activity.getStartDate,
-      //   availability,
-      // );
+      // Ensure map & list are initialized
+      widget.activity.availabilities ??= {};
+      widget.activity.availabilities!
+          .putIfAbsent(widget.activity.getStartDate, () => []);
 
-      setState(() {
-        _selectedStatus = status;
-        _buildAvailabilities(
-            widget.activity.availabilities?[widget.activity.getStartDate]);
-      });
+      // Replace existing availability if account already exists
+      List<DocumentReference> updatedRefs = widget
+          .activity.availabilities![widget.activity.getStartDate]!
+          .where((ref) => ref.id != id)
+          .toList();
+
+      // Add the new availability reference
+      updatedRefs.add(newRef);
+
+      // Update the map with the new list
+      widget.activity.availabilities![widget.activity.getStartDate] =
+          updatedRefs;
+
+      // Save updated activity
+      if (widget.activity.availabilities != null) {
+        await AvailabilityService().addAvailabilityToActivity(
+            widget.activity.id, widget.activity.availabilities ?? {});
+      }
+
+      // Refresh UI
+      await _buildAvailabilities(
+        widget.activity.availabilities?[widget.activity.getStartDate],
+      );
+      if (mounted) setState(() {});
     }
   }
 
@@ -322,8 +345,6 @@ class ActivityPageState extends State<ActivityPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: Status.values.map((status) {
-        final statusText =
-            status.name[0].toUpperCase() + status.name.substring(1);
         final count = {
           Status.aanwezig: _aanwezig.length,
           Status.misschien: _misschien.length,
@@ -348,7 +369,7 @@ class ActivityPageState extends State<ActivityPage> {
             ),
             child: Row(
               children: [
-                Text(statusText),
+                Text(status.name),
                 const SizedBox(width: 6),
                 Container(
                   padding: const EdgeInsets.all(6),
@@ -377,28 +398,34 @@ class ActivityPageState extends State<ActivityPage> {
       Status.afwezig: _afwezig,
     }[_selectedStatusOverview]!;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (people.isEmpty)
-          const Text('Geen mensen geregistreerd',
-              style: TextStyle(fontSize: 16, color: Colors.black87))
-        else
-          ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: people.length,
-            itemBuilder: (context, index) {
-              final person = people[index];
-              return ListTile(
-                leading: const Icon(Icons.person),
-                title: Text(person,
-                    style:
-                        const TextStyle(fontSize: 16, color: Colors.black87)),
-              );
-            },
-          ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (people.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 12.0),
+              child: Text('Geen mensen geregistreerd',
+                  style: TextStyle(fontSize: 16, color: Colors.black87)),
+            )
+          else
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: people.length,
+              itemBuilder: (context, index) {
+                final person = people[index];
+                return ListTile(
+                  leading: const Icon(Icons.person),
+                  title: Text(person,
+                      style:
+                          const TextStyle(fontSize: 16, color: Colors.black87)),
+                );
+              },
+            ),
+        ],
+      ),
     );
   }
 }
