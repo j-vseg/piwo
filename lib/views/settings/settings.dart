@@ -17,7 +17,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-  Account _account = Account();
+  // ignore: prefer_typing_uninitialized_variables
+  var _account;
 
   @override
   void initState() {
@@ -37,6 +38,10 @@ class SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_account == null || _account is! Account) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return CustomScaffold(
       useAppBar: true,
       appBar: AppBar(

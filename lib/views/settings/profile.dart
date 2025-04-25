@@ -19,7 +19,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  Account _account = Account();
+  // ignore: prefer_typing_uninitialized_variables
+  var _account;
 
   @override
   void initState() {
@@ -39,6 +40,10 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_account == null || _account is! Account) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,

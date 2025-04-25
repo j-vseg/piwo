@@ -37,7 +37,7 @@ class ChartDataWidgetState extends State<ChartDataWidget> {
             Material(
               child: ListTile(
                 leading: Text("#${i + 1}"),
-                title: Text(sortedLeaderboard[i].key.firstName ?? "Unknown"),
+                title: Text(sortedLeaderboard[i].key.firstName),
                 trailing: Text(sortedLeaderboard[i]
                     .value[widget.selectedButton]
                     .toString()),

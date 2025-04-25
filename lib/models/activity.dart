@@ -1,66 +1,54 @@
 import 'dart:ui';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart' hide Category;
-import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/models/availability.dart';
 import 'package:piwo/models/enums/category.dart';
 import 'package:piwo/models/enums/month.dart';
 import 'package:piwo/models/enums/recurrance.dart';
+import 'package:piwo/services/availability.dart';
 
 class Activity {
-  String? id;
-  String? name;
+  String id;
+  String name;
   String? location;
   Color color;
-  Recurrence? recurrence;
-  Category? category;
-  DateTime? startDate;
-  DateTime? endDate;
-  Map<DateTime, List<Availability>>? availabilities;
+  Recurrence recurrence;
+  Category category;
+  DateTime startDate;
+  DateTime endDate;
+  Map<DateTime, List<DocumentReference>>? availabilities;
   List<DateTime>? exceptions;
 
   Activity({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
     this.location,
-    this.color = CustomColors.themePrimary,
-    this.recurrence,
-    this.category,
-    this.startDate,
-    this.endDate,
+    required this.color,
+    required this.recurrence,
+    required this.category,
+    required this.startDate,
+    required this.endDate,
     this.availabilities,
     this.exceptions,
   });
 
   static Future<Activity> fromJson(Map<String, dynamic> json) async {
-    Map<DateTime, List<Availability>> availabilities = {};
+    Map<DateTime, List<DocumentReference>> availabilities = {};
 
     if (json['availabilities'] != null) {
       final availabilitiesData =
-          json['availabilities'] as Map<Object?, Object?>;
+          Map<String, dynamic>.from(json['availabilities']);
 
       for (var entry in availabilitiesData.entries) {
-        if (entry.key is String) {
-          DateTime date =
-              Availability.parseFormattedDateTime(entry.key as String);
-          List<Availability> availabilityList = [];
+        DateTime date = Availability.parseFormattedDateTime(entry.key);
+        List<dynamic> refs = entry.value;
 
-          if (entry.value is List) {
-            for (var availabilityJson in entry.value as List) {
-              final availabilityMap = Map<String, dynamic>.from(
-                  availabilityJson as Map<Object?, Object?>);
-              final newAvailability =
-                  await Availability.fromJson(availabilityMap);
-              availabilityList.add(newAvailability);
-            }
-          }
-
-          availabilities[date] = availabilityList;
-        }
+        availabilities[date] =
+            refs.map((ref) => ref as DocumentReference<Object?>).toList();
       }
     }
 
-    Recurrence? recurrence;
+    Recurrence recurrence = Recurrence.geen;
     if (json['recurrence'] != null) {
       try {
         recurrence = Recurrence.values.firstWhere(
@@ -74,7 +62,7 @@ class Activity {
       }
     }
 
-    Category? category;
+    Category category = Category.groepsavond;
     if (json['category'] != null) {
       try {
         category = Category.values.firstWhere(
@@ -89,7 +77,7 @@ class Activity {
     }
 
     return Activity(
-      id: json['id'],
+      id: json['id'] ?? '',
       name: json['name'],
       location: json['location'],
       color: Color(int.parse(json['color'])),
@@ -97,10 +85,10 @@ class Activity {
       category: category,
       startDate: json['startDate'] != null
           ? DateTime.tryParse(json['startDate'])!.toUtc()
-          : null,
+          : DateTime.now(),
       endDate: json['endDate'] != null
           ? DateTime.tryParse(json['endDate'])!.toUtc()
-          : null,
+          : DateTime.now(),
       availabilities: availabilities,
       exceptions: (json['exceptions'] as List<dynamic>?)?.map((e) {
             if (e != null) {
@@ -114,58 +102,70 @@ class Activity {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'location': location,
-      'color': "0x${color.value.toRadixString(16).toUpperCase()}",
-      'recurrence': recurrence?.toString().split('.').last,
-      'category': category?.toString().split('.').last,
-      'startDate': startDate?.toIso8601String(),
-      'endDate': endDate?.toIso8601String(),
-      'availabilities': availabilities?.map((date, availList) => MapEntry(
-          Availability.formatDateTime(date),
-          availList.map((e) => e.toJson()).toList())),
-      'exceptions': exceptions?.map((date) => date.toIso8601String()).toList(),
-    };
+    final Map<String, dynamic> data = {};
+
+    data['name'] = name;
+    if (location != null) data['location'] = location;
+    data['color'] = "0x${color.value.toRadixString(16).toUpperCase()}";
+    data['recurrence'] = recurrence.toString().split('.').last;
+    data['category'] = category.toString().split('.').last;
+    data['startDate'] = startDate.toIso8601String();
+    data['endDate'] = endDate.toIso8601String();
+    if (availabilities != null) {
+      data['availabilities'] = availabilities?.map((date, availList) =>
+          MapEntry(Availability.formatDateTime(date),
+              availList.map((e) => e).toList()));
+    }
+    if (exceptions != null) {
+      data['exceptions'] =
+          exceptions?.map((date) => date.toIso8601String()).toList();
+    }
+
+    return data;
   }
 
   DateTime get getStartDate {
-    return DateTime(startDate!.year, startDate!.month, startDate!.day);
+    return DateTime(startDate.year, startDate.month, startDate.day);
+  }
+
+  DateTime get getEndDate {
+    return DateTime(endDate.year, endDate.month, endDate.day);
   }
 
   DateTime get getEndDateTimes {
-    return DateTime(endDate!.year, endDate!.month, endDate!.day, endDate!.hour,
-        endDate!.minute);
+    return DateTime(
+        endDate.year, endDate.month, endDate.day, endDate.hour, endDate.minute);
   }
 
   String get getFullDate {
-    return startDate != null && endDate != null
-        ? doesActivitySpanMultipleDays(this)
-            ? "${startDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
-            : "${startDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
-        : "Geen datum beschikbaar";
+    return doesActivitySpanMultipleDays(this)
+        ? "${startDate.toLocal().day} ${Month.values[endDate.toLocal().month - 1].name} ${startDate.toLocal().hour <= 9 ? "0${startDate.toLocal().hour}" : startDate.toLocal().hour}:${startDate.toLocal().minute <= 9 ? "0${startDate.toLocal().minute}" : startDate.toLocal().minute} - ${endDate.toLocal().day} ${Month.values[endDate.toLocal().month - 1].name} ${endDate.toLocal().hour <= 9 ? "0${endDate.toLocal().hour}" : endDate.toLocal().hour}:${endDate.toLocal().minute <= 9 ? "0${endDate.toLocal().minute}" : endDate.toLocal().minute}"
+        : "${startDate.toLocal().day} ${Month.values[endDate.toLocal().month - 1].name} ${startDate.toLocal().hour <= 9 ? "0${startDate.toLocal().hour}" : startDate.toLocal().hour}:${startDate.toLocal().minute <= 9 ? "0${startDate.toLocal().minute}" : startDate.toLocal().minute} - ${endDate.toLocal().hour <= 9 ? "0${endDate.toLocal().hour}" : endDate.toLocal().hour}:${endDate.toLocal().minute <= 9 ? "0${endDate.toLocal().minute}" : endDate.toLocal().minute}";
   }
 
   String get getTimes {
-    return startDate != null && endDate != null
-        ? doesActivitySpanMultipleDays(this)
-            ? " Start om ${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - Eindigd op ${endDate!.toLocal().day} ${Month.values[endDate!.toLocal().month - 1].name} ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
-            : "${startDate!.toLocal().hour <= 9 ? "0${startDate!.toLocal().hour}" : startDate!.toLocal().hour}:${startDate!.toLocal().minute <= 9 ? "0${startDate!.toLocal().minute}" : startDate!.toLocal().minute} - ${endDate!.toLocal().hour <= 9 ? "0${endDate!.toLocal().hour}" : endDate!.toLocal().hour}:${endDate!.toLocal().minute <= 9 ? "0${endDate!.toLocal().minute}" : endDate!.toLocal().minute}"
-        : "Geen tijd beschikbaar";
+    return doesActivitySpanMultipleDays(this)
+        ? " Start om ${startDate.toLocal().hour <= 9 ? "0${startDate.toLocal().hour}" : startDate.toLocal().hour}:${startDate.toLocal().minute <= 9 ? "0${startDate.toLocal().minute}" : startDate.toLocal().minute} - Eindigd op ${endDate.toLocal().day} ${Month.values[endDate.toLocal().month - 1].name} ${endDate.toLocal().hour <= 9 ? "0${endDate.toLocal().hour}" : endDate.toLocal().hour}:${endDate.toLocal().minute <= 9 ? "0${endDate.toLocal().minute}" : endDate.toLocal().minute}"
+        : "${startDate.toLocal().hour <= 9 ? "0${startDate.toLocal().hour}" : startDate.toLocal().hour}:${startDate.toLocal().minute <= 9 ? "0${startDate.toLocal().minute}" : startDate.toLocal().minute} - ${endDate.toLocal().hour <= 9 ? "0${endDate.toLocal().hour}" : endDate.toLocal().hour}:${endDate.toLocal().minute <= 9 ? "0${endDate.toLocal().minute}" : endDate.toLocal().minute}";
   }
 
-  Availability? getYourAvailability(DateTime date, String accountId) {
+  Future<Availability?> getYourAvailability(
+      DateTime date, String accountId) async {
     if (availabilities != null && availabilities!.containsKey(date)) {
-      List<Availability>? availabilityList = availabilities![date];
+      List<DocumentReference>? availabilityList = availabilities![date];
 
       if (availabilityList != null) {
-        for (var availability in availabilityList) {
-          if (availability.account?.id == accountId) {
-            return availability;
+        for (var availabilityRef in availabilityList) {
+          var availability =
+              await AvailabilityService().getAvailability(availabilityRef.id);
+          if (availability != null) {
+            if (availability.account.id == accountId) {
+              return availability;
+            }
           }
         }
       }
+      return null; // Return null if no matching availability is found
     }
     return null;
   }

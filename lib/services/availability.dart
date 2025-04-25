@@ -1,119 +1,128 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:piwo/models/availability.dart';
 
 class AvailabilityService {
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();
-
-  Future<void> changeAvailability(
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<String?> changeAvailability(
+    Availability newAvailability,
     String activityId,
-    Map<DateTime, List<Availability>> availabilities,
     DateTime date,
-    Availability availability,
   ) async {
     try {
-      final DatabaseReference availabilityRef = _database.child(
-          'activities/$activityId/availabilities/${Availability.formatDateTime(date)}');
+      final String accountId = newAvailability.account.id;
+      final String formattedDate = Availability.formatDateTime(date);
+      final String docId = '${activityId}_${accountId}_$formattedDate';
 
-      DataSnapshot snapshot = await availabilityRef.get();
+      final DocumentReference availabilityDoc =
+          _firestore.collection('availabilities').doc(docId);
 
-      List<Availability> availabilityList = availabilities[date] ?? [];
+      await availabilityDoc.set({
+        'account': newAvailability.account,
+        'status': newAvailability.status.name,
+      });
 
-      bool found = false;
+      debugPrint('Availability successfully created/updated');
+      return availabilityDoc.id;
+    } catch (e) {
+      debugPrint('Error changing availability: $e');
+      return null;
+    }
+  }
 
-      if (snapshot.exists) {
-        for (int i = 0; i < availabilityList.length; i++) {
-          if (availabilityList[i].account!.id == availability.account!.id) {
-            found = true;
-            if (availability.status != null &&
-                availabilityList[i].status != availability.status) {
-              availabilityList[i] = availability;
-            } else if (availability.status == null) {
-              availabilityList.removeAt(i);
-            }
-            break;
+  Future<void> addAvailabilityToActivity(
+    String activityId,
+    Map<DateTime, List<DocumentReference>> newAvailabilities,
+  ) async {
+    try {
+      final DocumentReference activityDoc =
+          _firestore.collection('activities').doc(activityId);
+
+      // Step 1: Read existing availabilities
+      final snapshot = await activityDoc.get();
+      Map<String, dynamic> data =
+          snapshot.data() as Map<String, dynamic>? ?? {};
+      Map<String, dynamic> currentAvailabilities = data['availabilities'] ?? {};
+
+      // Step 2: Merge new availabilities
+      newAvailabilities.forEach((date, refs) {
+        final dateKey = date.toIso8601String().split('T').first;
+
+        List existingRefs = currentAvailabilities[dateKey] ?? [];
+        Set<String> existingIds = {
+          for (var ref in existingRefs) (ref as DocumentReference).id
+        };
+
+        for (var ref in refs) {
+          if (!existingIds.contains(ref.id)) {
+            existingRefs.add(ref);
           }
         }
 
-        if (!found && availability.status != null) {
-          availabilityList.add(availability);
-        }
+        currentAvailabilities[dateKey] = existingRefs;
+      });
 
-        availabilities[date] = availabilityList;
+      // Step 3: Update Firestore (merge mode)
+      await activityDoc.set({
+        'availabilities': currentAvailabilities,
+      }, SetOptions(merge: true));
 
-        List<Map<String, dynamic>> availabilitiesJson = availabilityList
-            .map((availability) => availability.toJson())
-            .toList();
-        await availabilityRef.set(availabilitiesJson);
-
-        debugPrint('Availability successfully updated');
-      } else {
-        if (availability.status != null) {
-          await createAvailability(
-              activityId, availabilities, date, availability);
-        }
-      }
+      debugPrint('Availability successfully added.');
     } catch (e) {
-      debugPrint('Error updating availability: $e');
+      debugPrint('Error adding availability: $e');
     }
   }
 
-  Future<void> createAvailability(
-    String activityId,
-    Map<DateTime, List<Availability>> availabilities,
-    DateTime date,
-    Availability availability,
+  Future<Availability?> getAvailability(
+    String availabilityId,
   ) async {
     try {
-      final DatabaseReference availabilityRef = _database.child(
-          'activities/$activityId/availabilities/${Availability.formatDateTime(date)}');
+      DocumentReference availabilityDoc =
+          _firestore.collection('availabilities').doc(availabilityId);
 
-      List<Availability> availabilityList = availabilities[date] ?? [];
+      DocumentSnapshot snapshot = await availabilityDoc.get();
 
-      availabilityList.add(availability);
-
-      availabilities[date] = availabilityList;
-
-      List<Map<String, dynamic>> availabilitiesJson = availabilityList
-          .map((availability) => availability.toJson())
-          .toList();
-      await availabilityRef.set(availabilitiesJson);
-
-      debugPrint('Availability successfully created');
+      if (snapshot.exists && snapshot.data() != null) {
+        return await Availability.fromJson(
+          snapshot.data() as Map<String, dynamic>,
+        );
+      } else {
+        return null;
+      }
     } catch (e) {
-      debugPrint('Error creating availability: $e');
+      debugPrint('Error getting availability: $e');
+      return null;
     }
   }
 
-  Future<List<Availability>> getAvailabilitiesByDate(
+  // Get all availabilities for an activity on a specific date
+  Future<List<DocumentReference>> getAvailabilitiesByDate(
     String activityId,
     DateTime date,
   ) async {
     try {
-      final DatabaseReference availabilityRef = _database.child(
-        'activities/$activityId/availabilities/${Availability.formatDateTime(date)}',
-      );
+      DocumentReference availabilityDoc =
+          _firestore.collection('activities').doc(activityId);
 
-      DataSnapshot snapshot = await availabilityRef.get();
-      if (snapshot.exists && snapshot.value != null) {
-        List<Availability> availabilityList = [];
+      DocumentSnapshot snapshot = await availabilityDoc.get();
 
-        final availabilityData = snapshot.value as List<Object?>;
+      if (snapshot.exists && snapshot.data() != null) {
+        Map<String, dynamic> data =
+            (snapshot.data() as Map<String, dynamic>)['availabilities'] ?? {};
 
-        for (var availabilityJson in availabilityData) {
-          final availabilityMap = Map<String, dynamic>.from(
-              availabilityJson as Map<Object?, Object?>);
-          final availability = await Availability.fromJson(availabilityMap);
-          availabilityList.add(availability);
+        // Convert DateTime to string key format
+        String dateKey = date.toIso8601String().split('T')[0]; // 'YYYY-MM-DD'
+
+        if (data.containsKey(dateKey)) {
+          List<dynamic> refs = data[dateKey];
+          return refs.cast<DocumentReference>();
         }
-
-        return availabilityList;
-      } else {
-        return [];
       }
+
+      return [];
     } catch (e) {
       debugPrint("Error fetching availabilities: $e");
-      throw Exception("Failed to get availabilities: $e");
+      return [];
     }
   }
 }
