@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/payment_url.dart';
@@ -37,6 +38,10 @@ class SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_account == null || _account is! Account) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return CustomScaffold(
       useAppBar: true,
       appBar: AppBar(

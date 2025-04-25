@@ -4,6 +4,7 @@ import 'package:piwo/config/theme/custom_theme.dart';
 import 'package:piwo/config/theme/size_setter.dart';
 import 'package:piwo/views/activities/activities.dart';
 import 'package:piwo/views/home/home.dart';
+import 'package:piwo/views/settings/settings.dart';
 import 'package:piwo/views/statistics/statistics.dart';
 
 class HomeView extends StatefulWidget {
@@ -35,7 +36,7 @@ class _HomeViewState extends State<HomeView> {
               HomePage(),
               ActivitiesPage(),
               StatisticsPage(),
-              // SettingsPage(),
+              SettingsPage(),
             ],
           ),
         ],
@@ -65,11 +66,11 @@ class _HomeViewState extends State<HomeView> {
                     icon: Icon(Icons.leaderboard),
                     label: 'Statistieken',
                   ),
-                  // BottomNavigationBarItem(
-                  //   key: Key('settings_view_button'),
-                  //   icon: Icon(Icons.settings),
-                  //   label: 'Instellingen',
-                  // ),
+                  BottomNavigationBarItem(
+                    key: Key('settings_view_button'),
+                    icon: Icon(Icons.settings),
+                    label: 'Instellingen',
+                  ),
                 ],
                 type: BottomNavigationBarType.fixed,
                 selectedItemColor: CustomColors.selectedMenuColor,

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:piwo/models/account.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/auth.dart';
@@ -39,6 +40,10 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_account == null || _account is! Account) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
