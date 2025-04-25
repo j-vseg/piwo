@@ -29,6 +29,8 @@ class EditActivityPageState extends State<EditActivityPage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  Activity? _updatedOrCreatedActivity;
+
   String _formatDateTime(DateTime dateTime) {
     return DateFormat('MMM dd, yyyy – h:mm a').format(dateTime);
   }
@@ -89,8 +91,6 @@ class EditActivityPageState extends State<EditActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final activityProvider = Provider.of<ActivityProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -110,7 +110,7 @@ class EditActivityPageState extends State<EditActivityPage> {
           ),
           iconSize: 25.0,
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(_updatedOrCreatedActivity);
           },
         ),
         actions: [
@@ -146,17 +146,14 @@ class EditActivityPageState extends State<EditActivityPage> {
                       if (!context.mounted) return;
                       SuccessDialog.show(
                         context,
-                        message: "Activiteit is aangepast.",
+                        message:
+                            "Activiteit is aangepast. Het kan even duren voor de wijzingen zichtbaar zijn.",
                         onPressed: () async {
-                          // await activityProvider.updateActivity(
-                          //   widget.activity!.id!,
-                          //   activty,
-                          // );
-
                           if (!context.mounted) return;
                           Navigator.of(context).pop();
                         },
                       );
+                      _updatedOrCreatedActivity = activty;
                     } else {
                       if (!context.mounted) return;
                       ErrorDialog.showErrorDialog(
@@ -184,13 +181,9 @@ class EditActivityPageState extends State<EditActivityPage> {
                       if (!context.mounted) return;
                       SuccessDialog.show(
                         context,
-                        message: "Activiteit is gecreëerd.",
+                        message:
+                            "Activiteit is gecreëerd. Het kan even duren voor de activiteit zichtbaar is.",
                         onPressed: () async {
-                          // await activityProvider.createActivity(
-                          //   result.data ?? "",
-                          //   activty,
-                          // );
-
                           if (!context.mounted) return;
                           Navigator.of(context).pop();
                         },

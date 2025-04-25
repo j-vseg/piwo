@@ -104,7 +104,6 @@ class Activity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
 
-    data['id'] = id;
     data['name'] = name;
     if (location != null) data['location'] = location;
     data['color'] = "0x${color.value.toRadixString(16).toUpperCase()}";

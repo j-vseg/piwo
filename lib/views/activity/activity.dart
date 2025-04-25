@@ -14,8 +14,6 @@ import 'package:piwo/models/enums/month.dart';
 import 'package:piwo/models/enums/status.dart';
 import 'package:piwo/models/enums/weekday.dart';
 
-// ... your imports remain unchanged
-
 class ActivityPage extends StatefulWidget {
   const ActivityPage({
     super.key,
@@ -32,6 +30,7 @@ class ActivityPage extends StatefulWidget {
 
 class ActivityPageState extends State<ActivityPage> {
   Status _selectedStatusOverview = Status.aanwezig;
+  late Activity _activity;
 
   final List<String> _aanwezig = [];
   final List<String> _misschien = [];
@@ -41,6 +40,7 @@ class ActivityPageState extends State<ActivityPage> {
   void initState() {
     super.initState();
     _loadInitialData();
+    _activity = widget.activity;
   }
 
   void _loadInitialData() async {
@@ -79,13 +79,12 @@ class ActivityPageState extends State<ActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final activityHasBeen =
-        widget.activity.endDate.isBefore(DateTime.now().toUtc());
+    final activityHasBeen = _activity.endDate.isBefore(DateTime.now().toUtc());
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.activity.name),
-        backgroundColor: widget.activity.color,
+        title: Text(_activity.name),
+        backgroundColor: _activity.color,
         elevation: 0,
         leading: IconButton(
           padding: EdgeInsets.zero,
@@ -101,7 +100,7 @@ class ActivityPageState extends State<ActivityPage> {
               return [
                 const PopupMenuItem<String>(
                     value: 'edit', child: Text('Aanpassen')),
-                if (widget.activity.recurrence != Recurrence.geen)
+                if (_activity.recurrence != Recurrence.geen)
                   const PopupMenuItem<String>(
                       value: 'delete-only',
                       child: Text('Verwijder deze activiteit')),
@@ -114,33 +113,34 @@ class ActivityPageState extends State<ActivityPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        EditActivityPage(activity: widget.activity),
+                    builder: (context) => EditActivityPage(activity: _activity),
                   ),
                 ).then((activity) {
-                  // if (activity != null) {
-                  //   setState(() {
-                  //     widget.activity = activity;
-                  //   });
-                  // }
+                  if (activity != null) {
+                    setState(() {
+                      _activity = activity;
+                    });
+                  }
                 });
               } else if (value == 'delete-only') {
-                final result = await ActivityService().createExceptions(
-                    widget.activity.id, widget.activity.getStartDate);
+                final result = await ActivityService()
+                    .createExceptions(_activity.id, _activity.getStartDate);
                 if (!context.mounted) return;
                 result.isSuccess
                     ? SuccessDialog.show(context,
-                        message: "Activiteit is verwijderd.")
+                        message:
+                            "Activiteit is verwijderd. Het kan even duren voor de wijzingen zichtbaar zijn.")
                     : ErrorDialog.showErrorDialog(
                         context, result.error ?? "Onbekende fout.");
               } else if (value == 'delete') {
                 final result =
-                    await ActivityService().deleteActivity(widget.activity.id);
+                    await ActivityService().deleteActivity(_activity.id);
                 if (!context.mounted) return;
                 if (result.isSuccess) {
                   SuccessDialog.show(
                     context,
-                    message: "Activiteit is verwijderd.",
+                    message:
+                        "Activiteit is verwijderd. Het kan even duren voor de wijzingen zichtbaar zijn.",
                     onPressed: () {
                       if (!context.mounted) return;
                       Navigator.of(context).pop();
@@ -160,7 +160,7 @@ class ActivityPageState extends State<ActivityPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.activity.name,
+            Text(_activity.name,
                 style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -168,9 +168,9 @@ class ActivityPageState extends State<ActivityPage> {
             const SizedBox(height: 2),
             Row(
               children: [
-                Icon(Icons.category, color: widget.activity.color, size: 16),
+                Icon(Icons.category, color: _activity.color, size: 16),
                 const SizedBox(width: 8),
-                Text(widget.activity.category.toString(),
+                Text(_activity.category.toString(),
                     style:
                         const TextStyle(fontSize: 16, color: Colors.black87)),
               ],
@@ -185,10 +185,10 @@ class ActivityPageState extends State<ActivityPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                          "${(Weekday.values[widget.activity.startDate.weekday - 1])}, ${widget.activity.startDate.day} ${Month.values[widget.activity.startDate.month - 1].name}",
+                          "${(Weekday.values[_activity.startDate.weekday - 1])}, ${_activity.startDate.day} ${Month.values[_activity.startDate.month - 1].name}",
                           style: const TextStyle(
                               fontSize: 16, color: Colors.black87)),
-                      Text(widget.activity.getTimes,
+                      Text(_activity.getTimes,
                           style: const TextStyle(
                               fontSize: 15, color: Colors.grey)),
                     ],
@@ -196,8 +196,7 @@ class ActivityPageState extends State<ActivityPage> {
                 ),
               ],
             ),
-            if (widget.activity.location != null &&
-                widget.activity.location!.isNotEmpty)
+            if (_activity.location != null && _activity.location!.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(
@@ -205,7 +204,7 @@ class ActivityPageState extends State<ActivityPage> {
                     const Icon(Icons.place, color: Colors.grey),
                     const SizedBox(width: 8),
                     Flexible(
-                        child: Text(widget.activity.location!,
+                        child: Text(_activity.location!,
                             style: const TextStyle(
                                 fontSize: 16, color: Colors.black87))),
                   ],
@@ -219,8 +218,8 @@ class ActivityPageState extends State<ActivityPage> {
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             FutureBuilder<Availability?>(
-              future: widget.activity.getYourAvailability(
-                  widget.activity.getStartDate, widget.account.id),
+              future: _activity.getYourAvailability(
+                  _activity.getStartDate, widget.account.id),
               builder: (context, snapshot) {
                 final yourAvailability = snapshot.data;
                 return Row(
@@ -236,7 +235,7 @@ class ActivityPageState extends State<ActivityPage> {
                               Status.aanwezig,
                               yourAvailability,
                               activityHasBeen,
-                              widget.activity.category),
+                              _activity.category),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: const Text("aanwezig"),
@@ -252,7 +251,7 @@ class ActivityPageState extends State<ActivityPage> {
                               Status.misschien,
                               yourAvailability,
                               activityHasBeen,
-                              widget.activity.category),
+                              _activity.category),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: const Text("misschien"),
@@ -268,7 +267,7 @@ class ActivityPageState extends State<ActivityPage> {
                               Status.afwezig,
                               yourAvailability,
                               activityHasBeen,
-                              widget.activity.category),
+                              _activity.category),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: const Text("afwezig"),
@@ -294,7 +293,7 @@ class ActivityPageState extends State<ActivityPage> {
   }
 
   void _updateAvailability(Status status) async {
-    if (!widget.activity.endDate.isBefore(DateTime.now().toUtc())) {
+    if (!_activity.endDate.isBefore(DateTime.now().toUtc())) {
       // Create new availability object
       final availability = Availability(
         account:
@@ -305,19 +304,18 @@ class ActivityPageState extends State<ActivityPage> {
       // Save availability to Firestore and get ID
       final id = await AvailabilityService().changeAvailability(
         availability,
-        widget.activity.id,
-        widget.activity.getStartDate,
+        _activity.id,
+        _activity.getStartDate,
       );
       final newRef = FirebaseFirestore.instance.doc('availabilities/$id');
 
       // Ensure map & list are initialized
-      widget.activity.availabilities ??= {};
-      widget.activity.availabilities!
-          .putIfAbsent(widget.activity.getStartDate, () => []);
+      _activity.availabilities ??= {};
+      _activity.availabilities!.putIfAbsent(_activity.getStartDate, () => []);
 
       // Replace existing availability if account already exists
       List<DocumentReference> updatedRefs = widget
-          .activity.availabilities![widget.activity.getStartDate]!
+          .activity.availabilities![_activity.getStartDate]!
           .where((ref) => ref.id != id)
           .toList();
 
@@ -325,18 +323,17 @@ class ActivityPageState extends State<ActivityPage> {
       updatedRefs.add(newRef);
 
       // Update the map with the new list
-      widget.activity.availabilities![widget.activity.getStartDate] =
-          updatedRefs;
+      _activity.availabilities![_activity.getStartDate] = updatedRefs;
 
       // Save updated activity
-      if (widget.activity.availabilities != null) {
+      if (_activity.availabilities != null) {
         await AvailabilityService().addAvailabilityToActivity(
-            widget.activity.id, widget.activity.availabilities ?? {});
+            _activity.id, _activity.availabilities ?? {});
       }
 
       // Refresh UI
       await _buildAvailabilities(
-        widget.activity.availabilities?[widget.activity.getStartDate],
+        _activity.availabilities?[_activity.getStartDate],
       );
       if (mounted) setState(() {});
     }
@@ -364,8 +361,7 @@ class ActivityPageState extends State<ActivityPage> {
                       : status == Status.afwezig
                           ? Colors.red
                           : Colors.orange)
-                  : CustomColors.getButtonColorForCategory(
-                      widget.activity.category),
+                  : CustomColors.getButtonColorForCategory(_activity.category),
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Row(
