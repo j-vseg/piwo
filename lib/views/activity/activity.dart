@@ -62,14 +62,15 @@ class ActivityPageState extends State<ActivityPage> {
         if (availability != null) {
           final account =
               (await AccountService().getAccountById(availability.account.id))
-                      .data ??
-                  Account(firstName: 'Unknown user');
-          if (availability.status == Status.aanwezig) {
-            _aanwezig.add(account.getFullName);
-          } else if (availability.status == Status.misschien) {
-            _misschien.add(account.getFullName);
-          } else {
-            _afwezig.add(account.getFullName);
+                  .data;
+          if (account != null) {
+            if (availability.status == Status.aanwezig) {
+              _aanwezig.add(account.getFullName);
+            } else if (availability.status == Status.misschien) {
+              _misschien.add(account.getFullName);
+            } else {
+              _afwezig.add(account.getFullName);
+            }
           }
         }
       }
@@ -219,7 +220,7 @@ class ActivityPageState extends State<ActivityPage> {
             const SizedBox(height: 10),
             FutureBuilder<Availability?>(
               future: widget.activity.getYourAvailability(
-                  widget.activity.getStartDate, widget.account.id!),
+                  widget.activity.getStartDate, widget.account.id),
               builder: (context, snapshot) {
                 final yourAvailability = snapshot.data;
                 return Row(

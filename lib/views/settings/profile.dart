@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:piwo/models/account.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/activity.dart';
 import 'package:piwo/services/auth.dart';
@@ -19,7 +18,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  Account _account = Account();
+  // ignore: prefer_typing_uninitialized_variables
+  var _account;
 
   @override
   void initState() {

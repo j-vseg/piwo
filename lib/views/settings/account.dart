@@ -73,13 +73,13 @@ class AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     if (widget.account != null) {
       if (widget.emailController != null) {
-        widget.emailController!.text = widget.account!.email ?? "";
+        widget.emailController!.text = widget.account!.email;
       }
       if (widget.firstNameController != null) {
-        widget.firstNameController!.text = widget.account!.firstName ?? "";
+        widget.firstNameController!.text = widget.account!.firstName;
       }
       if (widget.lastNameController != null) {
-        widget.lastNameController!.text = widget.account!.lastName ?? "";
+        widget.lastNameController!.text = widget.account!.lastName;
       }
     }
 
@@ -370,9 +370,10 @@ class AccountPageState extends State<AccountPage> {
                           lastName = widget.lastNameController!.text.trim();
 
                           final account = Account(
+                            id: '',
+                            email: email,
                             firstName: firstName,
                             lastName: lastName,
-                            amountOfCoins: 0,
                             isApproved: false,
                             isConfirmed: false,
                             isFirstLogin: true,

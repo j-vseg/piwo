@@ -21,6 +21,7 @@ class ActivityOverview extends StatefulWidget {
     this.selectedDate,
     this.title,
     this.description,
+    this.onAvailabilityChanged,
   });
 
   final List<Activity> activities;
@@ -28,6 +29,7 @@ class ActivityOverview extends StatefulWidget {
   final DateTime? selectedDate;
   final String? title;
   final String? description;
+  final void Function()? onAvailabilityChanged;
 
   @override
   State<ActivityOverview> createState() => _ActivityOverviewState();
@@ -37,7 +39,7 @@ class _ActivityOverviewState extends State<ActivityOverview> {
   Future<Availability?> _fetchAvailability(Activity activity) async {
     try {
       return await activity.getYourAvailability(
-          activity.getStartDate, widget.account.id!);
+          activity.getStartDate, widget.account.id);
     } catch (e) {
       debugPrint("Error fetching availability: $e");
       return null;
@@ -87,6 +89,9 @@ class _ActivityOverviewState extends State<ActivityOverview> {
       }
 
       // Refresh UI
+      if (widget.onAvailabilityChanged != null) {
+        widget.onAvailabilityChanged!();
+      }
       setState(() {});
     }
   }

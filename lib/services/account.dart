@@ -56,7 +56,7 @@ class AccountService {
         Map<String, dynamic> accountData =
             snapshot.data() as Map<String, dynamic>;
         Account account = Account.fromJson(accountData)
-          ..email = user.email
+          ..email = user.email ?? ''
           ..id = user.uid;
         return Result.success(account);
       } else {

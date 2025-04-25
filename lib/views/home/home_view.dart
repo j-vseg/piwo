@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:piwo/config/theme/custom_colors.dart';
 import 'package:piwo/config/theme/custom_theme.dart';
 import 'package:piwo/config/theme/size_setter.dart';
+import 'package:piwo/views/activities/activities.dart';
 import 'package:piwo/views/home/home.dart';
 import 'package:piwo/views/settings/settings.dart';
 
@@ -32,9 +33,9 @@ class _HomeViewState extends State<HomeView> {
             index: selectedIndex,
             children: const [
               HomePage(),
-              // ActivitiesPage(),
+              ActivitiesPage(),
               // StatisticsPage(),
-              SettingsPage(),
+              // SettingsPage(),
             ],
           ),
         ],
@@ -54,21 +55,21 @@ class _HomeViewState extends State<HomeView> {
                     icon: Icon(Icons.home),
                     label: 'Home',
                   ),
-                  // BottomNavigationBarItem(
-                  //   key: Key('activities_view_button'),
-                  //   icon: Icon(Icons.calendar_month),
-                  //   label: 'Activiteiten',
-                  // ),
+                  BottomNavigationBarItem(
+                    key: Key('activities_view_button'),
+                    icon: Icon(Icons.calendar_month),
+                    label: 'Activiteiten',
+                  ),
                   // BottomNavigationBarItem(
                   //   key: Key('statistics_view_button'),
                   //   icon: Icon(Icons.leaderboard),
                   //   label: 'Statistieken',
                   // ),
-                  BottomNavigationBarItem(
-                    key: Key('settings_view_button'),
-                    icon: Icon(Icons.settings),
-                    label: 'Instellingen',
-                  ),
+                  // BottomNavigationBarItem(
+                  //   key: Key('settings_view_button'),
+                  //   icon: Icon(Icons.settings),
+                  //   label: 'Instellingen',
+                  // ),
                 ],
                 type: BottomNavigationBarType.fixed,
                 selectedItemColor: CustomColors.selectedMenuColor,

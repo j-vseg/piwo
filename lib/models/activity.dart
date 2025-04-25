@@ -129,6 +129,10 @@ class Activity {
     return DateTime(startDate.year, startDate.month, startDate.day);
   }
 
+  DateTime get getEndDate {
+    return DateTime(endDate.year, endDate.month, endDate.day);
+  }
+
   DateTime get getEndDateTimes {
     return DateTime(
         endDate.year, endDate.month, endDate.day, endDate.hour, endDate.minute);

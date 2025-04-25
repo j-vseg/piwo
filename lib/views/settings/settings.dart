@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:piwo/models/account.dart';
 import 'package:piwo/models/enums/role.dart';
 import 'package:piwo/services/account.dart';
 import 'package:piwo/services/payment_url.dart';
@@ -17,7 +16,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-  Account _account = Account();
+  // ignore: prefer_typing_uninitialized_variables
+  var _account;
 
   @override
   void initState() {
