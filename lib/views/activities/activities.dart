@@ -20,6 +20,7 @@ class ActivitiesPage extends StatefulWidget {
 }
 
 class ActivitiesPageState extends State<ActivitiesPage> {
+  // ignore: prefer_typing_uninitialized_variables
   var _account;
   DateTime _selectedDate = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;

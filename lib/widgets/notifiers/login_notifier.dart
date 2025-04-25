@@ -38,9 +38,9 @@ class LoginStateNotifier extends ValueNotifier<LoginState> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       var account = (await AccountService().getMyAccount()).data!;
-      bool isApproved = account.isApproved ?? false;
-      bool isComfired = account.isConfirmed ?? false;
-      bool isFirstLogin = account.isFirstLogin ?? false;
+      bool isApproved = account.isApproved;
+      bool isComfired = account.isConfirmed;
+      bool isFirstLogin = account.isFirstLogin;
 
       value = LoginState(
         isLoggedIn: true,

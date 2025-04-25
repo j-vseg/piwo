@@ -184,7 +184,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                       },
                     ),
                     Text(_selectedAccount != null
-                        ? "${_selectedAccount!.firstName} heeft de volgende rolen: ${_selectedAccount!.roles!.map((role) => role.name)}"
+                        ? "${_selectedAccount!.firstName} heeft de volgende rolen: ${_selectedAccount!.roles.map((role) => role.name)}"
                         : ""),
                     DropdownButton<Role>(
                       hint: const Text("Selecteer een rol"),
@@ -208,9 +208,9 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                       onPressed: () async {
                         if (_selectedRole != null && _selectedAccount != null) {
                           final role = _selectedRole;
-                          if (_selectedAccount!.roles!.contains(role)) {
+                          if (_selectedAccount!.roles.contains(role)) {
                             final result = await RoleService().removeRole(
-                              _selectedAccount!.id ?? "",
+                              _selectedAccount!.id,
                               role ?? Role.user,
                             );
                             if (result.isSuccess) {
@@ -257,7 +257,7 @@ class AccountManagerPageState extends State<AccountManagerPage> {
                         }
                       },
                       child: Text(_selectedAccount != null
-                          ? _selectedAccount!.roles!.contains(_selectedRole)
+                          ? _selectedAccount!.roles.contains(_selectedRole)
                               ? "Verwijder rol"
                               : "Voeg rol toe"
                           : "Voeg rol toe"),

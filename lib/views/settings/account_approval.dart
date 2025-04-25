@@ -26,7 +26,7 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
     try {
       _accounts = (await AccountService().getAllAccounts())
           .data!
-          .where((account) => !account.isApproved! && !account.isConfirmed!)
+          .where((account) => !account.isApproved && !account.isConfirmed)
           .toList();
 
       _selectionStatus =
@@ -144,7 +144,7 @@ class AccountApprovalPageState extends State<AccountApprovalPage> {
                                       onPressed: () async {
                                         await VerificationService()
                                             .updateAccountApproval(
-                                                isSelected[0], account.id!);
+                                                isSelected[0], account.id);
                                         setState(() {
                                           _initializeAccounts();
                                         });
