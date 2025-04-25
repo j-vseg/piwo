@@ -163,27 +163,76 @@ class ActivityService {
 
   Future<void> deleteAllAvailabilitiesOfAccount(String accountId) async {
     try {
-      QuerySnapshot activitiesSnapshot =
+      // Step 1: Get reference to account
+      final accountRef = _firestore.collection('accounts').doc(accountId);
+
+      // Step 2: Get all availabilities that belong to this account
+      final availabilitiesSnapshot = await _firestore
+          .collection('availabilities')
+          .where('account', isEqualTo: accountRef)
+          .get();
+
+      // Step 3: Collect all availability references (to remove from activities)
+      final List<DocumentReference> availabilityRefsToDelete =
+          availabilitiesSnapshot.docs.map((doc) => doc.reference).toList();
+      final Set<String> deletedIds =
+          availabilityRefsToDelete.map((ref) => ref.id).toSet();
+
+      // Step 4: Delete those availability docs
+      for (final doc in availabilitiesSnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Step 5: Update each activity and clean up availabilities
+      final activitiesSnapshot =
           await _firestore.collection('activities').get();
 
-      for (var doc in activitiesSnapshot.docs) {
-        DocumentReference activityRef =
-            _firestore.collection('activities').doc(doc.id);
-        QuerySnapshot availabilitiesSnapshot =
-            await activityRef.collection('availabilities').get();
+      for (final activityDoc in activitiesSnapshot.docs) {
+        final data = activityDoc.data();
 
-        for (var availabilityDoc in availabilitiesSnapshot.docs) {
-          List<dynamic> availabilitiesData = availabilityDoc['availabilities'];
-          availabilitiesData.removeWhere((availability) =>
-              availability['account'] != null &&
-              availability['account']['id'] == accountId);
+        if (data['availabilities'] == null) continue;
 
-          await availabilityDoc.reference
-              .update({'availabilities': availabilitiesData});
+        final Map<String, dynamic> activityAvailabilities =
+            Map<String, dynamic>.from(data['availabilities']);
+        bool updated = false;
+
+        final newAvailabilities = <String, dynamic>{};
+
+        activityAvailabilities.forEach((date, refs) {
+          if (refs is List) {
+            final cleanedRefs = refs.where((item) {
+              // Only keep refs that do NOT match deletedIds
+              return !(item is DocumentReference &&
+                  deletedIds.contains(item.id));
+            }).toList();
+
+            if (cleanedRefs.isNotEmpty) {
+              newAvailabilities[date] = cleanedRefs;
+            } else {
+              updated =
+                  true; // Entire date's list was emptied — remove the date
+            }
+
+            if (cleanedRefs.length != refs.length) {
+              updated = true;
+            }
+          } else {
+            // If somehow it's not a list, preserve it unchanged
+            newAvailabilities[date] = refs;
+          }
+        });
+
+        if (updated) {
+          await activityDoc.reference
+              .update({'availabilities': newAvailabilities});
+          debugPrint("Updated activity ${activityDoc.id}");
         }
       }
+
+      debugPrint(
+          "Successfully removed all availabilities for account $accountId");
     } catch (e) {
-      debugPrint("Failed to delete availability from all activities: $e");
+      debugPrint("Failed to delete availabilities for account $accountId: $e");
     }
   }
 }
