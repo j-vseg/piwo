@@ -260,11 +260,16 @@ class ActivitiesPageState extends State<ActivitiesPage> {
           availabilityMap.containsKey(normalizedDay)) {
         final availability = availabilityMap[normalizedDay];
 
-        color = (availability != null &&
-                activity.endDate.isAfter(DateTime.now().toUtc()))
-            ? CustomColors.getAvailabilityColor(
-                availability.status, activity.category)
-            : activity.color;
+        if (availability != null) {
+          if (activity.endDate.isAfter(DateTime.now().toUtc())) {
+            color = CustomColors.getAvailabilityColor(
+                availability.status, activity.category);
+          } else {
+            color = Colors.grey;
+          }
+        } else {
+          color = activity.color;
+        }
       }
 
       if (isMultiDay) {
