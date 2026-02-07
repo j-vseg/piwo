@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import "./globals.css";
-
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-});
+import QueryProvider from "@/contexts/queryProvider";
 
 export const metadata: Metadata = {
   title: "Piwo",
@@ -21,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl">
-      <body className={`${poppins.variable} antialiased`}>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
