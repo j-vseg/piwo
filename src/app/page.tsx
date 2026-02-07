@@ -26,12 +26,12 @@ export default function Home() {
   console.log(activities);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-start bg-zinc-50 font-sans dark:bg-black p-4">
+    <div className="flex min-h-screen flex-col items-center justify-start p-4">
       {activities &&
         activities.map((activity) => (
           <div
             key={activity.id}
-            className="w-full max-w-md rounded-2xl bg-white p-4 shadow-md dark:bg-gray-900 mb-4"
+            className="w-full max-w-md rounded-2xl p-4 shadow-md mb-4"
           >
             <h2 className="text-xl font-bold">{activity.name}</h2>
             <p className="text-sm text-gray-500">
