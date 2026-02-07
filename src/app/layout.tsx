@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import QueryProvider from "@/contexts/queryProvider";
+import { BottomNavigation } from "@/components/BottomNavigation";
 
 export const metadata: Metadata = {
   title: "Piwo",
@@ -16,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          {children}
+          <BottomNavigation />
+        </QueryProvider>
       </body>
     </html>
   );
