@@ -18,14 +18,6 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 const accountsCollection = collection(db, "accounts");
-const activitiesCollection = collection(db, "activities");
-const availabilitiesCollection = collection(db, "availabilities");
+const eventsCollection = collection(db, "events");
 
-export {
-  app,
-  db,
-  storage,
-  accountsCollection,
-  activitiesCollection,
-  availabilitiesCollection,
-};
+export { app, db, storage, accountsCollection, eventsCollection };

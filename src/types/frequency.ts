@@ -1,7 +1,5 @@
-export enum Recurrence {
-  None = "Geen",
+export enum Frequency {
   Daily = "Dagelijks",
   Weekly = "Wekelijks",
   Monthly = "Maandelijks",
-  Yearly = "Jaarlijks",
 }
