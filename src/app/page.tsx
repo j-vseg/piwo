@@ -1,11 +1,13 @@
 "use client";
 
 import { AvailabilitySelector } from "@/components/AvailabilitySelector";
+import { useAuth } from "@/contexts/auth";
 import { fetchAllOccurrencesWithAllUsers } from "@/services/firebase/events";
 import { EventOccurrence } from "@/types/eventOccurence";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
+  const { user } = useAuth();
   const {
     data: occurrences,
     isLoading,
@@ -18,6 +20,7 @@ export default function Home() {
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading occurrences: {String(error)}</div>;
+  if (!user) return <div>You are not logged in...</div>;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start p-4">
@@ -36,10 +39,8 @@ export default function Home() {
             <div className="mt-2">
               <AvailabilitySelector
                 occurrenceId={occ.id}
-                userId="currentUserIdHere"
-                currentStatus={
-                  occ.allUserAvailability?.["currentUserIdHere"] ?? null
-                }
+                userId={user.uid}
+                currentStatus={occ.allUserAvailability?.[user.uid] ?? null}
               />
             </div>
 

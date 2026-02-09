@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { setUserAvailability } from "@/services/firebase/availability";
 import { Status } from "@/types/status";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
@@ -16,7 +18,7 @@ export function AvailabilitySelector({
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (status: Status) =>
+    mutationFn: (status?: Status) =>
       setUserAvailability(occurrenceId, userId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["occurrences"] });
@@ -42,6 +44,12 @@ export function AvailabilitySelector({
           {statusOption}
         </button>
       ))}
+      <button
+        disabled={mutation.isPending}
+        onClick={() => mutation.mutate(undefined)}
+      >
+        <FontAwesomeIcon icon={faTrash} size="xs" />
+      </button>
     </div>
   );
 }

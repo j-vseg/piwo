@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import QueryProvider from "@/contexts/queryProvider";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { AuthProvider } from "@/contexts/auth";
+import { auth } from "@/services/firebase/firebase";
 
 export const metadata: Metadata = {
   title: "Piwo",
@@ -18,7 +20,9 @@ export default function RootLayout({
     <html lang="nl">
       <body>
         <QueryProvider>
-          {children}
+          <AuthProvider initialUser={auth.currentUser}>
+            <div className="mb-18">{children}</div>
+          </AuthProvider>
           <BottomNavigation />
         </QueryProvider>
       </body>
