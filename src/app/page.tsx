@@ -29,7 +29,7 @@ export default function Home() {
         </ErrorIndicator>
       ) : (
         groupedOccurrences.map(({ date, occurrences: dayOccurrences }) => (
-          <div key={format(date, 'yyyy-MM-dd')} className="w-full max-w-md space-y-3">
+          <div key={format(date, 'yyyy-MM-dd')} className="w-full max-w-3xl space-y-3">
             {/* Date header */}
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-medium text-gray-500 mr-2 font-poppins uppercase text-[12px]!">
