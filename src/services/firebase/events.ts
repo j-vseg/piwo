@@ -8,7 +8,6 @@ import { db, eventsCollection } from "./firebase";
 export async function fetchAllOccurrencesWithAllUsers(): Promise<
   EventOccurrence[]
 > {
-  console.log("fetxg");
   const eventsSnapshot = await getDocs(eventsCollection);
 
   const allOccurrences: EventOccurrence[] = [];

@@ -24,7 +24,7 @@ module.exports = {
           200: "#F3F3F3",
           100: "#FCFCFC",
         },
-        background: { 100: "#FFF5EB", 200: "#FFE1C2" },
+        background: { 100: "#fff5eb", 200: "#ffd9ad" },
         greyYellow: "#CDC0B4",
       },
       fontFamily: { poppins: ["Poppins", "sans-serif"] },

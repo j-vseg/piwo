@@ -29,22 +29,27 @@ export function AvailabilitySelector({
   });
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex justify-between">
       {Object.values(Status).map((statusOption) => (
         <button
           key={statusOption}
           onClick={() => mutation.mutate(statusOption)}
-          className={`px-2 py-1 rounded ${
+          className={`px-3 py-1 rounded-lg ${
             currentStatus === statusOption
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200 text-gray-700"
+              ? currentStatus === Status.Absent
+                ? "bg-error"
+                : currentStatus === Status.Maybe
+                  ? "bg-danger"
+                  : "bg-success"
+              : "bg-background-200"
           }`}
           disabled={mutation.isPending}
         >
-          {statusOption}
+          <p className="text-[14px]!">{statusOption}</p>
         </button>
       ))}
       <button
+        className="px-2 py-1 rounded-full bg-background-200"
         disabled={mutation.isPending}
         onClick={() => mutation.mutate(undefined)}
       >
