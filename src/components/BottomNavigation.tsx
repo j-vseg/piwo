@@ -29,7 +29,8 @@ export function BottomNavigation() {
           >
             <FontAwesomeIcon
               icon={item.icon}
-              className={`w-5! h-5! ${isActive ? "text-primary" : ""}`}
+              size="lg"
+              className={`max-h-5! ${isActive ? "text-primary" : ""}`}
             />
             <span
               className={`text-xs font-semibold ${isActive ? "text-primary" : ""}`}

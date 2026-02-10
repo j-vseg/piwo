@@ -1,6 +1,7 @@
 import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
 import { Status } from "@/types/status";
 import { db } from "./firebase";
+import { EventOccurrence } from "@/types/eventOccurence";
 
 /**
  * Get a user's availability for a specific occurrence.
@@ -51,4 +52,27 @@ export async function setUserAvailability(
       { merge: true },
     );
   }
+}
+
+/**
+ * Check if a user has **not entered availability** for any of the given occurrences.
+ * Returns true if at least one occurrence is missing availability.
+ */
+export async function isUserMissingAvailability(
+  userId: string,
+  occurrences: EventOccurrence[],
+): Promise<boolean> {
+  for (const occ of occurrences) {
+    const availabilityRef = doc(
+      db,
+      `eventOccurrences/${occ.id}/availability/${userId}`,
+    );
+
+    const docSnap = await getDoc(availabilityRef);
+    if (!docSnap.exists()) {
+      return true; // found at least one occurrence without availability
+    }
+  }
+
+  return false; // user has availability for all occurrences
 }

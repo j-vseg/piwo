@@ -1,5 +1,13 @@
-import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getUserAvailability, setUserAvailability } from "@/services/firebase/availability";
+import {
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  getUserAvailability,
+  setUserAvailability,
+} from "@/services/firebase/availability";
 import { Status } from "@/types/status";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
@@ -15,21 +23,26 @@ export function AvailabilitySelector({
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const {
-    data: availability,
-  } = useQuery({
+  const { data: availability } = useQuery({
     queryKey: ["user-availability", occurrenceId, user?.uid],
-    queryFn: user 
+    queryFn: user
       ? () => getUserAvailability(occurrenceId, user.uid)
       : skipToken,
   });
 
-  const { isPending: updateIsPending, isError: updateIsError, mutate: updateMutate } = useMutation({
+  const {
+    isPending: updateIsPending,
+    isError: updateIsError,
+    mutate: updateMutate,
+  } = useMutation({
     mutationFn: (status?: Status) =>
       setUserAvailability(occurrenceId, user!.uid, status),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["user-availability", occurrenceId, user!.uid],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["has-entered-weekly-availability"],
       });
     },
     onError: (error) => {
@@ -46,7 +59,11 @@ export function AvailabilitySelector({
   }
 
   if (updateIsError) {
-    return <ErrorIndicator type="small">Het updaten van je aanwezigheid is mislukt</ErrorIndicator>;
+    return (
+      <ErrorIndicator type="small">
+        Het updaten van je aanwezigheid is mislukt
+      </ErrorIndicator>
+    );
   }
 
   return (

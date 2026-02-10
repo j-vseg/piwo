@@ -5,15 +5,16 @@ import { Frequency } from "@/types/frequency";
 
 export function generateOccurrences(
   event: Event,
-  until: Date = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-  maxOccurrences: number = 10,
+  from: Date = new Date(),
+  until: Date = new Date(Date.now() + 10 * 7 * 24 * 60 * 60 * 1000), // 10 weeks
 ): EventOccurrence[] {
   const occurrences: EventOccurrence[] = [];
-  const now = new Date();
 
+  // Non-recurring event
   if (!event.recurrence) {
     const eventStart = event.startDate.toDate();
-    if (eventStart > now) {
+
+    if (eventStart >= from && eventStart <= until) {
       occurrences.push({
         id: event.id,
         eventId: event.id,
@@ -21,23 +22,24 @@ export function generateOccurrences(
         endTime: event.endDate,
       });
     }
+
     return occurrences;
   }
 
   const { frequency, interval } = event.recurrence;
   const step = interval ?? 1;
-  const durationMs = event.endDate.toDate().getTime() - event.startDate.toDate().getTime();
-  
+
   const eventStart = event.startDate.toDate();
-  let current = new Date(Math.max(eventStart.getTime(), now.getTime()));
-  
-  if (eventStart < now) {
-    current = findNextOccurrence(eventStart, now, frequency, step);
-  }
+  const durationMs =
+    event.endDate.toDate().getTime() - event.startDate.toDate().getTime();
 
-  let count = 0;
+  // Find first occurrence >= from
+  let current =
+    eventStart >= from
+      ? new Date(eventStart)
+      : findNextOccurrence(eventStart, from, frequency, step);
 
-  while (current <= until && count < maxOccurrences) {
+  while (current <= until) {
     const occurrenceStart = new Date(current);
     const occurrenceEnd = new Date(occurrenceStart.getTime() + durationMs);
 
@@ -49,35 +51,42 @@ export function generateOccurrences(
     });
 
     current = getNextOccurrence(current, frequency, step);
-    count++;
   }
 
   return occurrences;
 }
 
-function getNextOccurrence(currentDate: Date, frequency: Frequency, step: number): Date {
+function getNextOccurrence(
+  currentDate: Date,
+  frequency: Frequency,
+  step: number,
+): Date {
   if (frequency === Frequency.Daily) {
     const next = new Date(currentDate);
     next.setDate(next.getDate() + step);
     return next;
-  } 
-  
+  }
+
   if (frequency === Frequency.Weekly) {
     const next = new Date(currentDate);
     next.setDate(next.getDate() + 7 * step);
     return next;
-  } 
-  
+  }
+
   if (frequency === Frequency.Monthly) {
     const originalDay = currentDate.getDate();
     const targetMonth = currentDate.getMonth() + step;
     const targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
     const normalizedMonth = targetMonth % 12;
-    
-    // Find the last day of the target month
-    const lastDayOfTargetMonth = new Date(targetYear, normalizedMonth + 1, 0).getDate();
+
+    const lastDayOfTargetMonth = new Date(
+      targetYear,
+      normalizedMonth + 1,
+      0,
+    ).getDate();
+
     const actualDay = Math.min(originalDay, lastDayOfTargetMonth);
-    
+
     return new Date(
       targetYear,
       normalizedMonth,
@@ -85,25 +94,24 @@ function getNextOccurrence(currentDate: Date, frequency: Frequency, step: number
       currentDate.getHours(),
       currentDate.getMinutes(),
       currentDate.getSeconds(),
-      currentDate.getMilliseconds()
+      currentDate.getMilliseconds(),
     );
   }
-  
+
   return currentDate;
 }
 
 function findNextOccurrence(
   eventStart: Date,
-  currentDate: Date,
+  from: Date,
   frequency: Frequency,
-  step: number
+  step: number,
 ): Date {
   let current = new Date(eventStart);
-  
-  // Keep advancing until we find the first occurrence after currentDate
-  while (current <= currentDate) {
+
+  while (current < from) {
     current = getNextOccurrence(current, frequency, step);
   }
-  
+
   return current;
 }
