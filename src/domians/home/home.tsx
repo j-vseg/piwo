@@ -34,33 +34,35 @@ export default function HomeScreen() {
       <div className="w-full flex justify-center">
         <div className="w-full max-w-3xl p-4 flex flex-col gap-4">
           {isLoading ? (
-            <LoadingIndicator />
-          ) : isError || !groupedOccurrences ? (
-            <ErrorIndicator>
-              Er is iets misgegaan tijdens het ophalen van de geplande
-              activiteiten. Probeer het later nog eens.
-            </ErrorIndicator>
-          ) : (
-            groupedOccurrences.map(({ date, occurrences: dayOccurrences }) => (
-              <div
-                key={format(date, "yyyy-MM-dd")}
-                className="w-full space-y-3"
-              >
-                {/* Date header */}
-                <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-medium text-gray-500 mr-2 font-poppins uppercase text-[12px]!">
-                    {format(date, "d MMM", { locale: nl })}
-                  </h3>
-                  <div className="flex-1 h-px bg-gray-300" />
-                </div>
+              <LoadingIndicator />
+            ) : isError ? (
+              <ErrorIndicator>
+                Er is iets misgegaan tijdens het ophalen van de geplande
+                activiteiten. Probeer het later nog eens.
+              </ErrorIndicator>
+            ) : !groupedOccurrences ? ( 
+            <p className="py-4 text-center">Geen geplande activiteiten beschikbaar</p>
+          ) : groupedOccurrences.map(({ date, occurrences: dayOccurrences }) => (
+                <div
+                  key={format(date, "yyyy-MM-dd")}
+                  className="w-full space-y-3"
+                >
+                  {/* Date header */}
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-medium text-gray-500 mr-2 font-poppins uppercase text-[12px]!">
+                      {format(date, "d MMM", { locale: nl })}
+                    </h3>
+                    <div className="flex-1 h-px bg-gray-300" />
+                  </div>
 
-                {/* Activities */}
-                {dayOccurrences.map((occ) => (
-                  <Event key={occ.id} occurrence={occ} />
-                ))}
-              </div>
-            ))
-          )}
+                  {/* Activities */}
+                  {dayOccurrences.map((occ) => (
+                    <Event key={occ.id} occurrence={occ} />
+                  ))}
+                </div>
+              ))
+            }
+            {groupedOccurrences && <p className="py-10 text-gray-500 text-center text-[14px]!">Meer activiteiten worden zichtbaar bij naderende startdatum</p>}
         </div>
       </div>
     </div>

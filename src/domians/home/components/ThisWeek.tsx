@@ -50,11 +50,11 @@ export function ThisWeek() {
 
       {isLoadingAvailability || isLoadingThisWeek ? (
         <LoadingIndicator />
-      ) : isErrorThisWeek || !thisWeekOccurrences ? (
+      ) : isErrorThisWeek ? (
         <ErrorIndicator type="small">
           Het is niet gelukt om de activiteiten van deze week op te halen
         </ErrorIndicator>
-      ) : (
+      ) : !thisWeekOccurrences ? <p className="py-4 text-center">Geen geplande activiteiten meer voor deze week</p> : (
         thisWeekOccurrences.map((occ) => (
           <Event key={occ.id} occurrence={occ} />
         ))
