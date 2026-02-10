@@ -46,7 +46,7 @@ export default function Home() {
               >
                 <h4 className="font-semibold font-poppins!">{occ.name}</h4>
                 <p className="text-sm text-gray-500">
-                  {`${format(occ.startTime.toDate(), "i LLLL HH:mm", { locale: nl })} - ${format(occ.endTime.toDate(), isSameDay(occ.endTime.toDate(), occ.startTime.toDate()) ? "HH:mm" : "i LLLL HH:mm", { locale: nl })}`}
+                  {`${format(occ.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occ.endTime.toDate(), isSameDay(occ.endTime.toDate(), occ.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
                 </p>
 
                 <div className="mt-2">
