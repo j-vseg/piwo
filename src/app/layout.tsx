@@ -18,6 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl">
+      <head>
+        <link rel="manifest" href="manifest.json" />
+      </head>
       <body>
         <QueryProvider>
           <AuthProvider initialUser={auth.currentUser}>

@@ -1,70 +1,62 @@
 "use client";
 
 import { AvailabilitySelector } from "@/components/AvailabilitySelector";
+import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { useAuth } from "@/contexts/auth";
-import { fetchAllOccurrencesWithAllUsers } from "@/services/firebase/events";
-import { EventOccurrence } from "@/types/eventOccurence";
+import { fetchAllOccurrencesGroupedByDate } from "@/services/firebase/events";
 import { useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
+import { nl } from "date-fns/locale";
 
 export default function Home() {
-  const { user } = useAuth();
   const {
-    data: occurrences,
+    data: groupedOccurrences,
     isLoading,
     isError,
-    error,
-  } = useQuery<EventOccurrence[]>({
-    queryKey: ["occurrences"],
-    queryFn: () => fetchAllOccurrencesWithAllUsers(),
+  } = useQuery({
+    queryKey: ["occurrences-grouped"],
+    queryFn: () => fetchAllOccurrencesGroupedByDate(),
   });
-
-  if (isLoading) return <LoadingIndicator />;
-  if (isError) return <div>Error loading occurrences: {String(error)}</div>;
-  if (!user) return <div>You are not logged in...</div>;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-start p-4 gap-4">
       <h1>Home</h1>
-      {occurrences &&
-        occurrences.map((occ) => (
-          <div
-            key={occ.id}
-            className="w-full max-w-md rounded-2xl p-4 bg-background-100"
-          >
-            <h4 className="font-semibold font-poppins!">{occ.name}</h4>
-            <p className="text-sm text-gray-500">
-              {`${format(occ.startTime.toDate(), "ii LLLL HH:mm")} - ${format(occ.endTime.toDate(), isSameDay(occ.endTime.toDate(), occ.startTime.toDate()) ? "HH:mm" : "ii LLLL HH:mm")}`}
-            </p>
-
-            <div className="mt-2">
-              <AvailabilitySelector
-                occurrenceId={occ.id}
-                userId={user.uid}
-                currentStatus={occ.allUserAvailability?.[user.uid] ?? null}
-              />
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : isError || !groupedOccurrences ? (
+        <ErrorIndicator>
+          Er is iets misgegaan tijdens het ophalen van de geplande activiteiten. Probeer het later nog eens.
+        </ErrorIndicator>
+      ) : (
+        groupedOccurrences.map(({ date, occurrences: dayOccurrences }) => (
+          <div key={format(date, 'yyyy-MM-dd')} className="w-full max-w-md space-y-3">
+            {/* Date header */}
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-medium text-gray-500 mr-2 font-poppins uppercase text-[12px]!">
+                {format(date, 'd MMM', { locale: nl })}
+              </h3>
+              <div className="flex-1 h-px bg-gray-300"></div>
             </div>
+            
+            {/* Activities for this date */}
+            {dayOccurrences.map((occ) => (
+              <div
+                key={occ.id}
+                className="rounded-2xl p-4 bg-background-100"
+              >
+                <h4 className="font-semibold font-poppins!">{occ.name}</h4>
+                <p className="text-sm text-gray-500">
+                  {`${format(occ.startTime.toDate(), "i LLLL HH:mm", { locale: nl })} - ${format(occ.endTime.toDate(), isSameDay(occ.endTime.toDate(), occ.startTime.toDate()) ? "HH:mm" : "i LLLL HH:mm", { locale: nl })}`}
+                </p>
 
-            {/* <div className="mt-2">
-              <h3 className="font-semibold">Availabilities:</h3>
-              {occ.allUserAvailability &&
-              Object.keys(occ.allUserAvailability).length > 0 ? (
-                <ul className="ml-4 list-disc">
-                  {Object.entries(occ.allUserAvailability).map(
-                    ([userId, status]) => (
-                      <li key={userId}>
-                        {userId} - {status}
-                      </li>
-                    ),
-                  )}
-                </ul>
-              ) : (
-                <p className="ml-4 text-gray-400">No availabilities yet</p>
-              )}
-            </div> */}
+                <div className="mt-2">
+                  <AvailabilitySelector occurrenceId={occ.id} />
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        ))
+      )}
     </div>
   );
 }

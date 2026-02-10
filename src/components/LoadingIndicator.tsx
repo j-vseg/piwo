@@ -1,10 +1,14 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import Lottie from "lottie-react";
+ import loadingDots from "@/../assets/loading_dots.json";
 
 export function LoadingIndicator() {
   return (
     <div className="flex justify-center">
-      <FontAwesomeIcon icon={faCircleNotch} size="lg" spin />
+      <Lottie
+        animationData={loadingDots}
+        className="flex justify-center items-center w-6 h-6"
+        loop
+      />
     </div>
   );
 }

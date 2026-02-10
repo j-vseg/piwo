@@ -1,60 +1,74 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { setUserAvailability } from "@/services/firebase/availability";
+import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUserAvailability, setUserAvailability } from "@/services/firebase/availability";
 import { Status } from "@/types/status";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { LoadingIndicator } from "./LoadingIndicator";
+import { useAuth } from "@/contexts/auth";
+import { ErrorIndicator } from "./ErrorIndicator";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
-  currentStatus?: Status | null;
-  userId: string;
 }
 
 export function AvailabilitySelector({
   occurrenceId,
-  currentStatus,
-  userId,
 }: AvailabilitySelectorProps) {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const {
+    data: availability,
+  } = useQuery({
+    queryKey: ["user-availability", occurrenceId, user?.uid],
+    queryFn: user 
+      ? () => getUserAvailability(occurrenceId, user.uid)
+      : skipToken,
+  });
+
+  const { isPending: updateIsPending, isError: updateIsError, mutate: updateMutate } = useMutation({
     mutationFn: (status?: Status) =>
-      setUserAvailability(occurrenceId, userId, status),
+      setUserAvailability(occurrenceId, user!.uid, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["occurrences"] });
+      queryClient.invalidateQueries({
+        queryKey: ["user-availability", occurrenceId, user!.uid],
+      });
     },
     onError: (error) => {
       console.log(error);
     },
   });
 
+  if (!user) {
+    return <ErrorIndicator type="small">Je bent niet ingelogt</ErrorIndicator>;
+  }
+
+  if (updateIsPending) {
+    return <LoadingIndicator />;
+  }
+
+  if (updateIsError) {
+    return <ErrorIndicator type="small">Het updaten van je aanwezigheid is mislukt</ErrorIndicator>;
+  }
+
   return (
     <div className="flex justify-between">
       {Object.values(Status).map((statusOption) => (
         <button
           key={statusOption}
-          onClick={() => mutation.mutate(statusOption)}
+          onClick={() => updateMutate(statusOption)}
           className={`px-3 py-1 rounded-lg ${
-            currentStatus === statusOption
-              ? currentStatus === Status.Absent
+            availability === statusOption
+              ? availability === Status.Absent
                 ? "bg-error"
-                : currentStatus === Status.Maybe
+                : availability === Status.Maybe
                   ? "bg-danger"
                   : "bg-success"
               : "bg-background-200"
           }`}
-          disabled={mutation.isPending}
+          disabled={updateIsPending}
         >
-          <p className="text-[14px]!">{statusOption}</p>
+          <p>{statusOption}</p>
         </button>
       ))}
-      <button
-        className="px-2 py-1 rounded-full bg-background-200"
-        disabled={mutation.isPending}
-        onClick={() => mutation.mutate(undefined)}
-      >
-        <FontAwesomeIcon icon={faTrash} size="xs" />
-      </button>
     </div>
   );
 }
