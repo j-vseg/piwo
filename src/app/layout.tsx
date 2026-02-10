@@ -24,7 +24,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <AuthProvider initialUser={auth.currentUser}>
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-22">
               <div className="w-full">{children}</div>
             </div>
           </AuthProvider>
