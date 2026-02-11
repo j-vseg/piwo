@@ -22,17 +22,16 @@ export default function HomeScreen() {
   return (
     <div className="flex flex-col flex-1 gap-4 w-full">
       <div className="w-full bg-background-orange">
-        <div className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col gap-10">
+        <div className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col gap-10 mb-6">
           <h1 className="text-3xl font-bold">Home</h1>
-
           <ThisWeek />
-
-          <h2 className="text-xl font-semibold">Toekomstige activiteiten</h2>
         </div>
       </div>
 
       <div className="w-full flex justify-center">
         <div className="w-full max-w-3xl p-4 flex flex-col gap-4">
+          <h2 className="text-xl font-semibold">Toekomstige activiteiten</h2>
+
           {isLoading ? (
               <LoadingIndicator />
             ) : isError ? (
