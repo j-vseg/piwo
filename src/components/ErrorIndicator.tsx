@@ -20,7 +20,7 @@ export function ErrorIndicator({
     );
   } else {
     return (
-      <div className="flex flex-col gap-5 items-center rounded-3xl p-6 bg-background-orange">
+      <div className="flex flex-col gap-5 items-center rounded-3xl p-6 bg-info">
         <FontAwesomeIcon icon={faCircleInfo} size="2x" className="max-h-8!" />
         <p>{children}</p>
       </div>

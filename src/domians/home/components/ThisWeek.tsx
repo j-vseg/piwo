@@ -32,21 +32,29 @@ export function ThisWeek() {
         : skipToken,
   });
 
+  if (!user) {
+    return <ErrorIndicator>Je bent niet ingelogd</ErrorIndicator>;
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <h2>Deze week</h2>
-      <div className="min-h-9.25">
-        {isLoadingAvailability ? undefined : !userIsMissingAvailability ||
-          isErrorAvailabilty ? (
-          <Alert type="success" size="small">
-            Je ben bij voor deze week!
-          </Alert>
-        ) : (
-          <Alert type="danger" size="small">
-            Geef je aanwezigheid op!
-          </Alert>
-        )}
-      </div>
+      {!user ? (
+        <ErrorIndicator>Je bent niet ingelogd</ErrorIndicator>
+      ) : (
+        <div className="min-h-9.25">
+          {isLoadingAvailability ? undefined : !userIsMissingAvailability ||
+            isErrorAvailabilty ? (
+            <Alert type="success" size="small">
+              Je ben bij voor deze week!
+            </Alert>
+          ) : (
+            <Alert type="danger" size="small">
+              Geef je aanwezigheid op!
+            </Alert>
+          )}
+        </div>
+      )}
 
       {isLoadingAvailability || isLoadingThisWeek ? (
         <LoadingIndicator />
@@ -54,7 +62,11 @@ export function ThisWeek() {
         <ErrorIndicator type="small">
           Het is niet gelukt om de activiteiten van deze week op te halen
         </ErrorIndicator>
-      ) : !thisWeekOccurrences ? <p className="py-4 text-center">Geen geplande activiteiten meer voor deze week</p> : (
+      ) : !thisWeekOccurrences ? (
+        <p className="py-4 text-center">
+          Geen geplande activiteiten meer voor deze week
+        </p>
+      ) : (
         thisWeekOccurrences.map((occ) => (
           <Event key={occ.id} occurrence={occ} />
         ))

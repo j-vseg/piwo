@@ -16,7 +16,7 @@ export function BottomNavigation() {
   return (
     <nav
       className="fixed bottom-4 left-4 right-4 z-50 h-16 flex justify-around items-center
-        bg-dark-700/30 backdrop-blur-md rounded-full shadow-md px-4"
+        bg-black/30 backdrop-blur-md rounded-full shadow-md px-4"
     >
       {navItems.map((item) => {
         const isActive = pathname === item.href;
@@ -24,7 +24,7 @@ export function BottomNavigation() {
           <div
             key={item.href}
             className={`flex flex-col items-center justify-center gap-1 cursor-pointer
-              ${isActive ? "text-primary" : "text-light-100"}`}
+              ${isActive ? "text-primary" : "text-white"}`}
             onClick={() => router.push(item.href)}
           >
             <FontAwesomeIcon

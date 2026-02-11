@@ -1,4 +1,4 @@
-import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "firebase/firestore";
 import { Status } from "@/types/status";
 import { db } from "./firebase";
 import { EventOccurrence } from "@/types/eventOccurence";
@@ -75,4 +75,30 @@ export async function isUserMissingAvailability(
   }
 
   return false; // user has availability for all occurrences
+}
+
+export async function getOccurrenceAvailability(
+  occurrenceId: string
+): Promise<Record<Status, string[]> | null> {
+  const availabilitySnapshot = await getDocs(
+    collection(db, `eventOccurrences/${occurrenceId}/availability`)
+  );
+
+  if (availabilitySnapshot.empty) {
+    return null;
+  }
+
+  const groupedByStatus: Record<Status, string[]> = {} as Record<Status, string[]>;
+  
+  availabilitySnapshot.forEach((doc) => {
+    const status = doc.data().availability as Status;
+    const userId = doc.id;
+    
+    if (!groupedByStatus[status]) {
+      groupedByStatus[status] = [];
+    }
+    groupedByStatus[status].push(userId);
+  });
+
+  return groupedByStatus;
 }

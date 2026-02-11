@@ -4,16 +4,15 @@
 @config "../../tailwind.config.ts";
 
 :root {
-  --bg-background-200: #FFE1C2;
-  --color-dark-900: #0A0A0A;
+  --bg-200: #FFE1C2;
   --font-poppins: 'Poppins', sans-serif;
   --font-crimson-pro: "Crimson Pro", serif;
 
 }
 
 body {
-  background: var(--bg-background-200);
-  color: var(--color-dark-900);
+  background: var(--bg-200);
+  color: "#0A0A0A";
   font-family: var(--font-poppins);
 }
 

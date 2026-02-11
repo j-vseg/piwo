@@ -1,8 +1,8 @@
-import { getDocs } from "firebase/firestore";
+import { doc, getDoc, getDocs, Timestamp } from "firebase/firestore";
 import { Event } from "@/types/event";
 import { generateOccurrences } from "@/utils/generateOccurences";
 import { EventOccurrence } from "@/types/eventOccurence";
-import { eventsCollection } from "./firebase";
+import { db, eventsCollection } from "./firebase";
 import { format } from "date-fns";
 
 type GroupedOccurrences = {
@@ -83,4 +83,51 @@ export async function fetchAllOccurrences(
     );
 
   return occurrences;
+}
+
+
+export async function getOccurrenceById(
+  occurrenceId: string
+): Promise<EventOccurrence | null> {
+  // Parse occurrence ID to extract event ID and start time
+  const parts = occurrenceId.split('-');
+  const eventId = parts[0];
+  
+  // Fetch the base event
+  const eventDoc = await getDoc(doc(db, 'events', eventId));
+  
+  if (!eventDoc.exists()) {
+    return null;
+  }
+  
+  const eventData = { ...eventDoc.data(), id: eventDoc.id } as Event;
+  
+  // Non-recurring event (occurrence ID = event ID)
+  if (parts.length === 1) {
+    return {
+      id: occurrenceId,
+      eventId: eventData.id,
+      startTime: eventData.startDate,
+      endTime: eventData.endDate,
+      name: eventData.name,
+      category: eventData.category,
+    };
+  }
+  
+  // Recurring event - extract start time from occurrence ID
+  const startTimeString = parts.slice(1).join('-'); // Handle ISO strings with dashes
+  const startTime = new Date(startTimeString);
+  
+  // Generate the specific occurrence
+  const durationMs = eventData.endDate.toDate().getTime() - eventData.startDate.toDate().getTime();
+  const endTime = new Date(startTime.getTime() + durationMs);
+  
+  return {
+    id: occurrenceId,
+    eventId: eventData.id,
+    startTime: Timestamp.fromDate(startTime),
+    endTime: Timestamp.fromDate(endTime),
+    name: eventData.name,
+    category: eventData.category,
+  };
 }

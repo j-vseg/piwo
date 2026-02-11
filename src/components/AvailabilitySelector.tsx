@@ -12,13 +12,17 @@ import { Status } from "@/types/status";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import { ErrorIndicator } from "./ErrorIndicator";
+import { Category } from "@/types/category";
+import { getEventColor } from "@/utils/getEventColor";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
+  occurrenceCategory?: Category;
 }
 
 export function AvailabilitySelector({
   occurrenceId,
+  occurrenceCategory,
 }: AvailabilitySelectorProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -51,7 +55,7 @@ export function AvailabilitySelector({
   });
 
   if (!user) {
-    return <ErrorIndicator type="small">Je bent niet ingelogt</ErrorIndicator>;
+    return <ErrorIndicator type="small">Je bent niet ingelogd</ErrorIndicator>;
   }
 
   if (updateIsPending) {
@@ -79,7 +83,7 @@ export function AvailabilitySelector({
                 : availability === Status.Maybe
                   ? "bg-danger"
                   : "bg-success"
-              : "bg-background-200"
+              : getEventColor(occurrenceCategory)
           }`}
           disabled={updateIsPending}
         >

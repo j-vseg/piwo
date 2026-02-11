@@ -21,7 +21,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="manifest.json" />
       </head>
-      <body>
+      <body className="select-none">
         <QueryProvider>
           <AuthProvider initialUser={auth.currentUser}>
             <div className="flex justify-center mb-22">
