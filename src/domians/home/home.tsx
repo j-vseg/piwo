@@ -58,7 +58,7 @@ export default function HomeScreen() {
                 {/* Date header */}
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-medium text-gray-500 mr-2 font-poppins uppercase text-[12px]!">
-                    {format(date, "d MMM", { locale: nl })}
+                    {format(date, "E d MMM", { locale: nl })}
                   </h3>
                   <div className="flex-1 h-px bg-gray-300" />
                 </div>
