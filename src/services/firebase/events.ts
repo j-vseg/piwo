@@ -10,6 +10,7 @@ type GroupedOccurrences = {
   occurrences: EventOccurrence[];
 }[];
 
+// TODO: Add wher clause to filter on from and until by no recuurrence and otherwise just fetch the occurence to generate
 export async function fetchAllOccurrencesGroupedByDate(
   from?: Date,
   until?: Date,
@@ -55,6 +56,7 @@ export async function fetchAllOccurrencesGroupedByDate(
   }));
 }
 
+// TODO: Add wher clause to filter on from and until by no recuurrence and otherwise just fetch the occurence to generate
 export async function fetchAllOccurrences(
   from?: Date,
   until?: Date,
