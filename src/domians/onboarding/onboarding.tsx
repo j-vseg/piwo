@@ -1,7 +1,9 @@
+import Slider from "./components/Slider";
+
 export default function OnboardingScreen() {
   return (
-    <div>
-      <h1>Onboarding</h1>
+    <div className="w-full max-w-3xl mx-auto">
+      <Slider />
     </div>
   );
 }

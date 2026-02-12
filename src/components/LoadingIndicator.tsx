@@ -1,5 +1,5 @@
 import Lottie from "lottie-react";
- import loadingDots from "@/../assets/loading_dots.json";
+import loadingDots from "@/../assets/loading_dots.json";
 
 export function LoadingIndicator() {
   return (
