@@ -5,7 +5,7 @@ export function BaseDetailScreen({
   heightClass,
   children,
   title,
-  color = "background-orange",
+  color = "bg-pastelOrange",
 }: {
   heightClass: string;
   children: ReactNode;

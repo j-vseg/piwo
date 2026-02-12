@@ -25,7 +25,7 @@ export default function HomeScreen() {
 
   return (
     <div className="flex flex-col flex-1 gap-4 w-full">
-      <div className="w-full bg-orange">
+      <div className="w-full bg-pastelOrange">
         <div className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col gap-10 mb-6">
           <h1 className="text-3xl font-bold">Home</h1>
           <ThisWeek />

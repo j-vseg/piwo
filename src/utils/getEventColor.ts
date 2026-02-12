@@ -3,13 +3,13 @@ import { Category } from "@/types/category";
 export function getEventColor(category?: Category): string {
   switch (category) {
     case Category.Group:
-      return "bg-orange";
+      return "bg-pastelOrange";
     case Category.Weekend:
-      return "bg-blue";
+      return "bg-pastelBlue";
     case Category.Camp:
-      return "bg-purple";
+      return "bg-pastelPurple";
     case Category.Action:
-      return "bg-teal";
+      return "bg-pastelGreen";
     default:
         return "bg-orange";
   }
