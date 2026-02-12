@@ -5,6 +5,7 @@ import Lottie from "lottie-react";
 import Card from "./Card";
 import logo from "@/../assets/logo.png";
 import verification from "@/../assets/verification.json";
+import availibility from "@/../assets/availibility.json";
 
 export default function Slider() {
   return (
@@ -30,12 +31,12 @@ export default function Slider() {
       <Card
         title="Aanwezigheid"
         image={
-          <Lottie animationData={verification} className="w-40 h-40" loop />
+          <Lottie animationData={availibility} className="w-40 h-40" loop />
         }
         description={
           "In deze app kun je makkelijk je aanwezigheid opgeven en die van anderen bezichtigen"
         }
-        color="bg-pastelBlue"
+        color="bg-pastelPurple"
       />
       <Card
         title="Verificatie"
@@ -43,7 +44,7 @@ export default function Slider() {
           <Lottie animationData={verification} className="w-40 h-40" loop />
         }
         description="Voordat je toegang krijgt tot de app, moet je account eerst goedgekeurd worden. Dit kan een paar dagen duren."
-        color="bg-pastelPurple"
+        color="bg-pastelBlue"
       />
     </div>
   );
