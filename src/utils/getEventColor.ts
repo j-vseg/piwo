@@ -11,6 +11,6 @@ export function getEventColor(category?: Category): string {
     case Category.Action:
       return "bg-pastelGreen";
     default:
-        return "bg-orange";
+        return "bg-pastelOrange";
   }
 }

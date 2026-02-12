@@ -1,6 +1,5 @@
-import { Frequency } from "./frequency";
-
-export interface Recurrence {
-  frequency: Frequency;
-  interval?: number;
+export enum Recurrence {
+  Daily = "Dagelijks",
+  Weekly = "Wekelijks",
+  Monthly = "Maandelijks",
 }

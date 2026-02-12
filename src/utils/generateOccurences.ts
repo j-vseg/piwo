@@ -1,12 +1,13 @@
 import { EventOccurrence } from "@/types/eventOccurence";
 import { Event } from "@/types/event";
 import { Timestamp } from "firebase/firestore";
-import { Frequency } from "@/types/frequency";
+import { Recurrence } from "@/types/recurrence";
+import { addWeeks } from "date-fns";
 
 export function generateOccurrences(
   event: Event,
   from: Date = new Date(),
-  until: Date = new Date(Date.now() + 10 * 7 * 24 * 60 * 60 * 1000), // 10 weeks
+  until: Date = addWeeks(from, 10),
 ): EventOccurrence[] {
   const occurrences: EventOccurrence[] = [];
 
@@ -26,9 +27,7 @@ export function generateOccurrences(
     return occurrences;
   }
 
-  const { frequency, interval } = event.recurrence;
-  const step = interval ?? 1;
-
+  const recurrence = event.recurrence;
   const eventStart = event.startDate.toDate();
   const durationMs =
     event.endDate.toDate().getTime() - event.startDate.toDate().getTime();
@@ -37,7 +36,7 @@ export function generateOccurrences(
   let current =
     eventStart >= from
       ? new Date(eventStart)
-      : findNextOccurrence(eventStart, from, frequency, step);
+      : findNextOccurrence(eventStart, from, recurrence);
 
   while (current <= until) {
     const occurrenceStart = new Date(current);
@@ -50,32 +49,28 @@ export function generateOccurrences(
       endTime: Timestamp.fromDate(occurrenceEnd),
     });
 
-    current = getNextOccurrence(current, frequency, step);
+    current = getNextOccurrence(current, recurrence);
   }
 
   return occurrences;
 }
 
-function getNextOccurrence(
-  currentDate: Date,
-  frequency: Frequency,
-  step: number,
-): Date {
-  if (frequency === Frequency.Daily) {
+function getNextOccurrence(currentDate: Date, recurrence: Recurrence): Date {
+  if (recurrence === Recurrence.Daily) {
     const next = new Date(currentDate);
-    next.setDate(next.getDate() + step);
+    next.setDate(next.getDate() + 1);
     return next;
   }
 
-  if (frequency === Frequency.Weekly) {
+  if (recurrence === Recurrence.Weekly) {
     const next = new Date(currentDate);
-    next.setDate(next.getDate() + 7 * step);
+    next.setDate(next.getDate() + 7);
     return next;
   }
 
-  if (frequency === Frequency.Monthly) {
+  if (recurrence === Recurrence.Monthly) {
     const originalDay = currentDate.getDate();
-    const targetMonth = currentDate.getMonth() + step;
+    const targetMonth = currentDate.getMonth() + 1;
     const targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
     const normalizedMonth = targetMonth % 12;
 
@@ -104,13 +99,12 @@ function getNextOccurrence(
 function findNextOccurrence(
   eventStart: Date,
   from: Date,
-  frequency: Frequency,
-  step: number,
+  recurrence: Recurrence,
 ): Date {
   let current = new Date(eventStart);
 
   while (current < from) {
-    current = getNextOccurrence(current, frequency, step);
+    current = getNextOccurrence(current, recurrence);
   }
 
   return current;
