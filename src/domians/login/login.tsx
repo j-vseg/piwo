@@ -111,7 +111,10 @@ export default function LoginScreen() {
             />
             <div className="flex flex-col gap-1">
               <Button isPending={isPending}>Inloggen</Button>
-              <a className="text-[12px]!" href="/sign-up">
+              <a
+                className="text-[12px]! underline text-orange-400"
+                href="/sign-up"
+              >
                 Nog geen account?
               </a>
             </div>

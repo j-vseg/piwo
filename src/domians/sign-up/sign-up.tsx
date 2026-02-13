@@ -69,7 +69,7 @@ export default function SignUpScreen() {
   });
 
   return (
-    <BaseDetailScreen heightClass="h-50" color="bg-pastelPurple">
+    <BaseDetailScreen heightClass="h-55" color="bg-pastelBlue">
       <div className="flex flex-col w-full max-w-3xl mx-auto gap-4">
         <div className="bg-white p-6 rounded-3xl flex flex-col gap-6">
           <h1>Creër een account</h1>
