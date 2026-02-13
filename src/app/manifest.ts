@@ -10,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "In deze app kun je je aanwezigheid opgeven voor de Pivo's van Scouting Mierlo",
     start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#000000",
+    background_color: "#ffd9ad",
+    theme_color: "#ffd9ad",
     icons: [
       {
         src: "/icons/icon-192x192.png",
