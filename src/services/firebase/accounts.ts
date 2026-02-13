@@ -1,5 +1,5 @@
 import {
-  collection,
+  collectionGroup,
   deleteDoc,
   doc,
   getDoc,
@@ -70,25 +70,27 @@ export async function deleteUserAccount(
       await reauthenticateWithCredential(user, credential);
     }
 
-    // First, get all event occurrences
-    const occurrencesSnapshot = await getDocs(
-      collection(db, "eventOccurrences"),
+    // Query all availability documents across all occurrences
+    const availabilityQuery = collectionGroup(db, "availability");
+    const allAvailabilitySnapshot = await getDocs(availabilityQuery);
+
+    // Filter for documents where the document ID matches the user ID
+    const userAvailabilityDocs = allAvailabilitySnapshot.docs.filter(
+      (doc) => doc.id === user.uid,
     );
 
-    // Delete availability for this user across all occurrences
+    // Delete all availability documents for this user
     const deletePromises: Promise<void>[] = [];
-
-    for (const occurrenceDoc of occurrencesSnapshot.docs) {
-      const availabilityDocRef = doc(
-        db,
-        `eventOccurrences/${occurrenceDoc.id}/availability/${user.uid}`,
-      );
-      deletePromises.push(deleteDoc(availabilityDocRef));
+    for (const availabilityDoc of userAvailabilityDocs) {
+      deletePromises.push(deleteDoc(availabilityDoc.ref));
     }
 
     await Promise.allSettled(deletePromises);
+    console.log("All availability documents deleted");
+
     await deleteDoc(doc(accountsCollection, user.uid));
     await deleteUser(user);
+    console.log("Deleted user account");
   } catch (error) {
     console.error("Error deleting user account:", error);
     throw error;

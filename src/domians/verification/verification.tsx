@@ -59,7 +59,7 @@ export default function VerificationScreen() {
         className={`absolute top-0 left-0 w-full h-[40vh] ${getEventColor(randomCategory)}`}
       ></div>
       <div className="flex flex-col gap-4 w-full max-w-3xl -mt-45 relative z-10">
-        <div className="bg-white p-6 rounded-3xl flex flex-col gap-6">
+        <div className="bg-white p-6 rounded-3xl flex flex-col gap-6 items-center">
           <h1 className="text-center">Verificatie</h1>
           {isErrorLogout && (
             <Alert type="danger" size="small">
@@ -75,7 +75,7 @@ export default function VerificationScreen() {
           )}
           <Lottie animationData={waiting} className="w-80" loop />
           <p>Je toelating is nog in verwerking, dit kan even duren...</p>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full">
             <Button onClick={handleLogout} isPending={isPendingLogout}>
               Uitloggen
             </Button>
