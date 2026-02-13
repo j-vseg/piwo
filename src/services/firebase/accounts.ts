@@ -1,4 +1,4 @@
-import { getDocs } from "firebase/firestore";
+import { doc, getDocs, setDoc } from "firebase/firestore";
 import { accountsCollection } from "./firebase";
 
 export async function getAllAccountsDisplayNames(): Promise<
@@ -18,4 +18,16 @@ export async function getAllAccountsDisplayNames(): Promise<
   });
 
   return displayNames;
+}
+
+export async function createUser(
+  userId: string,
+  firstname: string,
+  lastname: string,
+): Promise<void> {
+  await setDoc(doc(accountsCollection, userId), {
+    firstName: firstname,
+    lastName: lastname,
+    isApproved: false,
+  });
 }

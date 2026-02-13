@@ -4,34 +4,63 @@ import { Alert } from "@/components/Alert";
 import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { createUser } from "@/services/firebase/accounts";
 import { auth } from "@/services/firebase/firebase";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
 type LoginFormValues = {
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
 };
 
-export default function LoginScreen() {
+export default function SignUpScreen() {
   const { replace } = useRouter();
   const methods = useForm<LoginFormValues>({
     defaultValues: {
+      firstname: "",
+      lastname: "",
       email: "",
       password: "",
     },
   });
   const queryClient = useQueryClient();
-  const { mutate, isSuccess, isPending, isError } = useMutation({
+  const {
+    mutate: mutateCreateAuth,
+    isPending: isPendingCreateAuth,
+    isError: isErrorCreateAuth,
+  } = useMutation({
     mutationFn: async (data: LoginFormValues) => {
-      const userCredential = await signInWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password,
       );
-      return userCredential.user;
+      return { user: userCredential.user, data: data };
+    },
+    onSuccess: ({ user, data }) => {
+      mutateCreateFirestore({ user, data })
+    },
+  });
+
+  const {
+    mutate: mutateCreateFirestore,
+    isSuccess: isSuccessCreateFirestore,
+    isPending: isPendingCreateFirestore,
+    isError: isErrorCreateFirestore,
+  } = useMutation({
+    mutationFn: async ({
+      user,
+      data,
+    }: {
+      user: User;
+      data: LoginFormValues;
+    }) => {
+      await createUser(user.uid, data.firstname, data.lastname);
     },
     onSuccess: () => {
       queryClient.clear();
@@ -43,25 +72,66 @@ export default function LoginScreen() {
     <BaseDetailScreen heightClass="h-50" color="bg-pastelPurple">
       <div className="flex flex-col w-full max-w-3xl mx-auto gap-4">
         <div className="bg-white p-6 rounded-3xl flex flex-col gap-6">
-          <h1>Inloggen</h1>
-          {isSuccess && (
+          <h1>Creër een account</h1>
+          {isSuccessCreateFirestore && (
             <Alert type="success" size="small">
-              Login successvol!{" "}
+              Creëren van account successvol!{" "}
               <span className="text-success font-semibold">
                 Navigeren naar home pagina...
               </span>
             </Alert>
           )}
-          {isError && (
-            <Alert type="danger" size="small">
-              Er is iets misgegaan tijdens het inloggen, probeer het later nog
-              eens
-            </Alert>
-          )}
+          {isErrorCreateAuth ||
+            (isErrorCreateFirestore && (
+              <Alert type="danger" size="small">
+                Er is iets misgegaan tijdens het inloggen, probeer het later nog
+                eens
+              </Alert>
+            ))}
           <form
-            onSubmit={methods.handleSubmit((data) => mutate(data))}
+            onSubmit={methods.handleSubmit((data) => mutateCreateAuth(data))}
             className="flex flex-col gap-3"
           >
+            <Controller
+              name="firstname"
+              control={methods.control}
+              rules={{
+                required: "Voornaam kan niet leeg zijn",
+              }}
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
+                <Input
+                  label="Voornaam"
+                  type="text"
+                  error={error?.message}
+                  placeholder="Jouw voornaam"
+                  value={value}
+                  onChange={onChange}
+                />
+              )}
+            />
+            <Controller
+              name="lastname"
+              control={methods.control}
+              rules={{
+                required: "Achternaam kan niet leeg zijn",
+              }}
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
+                <Input
+                  label="Achternaam"
+                  type="text"
+                  error={error?.message}
+                  placeholder="Jouw achternaam"
+                  value={value}
+                  onChange={onChange}
+                />
+              )}
+            />
             <Controller
               name="email"
               control={methods.control}
@@ -109,12 +179,9 @@ export default function LoginScreen() {
                 />
               )}
             />
-            <div className="flex flex-col gap-1">
-              <Button isPending={isPending}>Inloggen</Button>
-              <a className="text-[12px]!" href="/sign-up">
-                Nog geen account?
-              </a>
-            </div>
+            <Button isPending={isPendingCreateAuth || isPendingCreateFirestore}>
+              Creër je account
+            </Button>
           </form>
         </div>
       </div>

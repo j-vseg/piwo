@@ -1,5 +1,5 @@
 import LoginScreen from "@/domians/login/login";
 
-export default function Onboarding() {
+export default function Login() {
   return <LoginScreen />;
 }

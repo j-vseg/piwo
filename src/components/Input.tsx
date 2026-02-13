@@ -44,7 +44,7 @@ export default function Input({
         <input
           id={id}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`m-0 py-2 text-[14px]!] break-all border-b w-full ${error && "border-error!"}`}
+          className={`m-0 py-2 text-[14px]! break-all border-b w-full ${error && "border-error!"}`}
           value={value}
           onChange={onInputChange}
           {...inputProps}
