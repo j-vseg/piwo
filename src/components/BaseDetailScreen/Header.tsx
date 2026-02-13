@@ -11,7 +11,7 @@ export function Header({
 }) {
   return (
     <div className={`relative h-16 flex justify-center items-center ${color}`}>
-      {!canGoBack && (
+      {canGoBack && (
         <div className="absolute left-4">
           <BackButton color={color} />
         </div>

@@ -1,5 +1,8 @@
 import {
+  collection,
+  deleteDoc,
   doc,
+  documentId,
   getDoc,
   getDocs,
   query,
@@ -180,4 +183,57 @@ export async function getOccurrenceById(
     name: eventData.name,
     category: eventData.category,
   };
+}
+
+export async function deletePastEvents(): Promise<void> {
+  const now = new Date();
+  let eventCount = 0;
+  let occurrenceCount = 0;
+  let availabilityCount = 0;
+
+  // Get all non-recurring events with past end dates
+  const pastEventsSnapshot = await getDocs(
+    query(
+      eventsCollection,
+      where("recurrence", "==", null),
+      where("endDate", "<", Timestamp.fromDate(now)),
+    ),
+  );
+
+  // Delete each past event and its occurrences
+  for (const eventDoc of pastEventsSnapshot.docs) {
+    const eventId = eventDoc.id;
+
+    // Delete all event occurrences for this event
+    const occurrencesSnapshot = await getDocs(
+      query(
+        collection(db, "eventOccurrences"),
+        where(documentId(), "==", eventId), // This might need to be different based on your structure
+      ),
+    );
+
+    for (const occurrenceDoc of occurrencesSnapshot.docs) {
+      // Delete all availability documents in this occurrence's subcollection
+      const availabilitySnapshot = await getDocs(
+        collection(db, `eventOccurrences/${eventId}/availability`),
+      );
+
+      for (const availabilityDoc of availabilitySnapshot.docs) {
+        await deleteDoc(availabilityDoc.ref);
+        availabilityCount++;
+      }
+
+      // Now delete the occurrence document
+      await deleteDoc(occurrenceDoc.ref);
+      occurrenceCount++;
+    }
+
+    // Delete the event itself
+    await deleteDoc(eventDoc.ref);
+    eventCount++;
+  }
+
+  console.log(
+    `Deleted ${eventCount} past events, ${occurrenceCount} event occurrences, and ${availabilityCount} availability records`,
+  );
 }
