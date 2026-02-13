@@ -34,7 +34,12 @@ export default function VerificationScreen() {
     isPending: isPendingDelete,
     isError: isErrorDelete,
   } = useMutation({
-    mutationFn: async (password: string) => deleteUserAccount(user!, password),
+    mutationFn: async (password: string | null) => {
+      if (!password) {
+        throw Error;
+      }
+      deleteUserAccount(user!, password);
+    },
   });
 
   const handleLogout = () => {
@@ -47,10 +52,7 @@ export default function VerificationScreen() {
     const password = prompt(
       "Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan gemaakt worden. \nHiervoor hebben we je wachtwoord nodig.",
     );
-
-    if (password && password.length != 0) {
-      mutateDelete(password);
-    }
+    mutateDelete(password);
   };
 
   return (
