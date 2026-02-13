@@ -12,13 +12,13 @@ export default function ListTile({
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={`w-full max-w-3xl mx-auto bg-white py-3 px-3 flex gap-4 items-center justify-between border-b border-b-gray-300 ${disabled ? "bg-gray-300!" : undefined} ${className}`}
+      className={`w-full max-w-3xl mx-auto bg-white py-3 px-3 flex gap-4 items-center justify-between border-b border-b-gray-300 ${disabled ? "bg-gray-100!" : undefined} ${className}`}
       {...buttonProps}
     >
-      {children}
+      <p className={`${disabled ? "text-gray-500!" : undefined}`}>{children}</p>
       <FontAwesomeIcon
         icon={faChevronRight}
-        className={`max-h-3! w-2 text-gray-400 ${className}`}
+        className={`max-h-3! text-gray-400 ${disabled ? "text-gray-500!" : undefined} ${className}`}
       />
     </button>
   );

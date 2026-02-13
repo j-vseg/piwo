@@ -9,17 +9,7 @@ import availibility from "@/../assets/availibility.json";
 
 export default function Slider() {
   return (
-    <div
-      className="
-        w-full
-        flex
-        overflow-x-auto
-        overflow-y-hidden
-        snap-x snap-mandatory
-        scroll-smooth
-        touch-pan-x
-      "
-    >
+    <div className="w-full flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smoothtouch-pan-x">
       <Card
         title="Welkom!"
         image={
