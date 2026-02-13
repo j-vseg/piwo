@@ -9,7 +9,7 @@ import {
 } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/services/firebase/firebase";
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import { getAccount } from "@/services/firebase/accounts";
 
 interface AuthContextType {
@@ -30,13 +30,11 @@ export function AuthProvider({
   initialUser = null,
 }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(initialUser);
+  const [authLoading, setAuthLoading] = useState(true);
 
-  const { data: accountData, isLoading } = useQuery({
+  const { data: accountData, isLoading: accountLoading } = useQuery({
     queryKey: ["account", user?.uid],
-    queryFn: async () => {
-      if (!user?.uid) return null;
-      return await getAccount(user.uid);
-    },
+    queryFn: user ? async () => getAccount(user.uid) : skipToken,
     enabled: !!user?.uid,
     staleTime: 5 * 60 * 1000,
     retry: 3,
@@ -44,17 +42,17 @@ export function AuthProvider({
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
     });
-
     return unsubscribe;
   }, []);
 
   const value: AuthContextType = {
     user,
     isApproved: accountData?.isApproved ?? null,
-    isLoading,
+    isLoading: authLoading || accountLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { user, isApproved } = useAuth();
+  const { user, isApproved, isLoading } = useAuth();
   const { replace } = useRouter();
   const [randomCategory] = useState(() => {
     const categoryValues = Object.values(Category);
@@ -20,12 +20,19 @@ export default function Home() {
     return categoryValues[randomIndex];
   });
 
-  // Redirect authenticated users to home page
   useEffect(() => {
     if (user && isApproved) {
       replace("/home");
     }
   }, [user, isApproved, replace]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingIndicator />
+      </div>
+    );
+  }
 
   if (!user) {
     return <OnboardingScreen />;
@@ -33,10 +40,6 @@ export default function Home() {
 
   if (user && !isApproved) {
     return <VerificationScreen />;
-  }
-
-  if (user && isApproved) {
-    return <LoadingIndicator />;
   }
 
   return (
