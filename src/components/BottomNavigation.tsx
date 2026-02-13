@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
-  { label: "Home", icon: faHouse, href: "/" },
+  { label: "Home", icon: faHouse, href: "/home" },
   { label: "Instellingen", icon: faGear, href: "/settings" },
 ];
 

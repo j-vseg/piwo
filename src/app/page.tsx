@@ -1,16 +1,15 @@
 "use client";
 
 import { Alert } from "@/components/Alert";
-import { BottomNavigation } from "@/components/BottomNavigation";
 import Button from "@/components/Button";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
-import HomeScreen from "@/domians/home/home";
 import OnboardingScreen from "@/domians/onboarding/onboarding";
 import VerificationScreen from "@/domians/verification/verification";
 import { Category } from "@/types/category";
 import { getEventColor } from "@/utils/getEventColor";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const { user, isApproved } = useAuth();
@@ -21,6 +20,13 @@ export default function Home() {
     return categoryValues[randomIndex];
   });
 
+  // Redirect authenticated users to home page
+  useEffect(() => {
+    if (user && isApproved) {
+      replace("/home");
+    }
+  }, [user, isApproved, replace]);
+
   if (!user) {
     return <OnboardingScreen />;
   }
@@ -30,12 +36,7 @@ export default function Home() {
   }
 
   if (user && isApproved) {
-    return (
-      <>
-        <HomeScreen />
-        <BottomNavigation />
-      </>
-    );
+    return <LoadingIndicator />;
   }
 
   return (
