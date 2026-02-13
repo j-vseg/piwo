@@ -10,12 +10,13 @@ export function generateOccurrences(
   until: Date = addWeeks(from, 10),
 ): EventOccurrence[] {
   const occurrences: EventOccurrence[] = [];
+  const eventStart = event.startDate.toDate();
+  const eventEnd = event.endDate.toDate();
+  const durationMs = eventEnd.getTime() - eventStart.getTime();
 
   // Non-recurring event
   if (!event.recurrence) {
-    const eventStart = event.startDate.toDate();
-
-    if (eventStart >= from && eventStart <= until) {
+    if (eventEnd >= from && eventStart <= until) {
       occurrences.push({
         id: event.id,
         eventId: event.id,
@@ -23,31 +24,30 @@ export function generateOccurrences(
         endTime: event.endDate,
       });
     }
-
     return occurrences;
   }
 
   const recurrence = event.recurrence;
-  const eventStart = event.startDate.toDate();
-  const durationMs =
-    event.endDate.toDate().getTime() - event.startDate.toDate().getTime();
 
-  // Find first occurrence >= from
+  // Find first occurrence whose endTime >= from
   let current =
     eventStart >= from
       ? new Date(eventStart)
-      : findNextOccurrence(eventStart, from, recurrence);
+      : findNextOccurrenceEndingAfter(eventStart, from, recurrence, durationMs);
 
   while (current <= until) {
     const occurrenceStart = new Date(current);
     const occurrenceEnd = new Date(occurrenceStart.getTime() + durationMs);
 
-    occurrences.push({
-      id: `${event.id}-${occurrenceStart.toISOString()}`,
-      eventId: event.id,
-      startTime: Timestamp.fromDate(occurrenceStart),
-      endTime: Timestamp.fromDate(occurrenceEnd),
-    });
+    // Include only if it overlaps [from, until]
+    if (occurrenceEnd >= from && occurrenceStart <= until) {
+      occurrences.push({
+        id: `${event.id}-${occurrenceStart.toISOString()}`,
+        eventId: event.id,
+        startTime: Timestamp.fromDate(occurrenceStart),
+        endTime: Timestamp.fromDate(occurrenceEnd),
+      });
+    }
 
     current = getNextOccurrence(current, recurrence);
   }
@@ -56,19 +56,13 @@ export function generateOccurrences(
 }
 
 function getNextOccurrence(currentDate: Date, recurrence: Recurrence): Date {
+  const next = new Date(currentDate);
+
   if (recurrence === Recurrence.Daily) {
-    const next = new Date(currentDate);
     next.setDate(next.getDate() + 1);
-    return next;
-  }
-
-  if (recurrence === Recurrence.Weekly) {
-    const next = new Date(currentDate);
+  } else if (recurrence === Recurrence.Weekly) {
     next.setDate(next.getDate() + 7);
-    return next;
-  }
-
-  if (recurrence === Recurrence.Monthly) {
+  } else if (recurrence === Recurrence.Monthly) {
     const originalDay = currentDate.getDate();
     const targetMonth = currentDate.getMonth() + 1;
     const targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
@@ -82,28 +76,22 @@ function getNextOccurrence(currentDate: Date, recurrence: Recurrence): Date {
 
     const actualDay = Math.min(originalDay, lastDayOfTargetMonth);
 
-    return new Date(
-      targetYear,
-      normalizedMonth,
-      actualDay,
-      currentDate.getHours(),
-      currentDate.getMinutes(),
-      currentDate.getSeconds(),
-      currentDate.getMilliseconds(),
-    );
+    next.setFullYear(targetYear, normalizedMonth, actualDay);
   }
 
-  return currentDate;
+  return next;
 }
 
-function findNextOccurrence(
+function findNextOccurrenceEndingAfter(
   eventStart: Date,
   from: Date,
   recurrence: Recurrence,
+  durationMs: number,
 ): Date {
   let current = new Date(eventStart);
 
-  while (current < from) {
+  // Move forward until the end time of the occurrence is after 'from'
+  while (current.getTime() + durationMs < from.getTime()) {
     current = getNextOccurrence(current, recurrence);
   }
 
