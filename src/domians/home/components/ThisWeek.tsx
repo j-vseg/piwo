@@ -41,7 +41,7 @@ export function ThisWeek() {
         {isLoadingAvailability ? undefined : !userIsMissingAvailability ||
           isErrorAvailabilty ? (
           <Alert type="success" size="small">
-            Je ben bij voor deze week!
+            Je bent bij voor deze week!
           </Alert>
         ) : (
           <Alert type="danger" size="small">
