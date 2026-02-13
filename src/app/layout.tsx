@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import QueryProvider from "@/contexts/queryProvider";
-import { BottomNavigation } from "@/components/BottomNavigation";
 import { AuthProvider } from "@/contexts/auth";
 import { auth } from "@/services/firebase/firebase";
 
@@ -24,7 +23,6 @@ export default function RootLayout({
             <div className="flex justify-center mb-22">
               <div className="w-full relative">{children}</div>
             </div>
-            <BottomNavigation />
           </AuthProvider>
         </QueryProvider>
       </body>

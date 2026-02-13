@@ -25,7 +25,7 @@ export function Alert({ type, children, size = "large" }: AlertProps) {
   } else {
     return (
       <div
-        className={`flex flex-col gap-5 items-center rounded-3xl p-6 ${type === "danger" ? "bg-orangeRed" : type === "success" ? "bg-background-success" : "bg-background-orange"}`}
+        className={`flex flex-col gap-5 items-center rounded-3xl p-6 ${type === "danger" ? "bg-orangeRed" : type === "success" ? "bg-background-success" : "bg-info"}`}
       >
         <FontAwesomeIcon
           icon={type === "success" ? faCheck : faExclamation}
