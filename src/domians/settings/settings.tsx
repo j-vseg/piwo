@@ -57,7 +57,7 @@ export default function SettingsScreen() {
   };
 
   return (
-    <BaseDetailScreen heightClass="h-27" title="Instellingen">
+    <BaseDetailScreen heightClass="h-27" title="Instellingen" canGoBack={false}>
       <div className="flex flex-col p-4 -mt-8">
         {isErrorLogout && (
           <Alert type="danger" size="small">
