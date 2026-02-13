@@ -77,6 +77,7 @@ export default function LoginScreen() {
                 fieldState: { error },
               }) => (
                 <Input
+                  id="email"
                   label="Email"
                   type="email"
                   error={error?.message}
@@ -101,6 +102,7 @@ export default function LoginScreen() {
                 fieldState: { error },
               }) => (
                 <Input
+                  id="password"
                   label="Wachtwoord"
                   type="password"
                   error={error?.message}

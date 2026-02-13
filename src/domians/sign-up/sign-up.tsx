@@ -43,7 +43,7 @@ export default function SignUpScreen() {
       return { user: userCredential.user, data: data };
     },
     onSuccess: ({ user, data }) => {
-      mutateCreateFirestore({ user, data })
+      mutateCreateFirestore({ user, data });
     },
   });
 
@@ -103,6 +103,7 @@ export default function SignUpScreen() {
                 fieldState: { error },
               }) => (
                 <Input
+                  id="firstname"
                   label="Voornaam"
                   type="text"
                   error={error?.message}
@@ -123,6 +124,7 @@ export default function SignUpScreen() {
                 fieldState: { error },
               }) => (
                 <Input
+                  id="lastname"
                   label="Achternaam"
                   type="text"
                   error={error?.message}
@@ -147,6 +149,7 @@ export default function SignUpScreen() {
                 fieldState: { error },
               }) => (
                 <Input
+                  id="email"
                   label="Email"
                   type="email"
                   error={error?.message}
@@ -171,6 +174,7 @@ export default function SignUpScreen() {
                 fieldState: { error },
               }) => (
                 <Input
+                  id="password"
                   label="Wachtwoord"
                   type="password"
                   error={error?.message}
