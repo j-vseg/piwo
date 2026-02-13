@@ -34,7 +34,9 @@ export default function SettingsScreen() {
     const password = prompt(
       "Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan gemaakt worden. \nHiervoor hebben we je wachtwoord nodig.",
     );
-    mutateDelete(password);
+    if (password != null) {
+      mutateDelete(password);
+    }
   };
 
   const {
