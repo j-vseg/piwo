@@ -13,6 +13,7 @@ export default function ListTile({
   return (
     <button
       className={`w-full max-w-3xl mx-auto bg-white py-3 px-3 flex gap-4 items-center justify-between border-b border-b-gray-300 ${disabled ? "bg-gray-100!" : undefined} ${className}`}
+      disabled={disabled}
       {...buttonProps}
     >
       <p className={`${disabled ? "text-gray-500!" : undefined}`}>{children}</p>

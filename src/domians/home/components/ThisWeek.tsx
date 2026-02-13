@@ -17,7 +17,9 @@ export function ThisWeek() {
     isError: isErrorThisWeek,
   } = useQuery({
     queryKey: ["this-week-occurrences"],
-    queryFn: () => fetchAllOccurrences(undefined, endOfWeek(new Date())),
+    queryFn: user
+      ? () => fetchAllOccurrences(undefined, endOfWeek(new Date()))
+      : skipToken,
   });
 
   const {
@@ -32,29 +34,21 @@ export function ThisWeek() {
         : skipToken,
   });
 
-  if (!user) {
-    return <ErrorIndicator>Je bent niet ingelogd</ErrorIndicator>;
-  }
-
   return (
     <div className="flex flex-col gap-4">
       <h2>Deze week</h2>
-      {!user ? (
-        <ErrorIndicator>Je bent niet ingelogd</ErrorIndicator>
-      ) : (
-        <div className="min-h-9.25">
-          {isLoadingAvailability ? undefined : !userIsMissingAvailability ||
-            isErrorAvailabilty ? (
-            <Alert type="success" size="small">
-              Je ben bij voor deze week!
-            </Alert>
-          ) : (
-            <Alert type="danger" size="small">
-              Geef je aanwezigheid op!
-            </Alert>
-          )}
-        </div>
-      )}
+      <div className="min-h-9.25">
+        {isLoadingAvailability ? undefined : !userIsMissingAvailability ||
+          isErrorAvailabilty ? (
+          <Alert type="success" size="small">
+            Je ben bij voor deze week!
+          </Alert>
+        ) : (
+          <Alert type="danger" size="small">
+            Geef je aanwezigheid op!
+          </Alert>
+        )}
+      </div>
 
       {isLoadingAvailability || isLoadingThisWeek ? (
         <LoadingIndicator />

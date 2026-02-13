@@ -36,9 +36,7 @@ export default function HomeScreen() {
         <div className="w-full max-w-3xl p-4 flex flex-col gap-4">
           <h2 className="text-xl font-semibold">Toekomstige activiteiten</h2>
 
-          {!user ? (
-            <ErrorIndicator>Je bent niet ingelogd</ErrorIndicator>
-          ) : isLoading ? (
+          {isLoading ? (
             <LoadingIndicator />
           ) : isError ? (
             <ErrorIndicator>
@@ -70,7 +68,7 @@ export default function HomeScreen() {
               </div>
             ))
           )}
-          {groupedOccurrences && user && (
+          {groupedOccurrences && (
             <p className="py-10 text-gray-500 text-center text-[14px]!">
               Meer activiteiten worden zichtbaar bij naderende startdatum
             </p>
