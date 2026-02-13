@@ -8,7 +8,7 @@ import { getOccurrenceAvailability } from "@/services/firebase/availability";
 import { getOccurrenceById } from "@/services/firebase/events";
 import { Status } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, skipToken, useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useState } from "react";
@@ -31,6 +31,8 @@ export function ActivityPage({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["occurrenceAvailability", id],
     queryFn: user ? () => getOccurrenceAvailability(id) : skipToken,
+    staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   const {
@@ -40,6 +42,8 @@ export function ActivityPage({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["userDisplayNames"],
     queryFn: user ? () => getAllAccountsDisplayNames() : skipToken,
+    staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   return (

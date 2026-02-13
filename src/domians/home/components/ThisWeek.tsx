@@ -2,7 +2,7 @@ import { Alert } from "@/components/Alert";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { fetchAllOccurrences } from "@/services/firebase/events";
 import { Event } from "@/components/Event";
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, skipToken, useQuery } from "@tanstack/react-query";
 import { endOfWeek } from "date-fns";
 import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { useAuth } from "@/contexts/auth";
@@ -20,6 +20,8 @@ export function ThisWeek() {
     queryFn: user
       ? () => fetchAllOccurrences(undefined, endOfWeek(new Date()))
       : skipToken,
+    staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   const {

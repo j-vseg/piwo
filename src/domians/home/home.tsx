@@ -4,7 +4,7 @@ import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { Event } from "@/components/Event";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { fetchAllOccurrencesGroupedByDate } from "@/services/firebase/events";
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, skipToken, useQuery } from "@tanstack/react-query";
 import { format, nextMonday } from "date-fns";
 import { nl } from "date-fns/locale";
 import { ThisWeek } from "./components/ThisWeek";
@@ -21,6 +21,8 @@ export default function HomeScreen() {
     queryFn: user
       ? () => fetchAllOccurrencesGroupedByDate(nextMonday(new Date()))
       : skipToken,
+    staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   return (
