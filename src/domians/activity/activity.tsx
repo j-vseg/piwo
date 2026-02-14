@@ -94,34 +94,37 @@ export function ActivityPage({ id }: { id: string }) {
                     </button>
                   ))}
                 </div>
-                {isLoadingAvailability || isLoadingAccount ? (
-                  <div className="py-2 px-4 bg-white rounded-lg">
-                    <LoadingIndicator />
-                  </div>
-                ) : isErrorAvailability || isErrorAccounts ? (
-                  <div className="py-2 px-4 bg-white rounded-lg">
-                    <ErrorIndicator type="small">
-                      Het is mislukt om de aanwezigheid op te halen
-                    </ErrorIndicator>
-                  </div>
-                ) : !availability ||
-                  !availability[selected] ||
-                  !displayNames ? (
-                  <div className="py-2 px-4 bg-white rounded-lg">
-                    <ErrorIndicator type="small">
-                      Niemand heeft deze aanwezigheid opgegeven
-                    </ErrorIndicator>
-                  </div>
-                ) : (
-                  availability[selected].map((userId) => (
-                    <div key={userId} className="py-2 px-4 bg-white rounded-lg">
-                      <p>{displayNames[userId] ?? "Niet bekend"}</p>
+                <div className="flex flex-col gap-2">
+                  {isLoadingAvailability || isLoadingAccount ? (
+                    <div className="py-2 px-4 bg-white rounded-lg">
+                      <LoadingIndicator />
                     </div>
-                  ))
-                )}
+                  ) : isErrorAvailability || isErrorAccounts ? (
+                    <div className="py-2 px-4 bg-white rounded-lg">
+                      <ErrorIndicator type="small">
+                        Het is mislukt om de aanwezigheid op te halen
+                      </ErrorIndicator>
+                    </div>
+                  ) : !availability ||
+                    !availability[selected] ||
+                    !displayNames ? (
+                    <div className="py-2 px-4 bg-white rounded-lg">
+                      <ErrorIndicator type="small">
+                        Niemand heeft deze aanwezigheid opgegeven
+                      </ErrorIndicator>
+                    </div>
+                  ) : (
+                    availability[selected].map((userId) => (
+                      <div
+                        key={userId}
+                        className="py-2 px-4 bg-white rounded-lg"
+                      >
+                        <p>{displayNames[userId] ?? "Niet bekend"}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
-
-              <div className="flex flex-col gap-2"></div>
             </div>
           </div>
         )}
