@@ -33,7 +33,7 @@ export function AvailabilitySelector({
     queryFn: user
       ? () => getUserAvailability(occurrenceId, user.uid)
       : skipToken,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
     placeholderData: keepPreviousData,
   });
 

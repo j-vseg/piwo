@@ -36,7 +36,7 @@ export function AuthProvider({
     queryKey: ["account", user?.uid],
     queryFn: user ? async () => getAccount(user.uid) : skipToken,
     enabled: !!user?.uid,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });

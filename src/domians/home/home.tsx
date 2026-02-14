@@ -21,7 +21,7 @@ export default function HomeScreen() {
     queryFn: user
       ? () => fetchAllOccurrencesGroupedByDate(nextMonday(new Date()))
       : skipToken,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
     placeholderData: keepPreviousData,
   });
 

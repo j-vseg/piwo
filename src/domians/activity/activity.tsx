@@ -31,7 +31,7 @@ export function ActivityPage({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["occurrenceAvailability", id],
     queryFn: user ? () => getOccurrenceAvailability(id) : skipToken,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
     placeholderData: keepPreviousData,
   });
 
@@ -42,7 +42,7 @@ export function ActivityPage({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["userDisplayNames"],
     queryFn: user ? () => getAllAccountsDisplayNames() : skipToken,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
     placeholderData: keepPreviousData,
   });
 

@@ -20,7 +20,7 @@ export function ThisWeek() {
     queryFn: user
       ? () => fetchAllOccurrences(undefined, endOfWeek(new Date()))
       : skipToken,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
     placeholderData: keepPreviousData,
   });
 
