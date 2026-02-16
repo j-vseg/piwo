@@ -18,7 +18,11 @@ export function ThisWeek() {
   } = useQuery({
     queryKey: ["this-week-occurrences"],
     queryFn: user
-      ? () => fetchAllOccurrences(undefined, endOfWeek(new Date()))
+      ? () =>
+          fetchAllOccurrences(
+            undefined,
+            endOfWeek(new Date(), { weekStartsOn: 1 }),
+          )
       : skipToken,
     staleTime: 30 * 60 * 1000,
     placeholderData: keepPreviousData,
