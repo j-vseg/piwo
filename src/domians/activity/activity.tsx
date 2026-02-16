@@ -81,7 +81,7 @@ export function ActivityPage({ id }: { id: string }) {
                     <button
                       key={statusOption}
                       onClick={() => setSelected(statusOption)}
-                      className={`px-3 py-1 rounded-lg ${
+                      className={`px-3 py-1 rounded-lg flex items-center gap-2 ${
                         selected === statusOption
                           ? selected === Status.Absent
                             ? "bg-error"
@@ -93,10 +93,22 @@ export function ActivityPage({ id }: { id: string }) {
                       disabled={isLoadingAvailability}
                     >
                       <p>{statusOption}</p>
+                      <div
+                        className={`bg-background-200 rounded-full text-[10px] font-semibold m-0 h-fit shrink-0 items-center justify-center ${availability?.[statusOption]?.length === 1 ? "px-1.5" : "px-1.25"}`}
+                      >
+                        {availability?.[statusOption]?.length ?? 0}
+                      </div>
                     </button>
                   ))}
                 </div>
                 <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-gray-300" />
+                    <h3 className="text-lg font-medium text-gray-500 mx-2 font-poppins uppercase text-[12px]!">
+                      Totaal: {availability?.[selected]?.length ?? 0}
+                    </h3>
+                    <div className="flex-1 h-px bg-gray-300" />
+                  </div>
                   {isLoadingAvailability || isLoadingAccount ? (
                     <div className="py-2 px-4 bg-white rounded-lg">
                       <LoadingIndicator />

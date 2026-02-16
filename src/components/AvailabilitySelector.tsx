@@ -39,10 +39,13 @@ export function AvailabilitySelector({
       setUserAvailability(occurrenceId, user!.uid, status),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["user-availability", occurrenceId, user!.uid],
+        queryKey: ["user-availability", occurrenceId, user?.uid],
       });
       queryClient.invalidateQueries({
         queryKey: ["has-entered-weekly-availability"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["occurrenceAvailability", occurrenceId, user?.uid],
       });
     },
     onError: (error) => {
