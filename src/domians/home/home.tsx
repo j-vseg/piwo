@@ -4,7 +4,7 @@ import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { Event } from "@/components/Event";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { fetchAllOccurrencesGroupedByDate } from "@/services/firebase/events";
-import { keepPreviousData, skipToken, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { format, nextMonday } from "date-fns";
 import { nl } from "date-fns/locale";
 import { ThisWeek } from "./components/ThisWeek";
@@ -17,12 +17,11 @@ export default function HomeScreen() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["occurrences-grouped"],
-    queryFn: user
-      ? () => fetchAllOccurrencesGroupedByDate(nextMonday(new Date()))
-      : skipToken,
+    queryKey: ["occurrences-grouped", user?.uid],
+    queryFn: () => fetchAllOccurrencesGroupedByDate(nextMonday(new Date())),
     staleTime: 30 * 60 * 1000,
-    placeholderData: keepPreviousData,
+    refetchOnMount: false,
+    enabled: !!user,
   });
 
   return (

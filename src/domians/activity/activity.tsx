@@ -8,7 +8,7 @@ import { getOccurrenceAvailability } from "@/services/firebase/availability";
 import { getOccurrenceById } from "@/services/firebase/events";
 import { Status } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
-import { keepPreviousData, skipToken, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useState } from "react";
@@ -21,29 +21,31 @@ export function ActivityPage({ id }: { id: string }) {
     isLoading: isLoadingOccurrence,
     isError: isErrorOccurrence,
   } = useQuery({
-    queryKey: ["occurrence", id],
-    queryFn: user ? () => getOccurrenceById(id) : skipToken,
+    queryKey: ["occurrence", id, user?.uid],
+    queryFn: () => getOccurrenceById(id),
+    enabled: !!user,
   });
   const {
     data: availability,
     isLoading: isLoadingAvailability,
     isError: isErrorAvailability,
   } = useQuery({
-    queryKey: ["occurrenceAvailability", id],
-    queryFn: user ? () => getOccurrenceAvailability(id) : skipToken,
+    queryKey: ["occurrenceAvailability", id, user?.uid],
+    queryFn: () => getOccurrenceAvailability(id),
     staleTime: 30 * 60 * 1000,
-    placeholderData: keepPreviousData,
+    refetchOnMount: false,
+    enabled: !!user,
   });
-
   const {
     data: displayNames,
     isLoading: isLoadingAccount,
     isError: isErrorAccounts,
   } = useQuery({
-    queryKey: ["userDisplayNames"],
-    queryFn: user ? () => getAllAccountsDisplayNames() : skipToken,
+    queryKey: ["userDisplayNames", user?.uid],
+    queryFn: () => getAllAccountsDisplayNames(),
     staleTime: 30 * 60 * 1000,
-    placeholderData: keepPreviousData,
+    refetchOnMount: false,
+    enabled: !!user,
   });
 
   return (

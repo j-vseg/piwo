@@ -1,10 +1,4 @@
-import {
-  keepPreviousData,
-  skipToken,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getUserAvailability,
   setUserAvailability,
@@ -30,11 +24,10 @@ export function AvailabilitySelector({
 
   const { data: availability } = useQuery({
     queryKey: ["user-availability", occurrenceId, user?.uid],
-    queryFn: user
-      ? () => getUserAvailability(occurrenceId, user.uid)
-      : skipToken,
+    queryFn: () => getUserAvailability(occurrenceId, user!.uid),
     staleTime: 30 * 60 * 1000,
-    placeholderData: keepPreviousData,
+    refetchOnMount: false,
+    enabled: !!user,
   });
 
   const {

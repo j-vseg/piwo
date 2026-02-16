@@ -2,7 +2,7 @@ import { Alert } from "@/components/Alert";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { fetchAllOccurrences } from "@/services/firebase/events";
 import { Event } from "@/components/Event";
-import { keepPreviousData, skipToken, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { endOfWeek } from "date-fns";
 import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { useAuth } from "@/contexts/auth";
@@ -16,16 +16,15 @@ export function ThisWeek() {
     isLoading: isLoadingThisWeek,
     isError: isErrorThisWeek,
   } = useQuery({
-    queryKey: ["this-week-occurrences"],
-    queryFn: user
-      ? () =>
-          fetchAllOccurrences(
-            undefined,
-            endOfWeek(new Date(), { weekStartsOn: 1 }),
-          )
-      : skipToken,
+    queryKey: ["this-week-occurrences", user?.uid],
+    queryFn: () =>
+      fetchAllOccurrences(
+        undefined,
+        endOfWeek(new Date(), { weekStartsOn: 1 }),
+      ),
     staleTime: 30 * 60 * 1000,
-    placeholderData: keepPreviousData,
+    refetchOnMount: false,
+    enabled: !!user,
   });
 
   const {
@@ -33,11 +32,11 @@ export function ThisWeek() {
     isLoading: isLoadingAvailability,
     isError: isErrorAvailabilty,
   } = useQuery({
-    queryKey: ["has-entered-weekly-availability"],
-    queryFn:
-      user && thisWeekOccurrences
-        ? () => isUserMissingAvailability(user.uid, thisWeekOccurrences)
-        : skipToken,
+    queryKey: ["has-entered-weekly-availability", user?.uid],
+    queryFn: () => isUserMissingAvailability(user!.uid, thisWeekOccurrences!),
+    staleTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    enabled: !!user && !!thisWeekOccurrences,
   });
 
   return (
