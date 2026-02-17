@@ -4,24 +4,28 @@ import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { Event } from "@/components/Event";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { fetchAllOccurrencesGroupedByDate } from "@/services/firebase/events";
-import { useQuery } from "@tanstack/react-query";
-import { format, nextMonday } from "date-fns";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import { format, nextMonday, startOfToday } from "date-fns";
 import { nl } from "date-fns/locale";
 import { ThisWeek } from "./components/ThisWeek";
 import { useAuth } from "@/contexts/auth";
+import { useMemo } from "react";
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const upcomingMonday = useMemo(() => {
+    return nextMonday(startOfToday());
+  }, []);
   const {
     data: groupedOccurrences,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["occurrences-grouped", user?.uid],
-    queryFn: () => fetchAllOccurrencesGroupedByDate(nextMonday(new Date())),
+    queryKey: ["occurrences-grouped", upcomingMonday],
+    queryFn: user
+      ? () => fetchAllOccurrencesGroupedByDate(upcomingMonday)
+      : skipToken,
     staleTime: 30 * 60 * 1000,
-    refetchOnMount: false,
-    enabled: !!user,
   });
 
   return (

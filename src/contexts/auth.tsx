@@ -9,7 +9,7 @@ import {
 } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/services/firebase/firebase";
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import { getAccount } from "@/services/firebase/accounts";
 
 interface AuthContextType {
@@ -34,8 +34,7 @@ export function AuthProvider({
 
   const { data: accountData, isLoading: accountLoading } = useQuery({
     queryKey: ["account", user?.uid],
-    queryFn: async () => getAccount(user!.uid),
-    enabled: !!user,
+    queryFn: user ? async () => getAccount(user.uid) : skipToken,
     staleTime: 30 * 60 * 1000,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),

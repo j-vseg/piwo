@@ -2,29 +2,28 @@ import { Alert } from "@/components/Alert";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { fetchAllOccurrences } from "@/services/firebase/events";
 import { Event } from "@/components/Event";
-import { useQuery } from "@tanstack/react-query";
-import { endOfWeek } from "date-fns";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import { endOfWeek, startOfToday } from "date-fns";
 import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { useAuth } from "@/contexts/auth";
 import { isUserMissingAvailability } from "@/services/firebase/availability";
+import { useMemo } from "react";
 
 export function ThisWeek() {
   const { user } = useAuth();
-
+  const endOfTheWeek = useMemo(() => {
+    return endOfWeek(startOfToday(), { weekStartsOn: 1 });
+  }, []);
   const {
     data: thisWeekOccurrences,
     isLoading: isLoadingThisWeek,
     isError: isErrorThisWeek,
   } = useQuery({
-    queryKey: ["this-week-occurrences", user?.uid],
-    queryFn: () =>
-      fetchAllOccurrences(
-        undefined,
-        endOfWeek(new Date(), { weekStartsOn: 1 }),
-      ),
+    queryKey: ["this-week-occurrences", endOfTheWeek],
+    queryFn: user
+      ? () => fetchAllOccurrences(undefined, endOfTheWeek)
+      : skipToken,
     staleTime: 30 * 60 * 1000,
-    refetchOnMount: false,
-    enabled: !!user,
   });
 
   const {
@@ -32,11 +31,16 @@ export function ThisWeek() {
     isLoading: isLoadingAvailability,
     isError: isErrorAvailabilty,
   } = useQuery({
-    queryKey: ["has-entered-weekly-availability", user?.uid],
-    queryFn: () => isUserMissingAvailability(user!.uid, thisWeekOccurrences!),
+    queryKey: [
+      "has-entered-weekly-availability",
+      user?.uid,
+      thisWeekOccurrences,
+    ],
+    queryFn:
+      user && thisWeekOccurrences
+        ? () => isUserMissingAvailability(user.uid, thisWeekOccurrences)
+        : skipToken,
     staleTime: 30 * 60 * 1000,
-    refetchOnMount: false,
-    enabled: !!user && !!thisWeekOccurrences,
   });
 
   return (
