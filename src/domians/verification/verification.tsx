@@ -1,25 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import Lottie from "lottie-react";
 import waiting from "@/../assets/waiting.json";
 import Button from "@/components/Button";
-import { Category } from "@/types/category";
-import { getEventColor } from "@/utils/getEventColor";
 import { useMutation } from "@tanstack/react-query";
 import { signOut } from "firebase/auth";
 import { auth } from "@/services/firebase/firebase";
 import { Alert } from "@/components/Alert";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { useAuth } from "@/contexts/auth";
+import { getRandomEventColor } from "@/utils/getRandomEventColor";
 
 export default function VerificationScreen() {
   const { user } = useAuth();
-  const [randomCategory] = useState(() => {
-    const categoryValues = Object.values(Category);
-    const randomIndex = Math.floor(Math.random() * 4);
-    return categoryValues[randomIndex];
-  });
+  const eventColor = getRandomEventColor();
 
   const {
     mutate: mutateLogout,
@@ -60,7 +54,7 @@ export default function VerificationScreen() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <div
-        className={`absolute top-0 left-0 w-full h-[40vh] ${getEventColor(randomCategory)}`}
+        className={`absolute top-0 left-0 w-full h-[40vh] ${eventColor}`}
       ></div>
       <div className="flex flex-col gap-4 w-full max-w-3xl -mt-45 relative z-10">
         <div className="bg-white p-6 rounded-3xl flex flex-col gap-6 items-center">
