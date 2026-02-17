@@ -3,7 +3,6 @@ import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen
 import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
-import { getAllAccountsDisplayNames } from "@/services/firebase/accounts";
 import { getOccurrenceAvailability } from "@/services/firebase/availability";
 import { getOccurrenceById } from "@/services/firebase/events";
 import { Status } from "@/types/status";
@@ -32,17 +31,6 @@ export function ActivityPage({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["occurrenceAvailability", id, user?.uid],
     queryFn: () => getOccurrenceAvailability(id),
-    staleTime: 30 * 60 * 1000,
-    refetchOnMount: false,
-    enabled: !!user,
-  });
-  const {
-    data: displayNames,
-    isLoading: isLoadingAccount,
-    isError: isErrorAccounts,
-  } = useQuery({
-    queryKey: ["userDisplayNames", user?.uid],
-    queryFn: () => getAllAccountsDisplayNames(),
     staleTime: 30 * 60 * 1000,
     refetchOnMount: false,
     enabled: !!user,
@@ -109,31 +97,29 @@ export function ActivityPage({ id }: { id: string }) {
                     </h3>
                     <div className="flex-1 h-px bg-gray-300" />
                   </div>
-                  {isLoadingAvailability || isLoadingAccount ? (
+                  {isLoadingAvailability ? (
                     <div className="py-2 px-4 bg-white rounded-lg">
                       <LoadingIndicator />
                     </div>
-                  ) : isErrorAvailability || isErrorAccounts ? (
+                  ) : isErrorAvailability ? (
                     <div className="py-2 px-4 bg-white rounded-lg">
                       <ErrorIndicator type="small">
                         Het is mislukt om de aanwezigheid op te halen
                       </ErrorIndicator>
                     </div>
-                  ) : !availability ||
-                    !availability[selected] ||
-                    !displayNames ? (
+                  ) : !availability || !availability[selected] ? (
                     <div className="py-2 px-4 bg-white rounded-lg">
                       <ErrorIndicator type="small">
                         Niemand heeft deze aanwezigheid opgegeven
                       </ErrorIndicator>
                     </div>
                   ) : (
-                    availability[selected].map((userId) => (
+                    availability[selected].map((displayName) => (
                       <div
-                        key={userId}
+                        key={displayName}
                         className="py-2 px-4 bg-white rounded-lg"
                       >
-                        <p>{displayNames[userId] ?? "Niet bekend"}</p>
+                        <p>{displayName}</p>
                       </div>
                     ))
                   )}

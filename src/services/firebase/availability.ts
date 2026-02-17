@@ -2,6 +2,7 @@ import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "firebase/fi
 import { Status } from "@/types/status";
 import { db } from "./firebase";
 import { EventOccurrence } from "@/types/eventOccurence";
+import { getAllAccountsDisplayNames } from "./accounts";
 
 /**
  * Get a user's availability for a specific occurrence.
@@ -88,6 +89,7 @@ export async function getOccurrenceAvailability(
     return null;
   }
 
+  const displayNames = await getAllAccountsDisplayNames();
   const groupedByStatus: Record<Status, string[]> = {} as Record<Status, string[]>;
   
   availabilitySnapshot.forEach((doc) => {
@@ -97,8 +99,13 @@ export async function getOccurrenceAvailability(
     if (!groupedByStatus[status]) {
       groupedByStatus[status] = [];
     }
-    groupedByStatus[status].push(userId);
+    groupedByStatus[status].push(displayNames[userId] ?? "Niet bekend");
   });
 
-  return groupedByStatus;
+  return Object.fromEntries(
+    Object.entries(groupedByStatus).map(([status, names]) => [
+      status,
+      names.sort(),
+    ]),
+  ) as Record<Status, string[]>;
 }
