@@ -5,7 +5,9 @@ import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { auth } from "@/services/firebase/firebase";
+import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FirebaseError } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
@@ -24,14 +26,22 @@ export default function LoginScreen() {
     },
   });
   const queryClient = useQueryClient();
-  const { mutate, isSuccess, isPending, isError } = useMutation({
+  const { mutate, isSuccess, isPending, isError, error } = useMutation({
     mutationFn: async (data: LoginFormValues) => {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password,
-      );
-      return userCredential.user;
+      try {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          data.email,
+          data.password,
+        );
+        return userCredential.user;
+      } catch (error) {
+        const customMessage = getFirebaseErrorMessage(
+          error as FirebaseError,
+          "Er is iets misgegaan tijdens het inloggen, probeer het later nog eens",
+        );
+        throw new Error(customMessage);
+      }
     },
     onSuccess: () => {
       queryClient.clear();
@@ -54,8 +64,7 @@ export default function LoginScreen() {
           )}
           {isError && (
             <Alert type="danger" size="small">
-              Er is iets misgegaan tijdens het inloggen, probeer het later nog
-              eens
+              {error.message}
             </Alert>
           )}
           <form

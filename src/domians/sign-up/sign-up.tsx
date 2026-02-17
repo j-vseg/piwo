@@ -6,7 +6,9 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { createUser } from "@/services/firebase/accounts";
 import { auth } from "@/services/firebase/firebase";
+import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword, User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
@@ -33,14 +35,23 @@ export default function SignUpScreen() {
     mutate: mutateCreateAuth,
     isPending: isPendingCreateAuth,
     isError: isErrorCreateAuth,
+    error,
   } = useMutation({
     mutationFn: async (data: LoginFormValues) => {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password,
-      );
-      return { user: userCredential.user, data: data };
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          data.email,
+          data.password,
+        );
+        return { user: userCredential.user, data: data };
+      } catch (error) {
+        const customMessage = getFirebaseErrorMessage(
+          error as FirebaseError,
+          "Er is iets misgegaan tijdens het aanmaken van je account, probeer het later nog eens",
+        );
+        throw new Error(customMessage);
+      }
     },
     onSuccess: ({ user, data }) => {
       mutateCreateFirestore({ user, data });
@@ -84,8 +95,7 @@ export default function SignUpScreen() {
           {isErrorCreateAuth ||
             (isErrorCreateFirestore && (
               <Alert type="danger" size="small">
-                Er is iets misgegaan tijdens het inloggen, probeer het later nog
-                eens
+                {error?.message ?? "Er is een onbekende fout opgetreden"}
               </Alert>
             ))}
           <form

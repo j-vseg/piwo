@@ -34,10 +34,7 @@ export default function VerificationScreen() {
     isPending: isPendingDelete,
     isError: isErrorDelete,
   } = useMutation({
-    mutationFn: async (password: string | null) => {
-      if (!password) {
-        throw Error;
-      }
+    mutationFn: async (password: string) => {
       deleteUserAccount(user!, password);
     },
   });
