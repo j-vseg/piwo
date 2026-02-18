@@ -28,6 +28,8 @@ export default function HomeScreen() {
     staleTime: 30 * 60 * 1000,
   });
 
+  console.log("user", user);
+
   return (
     <div className="flex flex-col flex-1 gap-4 w-full">
       <div className="w-full bg-pastelOrange">
