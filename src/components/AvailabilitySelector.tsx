@@ -47,10 +47,10 @@ export function AvailabilitySelector({
         queryKey: ["user-availability", occurrenceId, user?.uid],
       });
       queryClient.invalidateQueries({
-        queryKey: ["has-entered-weekly-availability"],
+        queryKey: ["has-entered-weekly-availability", user?.uid],
       });
       queryClient.invalidateQueries({
-        queryKey: ["occurrenceAvailability", occurrenceId, user?.uid],
+        queryKey: ["occurrenceAvailability", occurrenceId],
       });
     },
     onError: (error) => {
