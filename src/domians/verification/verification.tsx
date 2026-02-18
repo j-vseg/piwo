@@ -13,7 +13,7 @@ import { getRandomEventColor } from "@/utils/getRandomEventColor";
 
 export default function VerificationScreen() {
   const { user } = useAuth();
-  const eventColor = getRandomEventColor();
+  const randomEventColor = getRandomEventColor();
 
   const {
     mutate: mutateLogout,
@@ -54,7 +54,7 @@ export default function VerificationScreen() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <div
-        className={`absolute top-0 left-0 w-full h-[40vh] ${eventColor}`}
+        className={`absolute top-0 left-0 w-full h-[40vh] ${randomEventColor}`}
       ></div>
       <div className="flex flex-col gap-4 w-full max-w-3xl -mt-45 relative z-10">
         <div className="bg-white p-6 rounded-3xl flex flex-col gap-6 items-center">
