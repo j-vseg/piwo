@@ -23,22 +23,16 @@ export default function AuthenticatedLayout({
     }
   }, [user, isApproved]);
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingIndicator />
-      </div>
-    );
-  }
-
   if (isApproved === false) {
     return <VerificationScreen />;
   }
 
-  return (
-    <AuthenticatedUserProvider user={user}>
-      {children}
-      <BottomNavigation />
-    </AuthenticatedUserProvider>
-  );
+  if (user) {
+    return (
+      <AuthenticatedUserProvider user={user}>
+        {children}
+        <BottomNavigation />
+      </AuthenticatedUserProvider>
+    );
+  }
 }
