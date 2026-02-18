@@ -15,8 +15,10 @@ export default function AuthenticatedLayout({
   const { user, isApproved, isLoading } = useAuth();
 
   useEffect(() => {
-    deletePastEvents().catch(console.error);
-  }, []);
+    if (user && isApproved) {
+      deletePastEvents().catch(console.error);
+    }
+  }, [user, isApproved]);
 
   if (isLoading) {
     return (
