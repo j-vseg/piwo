@@ -1,7 +1,6 @@
 "use client";
 
 import { BottomNavigation } from "@/components/BottomNavigation";
-import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import VerificationScreen from "@/domians/verification/verification";
 import { deletePastEvents } from "@/services/firebase/events";
@@ -12,21 +11,13 @@ export default function AuthenticatedLayout({
 }: {
   children: ReactNode;
 }) {
-  const { user, isApproved, isLoading } = useAuth();
+  const { user, isApproved } = useAuth();
 
   useEffect(() => {
     if (user && isApproved) {
       deletePastEvents().catch(console.error);
     }
   }, [user, isApproved]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingIndicator />
-      </div>
-    );
-  }
 
   if (user && !isApproved) {
     return <VerificationScreen />;
