@@ -1,6 +1,7 @@
 "use client";
 
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import VerificationScreen from "@/domians/verification/verification";
 import { deletePastEvents } from "@/services/firebase/events";
@@ -19,11 +20,11 @@ export default function AuthenticatedLayout({
     }
   }, [user, isApproved]);
 
-  if (user && !isApproved) {
+  if (user && isApproved === false) {
     return <VerificationScreen />;
   }
 
-  if (user && isApproved) {
+  if (user && isApproved === true) {
     return (
       <>
         {children}
@@ -31,4 +32,10 @@ export default function AuthenticatedLayout({
       </>
     );
   }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <LoadingIndicator />
+    </div>
+  );
 }

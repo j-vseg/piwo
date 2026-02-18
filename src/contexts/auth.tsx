@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   ReactNode,
 } from "react";
@@ -48,11 +49,14 @@ export function AuthProvider({
     return unsubscribe;
   }, []);
 
-  const value: AuthContextType = {
-    user,
-    isApproved: accountData?.isApproved ?? null,
-    isLoading: authLoading || accountLoading,
-  };
+  const value = useMemo<AuthContextType>(
+    () => ({
+      user,
+      isApproved: accountData?.isApproved ?? null,
+      isLoading: authLoading || accountLoading,
+    }),
+    [user, accountData?.isApproved, authLoading, accountLoading]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

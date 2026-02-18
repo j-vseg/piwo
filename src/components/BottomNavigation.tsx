@@ -2,7 +2,8 @@
 
 import { faGear, faHouse } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { label: "Home", icon: faHouse, href: "/home" },
@@ -10,7 +11,6 @@ const navItems = [
 ];
 
 export function BottomNavigation() {
-  const router = useRouter();
   const pathname = usePathname();
 
   return (
@@ -18,11 +18,12 @@ export function BottomNavigation() {
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (
-          <div
+          <Link
             key={item.href}
-            className={`flex flex-col items-center justify-center gap-1 cursor-pointer
+            href={item.href}
+            className={`flex flex-col items-center justify-center gap-1
               ${isActive ? "text-primary" : "text-white"}`}
-            onClick={() => router.push(item.href)}
+            prefetch={true}
           >
             <FontAwesomeIcon
               icon={item.icon}
@@ -34,7 +35,7 @@ export function BottomNavigation() {
             >
               {item.label}
             </span>
-          </div>
+          </Link>
         );
       })}
     </nav>
