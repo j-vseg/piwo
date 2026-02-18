@@ -22,6 +22,7 @@ export function ThisWeek() {
     queryKey: ["this-week-occurrences", endOfTheWeek],
     queryFn: () => fetchAllOccurrences(undefined, endOfTheWeek),
     staleTime: 30 * 60 * 1000,
+    refetchOnMount: false,
   });
 
   const {
@@ -39,6 +40,7 @@ export function ThisWeek() {
         ? () => isUserMissingAvailability(user.uid, thisWeekOccurrences)
         : skipToken,
     staleTime: 30 * 60 * 1000,
+    refetchOnMount: false,
   });
 
   return (
@@ -57,7 +59,7 @@ export function ThisWeek() {
         )}
       </div>
 
-      {isLoadingAvailability || isLoadingThisWeek ? (
+      {!thisWeekOccurrences && (isLoadingThisWeek || isLoadingAvailability) ? (
         <LoadingIndicator />
       ) : isErrorThisWeek ? (
         <ErrorIndicator type="small">

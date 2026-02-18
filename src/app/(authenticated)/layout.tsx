@@ -23,22 +23,22 @@ export default function AuthenticatedLayout({
     }
   }, [user, isApproved]);
 
-  if (user && isApproved === false) {
-    return <VerificationScreen />;
-  }
-
-  if (user && isApproved === true) {
+  if (!user) {
     return (
-      <AuthenticatedUserProvider user={user}>
-        {children}
-        <BottomNavigation />
-      </AuthenticatedUserProvider>
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingIndicator />
+      </div>
     );
   }
 
+  if (isApproved === false) {
+    return <VerificationScreen />;
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <LoadingIndicator />
-    </div>
+    <AuthenticatedUserProvider user={user}>
+      {children}
+      <BottomNavigation />
+    </AuthenticatedUserProvider>
   );
 }

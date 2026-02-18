@@ -22,6 +22,7 @@ export default function HomeScreen() {
     queryKey: ["occurrences-grouped", upcomingMonday],
     queryFn: () => fetchAllOccurrencesGroupedByDate(upcomingMonday),
     staleTime: 30 * 60 * 1000,
+    refetchOnMount: false,
   });
 
   return (

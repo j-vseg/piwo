@@ -37,6 +37,8 @@ export function AuthProvider({
     queryKey: ["account", user?.uid],
     queryFn: user ? async () => getAccount(user.uid) : skipToken,
     staleTime: 30 * 60 * 1000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
