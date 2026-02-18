@@ -4,14 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import { signOut } from "firebase/auth";
 import { auth } from "@/services/firebase/firebase";
 import { Alert } from "@/components/Alert";
-import { useAuth } from "@/contexts/auth";
+import { useAuthenticatedUser } from "@/contexts/auth";
 import ListTile from "@/components/ListTile";
 import { useRouter } from "next/navigation";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen";
 
 export default function SettingsScreen() {
-  const { user } = useAuth();
+  const user = useAuthenticatedUser();
   const { replace } = useRouter();
 
   const {
@@ -23,7 +23,7 @@ export default function SettingsScreen() {
       if (!password) {
         throw Error;
       }
-      deleteUserAccount(user!, password);
+      deleteUserAccount(user, password);
     },
     onSuccess: () => {
       replace("/"); // Redirect to home after logout

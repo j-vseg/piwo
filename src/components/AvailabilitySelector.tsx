@@ -1,16 +1,11 @@
-import {
-  skipToken,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getUserAvailability,
   setUserAvailability,
 } from "@/services/firebase/availability";
 import { Status } from "@/types/status";
 import { LoadingIndicator } from "./LoadingIndicator";
-import { useAuth } from "@/contexts/auth";
+import { useAuthenticatedUser } from "@/contexts/auth";
 import { ErrorIndicator } from "./ErrorIndicator";
 import { Category } from "@/types/category";
 import { getEventColor } from "@/utils/getEventColor";
@@ -24,14 +19,12 @@ export function AvailabilitySelector({
   occurrenceId,
   occurrenceCategory,
 }: AvailabilitySelectorProps) {
-  const { user } = useAuth();
+  const user = useAuthenticatedUser();
   const queryClient = useQueryClient();
 
   const { data: availability } = useQuery({
-    queryKey: ["user-availability", occurrenceId, user?.uid],
-    queryFn: user
-      ? () => getUserAvailability(occurrenceId, user.uid)
-      : skipToken,
+    queryKey: ["user-availability", occurrenceId, user.uid],
+    queryFn: () => getUserAvailability(occurrenceId, user.uid),
     staleTime: 30 * 60 * 1000,
   });
 
@@ -41,26 +34,22 @@ export function AvailabilitySelector({
     mutate: updateMutate,
   } = useMutation({
     mutationFn: (status?: Status) =>
-      setUserAvailability(occurrenceId, user!.uid, status),
+      setUserAvailability(occurrenceId, user.uid, status),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["user-availability", occurrenceId, user?.uid],
+        queryKey: ["user-availability", occurrenceId, user.uid],
       });
       queryClient.invalidateQueries({
         queryKey: ["has-entered-weekly-availability"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["occurrenceAvailability", occurrenceId, user?.uid],
+        queryKey: ["occurrenceAvailability", occurrenceId, user.uid],
       });
     },
     onError: (error) => {
       console.log(error);
     },
   });
-
-  if (!user) {
-    return <ErrorIndicator type="small">Je bent niet ingelogd</ErrorIndicator>;
-  }
 
   if (updateIsPending) {
     return <LoadingIndicator />;

@@ -2,7 +2,10 @@
 
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { useAuth } from "@/contexts/auth";
+import {
+  AuthenticatedUserProvider,
+  useAuth,
+} from "@/contexts/auth";
 import VerificationScreen from "@/domians/verification/verification";
 import { deletePastEvents } from "@/services/firebase/events";
 import { ReactNode, useEffect } from "react";
@@ -26,10 +29,10 @@ export default function AuthenticatedLayout({
 
   if (user && isApproved === true) {
     return (
-      <>
+      <AuthenticatedUserProvider user={user}>
         {children}
         <BottomNavigation />
-      </>
+      </AuthenticatedUserProvider>
     );
   }
 

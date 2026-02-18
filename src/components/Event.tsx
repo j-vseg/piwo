@@ -3,20 +3,16 @@ import { AvailabilitySelector } from "./AvailabilitySelector";
 import { EventOccurrence } from "@/types/eventOccurence";
 import { format, isSameDay } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth";
 
 export function Event({ occurrence }: { occurrence: EventOccurrence }) {
   const { push } = useRouter();
-  const { user } = useAuth();
 
   return (
     <div
       key={occurrence.id}
       className="rounded-2xl p-4 bg-white"
-      onClick={
-        user
-          ? () => push(`/activity?id=${encodeURIComponent(occurrence.id)}`)
-          : undefined
+      onClick={() =>
+        push(`/activity?id=${encodeURIComponent(occurrence.id)}`)
       }
     >
       <h4 className="font-semibold font-poppins!">{occurrence.name}</h4>

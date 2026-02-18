@@ -5,12 +5,12 @@ import { Event } from "@/components/Event";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { endOfWeek, startOfToday } from "date-fns";
 import { ErrorIndicator } from "@/components/ErrorIndicator";
-import { useAuth } from "@/contexts/auth";
+import { useAuthenticatedUser } from "@/contexts/auth";
 import { isUserMissingAvailability } from "@/services/firebase/availability";
 import { useMemo } from "react";
 
 export function ThisWeek() {
-  const { user } = useAuth();
+  const user = useAuthenticatedUser();
   const endOfTheWeek = useMemo(() => {
     return endOfWeek(startOfToday(), { weekStartsOn: 1 });
   }, []);
@@ -20,9 +20,7 @@ export function ThisWeek() {
     isError: isErrorThisWeek,
   } = useQuery({
     queryKey: ["this-week-occurrences", endOfTheWeek],
-    queryFn: user
-      ? () => fetchAllOccurrences(undefined, endOfTheWeek)
-      : skipToken,
+    queryFn: () => fetchAllOccurrences(undefined, endOfTheWeek),
     staleTime: 30 * 60 * 1000,
   });
 
@@ -33,11 +31,11 @@ export function ThisWeek() {
   } = useQuery({
     queryKey: [
       "has-entered-weekly-availability",
-      user?.uid,
+      user.uid,
       thisWeekOccurrences,
     ],
     queryFn:
-      user && thisWeekOccurrences
+      thisWeekOccurrences
         ? () => isUserMissingAvailability(user.uid, thisWeekOccurrences)
         : skipToken,
     staleTime: 30 * 60 * 1000,

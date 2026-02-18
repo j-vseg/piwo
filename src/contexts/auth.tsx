@@ -68,3 +68,31 @@ export const useAuth = () => {
   }
   return context;
 };
+
+// Only provided by the authenticated layout when user && isApproved.
+// Use this inside (authenticated) routes so you never wait for "user" again.
+const AuthenticatedUserContext = createContext<User | undefined>(undefined);
+
+export function AuthenticatedUserProvider({
+  user,
+  children,
+}: {
+  user: User;
+  children: ReactNode;
+}) {
+  return (
+    <AuthenticatedUserContext.Provider value={user}>
+      {children}
+    </AuthenticatedUserContext.Provider>
+  );
+}
+
+export function useAuthenticatedUser(): User {
+  const user = useContext(AuthenticatedUserContext);
+  if (user === undefined) {
+    throw new Error(
+      "useAuthenticatedUser must be used within AuthenticatedUserProvider (i.e. inside the authenticated layout)"
+    );
+  }
+  return user;
+}

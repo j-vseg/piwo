@@ -2,18 +2,16 @@ import { AvailabilitySelector } from "@/components/AvailabilitySelector";
 import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen";
 import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
-import { useAuth } from "@/contexts/auth";
 import { getOccurrenceAvailability } from "@/services/firebase/availability";
 import { getOccurrenceById } from "@/services/firebase/events";
 import { Status } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useState } from "react";
 
 export function ActivityPage({ id }: { id: string }) {
-  const { user } = useAuth();
   const [selected, setSelected] = useState(Status.Present);
   const {
     data: occurrence,
@@ -21,7 +19,7 @@ export function ActivityPage({ id }: { id: string }) {
     isError: isErrorOccurrence,
   } = useQuery({
     queryKey: ["occurrence", id],
-    queryFn: user ? () => getOccurrenceById(id) : skipToken,
+    queryFn: () => getOccurrenceById(id),
   });
   const {
     data: availability,
@@ -29,7 +27,7 @@ export function ActivityPage({ id }: { id: string }) {
     isError: isErrorAvailability,
   } = useQuery({
     queryKey: ["occurrenceAvailability", id],
-    queryFn: user ? () => getOccurrenceAvailability(id) : skipToken,
+    queryFn: () => getOccurrenceAvailability(id),
     staleTime: 30 * 60 * 1000,
   });
 
