@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Piwo
+**Piwo** is a Next.js web app I built in my free time for a hobby group I'm part of. It helps everyone easily keep track of their availability for group activities.
 
-## Getting Started
+## ✨ Features
+- 🗓️ Track member availability for upcoming events
+- 🔐 Firebase Authentication (Email/Password)
+- ☁️ Cloud Firestore for real-time data storage
+- 💻 Built with Next.js and React
 
-First, run the development server:
+## 🚀 Tech Stack
+- **Next.js**
+- **Firebase Authentication**
+- **Cloud Firestore**
+
+## 🔧 Getting Started
+To run this project locally:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone https://github.com/j-vseg/piwo.git
+cd piwo
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Make sure to:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Set up Firebase for Web in your Firebase Console
+- Configure your Firebase credentials (e.g. environment variables or Firebase config)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
+```bash
+src/
+  ├── app/           # Next.js App Router pages and layouts
+  ├── components/    # Reusable UI components
+  ├── contexts/      # React contexts (auth, query provider, etc.)
+  ├── domians/       # Feature modules (activity, home, login, onboarding, settings, sign-up)
+  ├── services/      # Firebase and other API integrations
+  ├── types/         # TypeScript types and models
+  └── utils/         # Helper functions
+README.md            # This file
+```
 
-## Learn More
+## 🤝 Contributions
+This project was built for personal use, but feel free to fork it or suggest improvements!
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📃 License
+MIT – use it freely.
