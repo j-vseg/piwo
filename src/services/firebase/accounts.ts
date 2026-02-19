@@ -98,7 +98,7 @@ export async function deleteUserAccount(
     
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
-      "Er is iets misgegaan tijdens het inloggen, probeer het later nog eens",
+      "Er is iets misgegaan tijdens het verwijderen van je account, probeer het later nog eens",
     );
     throw new Error(customMessage);
   }

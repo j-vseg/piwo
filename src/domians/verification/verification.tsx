@@ -27,9 +27,10 @@ export default function VerificationScreen() {
     mutate: mutateDelete,
     isPending: isPendingDelete,
     isError: isErrorDelete,
+    error: errorDelete,
   } = useMutation({
     mutationFn: async (password: string) => {
-      deleteUserAccount(user!, password);
+      await deleteUserAccount(user!, password);
     },
   });
 
@@ -64,8 +65,8 @@ export default function VerificationScreen() {
           )}
           {isErrorDelete && (
             <Alert type="danger" size="small">
-              Er is iets misgegaan tijdens het verwijderen, probeer het later
-              nog eens
+              {errorDelete?.message ??
+                "Er is iets misgegaan tijdens het verwijderen, probeer het later nog eens"}
             </Alert>
           )}
           <Lottie animationData={waiting} className="w-80" loop />

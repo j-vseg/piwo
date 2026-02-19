@@ -18,12 +18,13 @@ export default function SettingsScreen() {
     mutate: mutateDelete,
     isPending: isPendingDelete,
     isError: isErrorDelete,
+    error: errorDelete,
   } = useMutation({
     mutationFn: async (password: string | null) => {
       if (!password) {
-        throw Error;
+        throw new Error("Wachtwoord is verplicht");
       }
-      deleteUserAccount(user!, password);
+      await deleteUserAccount(user!, password);
     },
     onSuccess: () => {
       replace("/"); // Redirect to home after logout
@@ -58,35 +59,37 @@ export default function SettingsScreen() {
 
   return (
     <BaseDetailScreen heightClass="h-27" title="Instellingen" canGoBack={false}>
-      <div className="flex flex-col p-4 -mt-8">
-        {isErrorLogout && (
-          <Alert type="danger" size="small">
-            Er is iets misgegaan tijdens het uitloggen, probeer het later nog
-            eens
-          </Alert>
-        )}
-        {isErrorDelete && (
-          <Alert type="danger" size="small">
-            Er is iets misgegaan tijdens het verwijderen, probeer het later nog
-            eens
-          </Alert>
-        )}
+      <div className="flex flex-col gap-4 p-4 -mt-8">
         <div className="flex flex-col gap-2">
-          <h3 className="ml-2">Account</h3>
-          <div className="rounded-lg overflow-hidden">
-            <ListTile
-              onClick={handleLogout}
-              disabled={!user || isPendingLogout}
-            >
-              Uitloggen
-            </ListTile>
-            <ListTile
-              onClick={handleDeleteAccount}
-              disabled={!user || isPendingDelete}
-              className="text-error!"
-            >
-              Verwijder account
-            </ListTile>
+          {isErrorLogout && (
+            <Alert type="danger" size="small">
+              Er is iets misgegaan tijdens het uitloggen, probeer het later nog
+              eens
+            </Alert>
+          )}
+          {isErrorDelete && (
+            <Alert type="danger" size="small">
+              {errorDelete?.message ??
+                "Er is iets misgegaan tijdens het verwijderen, probeer het later nog eens"}
+            </Alert>
+          )}
+          <div className="flex flex-col gap-2">
+            <h3 className="ml-2">Account</h3>
+            <div className="rounded-lg overflow-hidden">
+              <ListTile
+                onClick={handleLogout}
+                disabled={!user || isPendingLogout}
+              >
+                Uitloggen
+              </ListTile>
+              <ListTile
+                onClick={handleDeleteAccount}
+                disabled={!user || isPendingDelete}
+                className="text-error!"
+              >
+                Verwijder account
+              </ListTile>
+            </div>
           </div>
         </div>
       </div>

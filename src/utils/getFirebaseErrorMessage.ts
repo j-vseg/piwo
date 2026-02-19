@@ -6,8 +6,6 @@ export const getFirebaseErrorMessage = (
 ): string => {
   const errorCode = error.code;
 
-  console.log(errorCode);
-
   switch (errorCode) {
     // Authentication errors
     case "auth/invalid-credential":
