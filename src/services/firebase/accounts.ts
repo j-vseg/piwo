@@ -13,6 +13,8 @@ import {
   reauthenticateWithCredential,
   User,
 } from "firebase/auth";
+import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
+import { FirebaseError } from "firebase/app";
 
 export async function getAllAccountsDisplayNames(): Promise<
   Record<string, string>
@@ -93,6 +95,11 @@ export async function deleteUserAccount(
     console.log("Deleted user account");
   } catch (error) {
     console.error("Error deleting user account:", error);
-    throw error;
+    
+    const customMessage = getFirebaseErrorMessage(
+      error as FirebaseError,
+      "Er is iets misgegaan tijdens het verwijderen van je account, probeer het later nog eens",
+    );
+    throw new Error(customMessage);
   }
 }

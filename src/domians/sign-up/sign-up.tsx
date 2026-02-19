@@ -4,23 +4,23 @@ import { Alert } from "@/components/Alert";
 import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import { createUser } from "@/services/firebase/accounts";
-import { auth } from "@/services/firebase/firebase";
+import { createAuthUser, createFirestoreUser } from "@/services/firebase/auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUserWithEmailAndPassword, User } from "firebase/auth";
+import { User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 
-type LoginFormValues = {
+type SignUpFormData = {
   firstname: string;
   lastname: string;
   email: string;
   password: string;
 };
 
+
 export default function SignUpScreen() {
   const { replace } = useRouter();
-  const methods = useForm<LoginFormValues>({
+  const methods = useForm<SignUpFormData>({
     defaultValues: {
       firstname: "",
       lastname: "",
@@ -33,15 +33,10 @@ export default function SignUpScreen() {
     mutate: mutateCreateAuth,
     isPending: isPendingCreateAuth,
     isError: isErrorCreateAuth,
+    error: errorCreateAuth,
   } = useMutation({
-    mutationFn: async (data: LoginFormValues) => {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password,
-      );
-      return { user: userCredential.user, data: data };
-    },
+    mutationFn: (data: SignUpFormData) =>
+      createAuthUser(data.email, data.password),
     onSuccess: ({ user, data }) => {
       mutateCreateFirestore({ user, data });
     },
@@ -52,16 +47,12 @@ export default function SignUpScreen() {
     isSuccess: isSuccessCreateFirestore,
     isPending: isPendingCreateFirestore,
     isError: isErrorCreateFirestore,
+    error: errorCreateFirestore,
   } = useMutation({
-    mutationFn: async ({
-      user,
-      data,
-    }: {
+    mutationFn: (data: {
       user: User;
-      data: LoginFormValues;
-    }) => {
-      await createUser(user.uid, data.firstname, data.lastname);
-    },
+      data: { email: string; password: string };
+    }) => createFirestoreUser(data.user, data.data.email, data.data.password),
     onSuccess: () => {
       queryClient.clear();
       setTimeout(() => replace("/"), 3000);
@@ -81,13 +72,13 @@ export default function SignUpScreen() {
               </span>
             </Alert>
           )}
-          {isErrorCreateAuth ||
-            (isErrorCreateFirestore && (
-              <Alert type="danger" size="small">
-                Er is iets misgegaan tijdens het inloggen, probeer het later nog
-                eens
-              </Alert>
-            ))}
+          {(isErrorCreateAuth || isErrorCreateFirestore) && (
+            <Alert type="danger" size="small">
+              {errorCreateAuth?.message ??
+                errorCreateFirestore?.message ??
+                "Er is een onbekende fout opgetreden"}
+            </Alert>
+          )}
           <form
             onSubmit={methods.handleSubmit((data) => mutateCreateAuth(data))}
             className="flex flex-col gap-3"
