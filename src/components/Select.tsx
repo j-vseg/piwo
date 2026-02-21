@@ -2,7 +2,7 @@
 
 import { Category } from "@/types/category";
 import { getEventColor } from "@/utils/getEventColor";
-import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useId } from "react";
 
@@ -13,6 +13,7 @@ type SelectProps = {
   error?: string;
   required?: boolean;
   value?: string;
+  variant?: "category" | "recurrence";
 };
 
 export default function Select({
@@ -21,7 +22,8 @@ export default function Select({
   label,
   value,
   error,
-  required = false,
+  required = true,
+  variant = "category",
 }: SelectProps) {
   const id = useId();
   const _onChange = useCallback(
@@ -42,14 +44,31 @@ export default function Select({
       <div
         id={id}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="flex flex-row gap-2 overflow-x-auto my-2 pb-4 items-center"
+        className="flex flex-row gap-2 overflow-x-auto my-0.5 items-center"
       >
+        {required == false && (
+          <button
+            onClick={() => _onChange()}
+            type="button"
+            aria-label={`Deselect all`}
+          >
+            <FontAwesomeIcon
+              icon={faXmark}
+              className="max-h-4!"
+              aria-hidden="true"
+            />
+          </button>
+        )}
         {options.map((option) => (
           <button
             key={option}
             type="button"
             className={`px-4 py-1 text-sm rounded-2xl break-keep whitespace-nowrap ${
-              option === value ? getEventColor(option as Category) : "bg-white"
+              option === value
+                ? variant === "recurrence"
+                  ? "bg-pastelBlue"
+                  : getEventColor(option as Category)
+                : "bg-white"
             }`}
             onClick={() => _onChange(option)}
           >

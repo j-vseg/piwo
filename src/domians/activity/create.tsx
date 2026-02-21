@@ -1,13 +1,20 @@
 "use client";
 
+import { Alert } from "@/components/Alert";
 import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen";
+import Button from "@/components/Button";
+import { ErrorIndicator } from "@/components/ErrorIndicator";
 import Input from "@/components/Input";
 import Select from "@/components/Select";
+import { createEvent } from "@/services/firebase/event";
 import { Category } from "@/types/category";
+import { Recurrence } from "@/types/recurrence";
 import { Status } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
+import { useMutation } from "@tanstack/react-query";
 import { addHours, format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
+import { useRouter } from "next/navigation";
 import { ChangeEvent } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
@@ -15,23 +22,44 @@ type ActivityFormData = {
   name: string;
   startTime: Date;
   endTime: Date;
+  recurrence?: Recurrence;
   category: Category;
 };
-
-const defaultFormValues: ActivityFormData = {
-  name: "",
-  startTime: new Date(),
-  endTime: addHours(new Date(), 1),
-  category: Category.Group,
-};
+const now = new Date();
+function getDefaultFormValues(): ActivityFormData {
+  return {
+    name: "",
+    startTime: now,
+    endTime: addHours(now, 1),
+    recurrence: undefined,
+    category: Category.Group,
+  };
+}
 
 export function CreateActivityPage() {
+  const { push } = useRouter();
   const methods = useForm<ActivityFormData>({
-    defaultValues: defaultFormValues,
+    defaultValues: getDefaultFormValues(),
   });
-  const [name, startTime, endTime, category] = useWatch({
+  const [name, startTime, endTime, category, recurrence] = useWatch({
     control: methods.control,
-    name: ["name", "startTime", "endTime", "category"],
+    name: ["name", "startTime", "endTime", "category", "recurrence"],
+  });
+  const { mutate, isSuccess, isPending, isError } = useMutation({
+    mutationFn: async (data: ActivityFormData) => {
+      return await createEvent(
+        data.name,
+        data.category,
+        data.startTime,
+        data.endTime,
+        data.recurrence,
+      );
+    },
+    onSuccess: (eventId) => {
+      setTimeout(() => {
+        push(`/activity?id=${encodeURIComponent(eventId)}`);
+      }, 3000);
+    },
   });
 
   return (
@@ -45,7 +73,9 @@ export function CreateActivityPage() {
           <div>
             <h2>{name || "???"}</h2>
             <p className="text-sm text-gray-500">
-              {`${format(startTime, "d LLLL HH:mm", { locale: nl })} - ${format(endTime, isSameDay(endTime, startTime) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
+              {startTime &&
+                endTime &&
+                `${format(startTime, "d LLLL HH:mm", { locale: nl })} - ${format(endTime, isSameDay(endTime, startTime) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
             </p>
           </div>
           <div className="flex justify-between">
@@ -62,7 +92,23 @@ export function CreateActivityPage() {
         </div>
         <div className="flex flex-col gap-4">
           <h2>Creëer activiteit</h2>
-          <form onSubmit={() => {}} className="flex flex-col gap-3">
+          {isSuccess && (
+            <Alert type="success" size="small">
+              Activiteit succesvol aangemaakt!{" "}
+              <span className="text-success font-semibold">
+                Navigeren naar activiteit detail pagina...
+              </span>
+            </Alert>
+          )}
+          {isError && (
+            <Alert type="danger" size="small">
+              Er is een fout opgetreden bij het aanmaken van de activiteit
+            </Alert>
+          )}
+          <form
+            onSubmit={methods.handleSubmit((data) => mutate(data))}
+            className="flex flex-col gap-3"
+          >
             <Controller
               name="name"
               control={methods.control}
@@ -90,7 +136,7 @@ export function CreateActivityPage() {
               rules={{
                 required: "Start tijd kan niet leeg zijn",
                 validate: (value) => {
-                  if (value < new Date()) {
+                  if (value < now) {
                     return "Start tijd moet in de toekomst zijn";
                   }
                   return true;
@@ -127,10 +173,10 @@ export function CreateActivityPage() {
               rules={{
                 required: "Eind tijd kan niet leeg zijn",
                 validate: (value) => {
-                  if (value < new Date()) {
+                  if (value < now) {
                     return "Eind tijd moet in de toekomst zijn";
                   }
-                  if (value < methods.getValues("startTime")) {
+                  if (value < startTime) {
                     return "Eind tijd moet na start tijd zijn";
                   }
                   return true;
@@ -162,6 +208,31 @@ export function CreateActivityPage() {
               )}
             />
             <Controller
+              name="recurrence"
+              control={methods.control}
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
+                <div className="flex flex-col gap-1">
+                  <Select
+                    label="Herhaling"
+                    options={Object.values(Recurrence)}
+                    error={error?.message}
+                    required={false}
+                    onChange={onChange}
+                    value={value}
+                    variant="recurrence"
+                  />
+                  <ErrorIndicator type="small">
+                    {recurrence
+                      ? "Deze activiteit wordt herhaald"
+                      : "Deze activiteit wordt niet herhaald"}
+                  </ErrorIndicator>
+                </div>
+              )}
+            />
+            <Controller
               name="category"
               control={methods.control}
               rules={{
@@ -175,12 +246,12 @@ export function CreateActivityPage() {
                   label="Categorie"
                   options={Object.values(Category)}
                   error={error?.message}
-                  required
                   onChange={onChange}
                   value={value}
                 />
               )}
             />
+            <Button isPending={isPending}>Creëer activiteit</Button>
           </form>
         </div>
       </div>
