@@ -12,19 +12,21 @@ import { fetchAllEvents } from "@/services/firebase/events";
 import { Category } from "@/types/category";
 import { Recurrence } from "@/types/recurrence";
 import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
-import { format, isSameDay } from "date-fns";
+import { addHours, format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Event } from "@/types/event";
 import { getEventColor } from "@/utils/getEventColor";
 
 type ActivityFormData = {
   name: string;
-  recurrence?: Recurrence;
+  startTime: Date;
+  endTime: Date;
   category: Category;
 };
+const now = new Date();
 
 export function UpdateActivityPage() {
   const { push } = useRouter();
@@ -44,14 +46,15 @@ export function UpdateActivityPage() {
   const defaultValues = useMemo(() => {
         return {
           name: selected?.name ?? "",
-          recurrence: selected?.recurrence ?? undefined,
+          startTime: selected?.startDate.toDate() ?? now,
+          endTime: selected?.endDate.toDate() ?? now,
           category: selected?.category ?? Category.Group,
         };
       }, [selected]);
   const methods = useForm<ActivityFormData>({ defaultValues });
-  const [recurrence] = useWatch({
+  const [startTime] = useWatch({
     control: methods.control,
-    name: ["recurrence"],
+    name: ["startTime"],
   });
   const { mutate, isSuccess, isPending, isError: isErrorUpdate } = useMutation({
     mutationFn: async (data: ActivityFormData) => {
@@ -111,6 +114,12 @@ export function UpdateActivityPage() {
         )}
         <div className="flex flex-col gap-4">
           <h2>Wijzig activiteit</h2>
+          {selected?.recurrence && (
+            <Alert type="info" size="small">
+              Verandering aan deze activiteit worden toegepast op de hele reeks
+              van deze activiteit.
+            </Alert>
+          )}
           {isSuccess && (
             <Alert type="success" size="small">
               Activiteit succesvol gewijzigd!{" "}
@@ -149,31 +158,89 @@ export function UpdateActivityPage() {
                 />
               )}
             />
-            <Controller
-              name="recurrence"
-              control={methods.control}
-              render={({
-                field: { value, onChange },
-                fieldState: { error },
-              }) => (
-                <div className="flex flex-col gap-1">
-                  <Select
-                    label="Herhaling"
-                    options={Object.values(Recurrence)}
+            {!selected?.recurrence && (
+              <Controller
+                name="startTime"
+                control={methods.control}
+                rules={{
+                  required: "Start tijd kan niet leeg zijn",
+                  validate: (value) => {
+                    if (value && value < now) {
+                      return "Start tijd moet in de toekomst zijn";
+                    }
+                    return true;
+                  },
+                }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    id="startTime"
+                    label="Start tijd"
+                    type="datetime-local"
                     error={error?.message}
-                    required={false}
-                    onChange={onChange}
-                    value={value}
-                    variant="recurrence"
+                    placeholder="Start tijd"
+                    value={value ? format(value, "yyyy-MM-dd'T'HH:mm") : ""}
+                    disabled={!!selected?.recurrence}
+                    onChange={(
+                      strOrEv: string | ChangeEvent<HTMLInputElement>,
+                    ) => {
+                      const newStartTime = new Date(
+                        typeof strOrEv === "string"
+                          ? strOrEv
+                          : strOrEv.target.value,
+                      );
+                      onChange(newStartTime);
+                      methods.setValue("endTime", addHours(newStartTime, 1));
+                    }}
                   />
-                  <ErrorIndicator type="small">
-                    {recurrence
-                      ? "Deze activiteit wordt herhaald"
-                      : "Deze activiteit wordt niet herhaald"}
-                  </ErrorIndicator>
-                </div>
-              )}
-            />
+                )}
+              />
+            )}
+            {!selected?.recurrence && (
+              <Controller
+                name="endTime"
+                control={methods.control}
+                rules={{
+                  required: "Eind tijd kan niet leeg zijn",
+                  validate: (value) => {
+                    if (value && value < now) {
+                      return "Eind tijd moet in de toekomst zijn";
+                    }
+                    if (value && startTime && value < startTime) {
+                      return "Eind tijd moet na start tijd zijn";
+                    }
+                    return true;
+                  },
+                }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    id="endTime"
+                    label="Eind tijd"
+                    type="datetime-local"
+                    error={error?.message}
+                    placeholder="Eind tijd"
+                    value={value ? format(value, "yyyy-MM-dd'T'HH:mm") : ""}
+                    disabled={!!selected?.recurrence}
+                    onChange={(
+                      strOrEv: string | ChangeEvent<HTMLInputElement>,
+                    ) => {
+                      onChange(
+                        new Date(
+                          typeof strOrEv === "string"
+                            ? strOrEv
+                            : strOrEv.target.value,
+                        ),
+                      );
+                    }}
+                  />
+                )}
+              />
+            )}
             <Controller
               name="category"
               control={methods.control}
@@ -193,7 +260,7 @@ export function UpdateActivityPage() {
                 />
               )}
             />
-            <Button isPending={isPending}>Wijzig activiteit</Button>
+            <Button isPending={isPending} disabled={!methods.formState.isDirty}>Wijzig activiteit</Button>
           </form>
         </div>
       </div>

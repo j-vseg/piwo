@@ -12,7 +12,7 @@ export function Alert({ type, children, size = "large" }: AlertProps) {
   if (size === "small") {
     return (
       <div
-        className={`flex gap-4 items-center px-4 py-2 rounded-lg ${type === "danger" ? "bg-orangeRed" : type === "success" ? "bg-background-success" : "bg-background-orange"}`}
+        className={`flex gap-4 items-center px-4 py-2 rounded-lg ${type === "danger" ? "bg-orangeRed" : type === "success" ? "bg-background-success" : "bg-info"}`}
       >
         <FontAwesomeIcon
           icon={type === "success" ? faCheck : faExclamation}

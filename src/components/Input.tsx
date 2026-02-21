@@ -14,6 +14,7 @@ export default function Input({
   required = true,
   error,
   value,
+  disabled,
   ...inputProps
 }: InputProps) {
   const id = useId();
@@ -35,7 +36,10 @@ export default function Input({
   return (
     <div>
       {label && (
-        <label className="text-[12px]!" htmlFor={id}>
+        <label
+          className={`text-[12px]! ${disabled && "text-gray-500"}`}
+          htmlFor={id}
+        >
           {label}
           {required && "*"}
         </label>
@@ -44,9 +48,10 @@ export default function Input({
         <input
           id={id}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`m-0 py-2 text-[14px]! break-all border-b w-full ${error && "border-error!"}`}
+          className={`m-0 py-2 text-[14px]! break-all border-b w-full ${error && "border-error!"} ${disabled && "text-gray-500"}`}
           value={value}
           onChange={onInputChange}
+          disabled={disabled}
           {...inputProps}
         />
         {error && (
