@@ -60,6 +60,9 @@ export function CreateActivityPage() {
         push(`/activity?id=${encodeURIComponent(eventId)}`);
       }, 3000);
     },
+    onError: (error) => {
+      console.error(error);
+    },
   });
 
   return (
@@ -72,7 +75,7 @@ export function CreateActivityPage() {
         <div className="bg-white p-4 rounded-3xl flex flex-col gap-4">
           <div>
             <h2>{name || "???"}</h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500" suppressHydrationWarning>
               {startTime &&
                 endTime &&
                 `${format(startTime, "d LLLL HH:mm", { locale: nl })} - ${format(endTime, isSameDay(endTime, startTime) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}

@@ -10,7 +10,7 @@ export async function createEvent(name: string, category: Category, startDate: D
     category: category,
     startDate: Timestamp.fromDate(startDate),
     endDate: Timestamp.fromDate(endDate),
-    ecurrence: recurrence === null || recurrence && recurrence.length === 0 ? null : recurrence ,
+    recurrence: !recurrence || (typeof recurrence === "string" && recurrence.length === 0) ? null : recurrence,
   });
 
   return docRef.id;
