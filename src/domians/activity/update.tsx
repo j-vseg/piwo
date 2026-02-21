@@ -11,7 +11,12 @@ import { useAuth } from "@/contexts/auth";
 import { fetchAllEvents } from "@/services/firebase/events";
 import { Category } from "@/types/category";
 import { Recurrence } from "@/types/recurrence";
-import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { addHours, format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useRouter } from "next/navigation";
@@ -19,6 +24,7 @@ import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Event } from "@/types/event";
 import { getEventColor } from "@/utils/getEventColor";
+import { updateEvent } from "@/services/firebase/event";
 
 type ActivityFormData = {
   name: string;
@@ -31,6 +37,7 @@ const now = new Date();
 export function UpdateActivityPage() {
   const { push } = useRouter();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Event | null>(null);
   const {
       data: events,
@@ -58,11 +65,28 @@ export function UpdateActivityPage() {
   });
   const { mutate, isSuccess, isPending, isError: isErrorUpdate } = useMutation({
     mutationFn: async (data: ActivityFormData) => {
-      return;
+        if (!selected?.id) {
+          throw new Error("Selecteer een activiteit om te wijzigen");
+        }
+        return await updateEvent(selected.id, data.name, data.category, data.startTime, data.endTime);
     },
-    onSuccess: (eventId) => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["all-events"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["occurrence", selected?.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["this-week-occurrences"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["occurrences-grouped"],
+      });
       setTimeout(() => {
-        push(`/activity?id=${encodeURIComponent("yes")}`);
+        if (selected?.id) {
+          push(`/activity?id=${encodeURIComponent(selected.id)}`);
+        }
       }, 3000);
     },
     onError: (error) => {
@@ -104,7 +128,7 @@ export function UpdateActivityPage() {
                 <h3 className="font-semibold">{event.name}</h3>
                 <p className="text-sm text-gray-500">
                   {event.recurrence &&
-                    `${event.recurrence === Recurrence.Daily ? "Dagelijks" : "Elke"} ${format(event.startDate.toDate(), `${event.recurrence === Recurrence.Weekly ? "EEEE" : "do"} HH:mm`, { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
+                    `${event.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(event.startDate.toDate(), `${event.recurrence === Recurrence.Weekly ? "EEEE" : "do"} HH:mm`, { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
                   {!event.recurrence &&
                     `${format(event.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
                 </p>
@@ -260,7 +284,9 @@ export function UpdateActivityPage() {
                 />
               )}
             />
-            <Button isPending={isPending} disabled={!methods.formState.isDirty}>Wijzig activiteit</Button>
+            <Button isPending={isPending} disabled={!methods.formState.isDirty}>
+              Wijzig activiteit
+            </Button>
           </form>
         </div>
       </div>
