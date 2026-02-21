@@ -68,10 +68,10 @@ export function UpdateActivityPage() {
   });
 
     useEffect(() => {
-      if (!methods.formState.isDirty) {
+      if (selected || !methods.formState.isDirty) {
         methods.reset(defaultValues);
       }
-    }, [defaultValues, methods]);
+    }, [selected, defaultValues, methods]);
 
   return (
     <BaseDetailScreen
@@ -95,10 +95,10 @@ export function UpdateActivityPage() {
             {events.map((event) => (
               <div
                 key={event.id}
-                className={`flex flex-col gap-2 p-3 rounded-2xl min-w-60 border-5 border-white ${selected?.id === event.id ? `${getEventColor(event.category)}` : "bg-white"}`}
+                className={`flex flex-col gap-1 p-3 pt-2 rounded-2xl min-w-60 border-5 border-white ${selected?.id === event.id ? `${getEventColor(event.category)}` : "bg-white"}`}
                 onClick={() => setSelected(event as Event)}
               >
-                <h4 className="font-semibold font-poppins!">{event.name}</h4>
+                <h3 className="font-semibold">{event.name}</h3>
                 <p className="text-sm text-gray-500">
                   {event.recurrence &&
                     `${event.recurrence === Recurrence.Daily ? "Dagelijks" : "Elke"} ${format(event.startDate.toDate(), `${event.recurrence === Recurrence.Weekly ? "EEEE" : "do"} HH:mm`, { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
