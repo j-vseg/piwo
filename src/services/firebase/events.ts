@@ -19,6 +19,14 @@ type GroupedOccurrences = {
   occurrences: EventOccurrence[];
 }[];
 
+export async function fetchAllEvents(): Promise<Event[]> {
+  const snapshot = await getDocs(eventsCollection);
+  const events = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Event));
+  return events.sort(
+    (a, b) => a.startDate.toMillis() - b.startDate.toMillis(),
+  );
+}
+
 export async function fetchAllOccurrencesGroupedByDate(
   from: Date = new Date(),
   until: Date = addWeeks(from, 10),

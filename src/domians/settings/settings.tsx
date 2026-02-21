@@ -58,13 +58,16 @@ export default function SettingsScreen() {
   };
 
   return (
-    <BaseDetailScreen heightClass="h-22" title="Instellingen" canGoBack={false}>
+    <BaseDetailScreen heightClass="h-27" title="Instellingen" canGoBack={false}>
       <div className="flex flex-col gap-4 p-4 -mt-8">
         <div className="flex flex-col gap-2">
           <h3 className="ml-2">Activiteiten</h3>
           <div className="rounded-lg overflow-hidden">
             <ListTile onClick={() => push("/activity/create")} disabled={!user}>
               Creëer activiteit
+            </ListTile>
+            <ListTile onClick={() => push("/activity/update")} disabled={!user}>
+              Wijzig activiteit
             </ListTile>
           </div>
         </div>
