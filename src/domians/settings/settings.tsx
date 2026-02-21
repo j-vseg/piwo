@@ -12,7 +12,7 @@ import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen
 
 export default function SettingsScreen() {
   const { user } = useAuth();
-  const { replace } = useRouter();
+  const { replace, push } = useRouter();
 
   const {
     mutate: mutateDelete,
@@ -60,6 +60,14 @@ export default function SettingsScreen() {
   return (
     <BaseDetailScreen heightClass="h-27" title="Instellingen" canGoBack={false}>
       <div className="flex flex-col gap-4 p-4 -mt-8">
+        <div className="flex flex-col gap-2">
+          <h3 className="ml-2">Activiteiten</h3>
+          <div className="rounded-lg overflow-hidden">
+            <ListTile onClick={() => push("/activity/create")} disabled={!user}>
+              Creëer activiteit
+            </ListTile>
+          </div>
+        </div>
         <div className="flex flex-col gap-2">
           {isErrorLogout && (
             <Alert type="danger" size="small">
