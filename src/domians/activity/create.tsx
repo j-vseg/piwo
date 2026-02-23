@@ -85,9 +85,10 @@ export function CreateActivityPage() {
         <div className="bg-white p-4 rounded-3xl flex flex-col gap-4">
           <div>
             <h2>{name || "???"}</h2>
-            <p className="text-sm text-gray-500" suppressHydrationWarning>
-              {startTime &&
-                endTime &&
+            <p className="text-sm text-gray-500">
+              {recurrence &&
+                `${recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(startTime, `${recurrence === Recurrence.Weekly ? "EEEE" : recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(endTime, isSameDay(endTime, startTime) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
+              {!recurrence &&
                 `${format(startTime, "d LLLL HH:mm", { locale: nl })} - ${format(endTime, isSameDay(endTime, startTime) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
             </p>
           </div>
@@ -238,9 +239,15 @@ export function CreateActivityPage() {
                     variant="recurrence"
                   />
                   <ErrorIndicator type="small">
-                    {recurrence
-                      ? "Deze activiteit wordt herhaald"
-                      : "Deze activiteit wordt niet herhaald"}
+                    {recurrence ? (
+                      <span>
+                        Deze activiteit wordt <b>herhaald</b>
+                      </span>
+                    ) : (
+                      <span>
+                        Deze activiteit wordt <b>niet herhaald</b>
+                      </span>
+                    )}
                   </ErrorIndicator>
                 </div>
               )}
