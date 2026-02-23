@@ -113,11 +113,12 @@ export function UpdateActivityPage() {
     },
   });
 
+  const selectedId = selected?.id ?? null;
   useEffect(() => {
-    if (selected || !methods.formState.isDirty) {
-      methods.reset(defaultValues);
-    }
-  }, [selected, defaultValues, methods]);
+    methods.reset(defaultValues);
+    // Intentionally omit methods so we only reset when selection changes, not on every render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId, defaultValues]);
 
   return (
     <BaseDetailScreen
@@ -126,7 +127,7 @@ export function UpdateActivityPage() {
       color="bg-pastelBlue"
     >
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <ActivityList selected={selected} setSelected={setSelected} />
 
           {!selected && (
