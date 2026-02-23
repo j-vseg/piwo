@@ -38,7 +38,7 @@ export function ActivityList({ selected, setSelected }: { selected: Event | null
           {events.map((event) => (
             <div
               key={event.id}
-              className={`flex flex-col gap-1 p-3 pt-2 rounded-2xl min-w-60 border-5 border-white ${selected?.id === event.id ? `${getEventColor(event.category)}` : "bg-white"}`}
+              className={`flex flex-col gap-1 p-3 pt-2 rounded-2xl w-max shrink-0 border-5 border-white ${selected?.id === event.id ? `${getEventColor(event.category)}` : "bg-white"}`}
               onClick={() => setSelected(event as Event)}
             >
               <h3 className="font-semibold">{event.name}</h3>

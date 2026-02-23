@@ -106,6 +106,7 @@ export function UpdateActivityPage() {
       queryClient.invalidateQueries({
         queryKey: ["occurrences-grouped"],
       });
+      setSelected(null);
     },
     onError: (error) => {
       console.error(error);
