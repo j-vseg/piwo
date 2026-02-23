@@ -11,7 +11,7 @@ import { Category } from "@/types/category";
 import { Recurrence } from "@/types/recurrence";
 import { Status } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addHours, format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useRouter } from "next/navigation";
@@ -29,8 +29,8 @@ const now = new Date();
 function getDefaultFormValues(): ActivityFormData {
   return {
     name: "",
-    startTime: now,
-    endTime: addHours(now, 1),
+    startTime: addHours(now, 1),
+    endTime: addHours(now, 2),
     recurrence: undefined,
     category: Category.Group,
   };
@@ -38,6 +38,7 @@ function getDefaultFormValues(): ActivityFormData {
 
 export function CreateActivityPage() {
   const { push } = useRouter();
+  const queryClient = useQueryClient();
   const methods = useForm<ActivityFormData>({
     defaultValues: getDefaultFormValues(),
   });
@@ -56,6 +57,15 @@ export function CreateActivityPage() {
       );
     },
     onSuccess: (eventId) => {
+      queryClient.invalidateQueries({
+        queryKey: ["all-events"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["this-week-occurrences"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["occurrences-grouped"],
+      });
       setTimeout(() => {
         push(`/activity?id=${encodeURIComponent(eventId)}`);
       }, 3000);

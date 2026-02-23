@@ -26,6 +26,8 @@ export function ThisWeek() {
     staleTime: 30 * 60 * 1000,
   });
 
+  console.log("thisWeekOccurrences", thisWeekOccurrences);
+
   const {
     data: userIsMissingAvailability,
     isLoading: isLoadingAvailability,
