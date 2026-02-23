@@ -3,28 +3,17 @@
 import { Alert } from "@/components/Alert";
 import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen";
 import Button from "@/components/Button";
-import { ErrorIndicator } from "@/components/ErrorIndicator";
 import Input from "@/components/Input";
-import { LoadingIndicator } from "@/components/LoadingIndicator";
 import Select from "@/components/Select";
-import { useAuth } from "@/contexts/auth";
-import { fetchAllEvents } from "@/services/firebase/events";
 import { Category } from "@/types/category";
-import { Recurrence } from "@/types/recurrence";
-import {
-  skipToken,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { addHours, format, isSameDay } from "date-fns";
-import { nl } from "date-fns/locale";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addHours, format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Event } from "@/types/event";
-import { getEventColor } from "@/utils/getEventColor";
 import { updateEvent } from "@/services/firebase/event";
+import { ActivityList } from "./components/ActivityList";
 
 type ActivityFormData = {
   name: string;
@@ -36,20 +25,8 @@ const now = new Date();
 
 export function UpdateActivityPage() {
   const { push } = useRouter();
-  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Event | null>(null);
-  const {
-      data: events,
-      isLoading: isLoadingEvents,
-      isError: isErrorEvents,
-    } = useQuery({
-      queryKey: ["all-events"],
-      queryFn: user
-        ? () => fetchAllEvents()
-        : skipToken,
-      staleTime: 30 * 60 * 1000,
-    });
   const defaultValues = useMemo(() => {
         return {
           name: selected?.name ?? "",
@@ -107,35 +84,7 @@ export function UpdateActivityPage() {
       color="bg-pastelBlue"
     >
       <div className="flex flex-col gap-8">
-        {isLoadingEvents ? (
-          <LoadingIndicator />
-        ) : isErrorEvents ? (
-          <ErrorIndicator>
-            Er is een fout opgetreden bij het ophalen van de activiteiten
-          </ErrorIndicator>
-        ) : !events ? (
-          <ErrorIndicator>
-            Er zijn geen activiteiten gevonden om te wijzigen
-          </ErrorIndicator>
-        ) : (
-          <div className="flex gap-4 overflow-x-auto">
-            {events.map((event) => (
-              <div
-                key={event.id}
-                className={`flex flex-col gap-1 p-3 pt-2 rounded-2xl min-w-60 border-5 border-white ${selected?.id === event.id ? `${getEventColor(event.category)}` : "bg-white"}`}
-                onClick={() => setSelected(event as Event)}
-              >
-                <h3 className="font-semibold">{event.name}</h3>
-                <p className="text-sm text-gray-500">
-                  {event.recurrence &&
-                    `${event.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(event.startDate.toDate(), `${event.recurrence === Recurrence.Weekly ? "EEEE" : "do"} HH:mm`, { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
-                  {!event.recurrence &&
-                    `${format(event.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+        <ActivityList selected={selected} setSelected={setSelected} />
         <div className="flex flex-col gap-4">
           <h2>Wijzig activiteit</h2>
           {selected?.recurrence && (
