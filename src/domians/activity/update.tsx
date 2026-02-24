@@ -5,7 +5,6 @@ import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen
 import { Event } from "@/types/event";
 import { ActivityList } from "./components/ActivityList";
 import { useState } from "react";
-import { Card } from "./components/Card";
 
 export function UpdateActivityPage() {
   const [selected, setSelected] = useState<Event | null>(null);
@@ -26,8 +25,6 @@ export function UpdateActivityPage() {
             </Alert>
           )}
         </div>
-
-        {selected && <Card selected={selected} setSelected={setSelected} />}
       </div>
     </BaseDetailScreen>
   );
