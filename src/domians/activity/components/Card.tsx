@@ -123,7 +123,7 @@ export function Card({
 
   if (selected) {
     return (
-      <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl">
+      <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)]">
         {selected.recurrence && (
           <Alert type="info" size="small">
             Verandering aan deze activiteit worden toegepast op de hele reeks
