@@ -21,7 +21,7 @@ export function UpdateActivityPage() {
 
           {!selected && (
             <Alert type="info" size="small">
-              Selecteer een activiteit om te wijzigen of verwijderen.
+              Klik op een activiteit om te wijzigen of verwijderen.
             </Alert>
           )}
         </div>
