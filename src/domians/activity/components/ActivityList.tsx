@@ -36,10 +36,7 @@ export function ActivityList({ selected, setSelected }: { selected: Event | null
       ) : (
         <>
           {selected ? (
-            <div
-              key={`${selected.id}-card`}
-              className="activity-list-item-transition"
-            >
+            <div key={`${selected.id}-card`}>
               <Card selected={selected} setSelected={setSelected} />
             </div>
           ) : (
@@ -48,7 +45,7 @@ export function ActivityList({ selected, setSelected }: { selected: Event | null
                 <div key={event.id} className="shrink-0 w-max">
                   <div
                     key={`${event.id}-compact`}
-                    className={`activity-list-item-transition flex flex-col gap-1 p-3 pt-2 rounded-2xl w-max bg-white`}
+                    className="flex flex-col gap-1 p-3 pt-2 rounded-2xl w-max bg-white"
                     onClick={() => setSelected(event as Event)}
                   >
                     <h3 className="font-semibold">{event.name}</h3>
