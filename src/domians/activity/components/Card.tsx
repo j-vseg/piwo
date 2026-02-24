@@ -27,17 +27,17 @@ export function Card({
   selected,
   setSelected,
 }: {
-  selected: Event | null;
+  selected: Event;
   setSelected: (event: Event | null) => void;
 }) {
   const { push } = useRouter();
   const queryClient = useQueryClient();
   const defaultValues = useMemo(() => {
     return {
-      name: selected?.name ?? "",
-      startTime: selected?.startDate.toDate() ?? addHours(now, 1),
-      endTime: selected?.endDate.toDate() ?? addHours(now, 2),
-      category: selected?.category ?? Category.Group,
+      name: selected.name,
+      startTime: selected.startDate.toDate(),
+      endTime: selected.endDate.toDate(),
+      category: selected.category,
     };
   }, [selected]);
   const methods = useForm<ActivityFormData>({ defaultValues });
@@ -52,9 +52,6 @@ export function Card({
     isError: isErrorUpdate,
   } = useMutation({
     mutationFn: async (data: ActivityFormData) => {
-      if (!selected?.id) {
-        throw new Error("Selecteer een activiteit om te wijzigen");
-      }
       return await updateEvent(
         selected.id,
         data.name,
@@ -68,7 +65,7 @@ export function Card({
         queryKey: ["all-events"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["occurrence", selected?.id],
+        queryKey: ["occurrence", selected.id],
       });
       queryClient.invalidateQueries({
         queryKey: ["this-week-occurrences"],
@@ -77,9 +74,7 @@ export function Card({
         queryKey: ["occurrences-grouped"],
       });
       setTimeout(() => {
-        if (selected?.id) {
-          push(`/activity?id=${encodeURIComponent(selected.id)}`);
-        }
+        push(`/activity?id=${encodeURIComponent(selected.id)}`);
       }, 3000);
     },
     onError: (error) => {
@@ -93,9 +88,6 @@ export function Card({
     isError: isErrorDelete,
   } = useMutation({
     mutationFn: async () => {
-      if (!selected?.id) {
-        throw new Error("Selecteer een activiteit om te wijzigen");
-      }
       return await deleteEvent(selected.id);
     },
     onSuccess: () => {
@@ -103,7 +95,7 @@ export function Card({
         queryKey: ["all-events"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["occurrence", selected?.id],
+        queryKey: ["occurrence", selected.id],
       });
       queryClient.invalidateQueries({
         queryKey: ["this-week-occurrences"],
@@ -117,7 +109,7 @@ export function Card({
       console.error(error);
     },
   });
-  const selectedId = selected?.id ?? null;
+  const selectedId = selected.id;
 
   useEffect(() => {
     methods.reset(defaultValues);
@@ -127,199 +119,204 @@ export function Card({
 
   if (selected) {
     return (
-      <form
-        onSubmit={methods.handleSubmit((data) => mutateUpdate(data))}
-        className="flex flex-col gap-6"
-      >
-        <div className="flex flex-col gap-4 bg-white p-4 pt-2 rounded-2xl w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)]">
-          <div>
-            <div className="flex justify-between items-center">
-              <h2>{selected.name}</h2>
-              <button onClick={() => setSelected(null)}>
-                <FontAwesomeIcon icon={faXmark} className="max-h-4!" />
-              </button>
+      <>
+        <form
+          onSubmit={methods.handleSubmit((data) => mutateUpdate(data))}
+          className="flex flex-col gap-6"
+        >
+          <div className="flex flex-col gap-4 bg-white p-4 pt-2 rounded-2xl w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)]">
+            <div>
+              <div className="flex justify-between items-center">
+                <h2>{selected.name}</h2>
+                <button onClick={() => setSelected(null)}>
+                  <FontAwesomeIcon icon={faXmark} className="max-h-4!" />
+                </button>
+              </div>
+              <p className="text-sm text-gray-500">
+                {selected.recurrence &&
+                  `${selected.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(selected.startDate.toDate(), `${selected.recurrence === Recurrence.Weekly ? "EEEE" : selected.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(selected.endDate.toDate(), isSameDay(selected.endDate.toDate(), selected.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
+                {!selected.recurrence &&
+                  `${format(selected.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(selected.endDate.toDate(), isSameDay(selected.endDate.toDate(), selected.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
+              </p>
             </div>
-            <p className="text-sm text-gray-500">
-              {selected.recurrence &&
-                `${selected.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(selected.startDate.toDate(), `${selected.recurrence === Recurrence.Weekly ? "EEEE" : selected.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(selected.endDate.toDate(), isSameDay(selected.endDate.toDate(), selected.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
-              {!selected.recurrence &&
-                `${format(selected.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(selected.endDate.toDate(), isSameDay(selected.endDate.toDate(), selected.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
-            </p>
-          </div>
 
-          {selected.recurrence && (
-            <Alert type="info" size="small">
-              Verandering aan deze activiteit worden toegepast op de hele reeks
-              van deze activiteit.
-            </Alert>
-          )}
-
-          {isSuccessUpdate && (
-            <Alert type="success" size="small">
-              Activiteit succesvol gewijzigd!{" "}
-              <span className="text-success font-semibold">
-                Navigeren naar activiteit detail pagina...
-              </span>
-            </Alert>
-          )}
-          {isErrorDelete && (
-            <Alert type="danger" size="small">
-              Er is een fout opgetreden bij het verwijderen van de activiteit
-            </Alert>
-          )}
-          {isSuccessDelete && (
-            <Alert type="success" size="small">
-              Activiteit succesvol verwijderd!
-            </Alert>
-          )}
-          {isErrorUpdate && (
-            <Alert type="danger" size="small">
-              Er is een fout opgetreden bij het wijzigen van de activiteit
-            </Alert>
-          )}
-          <Controller
-            name="name"
-            control={methods.control}
-            rules={{
-              required: "Naam kan niet leeg zijn",
-            }}
-            render={({ field: { value, onChange }, fieldState: { error } }) => (
-              <Input
-                id="name"
-                label="Naam"
-                type="text"
-                error={error?.message}
-                placeholder="Activiteit naam"
-                value={value}
-                onChange={onChange}
-              />
+            {selected.recurrence && (
+              <Alert type="info" size="small">
+                Verandering aan deze activiteit worden toegepast op de hele
+                reeks van deze activiteit.
+              </Alert>
             )}
-          />
-          {!selected?.recurrence && (
+
+            {isSuccessUpdate && (
+              <Alert type="success" size="small">
+                Activiteit succesvol gewijzigd!{" "}
+                <span className="text-success font-semibold">
+                  Navigeren naar activiteit detail pagina...
+                </span>
+              </Alert>
+            )}
+            {isErrorDelete && (
+              <Alert type="danger" size="small">
+                Er is een fout opgetreden bij het verwijderen van de activiteit
+              </Alert>
+            )}
+            {isSuccessDelete && (
+              <Alert type="success" size="small">
+                Activiteit succesvol verwijderd!
+              </Alert>
+            )}
+            {isErrorUpdate && (
+              <Alert type="danger" size="small">
+                Er is een fout opgetreden bij het wijzigen van de activiteit
+              </Alert>
+            )}
             <Controller
-              name="startTime"
+              name="name"
               control={methods.control}
               rules={{
-                required: "Start tijd kan niet leeg zijn",
-                validate: (value) => {
-                  if (value && value < now) {
-                    return "Start tijd moet in de toekomst zijn";
-                  }
-                  return true;
-                },
+                required: "Naam kan niet leeg zijn",
               }}
               render={({
                 field: { value, onChange },
                 fieldState: { error },
               }) => (
                 <Input
-                  id="startTime"
-                  label="Start tijd"
-                  type="datetime-local"
+                  id="name"
+                  label="Naam"
+                  type="text"
                   error={error?.message}
-                  placeholder="Start tijd"
-                  value={value ? format(value, "yyyy-MM-dd'T'HH:mm") : ""}
-                  disabled={!!selected?.recurrence}
-                  onChange={(
-                    strOrEv: string | ChangeEvent<HTMLInputElement>,
-                  ) => {
-                    const newStartTime = new Date(
-                      typeof strOrEv === "string"
-                        ? strOrEv
-                        : strOrEv.target.value,
-                    );
-                    onChange(newStartTime);
-                    methods.setValue("endTime", addHours(newStartTime, 1));
-                  }}
+                  placeholder="Activiteit naam"
+                  value={value}
+                  onChange={onChange}
                 />
               )}
             />
-          )}
-          {!selected.recurrence && (
-            <Controller
-              name="endTime"
-              control={methods.control}
-              rules={{
-                required: "Eind tijd kan niet leeg zijn",
-                validate: (value) => {
-                  if (value && value < now) {
-                    return "Eind tijd moet in de toekomst zijn";
-                  }
-                  if (value && startTime && value < startTime) {
-                    return "Eind tijd moet na start tijd zijn";
-                  }
-                  return true;
-                },
-              }}
-              render={({
-                field: { value, onChange },
-                fieldState: { error },
-              }) => (
-                <Input
-                  id="endTime"
-                  label="Eind tijd"
-                  type="datetime-local"
-                  error={error?.message}
-                  placeholder="Eind tijd"
-                  value={value ? format(value, "yyyy-MM-dd'T'HH:mm") : ""}
-                  disabled={!!selected?.recurrence}
-                  onChange={(
-                    strOrEv: string | ChangeEvent<HTMLInputElement>,
-                  ) => {
-                    onChange(
-                      new Date(
+            {!selected.recurrence && (
+              <Controller
+                name="startTime"
+                control={methods.control}
+                rules={{
+                  required: "Start tijd kan niet leeg zijn",
+                  validate: (value) => {
+                    if (value && value < now) {
+                      return "Start tijd moet in de toekomst zijn";
+                    }
+                    return true;
+                  },
+                }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    id="startTime"
+                    label="Start tijd"
+                    type="datetime-local"
+                    error={error?.message}
+                    placeholder="Start tijd"
+                    value={value ? format(value, "yyyy-MM-dd'T'HH:mm") : ""}
+                    disabled={!!selected.recurrence}
+                    onChange={(
+                      strOrEv: string | ChangeEvent<HTMLInputElement>,
+                    ) => {
+                      const newStartTime = new Date(
                         typeof strOrEv === "string"
                           ? strOrEv
                           : strOrEv.target.value,
-                      ),
-                    );
-                  }}
+                      );
+                      onChange(newStartTime);
+                      methods.setValue("endTime", addHours(newStartTime, 1));
+                    }}
+                  />
+                )}
+              />
+            )}
+            {!selected.recurrence && (
+              <Controller
+                name="endTime"
+                control={methods.control}
+                rules={{
+                  required: "Eind tijd kan niet leeg zijn",
+                  validate: (value) => {
+                    if (value && value < now) {
+                      return "Eind tijd moet in de toekomst zijn";
+                    }
+                    if (value && startTime && value < startTime) {
+                      return "Eind tijd moet na start tijd zijn";
+                    }
+                    return true;
+                  },
+                }}
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    id="endTime"
+                    label="Eind tijd"
+                    type="datetime-local"
+                    error={error?.message}
+                    placeholder="Eind tijd"
+                    value={value ? format(value, "yyyy-MM-dd'T'HH:mm") : ""}
+                    disabled={!!selected.recurrence}
+                    onChange={(
+                      strOrEv: string | ChangeEvent<HTMLInputElement>,
+                    ) => {
+                      onChange(
+                        new Date(
+                          typeof strOrEv === "string"
+                            ? strOrEv
+                            : strOrEv.target.value,
+                        ),
+                      );
+                    }}
+                  />
+                )}
+              />
+            )}
+            <Controller
+              name="category"
+              control={methods.control}
+              rules={{
+                required: "Categorie kan niet leeg zijn",
+              }}
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
+                <Select
+                  label="Categorie"
+                  options={Object.values(Category)}
+                  error={error?.message}
+                  onChange={onChange}
+                  value={value}
                 />
               )}
             />
-          )}
-          <Controller
-            name="category"
-            control={methods.control}
-            rules={{
-              required: "Categorie kan niet leeg zijn",
-            }}
-            render={({ field: { value, onChange }, fieldState: { error } }) => (
-              <Select
-                label="Categorie"
-                options={Object.values(Category)}
-                error={error?.message}
-                onChange={onChange}
-                value={value}
-              />
-            )}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
+          </div>
           <Button
             isPending={isPendingUpdate}
             disabled={!methods.formState.isDirty}
           >
-            Wijzig activiteit
+            {selected.recurrence ? "Wijzig reeks" : "Wijzig activiteit"}
           </Button>
-          <Button
-            className="bg-error!"
-            onClick={() => {
-              if (
-                confirm(
-                  `Weet je zeker dat je ${selected?.name} wilt verwijderen?`,
-                )
-              ) {
-                mutateDelete();
-              }
-            }}
-            isPending={isPendingDelete}
-            disabled={!selected}
-          >
-            Activiteit verwijderen
-          </Button>
-        </div>
-      </form>
+        </form>
+        <Button
+          className="bg-error! mt-2"
+          onClick={() => {
+            if (
+              confirm(
+                `Weet je zeker dat je '${selected.name}' wilt verwijderen?`,
+              )
+            ) {
+              mutateDelete();
+            }
+          }}
+          isPending={isPendingDelete}
+        >
+          {selected.recurrence ? "Reeks verwijzeren" : "Activiteit verwijderen"}
+        </Button>
+      </>
     );
   }
 }
