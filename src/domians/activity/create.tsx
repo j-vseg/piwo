@@ -81,7 +81,7 @@ export function CreateActivityPage() {
       title="Creëer activiteit"
       color="bg-pastelBlue"
     >
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         <div className="bg-white p-4 rounded-3xl flex flex-col gap-4">
           <div>
             <h2>{name || "???"}</h2>
@@ -96,7 +96,7 @@ export function CreateActivityPage() {
             {Object.values(Status).map((statusOption) => (
               <button
                 key={statusOption}
-                className={`px-3 py-1 rounded-lg ${getEventColor(category ?? Category.Group)}`}
+                className={`px-3 py-1 rounded-lg ${getEventColor(category)}`}
                 disabled={true}
               >
                 <p>{statusOption}</p>
@@ -105,7 +105,6 @@ export function CreateActivityPage() {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <h2>Creëer activiteit</h2>
           {isSuccess && (
             <Alert type="success" size="small">
               Activiteit succesvol aangemaakt!{" "}
