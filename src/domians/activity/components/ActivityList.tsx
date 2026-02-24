@@ -36,29 +36,32 @@ export function ActivityList({ selected, setSelected }: { selected: Event | null
         </ErrorIndicator>
       ) : (
         <div className="flex gap-4 overflow-x-auto">
-          {events.map((event) =>
-            event.id === selected?.id ? (
-              <Card
-                key={event.id}
-                selected={selected}
-                setSelected={setSelected}
-              />
-            ) : (
-              <div
-                key={event.id}
-                className={`flex flex-col gap-1 p-3 pt-2 rounded-2xl w-max shrink-0 border-5 border-white ${selected?.id === event.id ? `${getEventColor(event.category)}` : "bg-white"}`}
-                onClick={() => setSelected(event as Event)}
-              >
-                <h3 className="font-semibold">{event.name}</h3>
-                <p className="text-sm text-gray-500">
-                  {event.recurrence &&
-                    `${event.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(event.startDate.toDate(), `${event.recurrence === Recurrence.Weekly ? "EEEE" : event.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
-                  {!event.recurrence &&
-                    `${format(event.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
-                </p>
-              </div>
-            ),
-          )}
+          {events.map((event) => (
+            <div key={event.id} className="shrink-0 w-max">
+              {event.id === selected?.id ? (
+                <div key={`${event.id}-card`} className="activity-list-item-transition">
+                  <Card
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                </div>
+              ) : (
+                <div
+                  key={`${event.id}-compact`}
+                  className={`activity-list-item-transition flex flex-col gap-1 p-3 pt-2 rounded-2xl w-max border-5 border-white ${selected?.id === event.id ? `${getEventColor(event.category)}` : "bg-white"}`}
+                  onClick={() => setSelected(event as Event)}
+                >
+                  <h3 className="font-semibold">{event.name}</h3>
+                  <p className="text-sm text-gray-500">
+                    {event.recurrence &&
+                      `${event.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(event.startDate.toDate(), `${event.recurrence === Recurrence.Weekly ? "EEEE" : event.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
+                    {!event.recurrence &&
+                      `${format(event.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(event.endDate.toDate(), isSameDay(event.endDate.toDate(), event.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </>
