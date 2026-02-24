@@ -5,6 +5,8 @@ import Select from "@/components/Select";
 import { deleteEvent, updateEvent } from "@/services/firebase/event";
 import { Category } from "@/types/category";
 import { Event } from "@/types/event";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addHours, format } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -131,7 +133,12 @@ export function Card({
           </Alert>
         )}
 
-        <h2>{selected.name}</h2>
+        <div className="flex justify-between items-center">
+          <h2>{selected.name}</h2>
+          <button onClick={() => setSelected(null)}>
+            <FontAwesomeIcon icon={faXmark} className="max-h-4!" />
+          </button>
+        </div>
 
         {isSuccessUpdate && (
           <Alert type="success" size="small">
