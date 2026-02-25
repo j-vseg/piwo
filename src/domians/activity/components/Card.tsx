@@ -124,7 +124,7 @@ export function Card({
           onSubmit={methods.handleSubmit((data) => mutateUpdate(data))}
           className="flex flex-col gap-6"
         >
-          <div className="flex flex-col gap-4 bg-white p-4 pt-2 rounded-2xl w-[calc(100vw-2rem)] min-w-[calc(100vw-2rem)]">
+          <div className="flex flex-col gap-4 bg-white p-4 pt-2 rounded-2xl">
             <div>
               <div className="flex justify-between items-center">
                 <h2>{selected.name}</h2>

@@ -48,7 +48,7 @@ export function CreateActivityPage() {
   });
   const { mutate, isSuccess, isPending, isError } = useMutation({
     mutationFn: async (data: ActivityFormData) => {
-      return await createEvent(
+      await createEvent(
         data.name,
         data.category,
         data.startTime,
@@ -56,7 +56,7 @@ export function CreateActivityPage() {
         data.recurrence,
       );
     },
-    onSuccess: (eventId) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["all-events"],
       });
@@ -67,7 +67,7 @@ export function CreateActivityPage() {
         queryKey: ["occurrences-grouped"],
       });
       setTimeout(() => {
-        push(`/activity?id=${encodeURIComponent(eventId)}`);
+        push(`/home`);
       }, 3000);
     },
     onError: (error) => {
@@ -108,7 +108,7 @@ export function CreateActivityPage() {
             <Alert type="success" size="small">
               Activiteit succesvol aangemaakt!{" "}
               <span className="text-success font-semibold">
-                Navigeren naar activiteit detail pagina...
+                Navigeren naar home pagina...
               </span>
             </Alert>
           )}
