@@ -11,20 +11,17 @@ export function UpdateActivityPage() {
 
   return (
     <BaseDetailScreen
-      heightClass="h-22"
+      heightClass="h-38"
       title="Wijzig activiteit"
       color="bg-pastelBlue"
     >
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-3">
-          <ActivityList selected={selected} setSelected={setSelected} />
-
-          {!selected && (
-            <Alert type="info" size="small">
-              Klik op een activiteit om te wijzigen of verwijderen.
-            </Alert>
-          )}
-        </div>
+      <div className="flex flex-col gap-3">
+        <ActivityList selected={selected} setSelected={setSelected} />
+        {!selected && (
+          <Alert type="info" size="small">
+            Klik op een activiteit om te wijzigen of verwijderen.
+          </Alert>
+        )}
       </div>
     </BaseDetailScreen>
   );

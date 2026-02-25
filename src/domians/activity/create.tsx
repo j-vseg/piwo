@@ -12,11 +12,11 @@ import { Recurrence } from "@/types/recurrence";
 import { Status } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addHours, format, isSameDay } from "date-fns";
-import { nl } from "date-fns/locale";
+import { addHours, format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { ChangeEvent } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { DisplayTime } from "./components/DisplayTime";
 
 type ActivityFormData = {
   name: string;
@@ -85,12 +85,11 @@ export function CreateActivityPage() {
         <div className="bg-white p-4 rounded-3xl flex flex-col gap-4">
           <div>
             <h2>{name || "???"}</h2>
-            <p className="text-sm text-gray-500">
-              {recurrence &&
-                `${recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(startTime, `${recurrence === Recurrence.Weekly ? "EEEE" : recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(endTime, isSameDay(endTime, startTime) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
-              {!recurrence &&
-                `${format(startTime, "d LLLL HH:mm", { locale: nl })} - ${format(endTime, isSameDay(endTime, startTime) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
-            </p>
+            <DisplayTime
+              startTime={startTime}
+              endTime={endTime}
+              recurrence={recurrence}
+            />
           </div>
           <div className="flex justify-between">
             {Object.values(Status).map((statusOption) => (
