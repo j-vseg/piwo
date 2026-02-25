@@ -7,7 +7,13 @@ import { Event } from "@/types/event";
 import { Card } from "./Card";
 import { DisplayTime } from "./DisplayTime";
 
-export function ActivityList({ selected, setSelected }: { selected: Event | null, setSelected: (event: Event | null) => void }) {
+export function ActivityList({
+  selected,
+  setSelected,
+}: {
+  selected: Event | null;
+  setSelected: (event: Event | null) => void;
+}) {
   const { user } = useAuth();
   const {
     data: events,
@@ -18,7 +24,7 @@ export function ActivityList({ selected, setSelected }: { selected: Event | null
     queryFn: user ? () => fetchAllEvents() : skipToken,
     staleTime: 30 * 60 * 1000,
   });
-    
+
   return (
     <>
       {isLoadingEvents ? (
@@ -52,7 +58,7 @@ export function ActivityList({ selected, setSelected }: { selected: Event | null
                         <h3 className="font-semibold">{event.name}</h3>
                         <DisplayTime
                           startTime={event.startDate.toDate()}
-                          endTime={event.startDate.toDate()}
+                          endTime={event.endDate.toDate()}
                           recurrence={event.recurrence}
                         />
                       </div>
