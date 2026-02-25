@@ -14,6 +14,7 @@ type SelectProps = {
   required?: boolean;
   value?: string;
   variant?: "category" | "recurrence";
+  id?: string;
 };
 
 export default function Select({
@@ -24,8 +25,9 @@ export default function Select({
   error,
   required = true,
   variant = "category",
+  id,
 }: SelectProps) {
-  const id = useId();
+
   const _onChange = useCallback(
     (value?: string) => {
       onChange(value || "");

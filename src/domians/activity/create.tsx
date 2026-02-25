@@ -228,6 +228,7 @@ export function CreateActivityPage() {
               }) => (
                 <div className="flex flex-col gap-1">
                   <Select
+                    id="recurrence"
                     label="Herhaling"
                     options={Object.values(Recurrence)}
                     error={error?.message}
@@ -261,6 +262,7 @@ export function CreateActivityPage() {
                 fieldState: { error },
               }) => (
                 <Select
+                  id="category"
                   label="Categorie"
                   options={Object.values(Category)}
                   error={error?.message}

@@ -285,6 +285,7 @@ export function Card({
                 fieldState: { error },
               }) => (
                 <Select
+                  id="category"
                   label="Categorie"
                   options={Object.values(Category)}
                   error={error?.message}

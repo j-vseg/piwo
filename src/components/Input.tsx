@@ -1,6 +1,6 @@
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChangeEvent, InputHTMLAttributes, useCallback, useId } from "react";
+import { ChangeEvent, InputHTMLAttributes, useCallback } from "react";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   onChange: (value: string) => void;
@@ -15,9 +15,9 @@ export default function Input({
   error,
   value,
   disabled,
+  id,
   ...inputProps
 }: InputProps) {
-  const id = useId();
 
   const _onChange = useCallback(
     (value?: string) => {
