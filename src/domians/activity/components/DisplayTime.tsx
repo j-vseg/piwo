@@ -12,13 +12,20 @@ export function DisplayTime({
   recurrence?: Recurrence;
 }) {
   const recurrenceDatePattern =
-    recurrence === Recurrence.Weekly || recurrence === Recurrence.Daily
+    recurrence === Recurrence.Weekly
       ? "EEEE HH:mm"
       : recurrence === Recurrence.Monthly
         ? "do HH:mm"
         : "HH:mm";
 
   const recurrenceText = recurrence && (() => {
+    if (recurrence === Recurrence.Daily) {
+      const startFmt = format(startTime, "HH:mm", { locale: nl });
+      const endFmt = isSameDay(endTime, startTime)
+        ? format(endTime, "HH:mm", { locale: nl })
+        : `volgende dag ${format(endTime, "HH:mm", { locale: nl })}`;
+      return `Elke dag ${startFmt} - ${endFmt}`;
+    }
     const startFmt = format(startTime, recurrenceDatePattern, { locale: nl });
     const endFmt = format(
       endTime,
