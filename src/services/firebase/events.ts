@@ -12,7 +12,7 @@ import { Event } from "@/types/event";
 import { generateOccurrences } from "@/utils/generateOccurences";
 import { EventOccurrence } from "@/types/eventOccurence";
 import { db, eventsCollection } from "./firebase";
-import { addWeeks, format, subWeeks } from "date-fns";
+import { addWeeks, endOfYesterday, format, subWeeks } from "date-fns";
 
 type GroupedOccurrences = {
   date: Date;
@@ -21,10 +21,10 @@ type GroupedOccurrences = {
 
 export async function fetchAllEvents(): Promise<Event[]> {
   const snapshot = await getDocs(eventsCollection);
-  const events = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Event));
-  return events.sort(
-    (a, b) => a.startDate.toMillis() - b.startDate.toMillis(),
+  const events = snapshot.docs.map(
+    (doc) => ({ ...doc.data(), id: doc.id }) as Event,
   );
+  return events.sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis());
 }
 
 export async function fetchAllOccurrencesGroupedByDate(
@@ -209,7 +209,11 @@ export async function deletePastEvents(): Promise<void> {
 
     // Generate past occurrences
     const pastDate = subWeeks(now, 10);
-    const pastOccurrences = generateOccurrences(event, pastDate, now);
+    const pastOccurrences = generateOccurrences(
+      event,
+      pastDate,
+      endOfYesterday(),
+    );
 
     // Delete availability for each past occurrence
     for (const pastOccurrence of pastOccurrences) {
