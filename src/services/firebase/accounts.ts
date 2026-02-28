@@ -5,6 +5,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { accountsCollection, db } from "./firebase";
 import {
@@ -49,16 +50,38 @@ export async function createUser(
 
 export async function getAccount(userId: string): Promise<{
   isApproved: boolean;
+  firstName?: string;
+  lastName?: string;
 } | null> {
   const docSnap = await getDoc(doc(accountsCollection, userId));
 
   if (docSnap.exists()) {
     return docSnap.data() as {
       isApproved: boolean;
+      firstName?: string;
+      lastName?: string;
     };
   }
 
   return null;
+}
+
+export async function updateAccountProfile(
+  userId: string,
+  data: { firstName: string; lastName: string },
+): Promise<void> {
+  try {
+    await updateDoc(doc(accountsCollection, userId), {
+      firstName: data.firstName,
+      lastName: data.lastName,
+    });
+  } catch (error) {
+    const customMessage = getFirebaseErrorMessage(
+      error as FirebaseError,
+      "Er is iets misgegaan bij het bijwerken van je gegevens, probeer het later nog eens",
+    );
+    throw new Error(customMessage);
+  }
 }
 
 export async function deleteUserAccount(
