@@ -82,7 +82,7 @@ export function ActivityPage({ id }: { id: string }) {
                         <div
                           className={`bg-background-200 rounded-full text-[10px] font-semibold m-0 h-fit shrink-0 items-center justify-center ${availability?.[statusOption]?.length === 1 ? "px-1.5" : "px-1.25"}`}
                         >
-                          {selected === Status.Present
+                          {statusOption === Status.Present
                             ? (availability?.[Status.Present]?.length ?? 0) +
                               (availability?.[Status.Later]?.length ?? 0)
                             : (availability?.[statusOption]?.length ?? 0)}

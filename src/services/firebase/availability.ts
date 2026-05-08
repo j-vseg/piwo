@@ -36,7 +36,6 @@ export async function setUserAvailability(
   userId: string,
   status?: Status,
 ) {
-  console.log("send");
   const availabilityRef = doc(
     db,
     `eventOccurrences/${occurrenceId}/availability/${userId}`,

@@ -223,7 +223,6 @@ export async function deletePastEvents(): Promise<void> {
 
       // Find availability records that match this past occurrence
       for (const availabilityDoc of availabilitySnapshot.docs) {
-        console.log("Found past recurring events availability");
         await deleteDoc(availabilityDoc.ref);
         availabilityCount++;
       }
@@ -249,7 +248,6 @@ export async function deletePastEvents(): Promise<void> {
     );
 
     for (const availabilityDoc of availabilitySnapshot.docs) {
-      console.log("Found past non-recurring events availability");
       await deleteDoc(availabilityDoc.ref);
       availabilityCount++;
     }
