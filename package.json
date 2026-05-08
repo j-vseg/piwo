@@ -20,7 +20,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "7.71.1",
-    "use-debounce": "^10.0.4"
+    "use-debounce": "10.0.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4",
