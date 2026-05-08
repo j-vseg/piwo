@@ -1,12 +1,20 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { Status } from "@/types/status";
-import { useClickPreventionOnDoubleClick } from "@/hooks/useClickPreventionOnDoubleClick";
 
 export function useAvailabilityPresentButtonHandlers(
   availability: Status | undefined,
   mutate: (status: Status) => void,
 ) {
-  const setPresent = useCallback(() => mutate(Status.Present), [mutate]);
+  const debouncedSetPresent = useDebouncedCallback(() => {
+    mutate(Status.Present);
+  }, 300);
+
+  useEffect(() => {
+    return () => {
+      debouncedSetPresent.cancel();
+    };
+  }, [debouncedSetPresent]);
 
   const togglePresentLater = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -21,22 +29,21 @@ export function useAvailabilityPresentButtonHandlers(
     [availability, mutate],
   );
 
-  const [deferSingleClick, onDoubleClick] = useClickPreventionOnDoubleClick(
-    setPresent,
-    togglePresentLater,
-    300,
+  const onDoubleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      debouncedSetPresent.cancel();
+      togglePresentLater(e);
+    },
+    [debouncedSetPresent, togglePresentLater],
   );
 
-  const onClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (availability !== Status.Present && availability !== Status.Later) {
-        mutate(Status.Present);
-        return;
-      }
-      deferSingleClick(e);
-    },
-    [availability, mutate, deferSingleClick],
-  );
+  const onClick = useCallback(() => {
+    if (availability !== Status.Present && availability !== Status.Later) {
+      mutate(Status.Present);
+      return;
+    }
+    debouncedSetPresent();
+  }, [availability, mutate, debouncedSetPresent]);
 
   return { onClick, onDoubleClick };
 }
