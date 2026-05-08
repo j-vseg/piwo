@@ -8,12 +8,13 @@ import {
   getUserAvailability,
   setUserAvailability,
 } from "@/services/firebase/availability";
-import { Status } from "@/types/status";
+import { AVAILABILITY_SELECTOR_STATUSES, Status } from "@/types/status";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import { ErrorIndicator } from "./ErrorIndicator";
 import { Category } from "@/types/category";
 import { getEventColor } from "@/utils/getEventColor";
+import { useAvailabilityPresentButtonHandlers } from "@/hooks/useAvailabilityPresentButtonHandlers";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
@@ -58,6 +59,12 @@ export function AvailabilitySelector({
     },
   });
 
+  const { onClick: presentClick, onDoubleClick: presentDoubleClick } =
+    useAvailabilityPresentButtonHandlers(
+      availability ?? undefined,
+      updateMutate,
+    );
+
   if (!user) {
     return <ErrorIndicator type="small">Je bent niet ingelogd</ErrorIndicator>;
   }
@@ -76,24 +83,47 @@ export function AvailabilitySelector({
 
   return (
     <div className="flex justify-between">
-      {Object.values(Status).map((statusOption) => (
-        <button
-          key={statusOption}
-          onClick={() => updateMutate(statusOption)}
-          className={`px-3 py-1 rounded-lg ${
-            availability === statusOption
-              ? availability === Status.Absent
-                ? "bg-error"
-                : availability === Status.Maybe
-                  ? "bg-danger"
-                  : "bg-success"
-              : getEventColor(occurrenceCategory)
-          }`}
-          disabled={updateIsPending}
-        >
-          <p>{statusOption}</p>
-        </button>
-      ))}
+      {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => {
+        if (statusOption === Status.Present) {
+          return (
+            <button
+              key={statusOption}
+              type="button"
+              title="Dubbelklik om 'Later' te kiezen"
+              onClick={presentClick}
+              onDoubleClick={presentDoubleClick}
+              className={`px-3 py-1 rounded-lg touch-manipulation select-none ${
+                availability === Status.Present || availability === Status.Later
+                  ? "bg-success"
+                  : getEventColor(occurrenceCategory)
+              }`}
+              disabled={updateIsPending}
+            >
+              <p className="text-center leading-tight">
+                {availability === Status.Later ? Status.Later : Status.Present}
+              </p>
+            </button>
+          );
+        }
+
+        return (
+          <button
+            key={statusOption}
+            type="button"
+            onClick={() => updateMutate(statusOption)}
+            className={`px-3 py-1 rounded-lg ${
+              availability === statusOption
+                ? statusOption === Status.Absent
+                  ? "bg-error"
+                  : "bg-danger"
+                : getEventColor(occurrenceCategory)
+            }`}
+            disabled={updateIsPending}
+          >
+            <p>{statusOption}</p>
+          </button>
+        );
+      })}
     </div>
   );
 }
