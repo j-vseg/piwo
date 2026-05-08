@@ -9,7 +9,7 @@ import Select from "@/components/Select";
 import { createEvent } from "@/services/firebase/event";
 import { Category } from "@/types/category";
 import { Recurrence } from "@/types/recurrence";
-import { Status } from "@/types/status";
+import { AVAILABILITY_SELECTOR_STATUSES } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addHours, format } from "date-fns";
@@ -92,7 +92,7 @@ export function CreateActivityPage() {
             />
           </div>
           <div className="flex justify-between">
-            {Object.values(Status).map((statusOption) => (
+            {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
               <button
                 key={statusOption}
                 className={`px-3 py-1 rounded-lg ${getEventColor(category)}`}

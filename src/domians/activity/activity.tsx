@@ -5,7 +5,7 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import { getOccurrenceAvailability } from "@/services/firebase/availability";
 import { getOccurrenceById } from "@/services/firebase/events";
-import { Status } from "@/types/status";
+import { AVAILABILITY_SELECTOR_STATUSES, Status } from "@/types/status";
 import { getEventColor } from "@/utils/getEventColor";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
@@ -62,35 +62,44 @@ export function ActivityPage({ id }: { id: string }) {
               <h2>Aanwezigheid</h2>
               <div className="flex flex-col gap-6">
                 <div className="flex justify-between">
-                  {Object.values(Status).map((statusOption) => (
-                    <button
-                      key={statusOption}
-                      onClick={() => setSelected(statusOption)}
-                      className={`px-3 py-1 rounded-lg flex items-center gap-2 ${
-                        selected === statusOption
-                          ? selected === Status.Absent
-                            ? "bg-error"
-                            : selected === Status.Maybe
-                              ? "bg-danger"
-                              : "bg-success"
-                          : getEventColor(occurrence?.category)
-                      }`}
-                      disabled={isLoadingAvailability}
-                    >
-                      <p>{statusOption}</p>
-                      <div
-                        className={`bg-background-200 rounded-full text-[10px] font-semibold m-0 h-fit shrink-0 items-center justify-center ${availability?.[statusOption]?.length === 1 ? "px-1.5" : "px-1.25"}`}
+                  {AVAILABILITY_SELECTOR_STATUSES.map(
+                    (statusOption: Status) => (
+                      <button
+                        key={statusOption}
+                        onClick={() => setSelected(statusOption)}
+                        className={`px-3 py-1 rounded-lg flex items-center gap-2 ${
+                          selected === statusOption
+                            ? selected === Status.Absent
+                              ? "bg-error"
+                              : selected === Status.Maybe
+                                ? "bg-danger"
+                                : "bg-success"
+                            : getEventColor(occurrence?.category)
+                        }`}
+                        disabled={isLoadingAvailability}
                       >
-                        {availability?.[statusOption]?.length ?? 0}
-                      </div>
-                    </button>
-                  ))}
+                        <p>{statusOption}</p>
+                        <div
+                          className={`bg-background-200 rounded-full text-[10px] font-semibold m-0 h-fit shrink-0 items-center justify-center ${availability?.[statusOption]?.length === 1 ? "px-1.5" : "px-1.25"}`}
+                        >
+                          {selected === Status.Present
+                            ? (availability?.[Status.Present]?.length ?? 0) +
+                              (availability?.[Status.Later]?.length ?? 0)
+                            : (availability?.[statusOption]?.length ?? 0)}
+                        </div>
+                      </button>
+                    ),
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-px bg-gray-300" />
                     <h3 className="text-lg font-medium text-gray-500 mx-2 font-poppins uppercase text-[12px]!">
-                      Totaal: {availability?.[selected]?.length ?? 0}
+                      Totaal:{" "}
+                      {selected === Status.Present
+                        ? (availability?.[Status.Present]?.length ?? 0) +
+                          (availability?.[Status.Later]?.length ?? 0)
+                        : (availability?.[selected]?.length ?? 0)}
                     </h3>
                     <div className="flex-1 h-px bg-gray-300" />
                   </div>
@@ -110,6 +119,29 @@ export function ActivityPage({ id }: { id: string }) {
                         Niemand heeft deze aanwezigheid opgegeven
                       </ErrorIndicator>
                     </div>
+                  ) : selected === Status.Present ? (
+                    Array.from(
+                      new Set([
+                        ...(availability?.[Status.Present] ?? []),
+                        ...(availability?.[Status.Later] ?? []),
+                      ]),
+                    )
+                      .sort((a, b) => a.localeCompare(b, "nl"))
+                      .map((displayName) => (
+                        <div
+                          key={displayName}
+                          className="py-2 px-4 bg-white rounded-lg flex justify-between items-center"
+                        >
+                          <p>{displayName}</p>
+                          {availability?.[Status.Later]?.includes(
+                            displayName,
+                          ) && (
+                            <p className="text-sm text-gray-500">
+                              {Status.Later}
+                            </p>
+                          )}
+                        </div>
+                      ))
                   ) : (
                     availability[selected].map((displayName) => (
                       <div
