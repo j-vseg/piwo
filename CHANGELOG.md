@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-05-09
+
+### Added
+
+- “What’s new” popup after updates, summarising changes; the same notes stay available from settings (@j-vseg).
+- “Later” availability status: indicate you will be late by double-clicking the “Aanwezig” (present) button on an activity (@j-vseg).
+- Personal details in settings: update first name, last name, email address, and password (@j-vseg).
+
 ## [2.0.1] - 2026-04-30
 
 ### Added
