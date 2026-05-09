@@ -114,6 +114,17 @@ export default function SettingsScreen() {
             </div>
           </div>
         </div>
+        <div className="flex flex-col gap-2">
+          <h3 className="ml-2">Over de app</h3>
+          <div className="rounded-lg overflow-hidden">
+            <ListTile
+              onClick={() => push("/settings/what-is-new")}
+              disabled={!user}
+            >
+              Wat is er nieuw?
+            </ListTile>
+          </div>
+        </div>
       </div>
     </BaseDetailScreen>
   );
