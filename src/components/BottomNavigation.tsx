@@ -1,24 +1,19 @@
 "use client";
 
 import { useAuth } from "@/contexts/auth";
-import { fetchAllAccountNotApprovedUsers } from "@/services/firebase/accounts";
+import { fetchAllAccounts } from "@/services/firebase/accounts";
+import { accountsCollection } from "@/services/firebase/firebase";
+import { Approval } from "@/types/approval";
 import { Role } from "@/types/role";
+import { getFontAwesomeIconForBadge } from "@/utils/getFontAwesomeIconForBadge";
 import {
-  fa1,
-  fa2,
-  fa3,
-  fa4,
-  fa5,
-  fa6,
-  fa7,
-  fa8,
-  fa9,
   faGear,
   faHouse,
   faPeopleGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { skipToken, useQuery } from "@tanstack/react-query";
+import { query, where } from "firebase/firestore";
 import { usePathname, useRouter } from "next/navigation";
 
 export function BottomNavigation() {
@@ -37,7 +32,13 @@ export function BottomNavigation() {
     queryKey: ["not-approved-user-number"],
     queryFn:
       user && (role === Role.Advisor || role === Role.Chairman)
-        ? () => fetchAllAccountNotApprovedUsers()
+        ? () =>
+            fetchAllAccounts(
+              query(
+                accountsCollection,
+                where("approval", "==", Approval.Unknown),
+              ),
+            )
         : skipToken,
     staleTime: 30 * 60 * 1000,
   });
@@ -83,29 +84,4 @@ export function BottomNavigation() {
       })}
     </nav>
   );
-}
-
-function getFontAwesomeIconForBadge(number: number) {
-  switch (number) {
-    case 1:
-      return fa1;
-    case 2:
-      return fa2;
-    case 3:
-      return fa3;
-    case 4:
-      return fa4;
-    case 5:
-      return fa5;
-    case 6:
-      return fa6;
-    case 7:
-      return fa7;
-    case 8:
-      return fa8;
-    case 9:
-      return fa9;
-    default:
-      return fa9;
-  }
 }

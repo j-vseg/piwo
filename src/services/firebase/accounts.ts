@@ -4,10 +4,10 @@ import {
   doc,
   getDoc,
   getDocs,
-  query,
   setDoc,
   updateDoc,
-  where,
+  type DocumentData,
+  type Query,
 } from "firebase/firestore";
 import { accountsCollection, db } from "./firebase";
 import {
@@ -125,32 +125,20 @@ export async function updateAccountProfile(
   }
 }
 
-export async function fetchAllAccountNotApprovedUsers(): Promise<
-  { id: string; firstName: string; lastName: string }[]
+export async function fetchAllAccounts(
+  accountsQuery?: Query<DocumentData>,
+): Promise<
+  {
+    id: string;
+    firstName: string;
+    lastName: string;
+    approval: Approval;
+    role: Role;
+  }[]
 > {
-  const notApprovedQuery = query(
-    accountsCollection,
-    where("approval", "==", Approval.Unknown),
-  );
-  const querySnapshot = await getDocs(notApprovedQuery);
+  const usersSnapshot = await getDocs(accountsQuery ?? accountsCollection);
 
-  return querySnapshot.docs.map((accountDoc) => {
-    const data = accountDoc.data();
-
-    return {
-      id: accountDoc.id,
-      firstName: data.firstName,
-      lastName: data.lastName,
-    };
-  });
-}
-
-export async function fetchAllAccounts(): Promise<
-  { id: string; firstName: string; lastName: string; approval: Approval }[]
-> {
-  const usersSnapshot = await getDocs(accountsCollection);
-
-  return usersSnapshot.docs.map((accountDoc) => {
+  const accounts = usersSnapshot.docs.map((accountDoc) => {
     const data = accountDoc.data();
 
     return {
@@ -158,8 +146,13 @@ export async function fetchAllAccounts(): Promise<
       firstName: data.firstName,
       lastName: data.lastName,
       approval: data.approval,
+      role: data.role,
     };
   });
+
+  return accounts.sort((a, b) =>
+    a.firstName.localeCompare(b.firstName, "nl", { sensitivity: "base" }),
+  );
 }
 
 export async function deleteUserAccount(
