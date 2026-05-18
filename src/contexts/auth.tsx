@@ -12,10 +12,11 @@ import { auth } from "@/services/firebase/firebase";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { getAccount } from "@/services/firebase/accounts";
 import { Role } from "@/types/role";
+import { Approval } from "@/types/approval";
 
 interface AuthContextType {
   user: User | null;
-  isApproved: boolean | null;
+  approval: Approval | null;
   role: Role;
   isLoading: boolean;
 }
@@ -52,7 +53,7 @@ export function AuthProvider({
 
   const value: AuthContextType = {
     user,
-    isApproved: accountData?.isApproved ?? null,
+    approval: accountData?.approval ?? Approval.Unknown,
     role: accountData?.role ?? Role.Lid,
     isLoading: authLoading || accountLoading,
   };

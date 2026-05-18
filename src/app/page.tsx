@@ -4,18 +4,19 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import OnboardingScreen from "@/domians/onboarding/onboarding";
 import VerificationScreen from "@/domians/verification/verification";
+import { Approval } from "@/types/approval";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect } from "react";
 
 export default function Home() {
-  const { user, isApproved, isLoading } = useAuth();
+  const { user, approval, isLoading } = useAuth();
   const { replace } = useRouter();
 
   useLayoutEffect(() => {
-    if (user && isApproved) {
+    if (user && approval === Approval.Accepted) {
       replace("/home");
     }
-  }, [user, isApproved, replace]);
+  }, [user, approval, replace]);
 
   if (isLoading) {
     return (
@@ -29,7 +30,10 @@ export default function Home() {
     return <OnboardingScreen />;
   }
 
-  if (user && !isApproved) {
+  if (
+    user &&
+    (approval === Approval.Declined || approval === Approval.Unknown)
+  ) {
     return <VerificationScreen />;
   }
 

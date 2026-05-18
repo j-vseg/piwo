@@ -19,6 +19,7 @@ import {
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import { FirebaseError } from "firebase/app";
 import { Role } from "@/types/role";
+import { Approval } from "@/types/approval";
 
 export async function getAllAccountsDisplayNames(): Promise<
   Record<string, string>
@@ -47,13 +48,13 @@ export async function createUser(
   await setDoc(doc(accountsCollection, userId), {
     firstName: firstname,
     lastName: lastname,
-    isApproved: false,
+    approval: Approval.Unknown,
     role: Role.Lid,
   });
 }
 
 export async function getAccount(userId: string): Promise<{
-  isApproved: boolean;
+  approval: Approval;
   firstName: string;
   lastName: string;
   role: Role;
@@ -62,7 +63,7 @@ export async function getAccount(userId: string): Promise<{
 
   if (docSnap.exists()) {
     return docSnap.data() as {
-      isApproved: boolean;
+      approval: Approval;
       firstName: string;
       lastName: string;
       role: Role;
@@ -84,6 +85,23 @@ export async function updateAccountRole(
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
       "Er is iets misgegaan bij het bijwerken van de rol, probeer het later nog eens",
+    );
+    throw new Error(customMessage);
+  }
+}
+
+export async function updateAccountApproval(
+  userId: string,
+  approval: Approval,
+): Promise<void> {
+  try {
+    await updateDoc(doc(accountsCollection, userId), {
+      approval: approval,
+    });
+  } catch (error) {
+    const customMessage = getFirebaseErrorMessage(
+      error as FirebaseError,
+      "Er is iets misgegaan bij het bijwerken van de goedkeuring, probeer het later nog eens",
     );
     throw new Error(customMessage);
   }
@@ -112,7 +130,7 @@ export async function fetchAllAccountNotApprovedUsers(): Promise<
 > {
   const notApprovedQuery = query(
     accountsCollection,
-    where("isApproved", "==", false),
+    where("approval", "==", Approval.Unknown),
   );
   const querySnapshot = await getDocs(notApprovedQuery);
 
@@ -121,8 +139,25 @@ export async function fetchAllAccountNotApprovedUsers(): Promise<
 
     return {
       id: accountDoc.id,
-      firstName: data.firstName ?? "",
-      lastName: data.lastName ?? "",
+      firstName: data.firstName,
+      lastName: data.lastName,
+    };
+  });
+}
+
+export async function fetchAllAccounts(): Promise<
+  { id: string; firstName: string; lastName: string; approval: Approval }[]
+> {
+  const usersSnapshot = await getDocs(accountsCollection);
+
+  return usersSnapshot.docs.map((accountDoc) => {
+    const data = accountDoc.data();
+
+    return {
+      id: accountDoc.id,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      approval: data.approval,
     };
   });
 }
