@@ -3,6 +3,7 @@ import Button from "@/components/Button";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { updateAccountApproval } from "@/services/firebase/accounts";
 import { Approval } from "@/types/approval";
+import { getFontAwesomeIconForBadge } from "@/utils/getFontAwesomeIconForBadge";
 import { faCheck, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,27 +19,25 @@ export default function ApprovalOverview({
 }) {
     const queryClient = useQueryClient();
 
-    const {
-        isPending, error, mutate
-    } = useMutation({
-    mutationFn: ({
+    const { isPending, isError, error, mutate } = useMutation({
+      mutationFn: ({
         userId,
         approval,
-    }: {
+      }: {
         userId: string;
         approval: Approval;
-    }) => updateAccountApproval(userId, approval),
-    onSuccess: () => {
+      }) => updateAccountApproval(userId, approval),
+      onSuccess: () => {
         queryClient.invalidateQueries({
-            queryKey: ["not-approved-user-number"],
+          queryKey: ["not-approved-user-number"],
         });
         queryClient.invalidateQueries({
-            queryKey: ["not-approved-users"],
+          queryKey: ["not-approved-users"],
         });
-    },
-    onError: (error) => {
+      },
+      onError: (error) => {
         console.log(error);
-    },
+      },
     });
 
     const handleApproval = (userId: string, firstname: string, approval: Approval) => {
@@ -49,7 +48,22 @@ export default function ApprovalOverview({
 
     return (
       <div className="flex flex-col gap-4">
-        <h2>Wachten op toelating</h2>
+        <div className="flex items-center gap-2.5">
+          <h2>Wachten op toelating</h2>
+          {!isError && data && data.length > 0 && (
+            <div className="bg-error rounded-full w-5 h-5 flex items-center justify-center">
+              <FontAwesomeIcon
+                icon={getFontAwesomeIconForBadge(data.length)}
+                size="sm"
+                className={`max-h-2! text-white font-bold`}
+                shake
+              />
+              {data.length > 9 && (
+                <p className="text-white text-[8px]! -ml-1">+</p>
+              )}
+            </div>
+          )}
+        </div>
         {error && (
           <Alert type="danger" size="small">
             {error?.message ?? "Er is een onbekende fout opgetreden"}
@@ -69,7 +83,9 @@ export default function ApprovalOverview({
                   <Button
                     className="bg-background-success! rounded-md px-1.5! py-0.5!"
                     isPending={isPending}
-                    onClick={() => handleApproval(user.id, user.firstName, Approval.Accepted)}
+                    onClick={() =>
+                      handleApproval(user.id, user.firstName, Approval.Accepted)
+                    }
                   >
                     <FontAwesomeIcon
                       icon={faCheck}
@@ -80,7 +96,9 @@ export default function ApprovalOverview({
                   <Button
                     className="bg-background-error! rounded-md px-1.5! py-0.5!"
                     isPending={isPending}
-                    onClick={() => handleApproval(user.id, user.firstName, Approval.Declined)}
+                    onClick={() =>
+                      handleApproval(user.id, user.firstName, Approval.Declined)
+                    }
                   >
                     <FontAwesomeIcon
                       icon={faX}

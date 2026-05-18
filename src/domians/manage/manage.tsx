@@ -39,6 +39,14 @@ export default function ManageScreen() {
           )}
         </div>
       </div>
+
+      {data && data.length > 0 && (
+        <div className="w-full flex justify-center">
+          <div className="w-full max-w-3xl p-4 flex flex-col gap-4">
+            <ManagementOverview />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
