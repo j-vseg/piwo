@@ -1,3 +1,5 @@
+import { error } from "console";
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
@@ -13,6 +15,7 @@ module.exports = {
           100: "#fff5eb",
           200: "#ffd9ad",
           success: "#d3f7d1",
+          error: "#fdd9d7",
         },
         greyYellow: "#CDC0B4",
         pastelOrange: "#FFBA86",

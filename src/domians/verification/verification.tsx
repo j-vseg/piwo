@@ -10,9 +10,10 @@ import { Alert } from "@/components/Alert";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { useAuth } from "@/contexts/auth";
 import { getRandomEventColor } from "@/utils/getRandomEventColor";
+import { Approval } from "@/types/approval";
 
 export default function VerificationScreen() {
-  const { user } = useAuth();
+  const { user, approval } = useAuth();
   const randomEventColor = getRandomEventColor();
 
   const {
@@ -70,9 +71,20 @@ export default function VerificationScreen() {
             </Alert>
           )}
           <Lottie animationData={waiting} className="w-80" loop />
-          <p>Je toelating is nog in verwerking, dit kan even duren...</p>
+          <p
+            dangerouslySetInnerHTML={{
+              __html:
+                approval === Approval.Unknown
+                  ? "Je toelating is nog in verwerking, dit kan even duren..."
+                  : "Je toelating is helaas <span class='text-error font-bold'>afgewezen</span>. Verwijder je account of neem contact op met de vereniging voor meer informatie.",
+            }}
+          />
           <div className="flex flex-col gap-1 w-full">
-            <Button onClick={handleLogout} isPending={isPendingLogout}>
+            <Button
+              onClick={handleLogout}
+              isPending={isPendingLogout}
+              disabled={!user || approval === Approval.Declined}
+            >
               Uitloggen
             </Button>
             <Button

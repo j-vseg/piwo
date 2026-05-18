@@ -4,8 +4,10 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { accountsCollection, db } from "./firebase";
 import {
@@ -16,6 +18,8 @@ import {
 } from "firebase/auth";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import { FirebaseError } from "firebase/app";
+import { Role } from "@/types/role";
+import { Approval } from "@/types/approval";
 
 export async function getAllAccountsDisplayNames(): Promise<
   Record<string, string>
@@ -44,26 +48,63 @@ export async function createUser(
   await setDoc(doc(accountsCollection, userId), {
     firstName: firstname,
     lastName: lastname,
-    isApproved: false,
+    approval: Approval.Unknown,
+    role: Role.Lid,
   });
 }
 
 export async function getAccount(userId: string): Promise<{
-  isApproved: boolean;
-  firstName?: string;
-  lastName?: string;
+  approval: Approval;
+  firstName: string;
+  lastName: string;
+  role: Role;
 } | null> {
   const docSnap = await getDoc(doc(accountsCollection, userId));
 
   if (docSnap.exists()) {
     return docSnap.data() as {
-      isApproved: boolean;
-      firstName?: string;
-      lastName?: string;
+      approval: Approval;
+      firstName: string;
+      lastName: string;
+      role: Role;
     };
   }
 
   return null;
+}
+
+export async function updateAccountRole(
+  userId: string,
+  role: Role,
+): Promise<void> {
+  try {
+    await updateDoc(doc(accountsCollection, userId), {
+      role: role,
+    });
+  } catch (error) {
+    const customMessage = getFirebaseErrorMessage(
+      error as FirebaseError,
+      "Er is iets misgegaan bij het bijwerken van de rol, probeer het later nog eens",
+    );
+    throw new Error(customMessage);
+  }
+}
+
+export async function updateAccountApproval(
+  userId: string,
+  approval: Approval,
+): Promise<void> {
+  try {
+    await updateDoc(doc(accountsCollection, userId), {
+      approval: approval,
+    });
+  } catch (error) {
+    const customMessage = getFirebaseErrorMessage(
+      error as FirebaseError,
+      "Er is iets misgegaan bij het bijwerken van de goedkeuring, probeer het later nog eens",
+    );
+    throw new Error(customMessage);
+  }
 }
 
 export async function updateAccountProfile(
@@ -82,6 +123,43 @@ export async function updateAccountProfile(
     );
     throw new Error(customMessage);
   }
+}
+
+export async function fetchAllAccountNotApprovedUsers(): Promise<
+  { id: string; firstName: string; lastName: string }[]
+> {
+  const notApprovedQuery = query(
+    accountsCollection,
+    where("approval", "==", Approval.Unknown),
+  );
+  const querySnapshot = await getDocs(notApprovedQuery);
+
+  return querySnapshot.docs.map((accountDoc) => {
+    const data = accountDoc.data();
+
+    return {
+      id: accountDoc.id,
+      firstName: data.firstName,
+      lastName: data.lastName,
+    };
+  });
+}
+
+export async function fetchAllAccounts(): Promise<
+  { id: string; firstName: string; lastName: string; approval: Approval }[]
+> {
+  const usersSnapshot = await getDocs(accountsCollection);
+
+  return usersSnapshot.docs.map((accountDoc) => {
+    const data = accountDoc.data();
+
+    return {
+      id: accountDoc.id,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      approval: data.approval,
+    };
+  });
 }
 
 export async function deleteUserAccount(

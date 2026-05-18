@@ -37,8 +37,8 @@ export default function SignUpScreen() {
   } = useMutation({
     mutationFn: (data: SignUpFormData) =>
       createAuthUser(data.email, data.password),
-    onSuccess: ({ user, data }) => {
-      mutateCreateFirestore({ user, data });
+    onSuccess: ({ user }, variables) => {
+      mutateCreateFirestore({ user, data: { firstname: variables.firstname, lastname: variables.lastname } });
     },
   });
 
@@ -51,8 +51,12 @@ export default function SignUpScreen() {
   } = useMutation({
     mutationFn: (data: {
       user: User;
-      data: { email: string; password: string };
-    }) => createFirestoreUser(data.user, data.data.email, data.data.password),
+      data: {
+        firstname: string;
+        lastname: string;
+      };
+    }) =>
+      createFirestoreUser(data.user, data.data.firstname, data.data.lastname),
     onSuccess: () => {
       queryClient.clear();
       setTimeout(() => replace("/"), 3000);
