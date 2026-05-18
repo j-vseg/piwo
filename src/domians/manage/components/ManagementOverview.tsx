@@ -1,5 +1,6 @@
 import { Alert } from "@/components/Alert";
 import Button from "@/components/Button";
+import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import {
@@ -111,27 +112,35 @@ export default function ManagementOverview() {
         ) : (
           <>
             <div className="flex flex-col gap-2">
-              {data?.map((account) => (
-                <div
-                  key={account.id}
-                  className={`py-2 px-4 bg-white rounded-lg flex justify-between items-center cursor-pointer ${user?.uid === account.id ? "bg-gray-200! cursor-not-allowed pointer-events-none" : ""}`}
-                >
-                  <div className="flex gap-4">
-                    <input
-                      {...methods.register("accounts", {
-                        validate: (value) =>
-                          (Array.isArray(value) && value.length > 0) ||
-                          "Selecteer minimaal één gebruiker",
-                      })}
-                      type="checkbox"
-                      value={account.id}
-                      disabled={user?.uid === account.id}
-                    />
-                    <p>{`${account.firstName} ${account.lastName}`}</p>
-                  </div>
-                  <p className="text-gray-500 text-sm">{account.role}</p>
+              {!data || data.length <= 0 ? (
+                <div className="py-2 px-4 bg-white rounded-lg">
+                  <ErrorIndicator type="small">
+                    Er zijn geen gebruikers gevonden
+                  </ErrorIndicator>
                 </div>
-              ))}
+              ) : (
+                data.map((account) => (
+                  <div
+                    key={account.id}
+                    className={`py-2 px-4 bg-white rounded-lg flex justify-between items-center cursor-pointer ${user?.uid === account.id ? "bg-gray-200! cursor-not-allowed pointer-events-none" : ""}`}
+                  >
+                    <div className="flex gap-4">
+                      <input
+                        {...methods.register("accounts", {
+                          validate: (value) =>
+                            (Array.isArray(value) && value.length > 0) ||
+                            "Selecteer minimaal één gebruiker",
+                        })}
+                        type="checkbox"
+                        value={account.id}
+                        disabled={user?.uid === account.id}
+                      />
+                      <p>{`${account.firstName} ${account.lastName}`}</p>
+                    </div>
+                    <p className="text-gray-500 text-sm">{account.role}</p>
+                  </div>
+                ))
+              )}
             </div>
             {accountsError && (
               <div className="flex flex-row gap-2 items-center" role="alert">
