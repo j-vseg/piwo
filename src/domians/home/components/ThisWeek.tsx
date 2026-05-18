@@ -3,7 +3,7 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { fetchAllOccurrences } from "@/services/firebase/events";
 import { Event } from "@/components/Event";
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { endOfWeek, startOfToday } from "date-fns";
+import { endOfWeek, startOfToday, startOfWeek } from "date-fns";
 import { ErrorIndicator } from "@/components/ErrorIndicator";
 import { useAuth } from "@/contexts/auth";
 import { isUserMissingAvailability } from "@/services/firebase/availability";
@@ -11,6 +11,9 @@ import { useMemo } from "react";
 
 export function ThisWeek() {
   const { user } = useAuth();
+  const startOfTheWeek = useMemo(() => {
+    return startOfWeek(startOfToday(), { weekStartsOn: 1 });
+  }, []);
   const endOfTheWeek = useMemo(() => {
     return endOfWeek(startOfToday(), { weekStartsOn: 1 });
   }, []);
@@ -19,14 +22,12 @@ export function ThisWeek() {
     isLoading: isLoadingThisWeek,
     isError: isErrorThisWeek,
   } = useQuery({
-    queryKey: ["this-week-occurrences", endOfTheWeek],
+    queryKey: ["this-week-occurrences", startOfTheWeek, endOfTheWeek],
     queryFn: user
-      ? () => fetchAllOccurrences(undefined, endOfTheWeek)
+      ? () => fetchAllOccurrences(startOfTheWeek, endOfTheWeek)
       : skipToken,
     staleTime: 30 * 60 * 1000,
   });
-
-  console.log("thisWeekOccurrences", thisWeekOccurrences);
 
   const {
     data: userIsMissingAvailability,
