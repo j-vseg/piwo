@@ -1,7 +1,9 @@
 "use client";
 
 import { useAuth } from "@/contexts/auth";
-import { fetchAllAccountNotApprovedUsers } from "@/services/firebase/accounts";
+import { fetchAllAccounts } from "@/services/firebase/accounts";
+import { accountsCollection } from "@/services/firebase/firebase";
+import { Approval } from "@/types/approval";
 import { Role } from "@/types/role";
 import {
   fa1,
@@ -19,6 +21,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { skipToken, useQuery } from "@tanstack/react-query";
+import { query, where } from "firebase/firestore";
 import { usePathname, useRouter } from "next/navigation";
 
 export function BottomNavigation() {
@@ -37,7 +40,13 @@ export function BottomNavigation() {
     queryKey: ["not-approved-user-number"],
     queryFn:
       user && (role === Role.Advisor || role === Role.Chairman)
-        ? () => fetchAllAccountNotApprovedUsers()
+        ? () =>
+            fetchAllAccounts(
+              query(
+                accountsCollection,
+                where("approval", "==", Approval.Unknown),
+              ),
+            )
         : skipToken,
     staleTime: 30 * 60 * 1000,
   });
