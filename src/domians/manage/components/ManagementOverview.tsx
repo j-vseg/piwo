@@ -7,6 +7,7 @@ import {
   fetchAllAccounts,
   updateAccountRole,
 } from "@/services/firebase/accounts";
+import { Approval } from "@/types/approval";
 import { Role } from "@/types/role";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -122,7 +123,7 @@ export default function ManagementOverview() {
                 data.map((account) => (
                   <div
                     key={account.id}
-                    className={`py-2 px-4 bg-white rounded-lg flex justify-between items-center cursor-pointer ${user?.uid === account.id ? "bg-gray-200! cursor-not-allowed pointer-events-none" : ""}`}
+                    className={`py-2 px-4 bg-white rounded-lg gap-4 justify-between flex items-center cursor-pointer ${user?.uid === account.id || account.approval === Approval.Declined || account.approval === Approval.Unknown ? "bg-gray-200! cursor-not-allowed pointer-events-none" : ""}`}
                   >
                     <div className="flex gap-4">
                       <input
@@ -133,9 +134,29 @@ export default function ManagementOverview() {
                         })}
                         type="checkbox"
                         value={account.id}
-                        disabled={user?.uid === account.id}
+                        disabled={
+                          user?.uid === account.id ||
+                          account.approval === Approval.Declined ||
+                          account.approval === Approval.Unknown
+                        }
                       />
-                      <p>{`${account.firstName} ${account.lastName}`}</p>
+                      <div className="flex flex-col justify-start">
+                        <p>{`${account.firstName} ${account.lastName}`}</p>
+                        {user?.uid === account.id && (
+                          <p className="text-gray-500 text-[10px]!">
+                            Je kan je eigen rol niet aanpassen
+                          </p>
+                        )}
+                        {(account.approval === Approval.Declined ||
+                          account.approval === Approval.Unknown) && (
+                          <p className="text-gray-500 text-[10px]!">
+                            Gebruiker is{" "}
+                            {account.approval === Approval.Declined
+                              ? "afgewezen"
+                              : "in afwachting"}
+                          </p>
+                        )}
+                      </div>
                     </div>
                     <p className="text-gray-500 text-sm">{account.role}</p>
                   </div>

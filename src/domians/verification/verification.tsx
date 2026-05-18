@@ -3,18 +3,36 @@
 import Lottie from "lottie-react";
 import waiting from "@/../assets/waiting.json";
 import Button from "@/components/Button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { signOut } from "firebase/auth";
-import { auth } from "@/services/firebase/firebase";
+import { accountsCollection, auth } from "@/services/firebase/firebase";
 import { Alert } from "@/components/Alert";
-import { deleteUserAccount } from "@/services/firebase/accounts";
+import {
+  deleteUserAccount,
+  fetchAllAccounts,
+} from "@/services/firebase/accounts";
 import { useAuth } from "@/contexts/auth";
 import { getRandomEventColor } from "@/utils/getRandomEventColor";
 import { Approval } from "@/types/approval";
+import { query, where } from "firebase/firestore";
+import { Role } from "@/types/role";
 
 export default function VerificationScreen() {
   const { user, approval } = useAuth();
   const randomEventColor = getRandomEventColor();
+
+  const { data: authUsers } = useQuery({
+    queryKey: ["auth-users"],
+    queryFn: () =>
+      fetchAllAccounts(
+        query(
+          accountsCollection,
+          where("role", "in", [Role.Advisor, Role.Chairman]),
+        ),
+      ),
+    staleTime: 30 * 60 * 1000,
+  });
+  const authUsersNames = formatAuthRoleFirstNames(authUsers);
 
   const {
     mutate: mutateLogout,
@@ -75,8 +93,8 @@ export default function VerificationScreen() {
             dangerouslySetInnerHTML={{
               __html:
                 approval === Approval.Unknown
-                  ? "Je toelating is nog in verwerking, dit kan even duren..."
-                  : "Je toelating is helaas <span class='text-error font-bold'>afgewezen</span>. Verwijder je account of neem contact op met de vereniging voor meer informatie.",
+                  ? `Je toelating is nog in verwerking, neem contact op met ${authUsersNames} om dit proces te versnellen.`
+                  : `Je toelating is helaas <span class='text-error font-bold'>afgewezen</span>. Verwijder je account of neem contact op met ${authUsersNames} voor meer informatie.`,
             }}
           />
           <div className="flex flex-col gap-1 w-full">
@@ -101,3 +119,26 @@ export default function VerificationScreen() {
     </div>
   );
 }
+
+
+const formatAuthRoleFirstNames = (
+  accounts?: Array<{ firstName: string }>,
+): string => {
+  if (!accounts || accounts.length === 0) {
+    return "";
+  }
+
+  const names = accounts
+    .map((account) => account.firstName?.trim())
+    .filter((name): name is string => Boolean(name));
+
+  if (names.length <= 1) {
+    return names[0] ?? "";
+  }
+
+  if (names.length === 2) {
+    return `${names[0]} & ${names[1]}`;
+  }
+
+  return `${names.slice(0, -1).join(", ")} of ${names[names.length - 1]}`;
+};

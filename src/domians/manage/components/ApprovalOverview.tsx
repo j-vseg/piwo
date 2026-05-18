@@ -34,6 +34,9 @@ export default function ApprovalOverview({
         queryClient.invalidateQueries({
           queryKey: ["not-approved-users"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["accounts"],
+        });
       },
       onError: (error) => {
         console.log(error);

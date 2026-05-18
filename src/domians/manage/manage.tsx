@@ -29,24 +29,20 @@ export default function ManageScreen() {
 
   return (
     <div className="flex flex-col flex-1 gap-4 w-full">
-      <div className="w-full bg-pastelGreen">
+      <div className="w-full bg-pastelGreen min-h-48">
         <div className="w-full max-w-3xl mx-auto px-4 py-8 flex flex-col gap-10 mb-6">
           <h1 className="text-3xl font-bold">Beheren</h1>
-          {data && data.length > 0 ? (
-            <ApprovalOverview data={data} />
-          ) : (
-            <ManagementOverview />
-          )}
+          {data && data.length > 0 && <ApprovalOverview data={data} />}
         </div>
       </div>
 
-      {data && data.length > 0 && (
-        <div className="w-full flex justify-center">
-          <div className="w-full max-w-3xl p-4 flex flex-col gap-4">
-            <ManagementOverview />
-          </div>
+      <div className="w-full flex justify-center">
+        <div
+          className={`w-full max-w-3xl p-4 flex flex-col gap-4 ${data && data.length <= 0 && "-mt-30"}`}
+        >
+          <ManagementOverview />
         </div>
-      )}
+      </div>
     </div>
   );
 }
