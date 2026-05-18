@@ -4,8 +4,10 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { accountsCollection, db } from "./firebase";
 import {
@@ -103,6 +105,26 @@ export async function updateAccountProfile(
     );
     throw new Error(customMessage);
   }
+}
+
+export async function fetchAllAccountNotApprovedUsers(): Promise<
+  { id: string; firstName: string; lastName: string }[]
+> {
+  const notApprovedQuery = query(
+    accountsCollection,
+    where("isApproved", "==", false),
+  );
+  const querySnapshot = await getDocs(notApprovedQuery);
+
+  return querySnapshot.docs.map((accountDoc) => {
+    const data = accountDoc.data();
+
+    return {
+      id: accountDoc.id,
+      firstName: data.firstName ?? "",
+      lastName: data.lastName ?? "",
+    };
+  });
 }
 
 export async function deleteUserAccount(
