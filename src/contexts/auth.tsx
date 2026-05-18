@@ -11,10 +11,12 @@ import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/services/firebase/firebase";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { getAccount } from "@/services/firebase/accounts";
+import { Role } from "@/types/role";
 
 interface AuthContextType {
   user: User | null;
   isApproved: boolean | null;
+  role: Role;
   isLoading: boolean;
 }
 
@@ -51,6 +53,7 @@ export function AuthProvider({
   const value: AuthContextType = {
     user,
     isApproved: accountData?.isApproved ?? null,
+    role: accountData?.role ?? Role.Lid,
     isLoading: authLoading || accountLoading,
   };
 

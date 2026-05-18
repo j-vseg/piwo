@@ -16,6 +16,7 @@ import {
 } from "firebase/auth";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import { FirebaseError } from "firebase/app";
+import { Role } from "@/types/role";
 
 export async function getAllAccountsDisplayNames(): Promise<
   Record<string, string>
@@ -45,25 +46,45 @@ export async function createUser(
     firstName: firstname,
     lastName: lastname,
     isApproved: false,
+    role: Role.Lid,
   });
 }
 
 export async function getAccount(userId: string): Promise<{
   isApproved: boolean;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
+  role: Role;
 } | null> {
   const docSnap = await getDoc(doc(accountsCollection, userId));
 
   if (docSnap.exists()) {
     return docSnap.data() as {
       isApproved: boolean;
-      firstName?: string;
-      lastName?: string;
+      firstName: string;
+      lastName: string;
+      role: Role;
     };
   }
 
   return null;
+}
+
+export async function updateAccountRole(
+  userId: string,
+  role: Role,
+): Promise<void> {
+  try {
+    await updateDoc(doc(accountsCollection, userId), {
+      role: role,
+    });
+  } catch (error) {
+    const customMessage = getFirebaseErrorMessage(
+      error as FirebaseError,
+      "Er is iets misgegaan bij het bijwerken van de rol, probeer het later nog eens",
+    );
+    throw new Error(customMessage);
+  }
 }
 
 export async function updateAccountProfile(
