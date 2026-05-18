@@ -42,28 +42,29 @@ export function WhatsNewCard({
         <h2 className="text-h3 mb-1.5">v{WHATS_NEW_VERSION}</h2>
         <ul className="list-disc space-y-2 pl-5 text-body_md text-gray-800">
           <li>
-            Deze popup!
+            Goedkeuringsflow voor nieuwe leden
             <br />{" "}
             <span className="text-sm text-gray-500">
-              Deze pop-up houdt je op de hoogte van de laatste wijzigingen en is
-              altijd beschikbaar in de instellingen.
+              De voorzitter en adviseurs kunnen nu gebruikers goedkeuren of
+              afwijzen via het beheer-overzicht. Dit overzicht is alleen
+              zichtbaar voor gebruikers met een rol die dit toestaat.
             </span>
           </li>
           <li>
-            Nieuwe &apos;Later&apos; status toegevoegd
+            Gebruikers beheren
             <br />{" "}
             <span className="text-sm text-gray-500">
-              Ben je een keer later? Geen probleem! Je kunt nu opgeven dat je
-              later bent door dubbel te klikken op de &apos;Aanwezig&apos; knop
-              van een activiteit.
+              De voorzitter en adviseurs kunnen nu ook de rollen van gebruikers
+              aanpassen via het beheer-overzicht. Dit overzicht is alleen
+              zichtbaar voor gebruikers met een rol die dit toestaat.
             </span>
           </li>
           <li>
-            Persoonlijke gegevens wijzigen
+            Verbeteringen op home scherm
             <br />{" "}
             <span className="text-sm text-gray-500">
-              Je kan nu je persoonlijke gegevens wijzigen in de instellingen,
-              zoals je voornaam, achternaam, e-mailadres en wachtwoord.
+              Niet-herhalende activiteiten blijven correct zichtbaar tot hun
+              eindtijd.
             </span>
           </li>
         </ul>

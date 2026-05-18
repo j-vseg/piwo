@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-05-18
+
+### Added
+
+- Account approval flow for board roles (Advisor and Chairman): review pending users and approve or decline from the manage area (@j-vseg).
+- Bulk role management: assign a role to multiple selected users from the manage overview (@j-vseg).
+
+### Fixed
+
+- Home “This week” now keeps non-recurring events visible until their end date (@j-vseg).
+- Reduced startup flash on the app entry flow (@j-vseg).
+
 ## [2.1.0] - 2026-05-09
 
 ### Added
