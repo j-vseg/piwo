@@ -15,9 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { query, where } from "firebase/firestore";
 import { usePathname, useRouter } from "next/navigation";
-import { memo } from "react";
 
-function BottomNavigationContent() {
+export function BottomNavigation() {
   const { user, role } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -86,5 +85,3 @@ function BottomNavigationContent() {
     </nav>
   );
 }
-
-export const BottomNavigation = memo(BottomNavigationContent);
