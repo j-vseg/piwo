@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   ReactNode,
+  useMemo,
 } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/services/firebase/firebase";
@@ -51,12 +52,15 @@ export function AuthProvider({
     return unsubscribe;
   }, []);
 
-  const value: AuthContextType = {
-    user,
-    approval: accountData?.approval ?? Approval.Unknown,
-    role: accountData?.role ?? Role.Lid,
-    isLoading: authLoading || accountLoading,
-  };
+  const value: AuthContextType = useMemo(
+    () => ({
+      user,
+      approval: accountData?.approval ?? Approval.Unknown,
+      role: accountData?.role ?? Role.Lid,
+      isLoading: authLoading || accountLoading,
+    }),
+    [user, accountData, authLoading, accountLoading],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
