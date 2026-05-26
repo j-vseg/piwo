@@ -10,13 +10,14 @@ export function generateOccurrences(
   until: Date = addWeeks(from, 10),
 ): EventOccurrence[] {
   const occurrences: EventOccurrence[] = [];
+  const effectiveFrom = from < new Date() ? new Date() : from;
   const eventStart = event.startDate.toDate();
   const eventEnd = event.endDate.toDate();
   const durationMs = eventEnd.getTime() - eventStart.getTime();
 
   // Non-recurring event
   if (!event.recurrence) {
-    if (eventEnd >= from && eventStart <= until) {
+    if (eventEnd >= effectiveFrom && eventStart <= until) {
       occurrences.push({
         id: event.id,
         eventId: event.id,
@@ -31,16 +32,21 @@ export function generateOccurrences(
 
   // Find first occurrence whose endTime >= from
   let current =
-    eventStart >= from
+    eventStart >= effectiveFrom
       ? new Date(eventStart)
-      : findNextOccurrenceEndingAfter(eventStart, from, recurrence, durationMs);
+      : findNextOccurrenceEndingAfter(
+          eventStart,
+          effectiveFrom,
+          recurrence,
+          durationMs,
+        );
 
   while (current <= until) {
     const occurrenceStart = new Date(current);
     const occurrenceEnd = new Date(occurrenceStart.getTime() + durationMs);
 
     // Include only if it overlaps [from, until]
-    if (occurrenceEnd >= from && occurrenceStart <= until) {
+    if (occurrenceEnd >= effectiveFrom && occurrenceStart <= until) {
       occurrences.push({
         id: `${event.id}-${occurrenceStart.toISOString()}`,
         eventId: event.id,

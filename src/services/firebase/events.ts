@@ -11,6 +11,7 @@ import {
 import { Event } from "@/types/event";
 import { generateOccurrences } from "@/utils/generateOccurences";
 import { EventOccurrence } from "@/types/eventOccurence";
+import { Recurrence } from "@/types/recurrence";
 import { db, eventsCollection } from "./firebase";
 import { addWeeks, endOfYesterday, format, subWeeks } from "date-fns";
 
@@ -18,6 +19,67 @@ type GroupedOccurrences = {
   date: Date;
   occurrences: EventOccurrence[];
 }[];
+
+function getNextOccurrence(currentDate: Date, recurrence: Recurrence): Date {
+  const next = new Date(currentDate);
+
+  if (recurrence === Recurrence.Daily) {
+    next.setDate(next.getDate() + 1);
+  } else if (recurrence === Recurrence.Weekly) {
+    next.setDate(next.getDate() + 7);
+  } else if (recurrence === Recurrence.Monthly) {
+    const originalDay = currentDate.getDate();
+    const targetMonth = currentDate.getMonth() + 1;
+    const targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
+    const normalizedMonth = targetMonth % 12;
+
+    const lastDayOfTargetMonth = new Date(
+      targetYear,
+      normalizedMonth + 1,
+      0,
+    ).getDate();
+
+    const actualDay = Math.min(originalDay, lastDayOfTargetMonth);
+
+    next.setFullYear(targetYear, normalizedMonth, actualDay);
+  }
+
+  return next;
+}
+
+function generatePastRecurringOccurrences(
+  event: Event,
+  from: Date,
+  until: Date,
+): EventOccurrence[] {
+  if (!event.recurrence) {
+    return [];
+  }
+
+  const occurrences: EventOccurrence[] = [];
+  const eventStart = event.startDate.toDate();
+  const eventEnd = event.endDate.toDate();
+  const durationMs = eventEnd.getTime() - eventStart.getTime();
+  let current = new Date(eventStart);
+
+  while (current <= until) {
+    const occurrenceStart = new Date(current);
+    const occurrenceEnd = new Date(occurrenceStart.getTime() + durationMs);
+
+    if (occurrenceEnd >= from && occurrenceStart <= until) {
+      occurrences.push({
+        id: `${event.id}-${occurrenceStart.toISOString()}`,
+        eventId: event.id,
+        startTime: Timestamp.fromDate(occurrenceStart),
+        endTime: Timestamp.fromDate(occurrenceEnd),
+      });
+    }
+
+    current = getNextOccurrence(current, event.recurrence);
+  }
+
+  return occurrences;
+}
 
 export async function fetchAllEvents(): Promise<Event[]> {
   const snapshot = await getDocs(eventsCollection);
@@ -31,6 +93,7 @@ export async function fetchAllOccurrencesGroupedByDate(
   from: Date = new Date(),
   until: Date = addWeeks(from, 10),
 ): Promise<GroupedOccurrences> {
+  const effectiveFrom = from < new Date() ? new Date() : from;
   const queries = [
     // All recurring events (need to generate occurrences within date range)
     getDocs(query(eventsCollection, where("recurrence", "!=", null))),
@@ -40,8 +103,8 @@ export async function fetchAllOccurrencesGroupedByDate(
       query(
         eventsCollection,
         where("recurrence", "==", null),
-        where("startDate", ">=", Timestamp.fromDate(from)),
-        where("endDate", "<=", Timestamp.fromDate(until)),
+        where("startDate", "<=", Timestamp.fromDate(until)),
+        where("endDate", ">=", Timestamp.fromDate(effectiveFrom)),
       ),
     ),
   ];
@@ -97,6 +160,7 @@ export async function fetchAllOccurrences(
   from: Date = new Date(),
   until: Date = addWeeks(from, 10),
 ): Promise<EventOccurrence[]> {
+  const effectiveFrom = from < new Date() ? new Date() : from;
   const queries = [
     // All recurring events (need to generate occurrences within date range)
     getDocs(query(eventsCollection, where("recurrence", "!=", null))),
@@ -106,8 +170,8 @@ export async function fetchAllOccurrences(
       query(
         eventsCollection,
         where("recurrence", "==", null),
-        where("startDate", ">=", Timestamp.fromDate(from)),
-        where("endDate", "<=", Timestamp.fromDate(until)),
+        where("startDate", "<=", Timestamp.fromDate(until)),
+        where("endDate", ">=", Timestamp.fromDate(effectiveFrom)),
       ),
     ),
   ];
@@ -209,7 +273,7 @@ export async function deletePastEvents(): Promise<void> {
 
     // Generate past occurrences
     const pastDate = subWeeks(now, 10);
-    const pastOccurrences = generateOccurrences(
+    const pastOccurrences = generatePastRecurringOccurrences(
       event,
       pastDate,
       endOfYesterday(),
