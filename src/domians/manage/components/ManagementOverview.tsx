@@ -5,6 +5,7 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useAuth } from "@/contexts/auth";
 import {
   fetchAllAccounts,
+  updateAccountApproval,
   updateAccountRole,
 } from "@/services/firebase/accounts";
 import { Approval } from "@/types/approval";
@@ -52,21 +53,53 @@ export default function ManagementOverview() {
     },
   });
 
+  const {
+    isPending: isRevokePending,
+    error: revokeError,
+    mutate: revokeMutate,
+  } = useMutation({
+    mutationFn: async ({ userId }: { userId: string }) => {
+      await Promise.all([
+        updateAccountRole(userId, Role.Lid),
+        updateAccountApproval(userId, Approval.Unknown),
+      ]);
+    },
+    onSuccess: () => {
+      methods.reset();
+      queryClient.invalidateQueries({
+        queryKey: ["accounts"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["not-approved-user-number"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["not-approved-users"],
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   function handleFormSubmit(formData: FieldValues) {
     const selectedAccounts = formData.accounts as string[];
-    const selectedRole = formData.role as Role;
+    const selectedAction = formData.role as string;
 
     if (
       confirm(
-        `Weet je zeker dat je ${selectedAccounts.length} gebruiker(s) naar ${selectedRole} wil wijzigen?`,
+        `Weet je zeker dat je ${selectedAccounts.length} gebruiker(s) naar ${selectedAction} wil wijzigen?`,
       )
     ) {
       selectedAccounts.forEach((accountId) => {
         const account = data?.find(
           (acc: { id: string }) => acc.id === accountId,
         );
-        if (account?.role !== selectedRole) {
-          mutate({ userId: accountId, role: selectedRole });
+        if (account?.role !== selectedAction) {
+          if (selectedAction === "Revoke") {
+            revokeMutate({ userId: accountId });
+          } else {
+            mutate({ userId: accountId, role: selectedAction as Role });
+          }
         }
       });
     }
@@ -75,23 +108,28 @@ export default function ManagementOverview() {
   return (
     <div className="flex flex-col gap-4">
       <h2>Gebruikers beheren</h2>
-      {error && (
+      {(error || revokeError) && (
         <Alert type="danger" size="small">
-          {error?.message ?? "Er is een onbekende fout opgetreden"}
+          {error?.message ??
+            revokeError?.message ??
+            "Er is een onbekende fout opgetreden"}
         </Alert>
       )}
       <div className="p-4 pt-2 bg-white rounded-lg flex flex-col gap-0.5">
-        <label className="text-[12px]">Selecteer een rol*</label>
+        <label className="text-[12px]">Selecteer een actie*</label>
         <select
-          {...methods.register("role", { required: "Selecteer een rol" })}
+          {...methods.register("role", { required: "Selecteer een actie" })}
           className="w-full text-gray-500"
         >
           <option value="">Selecteer..</option>
           {Object.values(Role).map((role) => (
             <option key={role} value={role}>
-              {role}
+              Maak &apos;{role}&apos;
             </option>
           ))}
+          <option value="Revoke" data-description="Toegang intrekken">
+            Toegang intrekken (Toegang tot app intrekken)
+          </option>
         </select>
         {roleError && (
           <div className="flex flex-row gap-2 items-center mt-1" role="alert">
@@ -175,8 +213,8 @@ export default function ManagementOverview() {
             )}
           </>
         )}
-        <Button type="submit" isPending={isPending}>
-          Aanpassen
+        <Button type="submit" isPending={isPending || isRevokePending}>
+          Actie uitvoeren
         </Button>
       </form>
     </div>
