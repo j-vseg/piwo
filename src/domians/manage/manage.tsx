@@ -15,7 +15,7 @@ export default function ManageScreen() {
   const { data } = useQuery({
     queryKey: ["not-approved-users"],
     queryFn:
-      user && (role === Role.Advisor || role === Role.Chairman)
+      user && (role === Role.Advisor || role === Role.BoardMember)
         ? () =>
             fetchAllAccounts(
               query(

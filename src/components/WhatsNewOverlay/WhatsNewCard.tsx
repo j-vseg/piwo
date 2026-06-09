@@ -45,7 +45,7 @@ export function WhatsNewCard({
             Goedkeuringsflow voor nieuwe leden
             <br />{" "}
             <span className="text-sm text-gray-500">
-              De voorzitter en adviseurs kunnen nu gebruikers goedkeuren of
+              Het bestuur en adviseurs kunnen nu gebruikers goedkeuren of
               afwijzen via het beheer-overzicht. Dit overzicht is alleen
               zichtbaar voor gebruikers met een rol die dit toestaat.
             </span>
@@ -54,7 +54,7 @@ export function WhatsNewCard({
             Gebruikers beheren
             <br />{" "}
             <span className="text-sm text-gray-500">
-              De voorzitter en adviseurs kunnen nu ook de rollen van gebruikers
+              Het bestuur en adviseurs kunnen nu ook de rollen van gebruikers
               aanpassen via het beheer-overzicht. Dit overzicht is alleen
               zichtbaar voor gebruikers met een rol die dit toestaat.
             </span>

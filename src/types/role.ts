@@ -1,5 +1,5 @@
 export enum Role {
   Lid = "Lid",
-  Chairman = "Voorzitter",
+  BoardMember = "Bestuur",
   Advisor = "Adviseur",
 }

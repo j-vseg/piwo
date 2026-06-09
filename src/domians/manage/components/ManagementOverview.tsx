@@ -34,7 +34,7 @@ export default function ManagementOverview() {
   const { data, isLoading } = useQuery({
     queryKey: ["accounts"],
     queryFn:
-      user && (role === Role.Advisor || role === Role.Chairman)
+      user && (role === Role.Advisor || role === Role.BoardMember)
         ? () => fetchAllAccounts()
         : skipToken,
     staleTime: 30 * 60 * 1000,

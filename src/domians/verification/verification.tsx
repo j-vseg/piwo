@@ -27,7 +27,7 @@ export default function VerificationScreen() {
       fetchAllAccounts(
         query(
           accountsCollection,
-          where("role", "in", [Role.Advisor, Role.Chairman]),
+          where("role", "in", [Role.Advisor, Role.BoardMember]),
         ),
       ),
     staleTime: 30 * 60 * 1000,

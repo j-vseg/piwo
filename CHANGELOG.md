@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- Account approval flow for board roles (Advisor and Chairman): review pending users and approve or decline from the manage area (@j-vseg).
+- Account approval flow for board roles (Advisor and BoardMember): review pending users and approve or decline from the manage area (@j-vseg).
 - Bulk role management: assign a role to multiple selected users from the manage overview (@j-vseg).
 
 ### Fixed

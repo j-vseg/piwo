@@ -20,9 +20,10 @@ export function BottomNavigation() {
   const { user, role } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const canViewManage = role === Role.Advisor || role === Role.BoardMember;
   const navItems = [
     { label: "Home", icon: faHouse, href: "/home" },
-    ...(role === Role.Advisor || role === Role.Chairman
+    ...(canViewManage
       ? [{ label: "Beheren", icon: faPeopleGroup, href: "/manage" }]
       : []),
     { label: "Instellingen", icon: faGear, href: "/settings" },
@@ -31,7 +32,7 @@ export function BottomNavigation() {
   const { data, isError } = useQuery({
     queryKey: ["not-approved-user-number"],
     queryFn:
-      user && (role === Role.Advisor || role === Role.Chairman)
+      user && canViewManage
         ? () =>
             fetchAllAccounts(
               query(
