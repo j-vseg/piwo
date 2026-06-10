@@ -123,6 +123,12 @@ export default function SettingsScreen() {
             >
               Wat is er nieuw?
             </ListTile>
+            <ListTile
+              onClick={() => push("/settings/feature-list")}
+              disabled={!user}
+            >
+              Wat kun je doen met de Piwo app?
+            </ListTile>
           </div>
         </div>
       </div>
