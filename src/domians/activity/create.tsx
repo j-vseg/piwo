@@ -84,7 +84,7 @@ export function CreateActivityPage() {
       <div className="flex flex-col gap-6">
         <div className="bg-white p-4 rounded-3xl flex flex-col gap-4">
           <div>
-            <h2>{name || "???"}</h2>
+            <h2 className="wrap-break-word leading-[0.85] mb-2">{name || "???"}</h2>
             <DisplayTime
               startTime={startTime}
               endTime={endTime}
