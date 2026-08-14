@@ -42,29 +42,19 @@ export function WhatsNewCard({
         <h2 className="text-h3 mb-1.5">v{WHATS_NEW_VERSION}</h2>
         <ul className="list-disc space-y-2 pl-5 text-body_md text-gray-800">
           <li>
-            Goedkeuringsflow voor nieuwe leden
+            Toegang intrekken
             <br />{" "}
             <span className="text-sm text-gray-500">
-              Het bestuur en adviseurs kunnen nu gebruikers goedkeuren of
-              afwijzen via het beheer-overzicht. Dit overzicht is alleen
-              zichtbaar voor gebruikers met een rol die dit toestaat.
+              Het bestuur en adviseurs kunnen nu de toegang van een gebruiker
+              intrekken via het beheer-overzicht.
             </span>
           </li>
           <li>
-            Gebruikers beheren
+            Bugfixes
             <br />{" "}
             <span className="text-sm text-gray-500">
-              Het bestuur en adviseurs kunnen nu ook de rollen van gebruikers
-              aanpassen via het beheer-overzicht. Dit overzicht is alleen
-              zichtbaar voor gebruikers met een rol die dit toestaat.
-            </span>
-          </li>
-          <li>
-            Verbeteringen op home scherm
-            <br />{" "}
-            <span className="text-sm text-gray-500">
-              Niet-herhalende activiteiten blijven correct zichtbaar tot hun
-              eindtijd.
+              Herhalende activiteiten worden niet meer getoond na hun einddatum
+              en meerregelige titels worden nu correct weergegeven.
             </span>
           </li>
         </ul>

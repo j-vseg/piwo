@@ -18,7 +18,7 @@ const FEATURE_SECTIONS: { title: string; items: string[] }[] = [
     items: [
       "Beheer-tab is alleen zichtbaar voor adviseurs en bestuur",
       "Adviseurs en bestuur kunnen nieuwe gebruikers goedkeuren of afkeuren",
-      "Adviseurs en bestuur kunnen gebruikers zijn toegangen intrekken",
+      "Adviseurs en bestuur kunnen de toegang van een gebruiker intrekken",
       "Adviseurs en bestuur kunnen rollen toewijzen aan gebruikers",
     ],
   },

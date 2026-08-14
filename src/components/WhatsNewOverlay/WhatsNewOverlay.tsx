@@ -8,7 +8,7 @@ import { WhatsNewCard } from "./WhatsNewCard";
  * Bump this semver whenever you change the release notes below. Users who
  * have not acknowledged this version yet get the sheet once on their next open.
  */
-export const WHATS_NEW_VERSION = "2.2.0";
+export const WHATS_NEW_VERSION = "2.2.2";
 
 const STORAGE_KEY = "piwo_whats_new_ack_version";
 

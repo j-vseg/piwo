@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [2.2.2] - 2026-08-14
+
+### Fixed
+
+- Multiline activity titles now render correctly (@j-vseg).
+- Header layout fixes (@j-vseg).
+
+## [2.2.1] - 2026-06-20
+
+### Added
+
+- Revoke access: board members and advisors can now revoke a user's access from the manage overview (@j-vseg).
+- In-app feature list screen showing all current capabilities (@j-vseg).
+
+### Changed
+
+- Renamed role "Chairman" to "BoardMember" for clarity (@j-vseg).
+
+### Fixed
+
+- Recurring events no longer display occurrences past their end date (@j-vseg).
+
 ## [2.2.0] - 2026-05-18
 
 ### Added
