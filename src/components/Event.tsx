@@ -19,7 +19,7 @@ export function Event({ occurrence }: { occurrence: EventOccurrence }) {
           : undefined
       }
     >
-      <h4 className="font-semibold font-poppins!">{occurrence.name}</h4>
+      <h4 className="font-semibold font-poppins! wrap-break-word leading-[0.85] mb-2">{occurrence.name}</h4>
       <p className="text-sm text-gray-500">
         {`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
       </p>

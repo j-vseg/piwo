@@ -10,13 +10,12 @@ export function Header({
   canGoBack?: boolean;
 }) {
   return (
-    <div className={`relative h-16 flex justify-center items-center ${color}`}>
-      {canGoBack && (
-        <div className="absolute left-4">
-          <BackButton color={color} />
-        </div>
-      )}
-      <h1 className="text-center">{title}</h1>
+    <div className={`h-16 grid grid-cols-[5rem_1fr_5rem] items-center ${color}`}>
+      <div className="pl-4">
+        {canGoBack && <BackButton color={color} />}
+      </div>
+      <h1 className={`text-center line-clamp-2 ${(title?.length ?? 0) > 25 ? "pt-4 leading-[0.85]" : ""}`}>{title}</h1>
+      <div />
     </div>
   );
 }
