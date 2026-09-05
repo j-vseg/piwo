@@ -43,3 +43,6 @@ next-env.d.ts
 # Firebase
 .firebaserc
 .firebase
+
+# Caudio
+.claude/claudio.settings.local.json
