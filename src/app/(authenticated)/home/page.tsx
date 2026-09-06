@@ -7,8 +7,6 @@ import {
 import HomeScreen from "@/domians/home/home";
 import { endOfWeek, nextMonday, startOfToday, startOfWeek } from "date-fns";
 
-export const dynamic = "force-dynamic";
-
 export default async function Home() {
   const queryClient = getQueryClient();
 
