@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 import { Category } from "./category";
 import { Recurrence } from "./recurrence";
 
@@ -7,9 +6,8 @@ export interface Event {
   name: string;
   category: Category;
 
-  // Base start/end (first occurrence)
-  startDate: Timestamp;
-  endDate: Timestamp;
+  startDate: Date;
+  endDate: Date;
 
   recurrence?: Recurrence;
 }

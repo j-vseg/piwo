@@ -35,8 +35,8 @@ export function Card({
   const defaultValues = useMemo(() => {
     return {
       name: selected.name,
-      startTime: selected.startDate.toDate(),
-      endTime: selected.endDate.toDate(),
+      startTime: selected.startDate,
+      endTime: selected.endDate,
       category: selected.category,
     };
   }, [selected]);
@@ -134,9 +134,9 @@ export function Card({
               </div>
               <p className="text-sm text-gray-500">
                 {selected.recurrence &&
-                  `${selected.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(selected.startDate.toDate(), `${selected.recurrence === Recurrence.Weekly ? "EEEE" : selected.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(selected.endDate.toDate(), isSameDay(selected.endDate.toDate(), selected.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
+                  `${selected.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(selected.startDate, `${selected.recurrence === Recurrence.Weekly ? "EEEE" : selected.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(selected.endDate, isSameDay(selected.endDate, selected.startDate) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
                 {!selected.recurrence &&
-                  `${format(selected.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(selected.endDate.toDate(), isSameDay(selected.endDate.toDate(), selected.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
+                  `${format(selected.startDate, "d LLLL HH:mm", { locale: nl })} - ${format(selected.endDate, isSameDay(selected.endDate, selected.startDate) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
               </p>
             </div>
 

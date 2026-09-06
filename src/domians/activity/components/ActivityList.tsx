@@ -57,8 +57,8 @@ export function ActivityList({
                       >
                         <h3 className="font-semibold">{event.name}</h3>
                         <DisplayTime
-                          startTime={event.startDate.toDate()}
-                          endTime={event.endDate.toDate()}
+                          startTime={event.startDate}
+                          endTime={event.endDate}
                           recurrence={event.recurrence}
                         />
                       </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import QueryProvider from "@/contexts/queryProvider";
+import QueryProvider from "@/contexts/QueryProvider";
 import { AuthProvider } from "@/contexts/auth";
 import { auth } from "@/services/firebase/firebase";
 

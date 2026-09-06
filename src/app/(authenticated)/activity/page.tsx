@@ -1,25 +1,36 @@
-"use client";
-
-import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import getQueryClient from "@/lib/getQueryClient";
+import { getOccurrenceById } from "@/services/firebase/events";
+import { getOccurrenceAvailability } from "@/services/firebase/availability";
 import { ActivityPage } from "@/domians/activity/activity";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
-function ActivityPageContent() {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id") || undefined;
+export default async function Activity({
+  searchParams,
+}: {
+  searchParams: Promise<{ id?: string }>;
+}) {
+  const { id } = await searchParams;
 
   if (!id) {
     return null;
   }
 
-  return <ActivityPage id={id} />;
-}
+  const queryClient = getQueryClient();
 
-export default function Activity() {
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["occurrence", id],
+      queryFn: () => getOccurrenceById(id),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["occurrenceAvailability", id],
+      queryFn: () => getOccurrenceAvailability(id),
+    }),
+  ]);
+
   return (
-    <Suspense fallback={<LoadingIndicator />}>
-      <ActivityPageContent />
-    </Suspense>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ActivityPage id={id} />
+    </HydrationBoundary>
   );
 }

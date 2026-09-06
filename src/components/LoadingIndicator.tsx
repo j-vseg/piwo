@@ -1,3 +1,5 @@
+"use client";
+
 import Lottie from "lottie-react";
 import loadingDots from "@/../assets/loading_dots.json";
 

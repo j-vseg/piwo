@@ -1,3 +1,5 @@
+"use client";
+
 import { AvailabilitySelector } from "@/components/AvailabilitySelector";
 import { BaseDetailScreen } from "@/components/BaseDetailScreen/BaseDetailScreen";
 import { ErrorIndicator } from "@/components/ErrorIndicator";
@@ -52,7 +54,7 @@ export function ActivityPage({ id }: { id: string }) {
               <div>
                 <h2>{occurrence.name}</h2>
                 <p className="text-sm text-gray-500">
-                  {`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
+                  {`${format(occurrence.startTime, "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime, isSameDay(occurrence.endTime, occurrence.startTime) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
                 </p>
               </div>
               <AvailabilitySelector occurrenceId={occurrence.id} />

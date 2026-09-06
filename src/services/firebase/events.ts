@@ -12,6 +12,7 @@ import { Event } from "@/types/event";
 import { generateOccurrences } from "@/utils/generateOccurences";
 import { EventOccurrence } from "@/types/eventOccurence";
 import { Recurrence } from "@/types/recurrence";
+import { Category } from "@/types/category";
 import { db, eventsCollection } from "./firebase";
 import { addWeeks, endOfYesterday, format, subWeeks } from "date-fns";
 
@@ -57,8 +58,8 @@ function generatePastRecurringOccurrences(
   }
 
   const occurrences: EventOccurrence[] = [];
-  const eventStart = event.startDate.toDate();
-  const eventEnd = event.endDate.toDate();
+  const eventStart = event.startDate;
+  const eventEnd = event.endDate;
   const durationMs = eventEnd.getTime() - eventStart.getTime();
   let current = new Date(eventStart);
 
@@ -70,8 +71,8 @@ function generatePastRecurringOccurrences(
       occurrences.push({
         id: `${event.id}-${occurrenceStart.toISOString()}`,
         eventId: event.id,
-        startTime: Timestamp.fromDate(occurrenceStart),
-        endTime: Timestamp.fromDate(occurrenceEnd),
+        startTime: occurrenceStart,
+        endTime: occurrenceEnd,
       });
     }
 
@@ -81,12 +82,22 @@ function generatePastRecurringOccurrences(
   return occurrences;
 }
 
+function docToEvent(docSnap: { id: string; data: () => Record<string, unknown> }): Event {
+  const data = docSnap.data();
+  return {
+    id: docSnap.id,
+    name: data.name as string,
+    category: data.category as Category,
+    startDate: (data.startDate as Timestamp).toDate(),
+    endDate: (data.endDate as Timestamp).toDate(),
+    recurrence: data.recurrence as Recurrence | undefined,
+  };
+}
+
 export async function fetchAllEvents(): Promise<Event[]> {
   const snapshot = await getDocs(eventsCollection);
-  const events = snapshot.docs.map(
-    (doc) => ({ ...doc.data(), id: doc.id }) as Event,
-  );
-  return events.sort((a, b) => a.startDate.toMillis() - b.startDate.toMillis());
+  const events = snapshot.docs.map(docToEvent);
+  return events.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 }
 
 export async function fetchAllOccurrencesGroupedByDate(
@@ -119,31 +130,24 @@ export async function fetchAllOccurrencesGroupedByDate(
 
   const occurrences = Array.from(allEventDocs.values())
     .flatMap((eventDoc) => {
-      const eventData = eventDoc.data() as Event;
-      const occurrences = generateOccurrences(
-        {
-          ...eventData,
-          id: eventDoc.id,
-        },
-        from,
-        until,
-      );
+      const event = docToEvent(eventDoc);
+      const occs = generateOccurrences(event, from, until);
 
-      return occurrences.map((occ) => ({
+      return occs.map((occ) => ({
         ...occ,
-        name: eventData.name,
-        category: eventData.category,
+        name: event.name,
+        category: event.category,
       }));
     })
     .sort(
-      (a, b) => a.startTime.toDate().getTime() - b.startTime.toDate().getTime(),
+      (a, b) => a.startTime.getTime() - b.startTime.getTime(),
     );
 
   // Group by date
   const groups: { [key: string]: EventOccurrence[] } = {};
 
   occurrences.forEach((occ) => {
-    const dateKey = format(occ.startTime.toDate(), "yyyy-MM-dd");
+    const dateKey = format(occ.startTime, "yyyy-MM-dd");
     if (!groups[dateKey]) {
       groups[dateKey] = [];
     }
@@ -186,23 +190,16 @@ export async function fetchAllOccurrences(
 
   const occurrences = Array.from(allEventDocs.values())
     .flatMap((eventDoc) => {
-      const eventData = eventDoc.data() as Event;
+      const event = docToEvent(eventDoc);
 
-      return generateOccurrences(
-        {
-          ...eventData,
-          id: eventDoc.id,
-        },
-        from,
-        until,
-      ).map((occ) => ({
+      return generateOccurrences(event, from, until).map((occ) => ({
         ...occ,
-        name: eventData.name,
-        category: eventData.category,
+        name: event.name,
+        category: event.category,
       }));
     })
     .sort(
-      (a, b) => a.startTime.toDate().getTime() - b.startTime.toDate().getTime(),
+      (a, b) => a.startTime.getTime() - b.startTime.getTime(),
     );
 
   return occurrences;
@@ -222,7 +219,7 @@ export async function getOccurrenceById(
     return null;
   }
 
-  const eventData = { ...eventDoc.data(), id: eventDoc.id } as Event;
+  const eventData = docToEvent(eventDoc);
 
   // Non-recurring event (occurrence ID = event ID)
   if (parts.length === 1) {
@@ -237,20 +234,19 @@ export async function getOccurrenceById(
   }
 
   // Recurring event - extract start time from occurrence ID
-  const startTimeString = parts.slice(1).join("-"); // Handle ISO strings with dashes
+  const startTimeString = parts.slice(1).join("-");
   const startTime = new Date(startTimeString);
 
-  // Generate the specific occurrence
   const durationMs =
-    eventData.endDate.toDate().getTime() -
-    eventData.startDate.toDate().getTime();
+    eventData.endDate.getTime() -
+    eventData.startDate.getTime();
   const endTime = new Date(startTime.getTime() + durationMs);
 
   return {
     id: occurrenceId,
     eventId: eventData.id,
-    startTime: Timestamp.fromDate(startTime),
-    endTime: Timestamp.fromDate(endTime),
+    startTime,
+    endTime,
     name: eventData.name,
     category: eventData.category,
   };
@@ -268,8 +264,7 @@ export async function deletePastEvents(): Promise<void> {
 
   // Clean up availability for past occurrences of recurring events
   for (const eventDoc of recurringEventsSnapshot.docs) {
-    const eventData = eventDoc.data() as Event;
-    const event = { ...eventData, id: eventDoc.id };
+    const event = docToEvent(eventDoc);
 
     // Generate past occurrences
     const pastDate = subWeeks(now, 10);

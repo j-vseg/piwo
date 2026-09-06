@@ -76,7 +76,15 @@ export async function deleteEvent(id: string): Promise<void> {
   const eventRef = doc(eventsCollection, id);
   const eventSnap = await getDoc(eventRef);
   if (!eventSnap.exists()) return;
-  const event = { ...eventSnap.data(), id: eventSnap.id } as Event;
+  const data = eventSnap.data();
+  const event: Event = {
+    id: eventSnap.id,
+    name: data.name,
+    category: data.category,
+    startDate: data.startDate.toDate(),
+    endDate: data.endDate.toDate(),
+    recurrence: data.recurrence,
+  };
 
   if (event.recurrence) {
     const from = subWeeks(new Date(), 2);

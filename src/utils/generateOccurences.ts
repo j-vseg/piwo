@@ -1,6 +1,5 @@
 import { EventOccurrence } from "@/types/eventOccurence";
 import { Event } from "@/types/event";
-import { Timestamp } from "firebase/firestore";
 import { Recurrence } from "@/types/recurrence";
 import { addWeeks } from "date-fns";
 
@@ -11,8 +10,8 @@ export function generateOccurrences(
 ): EventOccurrence[] {
   const occurrences: EventOccurrence[] = [];
   const effectiveFrom = from < new Date() ? new Date() : from;
-  const eventStart = event.startDate.toDate();
-  const eventEnd = event.endDate.toDate();
+  const eventStart = event.startDate;
+  const eventEnd = event.endDate;
   const durationMs = eventEnd.getTime() - eventStart.getTime();
 
   // Non-recurring event
@@ -45,13 +44,12 @@ export function generateOccurrences(
     const occurrenceStart = new Date(current);
     const occurrenceEnd = new Date(occurrenceStart.getTime() + durationMs);
 
-    // Include only if it overlaps [from, until]
     if (occurrenceEnd >= effectiveFrom && occurrenceStart <= until) {
       occurrences.push({
         id: `${event.id}-${occurrenceStart.toISOString()}`,
         eventId: event.id,
-        startTime: Timestamp.fromDate(occurrenceStart),
-        endTime: Timestamp.fromDate(occurrenceEnd),
+        startTime: occurrenceStart,
+        endTime: occurrenceEnd,
       });
     }
 
