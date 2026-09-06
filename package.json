@@ -2,6 +2,7 @@
   "name": "piwo",
   "version": "2.2.2",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
