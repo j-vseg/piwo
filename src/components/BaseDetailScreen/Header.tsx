@@ -14,7 +14,7 @@ export function Header({
       <div className="pl-4">
         {canGoBack && <BackButton color={color} />}
       </div>
-      <h1 className={`text-center line-clamp-2 ${(title?.length ?? 0) > 25 ? "pt-4 leading-[0.85]" : ""}`}>{title}</h1>
+      <h1 className={`text-center line-clamp-2 ${(title?.length ?? 0) > 20 ? "pt-4 leading-[0.85]" : ""}`}>{title}</h1>
       <div />
     </div>
   );
