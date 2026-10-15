@@ -8,10 +8,6 @@
     "scheme": "piwo",
     "userInterfaceStyle": "automatic",
     "platforms": ["android", "web"],
-    // "ios": {
-    //   "icon": "./assets/expo.icon",
-    //   "bundleIdentifier": "com.j-vseg.piwo"
-    // },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -20,7 +16,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.j_vseg.piwo"
+      "package": "com.j_vseg.piwo",
+      "googleServicesFile": "./google-services/google-services.json"
     },
     "web": {
       "output": "static",
@@ -34,6 +31,16 @@
           "backgroundColor": "#208AEF",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "dynamic"
+          }
         }
       ]
     ],
