@@ -43,3 +43,6 @@ next-env.d.ts
 # Firebase
 .firebaserc
 .firebase
+
+# Claude
+claudio.settings.local.json
