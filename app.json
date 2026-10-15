@@ -16,7 +16,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.j_vseg.piwo",
+      "package": "com.scoutingmierlo.piwo",
       "googleServicesFile": "./google-services/google-services.json"
     },
     "web": {

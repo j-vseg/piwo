@@ -6,6 +6,8 @@
     "@expo/ui": "57.0.24",
     "@react-native-firebase/app": "26.4.0",
     "@react-native-firebase/auth": "26.4.0",
+    "@react-native-firebase/firestore": "26.4.0",
+    "date-fns": "4.4.0",
     "expo": "57.0.29",
     "expo-build-properties": "~57.0.22",
     "expo-constants": "57.0.22",
@@ -21,6 +23,7 @@
     "expo-symbols": "57.0.3",
     "expo-system-ui": "57.0.4",
     "expo-web-browser": "57.0.3",
+    "firebase": "^13.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
@@ -33,6 +36,8 @@
   },
   "devDependencies": {
     "@types/react": "19.2.2",
+    "eslint": "9.39.5",
+    "eslint-config-expo": "57.0.2",
     "typescript": "6.0.3"
   },
   "scripts": {
