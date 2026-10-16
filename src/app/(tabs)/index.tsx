@@ -6,7 +6,6 @@ import {
 } from "@react-native-firebase/firestore";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -34,25 +33,23 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.header}>
-          <ThemedText type="h1">{t("tabs.home")}</ThemedText>
-          <Pressable onPress={() => signOut(getAuth())}>
-            <ThemedText>{t("home.signOut")}</ThemedText>
-          </Pressable>
-        </ThemedView>
-        <FlatList
-          data={events}
-          keyExtractor={(item) => item.id}
-          style={styles.list}
-          renderItem={({ item }) => (
-            <ThemedView style={styles.item}>
-              <ThemedText>{item.name}</ThemedText>
-            </ThemedView>
-          )}
-        />
-      </SafeAreaView>
+    <ThemedView type="container" style={styles.container}>
+      <ThemedView style={styles.header}>
+        <ThemedText type="h1">{t("tabs.home")}</ThemedText>
+        <Pressable onPress={() => signOut(getAuth())}>
+          <ThemedText>{t("home.signOut")}</ThemedText>
+        </Pressable>
+      </ThemedView>
+      <FlatList
+        data={events}
+        keyExtractor={(item) => item.id}
+        style={styles.list}
+        renderItem={({ item }) => (
+          <ThemedView style={styles.item}>
+            <ThemedText>{item.name}</ThemedText>
+          </ThemedView>
+        )}
+      />
     </ThemedView>
   );
 }
@@ -61,11 +58,6 @@ const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
     backgroundColor: theme.colors.primitives.quinary,
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: theme.spacing(6),
-    gap: theme.spacing(4),
   },
   header: {
     flexDirection: "row",
