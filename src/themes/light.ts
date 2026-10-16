@@ -1,50 +1,180 @@
-export const lightColors = {
-  brand: {
-    primary: "#880D1E",
-    secondary: "#ffd9ad",
-    accent: "#acb58d",
+const colors = {
+  button: {
+    primaryActiveBG: "#880D1E",
   },
-  semantic: {
-    success: "#4caf50",
-    successBg: "#d3f7d1",
-    error: "#f44336",
-    errorBg: "#fdd9d7",
-    warning: "#ff9800",
-    info: "#E6F3FF",
+  dark: {
+    black: "#000000",
+    black_4: "#0000000A",
+    black_10: "#0000001A",
+    greyDark: "#333333",
+    greyLight: "#EFF1F5",
+    greyMedium: "#6F6B7A",
   },
-  surface: {
-    base: "#fcfbfb",
-    elevated: "#f3f1f1",
-    selected: "#e6e3e3",
-    muted: "#CDC0B4",
+  light: {
+    offWhite: "#FFFEFC",
+    white: "#FFFFFF",
+    white_40: "#FFFFFF66",
   },
-  content: {
-    primary: "#080606",
-    secondary: "#60646C",
-    inverse: "#fcfbfb",
+  primitives: {
+    primary: "#ffd9ad",
+    secondary: "#acb58d",
+    quinary: "#FCF8EC",
+  },
+  transparent: "#FFFFFF00",
+  warnings: {
+    negative: "#FFD3B1",
+    neutral: "#DAEBF3",
+    positive: "#E0F1E9",
+  },
+};
+
+const fontWeight = {
+  extraLight: 200 as const,
+  light: 400 as const,
+  medium: 500 as const,
+  semiBold: 600 as const,
+  bold: 700 as const,
+};
+
+export const font = {
+  crimsonPro: {
+    semibold: {
+      fontFamily: "Crimson Pro",
+      fontWeight: fontWeight.semiBold,
+    },
+  },
+  inter: {
+    regular: {
+      fontFamily: "Poppins",
+      fontWeight: fontWeight.light,
+    },
+    regularLarge: {
+      fontFamily: "Poppins",
+      fontWeight: fontWeight.medium,
+    },
+    bold: {
+      fontFamily: "Poppins",
+      fontWeight: fontWeight.bold,
+    },
   },
 } as const;
 
-export const lightShadow = {
-  sm: {
-    shadowColor: "#080606",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+const text = {
+  text: {
+    color: colors.dark["black"],
+    textBreakStrategy: "balanced",
   },
-  md: {
-    shadowColor: "#080606",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+  h1: {
+    fontFamily: font.crimsonPro.semibold.fontFamily,
+    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontSize: 48 as const,
+    letterSpacing: -0.5 as const,
   },
-  lg: {
-    shadowColor: "#080606",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    elevation: 6,
+  h2: {
+    fontFamily: font.crimsonPro.semibold.fontFamily,
+    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontSize: 32 as const,
+    letterSpacing: -0.5 as const,
+  },
+  h3: {
+    fontFamily: font.crimsonPro.semibold.fontFamily,
+    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontSize: 20 as const,
+    letterSpacing: -0.5 as const,
+  },
+  h4: {
+    fontFamily: font.crimsonPro.semibold.fontFamily,
+    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontSize: 18 as const,
+    letterSpacing: -0.5 as const,
+  },
+  h5: {
+    fontFamily: font.crimsonPro.semibold.fontFamily,
+    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontSize: 16 as const,
+    letterSpacing: -0.5 as const,
+  },
+  bodyLargest: {
+    fontFamily: font.inter.regularLarge.fontFamily,
+    fontWeight: font.inter.regularLarge.fontWeight,
+    fontSize: 40 as const,
+  },
+  bodyLarge: {
+    fontFamily: font.inter.regularLarge.fontFamily,
+    fontWeight: font.inter.regularLarge.fontWeight,
+    fontSize: 18 as const,
+  },
+  bodyMedium: {
+    fontFamily: font.inter.regular.fontFamily,
+    fontWeight: font.inter.regular.fontWeight,
+    fontSize: 16 as const,
+  },
+  bodySmall: {
+    fontFamily: font.inter.regular.fontFamily,
+    fontWeight: font.inter.regular.fontWeight,
+    fontSize: 14 as const,
+  },
+  bodySmaller: {
+    fontFamily: font.inter.regular.fontFamily,
+    fontWeight: font.inter.regular.fontWeight,
+    fontSize: 12 as const,
+  },
+  menu: {
+    fontFamily: font.inter.bold.fontFamily,
+    fontWeight: font.inter.bold.fontWeight,
+    fontSize: 11 as const,
+    letterSpacing: 0.2 as const,
+  },
+  button: {
+    fontFamily: font.inter.bold.fontFamily,
+    fontWeight: font.inter.bold.fontWeight,
+    fontSize: 16 as const,
+  },
+  span: {
+    fontFamily: font.inter.regular.fontFamily,
+    fontWeight: font.inter.regular.fontWeight,
+    fontSize: 32 as const,
   },
 } as const;
+
+export const lightTheme = {
+  colors,
+  font,
+  fontWeight,
+  text,
+  tabBar: {
+    inactiveTintColor: colors.dark["black"],
+    activeTintColor: colors.primitives["primary"],
+    backgroundColor: colors.light["white"],
+    shadow: "0px -0.33px 0px rgba(0, 0, 0, 0.1)",
+  },
+  screen: {
+    default: {
+      backgroundColor: colors.primitives["quinary"],
+      headerTintColor: colors.dark["black"],
+    },
+  },
+  button: {
+    primary: {
+      default: {
+        backgroundColor: colors.primitives["primary"],
+        borderColor: colors.primitives["primary"],
+        iconColor: colors.dark["black"],
+        textColor: colors.dark["black"],
+      },
+      active: {
+        backgroundColor: colors.button["primaryActiveBG"],
+        borderColor: colors.button["primaryActiveBG"],
+        iconColor: colors.dark["black"],
+        textColor: colors.dark["black"],
+      },
+      disabled: {
+        backgroundColor: colors.dark["greyLight"],
+        borderColor: colors.dark["greyLight"],
+        iconColor: colors.dark["greyMedium"],
+        textColor: colors.dark["greyMedium"],
+      },
+    },
+  },
+  spacing: (v: number) => v * 4,
+};

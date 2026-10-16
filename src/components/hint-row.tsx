@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./themed-view";
+import { ThemedView } from "./ThemedView";
 
 type HintRowProps = {
   title?: string;
@@ -16,7 +16,7 @@ export function HintRow({
 }: HintRowProps) {
   return (
     <View style={styles.stepRow}>
-      <ThemedText type="small">{title}</ThemedText>
+      <ThemedText type="bodySmall">{title}</ThemedText>
       <ThemedView style={styles.codeSnippet}>
         <ThemedText>{hint}</ThemedText>
       </ThemedView>
@@ -30,8 +30,8 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "space-between",
   },
   codeSnippet: {
-    borderRadius: theme.gap(2),
-    paddingVertical: theme.gap(0.5),
-    paddingHorizontal: theme.gap(2),
+    borderRadius: theme.spacing(2),
+    paddingVertical: theme.spacing(0.5),
+    paddingHorizontal: theme.spacing(2),
   },
 }));

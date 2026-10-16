@@ -4,15 +4,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { ExternalLink } from "@/components/external-link";
-import { ThemedView } from "@/components/themed-view";
 import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function TabTwoScreen() {
   const safeAreaInsets = useSafeAreaInsets();
   const { theme, rt } = useUnistyles();
   const insets = {
     ...safeAreaInsets,
-    bottom: safeAreaInsets.bottom + rt.insets.bottom + theme.gap(4),
+    bottom: safeAreaInsets.bottom + rt.insets.bottom + theme.spacing(4),
   };
 
   const contentPlatformStyle = Platform.select({
@@ -23,8 +23,8 @@ export default function TabTwoScreen() {
       paddingBottom: insets.bottom,
     },
     web: {
-      paddingTop: theme.gap(6),
-      paddingBottom: theme.gap(4),
+      paddingTop: theme.spacing(6),
+      paddingBottom: theme.spacing(4),
     },
   });
 
@@ -32,14 +32,14 @@ export default function TabTwoScreen() {
     <ScrollView
       style={[
         styles.scrollView,
-        { backgroundColor: theme.colors.brand.primary },
+        { backgroundColor: theme.colors.primitives.quinary },
       ]}
       contentInset={insets}
       contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}
     >
       <ThemedView style={styles.container}>
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="subtitle">Explore</ThemedText>
+          <ThemedText>Explore</ThemedText>
           <ThemedText style={styles.centerText}>
             This starter app includes example{"\n"}code to help you get started.
           </ThemedText>
@@ -47,9 +47,9 @@ export default function TabTwoScreen() {
           <ExternalLink href="https://docs.expo.dev" asChild>
             <Pressable style={({ pressed }) => pressed && styles.pressed}>
               <ThemedView style={styles.linkButton}>
-                <ThemedText type="link">Expo documentation</ThemedText>
+                <ThemedText>Expo documentation</ThemedText>
                 <SymbolView
-                  tintColor={theme.colors.content.primary}
+                  tintColor={theme.colors.dark.black}
                   name={{
                     ios: "arrow.up.right.square",
                     android: "link",
@@ -78,10 +78,10 @@ const styles = StyleSheet.create((theme) => ({
     flexGrow: 1,
   },
   titleContainer: {
-    gap: theme.gap(4),
+    gap: theme.spacing(4),
     alignItems: "center",
-    paddingHorizontal: theme.gap(6),
-    paddingVertical: theme.gap(16),
+    paddingHorizontal: theme.spacing(6),
+    paddingVertical: theme.spacing(16),
   },
   centerText: {
     textAlign: "center",
@@ -91,17 +91,17 @@ const styles = StyleSheet.create((theme) => ({
   },
   linkButton: {
     flexDirection: "row",
-    paddingHorizontal: theme.gap(6),
-    paddingVertical: theme.gap(2),
-    borderRadius: theme.gap(8),
+    paddingHorizontal: theme.spacing(6),
+    paddingVertical: theme.spacing(2),
+    borderRadius: theme.spacing(8),
     justifyContent: "center",
-    gap: theme.gap(1),
+    gap: theme.spacing(1),
     alignItems: "center",
   },
   sectionsWrapper: {
-    gap: theme.gap(8),
-    paddingHorizontal: theme.gap(6),
-    paddingTop: theme.gap(4),
+    gap: theme.spacing(8),
+    paddingHorizontal: theme.spacing(6),
+    paddingTop: theme.spacing(4),
   },
   collapsibleContent: {
     alignItems: "center",
@@ -109,8 +109,8 @@ const styles = StyleSheet.create((theme) => ({
   imageTutorial: {
     width: "100%",
     aspectRatio: 296 / 171,
-    borderRadius: theme.gap(4),
-    marginTop: theme.gap(2),
+    borderRadius: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
   imageReact: {
     width: 100,

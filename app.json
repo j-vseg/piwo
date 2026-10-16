@@ -40,6 +40,16 @@
             "useFrameworks": "dynamic"
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/crimson-pro/600SemiBold/CrimsonPro_600SemiBold.ttf",
+            "node_modules/@expo-google-fonts/poppins/400Regular/Poppins_400Regular.ttf",
+            "node_modules/@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf"
+          ]
+        }
       ]
     ],
     "experiments": {

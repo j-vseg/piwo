@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/themed-view";
+import { ThemedView } from "@/components/ThemedView";
 
 export default function SignInScreen() {
   const [email, setEmail] = useState("");
@@ -31,12 +31,10 @@ export default function SignInScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedText type="subtitle">Sign In</ThemedText>
+        <ThemedText>Sign In</ThemedText>
 
         <TextInput
-          style={styles.input}
           placeholder="Email"
-          placeholderTextColor={styles.input.color}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -45,31 +43,21 @@ export default function SignInScreen() {
         />
 
         <TextInput
-          style={styles.input}
           placeholder="Password"
-          placeholderTextColor={styles.input.color}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           autoComplete="password"
         />
 
-        {error ? (
-          <ThemedText type="small" style={styles.errorText}>
-            {error}
-          </ThemedText>
-        ) : null}
+        {error ? <ThemedText>{error}</ThemedText> : null}
 
         <Pressable
           onPress={handleSignIn}
           disabled={loading}
-          style={[styles.button, { opacity: loading ? 0.6 : 1 }]}
+          style={[{ opacity: loading ? 0.6 : 1 }]}
         >
-          {loading ? (
-            <ActivityIndicator color={styles.buttonText.color} />
-          ) : (
-            <ThemedText style={styles.buttonText}>Sign In</ThemedText>
-          )}
+          {loading ? <ActivityIndicator /> : <ThemedText>Sign In</ThemedText>}
         </Pressable>
       </SafeAreaView>
     </ThemedView>
@@ -80,32 +68,12 @@ const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: theme.colors.brand.primary,
+    backgroundColor: theme.colors.primitives.quinary,
   },
   safeArea: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: theme.gap(6),
-    gap: theme.gap(4),
-  },
-  input: {
-    padding: theme.gap(4),
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.surface.elevated,
-    color: theme.colors.content.secondary,
-    ...theme.typography.body,
-  },
-  button: {
-    padding: theme.gap(4),
-    borderRadius: theme.radius.md,
-    alignItems: "center" as const,
-    backgroundColor: theme.colors.content.primary,
-  },
-  buttonText: {
-    color: theme.colors.content.inverse,
-    ...theme.typography.button,
-  },
-  errorText: {
-    color: theme.colors.semantic.error,
+    paddingHorizontal: theme.spacing(6),
+    gap: theme.spacing(4),
   },
 }));

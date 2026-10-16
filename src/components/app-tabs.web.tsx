@@ -11,8 +11,8 @@ import { Pressable, View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { ExternalLink } from "./external-link";
-import { ThemedView } from "./themed-view";
 import { ThemedText } from "./ThemedText";
+import { ThemedView } from "./ThemedView";
 
 export default function AppTabs() {
   return (
@@ -40,7 +40,7 @@ export function TabButton({
   return (
     <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
       <ThemedView style={styles.tabButtonView}>
-        <ThemedText type="small">{children}</ThemedText>
+        <ThemedText type="bodySmall">{children}</ThemedText>
       </ThemedView>
     </Pressable>
   );
@@ -52,7 +52,7 @@ export function CustomTabList(props: TabListProps) {
   return (
     <View {...props} style={styles.tabListContainer}>
       <ThemedView style={styles.innerContainer}>
-        <ThemedText type="smallBold" style={styles.brandText}>
+        <ThemedText style={styles.brandText}>
           Expo Starter
         </ThemedText>
 
@@ -60,9 +60,9 @@ export function CustomTabList(props: TabListProps) {
 
         <ExternalLink href="https://docs.expo.dev" asChild>
           <Pressable style={styles.externalPressable}>
-            <ThemedText type="link">Docs</ThemedText>
+            <ThemedText>Docs</ThemedText>
             <SymbolView
-              tintColor={theme.colors.content.primary}
+              tintColor={theme.colors.dark.black}
               name={{ ios: "arrow.up.right.square", web: "link" }}
               size={12}
             />
@@ -77,19 +77,19 @@ const styles = StyleSheet.create((theme) => ({
   tabListContainer: {
     position: "absolute",
     width: "100%",
-    padding: theme.gap(4),
+    padding: theme.spacing(4),
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
   },
   innerContainer: {
-    paddingVertical: theme.gap(2),
-    paddingHorizontal: theme.gap(8),
-    borderRadius: theme.gap(8),
+    paddingVertical: theme.spacing(2),
+    paddingHorizontal: theme.spacing(8),
+    borderRadius: theme.spacing(8),
     flexDirection: "row",
     alignItems: "center",
     flexGrow: 1,
-    gap: theme.gap(2),
+    gap: theme.spacing(2),
   },
   brandText: {
     marginRight: "auto",
@@ -98,15 +98,15 @@ const styles = StyleSheet.create((theme) => ({
     opacity: 0.7,
   },
   tabButtonView: {
-    paddingVertical: theme.gap(1),
-    paddingHorizontal: theme.gap(4),
-    borderRadius: theme.gap(4),
+    paddingVertical: theme.spacing(1),
+    paddingHorizontal: theme.spacing(4),
+    borderRadius: theme.spacing(4),
   },
   externalPressable: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: theme.gap(1),
-    marginLeft: theme.gap(4),
+    gap: theme.spacing(1),
+    marginLeft: theme.spacing(4),
   },
 }));
