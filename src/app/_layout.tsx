@@ -1,5 +1,5 @@
-import "@/firebase";
 import "@/themes/unistyles";
+import "@/firebase";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
