@@ -4,12 +4,12 @@ import {
   getFirestore,
 } from "@react-native-firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native-unistyles";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Spacing } from "@/constants/theme";
 
 interface Event {
   id: string;
@@ -49,21 +49,22 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.brand.primary,
   },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.three,
+    paddingHorizontal: theme.gap(6),
+    gap: theme.gap(4),
   },
   list: {
     flex: 1,
   },
   item: {
-    padding: Spacing.three,
-    borderRadius: Spacing.two,
-    marginBottom: Spacing.two,
+    padding: theme.gap(4),
+    borderRadius: theme.radius.md,
+    marginBottom: theme.gap(2),
   },
-});
+}));

@@ -1,20 +1,16 @@
-import { useState } from "react";
 import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  TextInput,
-} from "react-native";
+  getAuth,
+  signInWithEmailAndPassword,
+} from "@react-native-firebase/auth";
+import { useState } from "react";
+import { ActivityIndicator, Pressable, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAuth, signInWithEmailAndPassword } from "@react-native-firebase/auth";
+import { StyleSheet } from "react-native-unistyles";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useTheme } from "@/hooks/use-theme";
-import { Spacing } from "@/constants/theme";
 
 export default function SignInScreen() {
-  const theme = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,12 +34,9 @@ export default function SignInScreen() {
         <ThemedText type="subtitle">Sign In</ThemedText>
 
         <TextInput
-          style={[
-            styles.input,
-            { backgroundColor: theme.backgroundElement, color: theme.text },
-          ]}
+          style={styles.input}
           placeholder="Email"
-          placeholderTextColor={theme.textSecondary}
+          placeholderTextColor={styles.input.color}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -52,12 +45,9 @@ export default function SignInScreen() {
         />
 
         <TextInput
-          style={[
-            styles.input,
-            { backgroundColor: theme.backgroundElement, color: theme.text },
-          ]}
+          style={styles.input}
           placeholder="Password"
-          placeholderTextColor={theme.textSecondary}
+          placeholderTextColor={styles.input.color}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -65,7 +55,7 @@ export default function SignInScreen() {
         />
 
         {error ? (
-          <ThemedText type="small" style={{ color: "#ef4444" }}>
+          <ThemedText type="small" style={styles.errorText}>
             {error}
           </ThemedText>
         ) : null}
@@ -73,19 +63,12 @@ export default function SignInScreen() {
         <Pressable
           onPress={handleSignIn}
           disabled={loading}
-          style={[
-            styles.button,
-            { backgroundColor: theme.text, opacity: loading ? 0.6 : 1 },
-          ]}
+          style={[styles.button, { opacity: loading ? 0.6 : 1 }]}
         >
           {loading ? (
-            <ActivityIndicator color={theme.background} />
+            <ActivityIndicator color={styles.buttonText.color} />
           ) : (
-            <ThemedText
-              style={[styles.buttonText, { color: theme.background }]}
-            >
-              Sign In
-            </ThemedText>
+            <ThemedText style={styles.buttonText}>Sign In</ThemedText>
           )}
         </Pressable>
       </SafeAreaView>
@@ -93,29 +76,36 @@ export default function SignInScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
     justifyContent: "center",
+    backgroundColor: theme.colors.brand.primary,
   },
   safeArea: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.three,
+    paddingHorizontal: theme.gap(6),
+    gap: theme.gap(4),
   },
   input: {
-    padding: Spacing.three,
-    borderRadius: Spacing.two,
-    fontSize: 16,
+    padding: theme.gap(4),
+    borderRadius: theme.radius.md,
+    backgroundColor: theme.colors.surface.elevated,
+    color: theme.colors.content.secondary,
+    ...theme.typography.body,
   },
   button: {
-    padding: Spacing.three,
-    borderRadius: Spacing.two,
-    alignItems: "center",
+    padding: theme.gap(4),
+    borderRadius: theme.radius.md,
+    alignItems: "center" as const,
+    backgroundColor: theme.colors.content.primary,
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "600",
+    color: theme.colors.content.inverse,
+    ...theme.typography.button,
   },
-});
+  errorText: {
+    color: theme.colors.semantic.error,
+  },
+}));
