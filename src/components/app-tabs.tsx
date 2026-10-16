@@ -1,17 +1,14 @@
 import { NativeTabs } from "expo-router/unstable-native-tabs";
-import { useColorScheme } from "react-native";
-
-import { Colors } from "@/constants/theme";
+import { useUnistyles } from "react-native-unistyles";
 
 export default function AppTabs() {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === "unspecified" ? "light" : scheme];
+  const { theme } = useUnistyles();
 
   return (
     <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}
+      backgroundColor={theme.colors.brand.primary}
+      indicatorColor={theme.colors.brand.primary}
+      labelStyle={{ selected: { color: theme.colors.brand.primary } }}
     >
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>

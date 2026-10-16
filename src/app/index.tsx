@@ -7,7 +7,7 @@ import { ActivityIndicator, Pressable, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
-import { ThemedText } from "@/components/themed-text";
+import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/themed-view";
 
 export default function SignInScreen() {

@@ -8,7 +8,7 @@ import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
-import { ThemedText } from "@/components/themed-text";
+import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/themed-view";
 
 interface Event {
@@ -39,7 +39,7 @@ export default function HomeScreen() {
           keyExtractor={(item) => item.id}
           style={styles.list}
           renderItem={({ item }) => (
-            <ThemedView type="backgroundElement" style={styles.item}>
+            <ThemedView style={styles.item}>
               <ThemedText>{item.name}</ThemedText>
             </ThemedView>
           )}
