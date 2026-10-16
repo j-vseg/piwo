@@ -1,6 +1,7 @@
 import "@/themes/unistyles";
 import "@/firebase";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
+import { useFonts } from "expo-font";
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
@@ -14,6 +15,12 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authReady, setAuthReady] = useState(false);
+  // expo-font config plugin only embeds fonts for native; web needs runtime loading
+  const [fontsLoaded] = useFonts({
+    "Crimson Pro": require("@expo-google-fonts/crimson-pro/600SemiBold/CrimsonPro_600SemiBold.ttf"),
+    Poppins: require("@expo-google-fonts/poppins/400Regular/Poppins_400Regular.ttf"),
+    "Poppins-SemiBold": require("@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf"),
+  });
 
   useEffect(() => {
     return onAuthStateChanged(getAuth(), (user) => {
@@ -28,7 +35,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <AnimatedSplashOverlay />
-      {authReady && (
+      {authReady && fontsLoaded && (
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="index" />
