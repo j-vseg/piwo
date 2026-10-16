@@ -1,14 +1,20 @@
-import { getApps, initializeApp } from "@react-native-firebase/app";
+import {
+  getApps,
+  initializeApp,
+  setReactNativeAsyncStorage,
+} from "@react-native-firebase/app";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+setReactNativeAsyncStorage(AsyncStorage);
 
 if (getApps().length === 0) {
   initializeApp({
-    apiKey: "AIzaSyChvrbrm_ky1ssjhuoNtt0acNHVN2-cNww",
-    authDomain: "piwo-4487e.firebaseapp.com",
-    databaseURL:
-      "https://piwo-4487e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "piwo-4487e",
-    storageBucket: "piwo-4487e.firebasestorage.app",
-    messagingSenderId: "55318025403",
-    appId: "1:55318025403:android:53e9b513e163c47e11859e",
+    apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY!,
+    authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+    databaseURL: process.env.EXPO_PUBLIC_FIREBASE_DATABASE_URL!,
+    projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID!,
+    storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+    messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+    appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID!,
   });
 }
