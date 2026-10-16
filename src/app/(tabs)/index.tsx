@@ -1,10 +1,11 @@
+import { getAuth, signOut } from "@react-native-firebase/auth";
 import {
   collection,
   getDocs,
   getFirestore,
 } from "@react-native-firebase/firestore";
 import { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -33,7 +34,12 @@ export default function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedText type="h1">Events</ThemedText>
+        <ThemedView style={styles.header}>
+          <ThemedText type="h1">Events</ThemedText>
+          <Pressable onPress={() => signOut(getAuth())}>
+            <ThemedText>Sign Out</ThemedText>
+          </Pressable>
+        </ThemedView>
         <FlatList
           data={events}
           keyExtractor={(item) => item.id}
@@ -58,6 +64,11 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     paddingHorizontal: theme.spacing(6),
     gap: theme.spacing(4),
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   list: {
     flex: 1,
