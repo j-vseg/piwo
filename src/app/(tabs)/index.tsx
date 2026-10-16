@@ -1,7 +1,11 @@
+import {
+  collection,
+  getDocs,
+  getFirestore,
+} from "@react-native-firebase/firestore";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { collection, getDocs, getFirestore } from "@react-native-firebase/firestore";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -16,12 +20,12 @@ export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    getDocs(collection(getFirestore(), "eventsCollection")).then((snapshot) => {
+    getDocs(collection(getFirestore(), "events")).then((snapshot) => {
       setEvents(
         snapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name ?? doc.id,
-        }))
+        })),
       );
     });
   }, []);
