@@ -1,18 +1,19 @@
-import "@/themes/unistyles";
 import "@/firebase";
+import "@/themes/unistyles";
+import "@/translations/i18n";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import { useFonts } from "expo-font";
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
 
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
+import { queryClient } from "@/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   // expo-font config plugin only embeds fonts for native; web needs runtime loading
@@ -33,7 +34,7 @@ export default function RootLayout() {
   }, [authReady]);
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <QueryClientProvider client={queryClient}>
       <AnimatedSplashOverlay />
       {authReady && fontsLoaded && (
         <Stack screenOptions={{ headerShown: false }}>
@@ -45,6 +46,6 @@ export default function RootLayout() {
           </Stack.Protected>
         </Stack>
       )}
-    </ThemeProvider>
+    </QueryClientProvider>
   );
 }

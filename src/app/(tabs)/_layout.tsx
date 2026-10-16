@@ -2,6 +2,7 @@ import { HapticTab } from "@/components/HapticTap";
 import { IconSymbol } from "@/components/IconSymbol/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { OS } from "@/constants/Os";
+import { useTranslation } from "@/translations/i18n";
 import { Tabs } from "expo-router";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { ComponentProps, useMemo } from "react";
@@ -13,6 +14,7 @@ type BottomTabNavigationOptions = NonNullable<
 >;
 
 export default function TabsLayout() {
+  const { t } = useTranslation();
   const { theme } = useUnistyles();
 
   const screenOptions: BottomTabNavigationOptions = useMemo(() => {
@@ -41,7 +43,7 @@ export default function TabsLayout() {
         labelStyle={{ selected: { color: theme.colors.primitives.primary } }}
       >
         <NativeTabs.Trigger name="index">
-          <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Label>{t("tabs.home")}</NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             src={require("@/assets/images/tabIcons/home.png")}
             renderingMode="template"
@@ -49,7 +51,7 @@ export default function TabsLayout() {
         </NativeTabs.Trigger>
 
         <NativeTabs.Trigger name="explore">
-          <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Label>{t("tabs.explore")}</NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             src={require("@/assets/images/tabIcons/home.png")}
             renderingMode="template"
@@ -64,7 +66,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: t("tabs.home"),
           tabBarIcon: ({ color }) => (
             <IconSymbol weight="500" size={24} name="home" color={color} />
           ),
@@ -74,7 +76,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: "Explore",
+          title: t("tabs.explore"),
           tabBarIcon: ({ color }) => (
             <IconSymbol weight="500" size={24} name="home" color={color} />
           ),

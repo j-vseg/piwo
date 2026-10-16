@@ -11,6 +11,7 @@ import { StyleSheet } from "react-native-unistyles";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { useTranslation } from "@/translations/i18n";
 
 interface Event {
   id: string;
@@ -18,6 +19,7 @@ interface Event {
 }
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
@@ -35,9 +37,9 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ThemedView style={styles.header}>
-          <ThemedText type="h1">Events</ThemedText>
+          <ThemedText type="h1">{t("tabs.home")}</ThemedText>
           <Pressable onPress={() => signOut(getAuth())}>
-            <ThemedText>Sign Out</ThemedText>
+            <ThemedText>{t("home.signOut")}</ThemedText>
           </Pressable>
         </ThemedView>
         <FlatList

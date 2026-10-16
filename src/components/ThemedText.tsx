@@ -13,7 +13,6 @@ export type TypographyVariant =
   | "bodyMedium"
   | "bodySmall"
   | "bodySmaller"
-  | "tag"
   | "menu"
   | "button"
   | "span"

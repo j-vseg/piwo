@@ -1,0 +1,26 @@
+{
+  "tabs": {
+    "home": "Home",
+    "explore": "Ontdek",
+    "login": "Login"
+  },
+  "home": {
+    "signOut": "Uitloggen"
+  },
+  "explore": {
+    "description": "Deze starter app bevat voorbeeldcode\nom je op weg te helpen.",
+    "expoDocumentation": "Expo documentatie"
+  },
+  "login": {
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "E-mail",
+    "emailRequired": "E-mail is verplicht",
+    "emailInvalid": "Voer een geldig e-mailadres in",
+    "passwordLabel": "Wachtwoord",
+    "passwordPlaceholder": "Wachtwoord",
+    "passwordRequired": "Wachtwoord is verplicht",
+    "passwordMinLength": "Wachtwoord moet minimaal 8 tekens bevatten",
+    "loginButton": "Inloggen",
+    "accessibilityHint": "Log in op je account"
+  }
+}

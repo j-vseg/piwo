@@ -1,9 +1,8 @@
-import { OS } from "@/constants/Os";
-import { Platform, View, type ViewProps } from "react-native";
+import { View, type ViewProps } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export type ThemedViewProps = ViewProps & {
-  type?: "default" | "container" | "s-container";
+  type?: "default" | "container";
 };
 
 export function ThemedView({
@@ -11,32 +10,29 @@ export function ThemedView({
   type = "default",
   ...otherProps
 }: ThemedViewProps) {
-  return (
-    <View
-      style={[
-        type === "container" && styles.container(Platform.OS),
-        type === "s-container" && styles.smallContainer,
-        style,
-      ]}
-      {...otherProps}
-    />
-  );
+  if (type === "container") {
+    return (
+      <View style={styles.wrapper}>
+        <View style={[styles.container(), style]} {...otherProps} />
+      </View>
+    );
+  }
+
+  return <View style={style} {...otherProps} />;
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  background: {
+  wrapper: {
     backgroundColor: theme.colors.primitives["quinary"],
-  },
-  container: (os: typeof Platform.OS) => ({
     flex: 1,
-    paddingRight: theme.spacing(3),
-    paddingLeft: theme.spacing(3),
-    paddingTop: rt.insets.top,
-    paddingBottom:
-      os === OS.Android ? rt.insets.bottom + 30 : rt.insets.bottom + 100,
-  }),
-  smallContainer: {
-    gap: theme.spacing(2),
-    paddingBottom: theme.spacing(3),
+    alignItems: "center",
   },
+  container: () => ({
+    flex: 1,
+    width: "100%",
+    maxWidth: 800,
+    paddingHorizontal: theme.spacing(3),
+    paddingTop: rt.insets.top,
+    paddingBottom: rt.insets.bottom + 30,
+  }),
 }));

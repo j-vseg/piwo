@@ -12,9 +12,12 @@ import {
 } from "react-hook-form";
 import { StyleSheet } from "react-native-unistyles";
 import { ErrorMessage } from "./ErrorMessage";
+import Label from "./Label";
 import { ThemedView } from "./ThemedView";
 
 type TextInputProps<T extends FieldValues> = {
+  label: string;
+  required?: boolean;
   control: Control<T>;
   name: FieldPath<T>;
   rules?: RegisterOptions<T, FieldPath<T>>;
@@ -25,6 +28,8 @@ type TextInputProps<T extends FieldValues> = {
 };
 
 export default function TextInput<T extends FieldValues>({
+  label,
+  required = true,
   control,
   name,
   rules,
@@ -37,6 +42,10 @@ export default function TextInput<T extends FieldValues>({
       rules={rules}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <ThemedView style={styles.input}>
+          <Label>
+            {label}
+            {required && <ThemedView style={styles.dot} />}
+          </Label>
           <Host matchContents={{ vertical: true }} style={{ width: "100%" }}>
             <ExpoUITextInput
               defaultValue={value}
@@ -62,5 +71,13 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: theme.spacing(2),
     backgroundColor: theme.colors.dark.greyLight,
     color: theme.colors.dark.black,
+  },
+  dot: {
+    backgroundColor: theme.colors.primitives.primary,
+    borderRadius: 99,
+    width: 5,
+    height: 5,
+    marginBottom: 8,
+    marginLeft: 2,
   },
 }));

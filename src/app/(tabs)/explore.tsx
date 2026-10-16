@@ -6,8 +6,10 @@ import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ExternalLink } from "@/components/external-link";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { useTranslation } from "@/translations/i18n";
 
 export default function TabTwoScreen() {
+  const { t } = useTranslation();
   const safeAreaInsets = useSafeAreaInsets();
   const { theme, rt } = useUnistyles();
   const insets = {
@@ -39,15 +41,15 @@ export default function TabTwoScreen() {
     >
       <ThemedView style={styles.container}>
         <ThemedView style={styles.titleContainer}>
-          <ThemedText>Explore</ThemedText>
+          <ThemedText>{t("tabs.explore")}</ThemedText>
           <ThemedText style={styles.centerText}>
-            This starter app includes example{"\n"}code to help you get started.
+            {t("explore.description")}
           </ThemedText>
 
           <ExternalLink href="https://docs.expo.dev" asChild>
             <Pressable style={({ pressed }) => pressed && styles.pressed}>
               <ThemedView style={styles.linkButton}>
-                <ThemedText>Expo documentation</ThemedText>
+                <ThemedText>{t("explore.expoDocumentation")}</ThemedText>
                 <SymbolView
                   tintColor={theme.colors.dark.black}
                   name={{
