@@ -44,7 +44,7 @@ export default function ListTile({
         </ThemedView>
       )}
       <ThemedText
-        type="bodySmall"
+        type="bodyMedium"
         style={styles.text}
         accessible={false}
         importantForAccessibility="no-hide-descendants"

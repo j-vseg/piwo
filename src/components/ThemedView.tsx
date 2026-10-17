@@ -1,4 +1,5 @@
-import { ScrollView, View, type ViewProps } from "react-native";
+import { OS } from "@/constants/Os";
+import { Platform, ScrollView, View, type ViewProps } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export type ThemedViewProps = ViewProps & {
@@ -27,7 +28,7 @@ export function ThemedView({
 
 const styles = StyleSheet.create((theme, rt) => ({
   wrapper: {
-    backgroundColor: theme.colors.primitives["quinary"],
+    backgroundColor: theme.screen.default.backgroundColor,
     flex: 1,
     alignItems: "center",
   },
@@ -41,7 +42,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     alignSelf: "center" as const,
     paddingHorizontal: theme.spacing(3),
     paddingTop: rt.insets.top + theme.spacing(6),
-    paddingBottom: rt.insets.bottom + 30,
+    paddingBottom: Platform.OS === OS.Web ? rt.insets.bottom + 30 : 30,
     flexDirection: "column",
     gap: theme.spacing(8),
   }),

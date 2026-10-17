@@ -1,9 +1,9 @@
 import {
-    Control,
-    Controller,
-    FieldPath,
-    FieldValues,
-    RegisterOptions,
+  Control,
+  Controller,
+  FieldPath,
+  FieldValues,
+  RegisterOptions,
 } from "react-hook-form";
 import { Pressable, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
@@ -38,10 +38,7 @@ export default function Picker<T extends FieldValues>({
       rules={rules}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <ThemedView style={styles.field}>
-          <Label>
-            {label}
-            {required && <ThemedView style={styles.dot} />}
-          </Label>
+          <Label required={required}>{label}</Label>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -49,16 +46,10 @@ export default function Picker<T extends FieldValues>({
           >
             {allowDeselect && (
               <Pressable
-                style={[styles.option, !value && styles.optionSelected]}
+                style={styles.option(!value)}
                 onPress={() => onChange(undefined)}
               >
-                <ThemedText
-                  type="button"
-                  style={[
-                    styles.optionText,
-                    !value && styles.optionTextSelected,
-                  ]}
-                >
+                <ThemedText type="button" style={styles.optionText(!value)}>
                   ✕
                 </ThemedText>
               </Pressable>
@@ -66,18 +57,12 @@ export default function Picker<T extends FieldValues>({
             {options.map((option) => (
               <Pressable
                 key={option}
-                style={[
-                  styles.option,
-                  value === option && styles.optionSelected,
-                ]}
+                style={styles.option(value === option)}
                 onPress={() => onChange(option)}
               >
                 <ThemedText
                   type="button"
-                  style={[
-                    styles.optionText,
-                    value === option && styles.optionTextSelected,
-                  ]}
+                  style={styles.optionText(value === option)}
                 >
                   {option}
                 </ThemedText>
@@ -95,33 +80,22 @@ const styles = StyleSheet.create((theme) => ({
   field: {
     gap: theme.spacing(1),
   },
-  dot: {
-    backgroundColor: theme.colors.primitives.primary,
-    borderRadius: 99,
-    width: 5,
-    height: 5,
-    marginBottom: 8,
-    marginLeft: 2,
-  },
   options: {
     flexDirection: "row",
     gap: theme.spacing(2),
   },
-  option: {
+  option: (selected: boolean) => ({
     borderRadius: theme.spacing(2),
     paddingHorizontal: theme.spacing(5),
     paddingVertical: theme.spacing(2),
-    backgroundColor: theme.colors.dark.greyLight,
-  },
-  optionSelected: {
-    backgroundColor: theme.colors.primitives.primary,
-  },
-  optionText: {
+    backgroundColor: selected
+      ? theme.colors.primitives.tertairy
+      : theme.colors.primitives.quinary,
+  }),
+  optionText: (selected: boolean) => ({
     fontFamily: theme.text.bodyMedium.fontFamily,
     fontWeight: theme.text.bodyMedium.fontWeight,
     fontSize: theme.text.bodySmall.fontSize,
-  },
-  optionTextSelected: {
-    color: theme.colors.light.white,
-  },
+    color: selected ? theme.colors.light.white : theme.colors.dark.black,
+  }),
 }));

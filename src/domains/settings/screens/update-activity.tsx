@@ -80,6 +80,9 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
         queryKey: ["all-events"],
       });
       queryClient.invalidateQueries({
+        queryKey: ["event", id],
+      });
+      queryClient.invalidateQueries({
         queryKey: ["occurrence", id],
       });
       queryClient.invalidateQueries({
@@ -88,9 +91,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
       queryClient.invalidateQueries({
         queryKey: ["occurrences-grouped"],
       });
-      setTimeout(() => {
-        router.push({ pathname: "/(tabs)/home/activity", params: { id } });
-      }, 3000);
     },
     onError: (error) => {
       console.error(error);
@@ -108,6 +108,9 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["all-events"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["event", id],
       });
       queryClient.invalidateQueries({
         queryKey: ["occurrence", id],

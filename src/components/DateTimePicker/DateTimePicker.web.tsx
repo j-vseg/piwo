@@ -40,10 +40,7 @@ export default function DateTimePicker<T extends FieldValues>({
         const dateValue = value as unknown as Date | undefined;
         return (
           <ThemedView style={styles.field}>
-            <Label>
-              {label}
-              {required && <ThemedView style={styles.dot} />}
-            </Label>
+            <Label required={required}>{label}</Label>
             <input
               type={mode}
               value={
@@ -65,7 +62,7 @@ export default function DateTimePicker<T extends FieldValues>({
                 color: theme.text.text.color,
                 padding: theme.spacing(3),
                 borderRadius: theme.spacing(2),
-                backgroundColor: theme.colors.dark.greyLight,
+                backgroundColor: theme.colors.primitives.quinary,
                 border: "none",
                 outline: "none",
               }}
@@ -86,13 +83,5 @@ function toLocalDateTimeString(date: Date): string {
 const styles = StyleSheet.create((theme) => ({
   field: {
     gap: theme.spacing(1),
-  },
-  dot: {
-    backgroundColor: theme.colors.primitives.primary,
-    borderRadius: 99,
-    width: 5,
-    height: 5,
-    marginBottom: 8,
-    marginLeft: 2,
   },
 }));

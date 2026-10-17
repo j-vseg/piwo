@@ -18,6 +18,7 @@ const colors = {
   primitives: {
     primary: "#ffd9ad",
     secondary: "#acb58d",
+    tertairy: "#9e2a2b",
     quinary: "#FCF8EC",
   },
   transparent: "#FFFFFF00",
@@ -162,17 +163,17 @@ export const lightTheme = {
   },
   screen: {
     default: {
-      backgroundColor: colors.primitives["quinary"],
+      backgroundColor: colors.primitives["primary"],
       headerTintColor: colors.dark["black"],
     },
   },
   button: {
     primary: {
       default: {
-        backgroundColor: colors.primitives["primary"],
-        borderColor: colors.primitives["primary"],
-        iconColor: colors.dark["black"],
-        textColor: colors.dark["black"],
+        backgroundColor: colors.primitives["tertairy"],
+        borderColor: colors.primitives["tertairy"],
+        iconColor: colors.light["white"],
+        textColor: colors.light["white"],
       },
       active: {
         backgroundColor: colors.button["primaryActiveBG"],

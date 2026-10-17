@@ -51,13 +51,16 @@ export function SelectActivity({
         <FlatList
           data={events}
           keyExtractor={(event) => event.id}
-          style={styles.list}
+          contentContainerStyle={styles.list}
           renderItem={({ item: event }) => (
             <Pressable
               style={styles.container}
               onPress={() => {
                 setEditActivityOpen(false);
-                router.push({ pathname: "/(tabs)/settings/update-activity", params: { id: event.id } });
+                router.push({
+                  pathname: "/(tabs)/settings/update-activity",
+                  params: { id: event.id },
+                });
               }}
             >
               <ThemedView>

@@ -1,3 +1,4 @@
+import { Alert } from "@/components/Alert";
 import { AvailabilitySelector } from "@/components/AvailabilitySelector";
 import { Divider } from "@/components/Divider";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -106,7 +107,11 @@ export default function ActivityScreen({ id }: { id: string }) {
                 })}
               />
               {!availability || !availability[selected] ? (
-                <ErrorMessage>{t("activity.noAvailability")}</ErrorMessage>
+                <Alert
+                  variant={"info"}
+                  description={t("activity.noAvailability")}
+                  size={"regular"}
+                />
               ) : selected === Status.Present ? (
                 Array.from(
                   new Set([
