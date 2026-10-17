@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { StyleSheet } from "react-native-unistyles";
 
+import { Divider } from "@/components/Divider";
 import Event from "@/components/Event";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -35,12 +36,7 @@ export default function HomeScreen() {
       <ThemedView style={styles.list}></ThemedView>
       {groupedOccurrences?.map((item) => (
         <ThemedView key={item.date.toDateString()} style={styles.listItem}>
-          <ThemedView style={styles.title}>
-            <ThemedText type="bodySmaller" style={styles.date}>
-              {format(item.date, "E d MMM", { locale: nl })}
-            </ThemedText>
-            <ThemedView style={styles.line} />
-          </ThemedView>
+          <Divider label={format(item.date, "E d MMM", { locale: nl })} />
           {item.occurrences.map((occurrence) => (
             <Event key={occurrence.id} occurrence={occurrence} />
           ))}
@@ -54,28 +50,8 @@ const styles = StyleSheet.create((theme) => ({
   list: {
     gap: theme.spacing(6),
   },
-  title: {
-    flexDirection: "row",
-    gap: theme.spacing(2),
-    alignItems: "center",
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    marginBottom: 2,
-    backgroundColor: theme.colors.dark.greyMedium,
-  },
   listItem: {
     flexDirection: "column",
     gap: theme.spacing(4),
-  },
-  item: {
-    flexDirection: "column",
-    gap: theme.spacing(2),
-  },
-  date: {
-    textTransform: "uppercase",
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
-    color: theme.colors.dark.greyMedium,
   },
 }));

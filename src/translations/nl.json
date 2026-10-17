@@ -12,6 +12,13 @@
     "availabilityComplete": "Je bent bij voor deze week!",
     "upcomingActivities": "Toekomstige activiteiten"
   },
+  "activity": {
+    "errorOccurrence": "Het is niet gelukt om de activiteit data op te halen.",
+    "attendance": "Aanwezigheid",
+    "errorAvailability": "Het is niet gelukt om het aanwezigheid overzicht op te halen",
+    "noAvailability": "Niemand heeft deze aanwezigheid opgegeven",
+    "total": "Totaal: {{count}}"
+  },
   "explore": {
     "description": "Deze starter app bevat voorbeeldcode\nom je op weg te helpen.",
     "expoDocumentation": "Expo documentatie"

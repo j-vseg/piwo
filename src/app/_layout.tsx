@@ -10,10 +10,12 @@ import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { queryClient } from "@/queryClient";
 import { onAuthStateChanged } from "@/services/firebase/auth";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { useUnistyles } from "react-native-unistyles";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { theme } = useUnistyles();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   // expo-font config plugin only embeds fonts for native; web needs runtime loading
@@ -43,6 +45,23 @@ export default function RootLayout() {
           </Stack.Protected>
           <Stack.Protected guard={isLoggedIn}>
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen
+              name="activity/[id]"
+              options={{
+                headerShown: true,
+                title: "",
+                headerTitleAlign: "center",
+                headerTitleStyle: {
+                  fontFamily: theme.text.h3.fontFamily,
+                  fontWeight: theme.text.h3.fontWeight,
+                  fontSize: theme.text.h3.fontSize,
+                },
+                headerStyle: {
+                  backgroundColor: theme.screen.default.backgroundColor,
+                },
+                headerTintColor: theme.screen.default.headerTintColor,
+              }}
+            />
           </Stack.Protected>
         </Stack>
       )}

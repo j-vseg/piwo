@@ -40,7 +40,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     maxWidth: 800,
     alignSelf: "center" as const,
     paddingHorizontal: theme.spacing(3),
-    paddingTop: rt.insets.top,
+    paddingTop: rt.insets.top + theme.spacing(6),
     paddingBottom: rt.insets.bottom + 30,
     flexDirection: "column",
     gap: theme.spacing(8),

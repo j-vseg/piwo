@@ -5,11 +5,16 @@ import { ThemedView } from "@/components/ThemedView";
 import { EventOccurrence } from "@/constants/EventOccurence";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
+import { router } from "expo-router";
+import { Pressable } from "react-native";
 import { AvailabilitySelector } from "./AvailabilitySelector";
 
 export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
   return (
-    <ThemedView style={styles.container}>
+    <Pressable
+      style={styles.container}
+      onPress={() => router.push(`/activity/${occurrence.id}`)}
+    >
       <ThemedView>
         <ThemedText type="bodyLarge">{occurrence.name}</ThemedText>
         <ThemedText type="bodySmall" style={styles.subtitle}>
@@ -21,7 +26,7 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
         occurrenceId={occurrence.id}
         occurrenceCategory={occurrence.category}
       />
-    </ThemedView>
+    </Pressable>
   );
 }
 

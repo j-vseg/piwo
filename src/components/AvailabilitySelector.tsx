@@ -1,6 +1,5 @@
 import { Category } from "@/constants/Category";
-import { AVAILABILITY_SELECTOR_STATUSES, Status } from "@/constants/Status";
-import { useAvailabilityPresentButtonHandlers } from "@/hooks/useAvailabilityPresentButtonHandlers";
+import { Status } from "@/constants/Status";
 import { useEventColor } from "@/hooks/useEventColor";
 import { getCurrentUser } from "@/services/firebase/auth";
 import {
@@ -8,12 +7,9 @@ import {
   setUserAvailability,
 } from "@/services/firebase/availability";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pressable } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
 import { ErrorMessage } from "./ErrorMessage";
 import LoadingIndicator from "./LoadingIndicator";
-import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
+import { StatusButtonGroup } from "./StatusButtonGroup";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
@@ -56,11 +52,6 @@ export function AvailabilitySelector({
     },
   });
 
-  const { onClick: presentClick } = useAvailabilityPresentButtonHandlers(
-    availability ?? undefined,
-    updateMutate,
-  );
-
   if (updateIsPending) {
     return <LoadingIndicator />;
   }
@@ -72,55 +63,10 @@ export function AvailabilitySelector({
   }
 
   return (
-    <ThemedView style={styles.container}>
-      {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => {
-        return (
-          <Pressable
-            key={statusOption}
-            style={[
-              styles.button(statusOption, availability),
-              availability !== statusOption && { backgroundColor: eventColor },
-            ]}
-            onPress={
-              statusOption === Status.Present
-                ? presentClick
-                : () => updateMutate(statusOption)
-            }
-          >
-            <ThemedText type="button" style={styles.text}>
-              {statusOption}
-            </ThemedText>
-          </Pressable>
-        );
-      })}
-    </ThemedView>
+    <StatusButtonGroup
+      selected={availability}
+      eventColor={eventColor}
+      onSelect={(status) => updateMutate(status)}
+    />
   );
 }
-
-const styles = StyleSheet.create((theme) => ({
-  container: {
-    flexDirection: "row",
-    gap: theme.spacing(2),
-    justifyContent: "space-between",
-  },
-  button: (statusOption: Status, availability?: Status | null) => ({
-    borderRadius: 8,
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(1),
-    ...(availability === statusOption && {
-      backgroundColor:
-        availability === Status.Present || availability === Status.Later
-          ? theme.colors.warnings.positive
-          : availability === Status.Maybe
-            ? theme.colors.warnings.warning
-            : availability === Status.Absent
-              ? theme.colors.warnings.negative
-              : undefined,
-    }),
-  }),
-  text: {
-    fontFamily: theme.font.inter.regular.fontFamily,
-    fontWeight: theme.font.inter.regular.fontWeight,
-    fontSize: 16 as const,
-  },
-}));
