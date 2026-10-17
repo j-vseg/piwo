@@ -1,5 +1,5 @@
 import { OS } from "@/constants/Os";
-import { Platform, Pressable } from "react-native";
+import { Platform, Pressable, type TextStyle } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { IconName, IconSymbol } from "./IconSymbol/IconSymbol";
 import { ThemedText } from "./ThemedText";
@@ -10,6 +10,7 @@ type ListTileProps = {
   iconLeft?: IconName;
   iconRight?: IconName;
   onPress: () => void;
+  textStyle?: TextStyle;
 };
 
 export default function ListTile({
@@ -19,6 +20,7 @@ export default function ListTile({
     ? ("angle-right" as any)
     : "chevron_forward",
   onPress,
+  textStyle,
 }: ListTileProps) {
   const { theme } = useUnistyles();
 
@@ -45,7 +47,7 @@ export default function ListTile({
       )}
       <ThemedText
         type="bodyMedium"
-        style={styles.text}
+        style={[styles.text, textStyle]}
         accessible={false}
         importantForAccessibility="no-hide-descendants"
       >

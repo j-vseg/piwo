@@ -100,7 +100,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     flex: 1,
     justifyContent: "center",
     alignContent: "center",
-    backgroundColor: theme.colors.primitives.quinary,
+    backgroundColor: theme.screen.default.backgroundColor,
     transform: [{ translateY: rt.insets.ime * -1 }],
   },
   form: {

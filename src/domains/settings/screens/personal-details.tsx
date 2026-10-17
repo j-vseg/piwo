@@ -280,6 +280,7 @@ export default function SettingsScreen() {
             ? emailForm.control
             : passwordForm.control) as unknown as Control<FieldValues>
         }
+        description={t("personalDetails.currentPasswordDescription")}
       />
     </>
   );

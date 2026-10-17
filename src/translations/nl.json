@@ -58,6 +58,7 @@
     "accountHeader": "Account",
     "signOut": "Uitloggen",
     "deleteAccount": "Account verwijderen",
+    "deleteAccountDescription": "Om je account te verwijderen hebben we je wachtwoord nodig",
     "aboutHeader": "Over de app",
     "whatsNew": "Wat is er nieuw?",
     "aboutApp": "Wat kun je doen met de Piwo app?"

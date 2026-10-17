@@ -12,11 +12,13 @@ export function ConfirmPassword({
   onDismiss,
   onConfirm,
   control,
+  description,
 }: {
   isOpen: boolean;
   onDismiss: () => void;
   onConfirm: () => void;
   control: Control<FieldValues>;
+  description: string;
 }) {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
@@ -29,7 +31,7 @@ export function ConfirmPassword({
     >
       <ThemedView style={{ gap: theme.spacing(4) }}>
         <ThemedText>
-          {t("personalDetails.currentPasswordDescription")}
+          {description}
         </ThemedText>
 
         <TextInput
