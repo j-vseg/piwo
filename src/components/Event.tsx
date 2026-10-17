@@ -13,7 +13,12 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
   return (
     <Pressable
       style={styles.container}
-      onPress={() => router.push(`/activity/${occurrence.id}`)}
+      onPress={() =>
+        router.push({
+          pathname: "/(tabs)/index/activity",
+          params: { id: occurrence.id },
+        })
+      }
     >
       <ThemedView>
         <ThemedText type="bodyLarge">{occurrence.name}</ThemedText>

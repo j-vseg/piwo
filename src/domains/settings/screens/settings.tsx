@@ -1,4 +1,3 @@
-import BottomSheet from "@/components/BottomSheet/BottomSheet";
 import { Group } from "@/components/Group";
 import ListTile from "@/components/ListTile";
 import { ThemedText } from "@/components/ThemedText";
@@ -31,14 +30,17 @@ export default function SettingsScreen() {
         </Group>
       </ThemedView>
 
-      <SelectActivity editActivityOpen={editActivityOpen} setEditActivityOpen={setEditActivityOpen} />
+      <SelectActivity
+        editActivityOpen={editActivityOpen}
+        setEditActivityOpen={setEditActivityOpen}
+      />
 
       <ThemedView style={styles.group}>
         <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>
         <Group>
           <ListTile
-            text={t("settings.personalDetails")}
-            onPress={() => console.log("yes")}
+            text={t("tabs.settings.personalDetails")}
+            onPress={() => router.push("/(tabs)/settings/personal-details")}
           />
           <ListTile
             text={t("settings.signOut")}

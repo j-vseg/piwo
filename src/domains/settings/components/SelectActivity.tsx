@@ -57,7 +57,7 @@ export function SelectActivity({
               style={styles.container}
               onPress={() => {
                 setEditActivityOpen(false);
-                router.push(`/(tabs)/settings/update-activity/${event.id}`);
+                router.push({ pathname: "/(tabs)/settings/update-activity", params: { id: event.id } });
               }}
             >
               <ThemedView>
