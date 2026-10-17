@@ -44,7 +44,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingTop:
       Platform.OS === OS.Web
         ? rt.insets.top + theme.spacing(6)
-        : theme.spacing(6),
+        : rt.insets.top + theme.spacing(4),
     paddingBottom: Platform.OS === OS.Web ? rt.insets.bottom + 30 : 30,
     flexDirection: "column",
     gap: theme.spacing(4),

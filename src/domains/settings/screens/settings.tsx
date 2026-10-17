@@ -5,16 +5,17 @@ import { ThemedView } from "@/components/ThemedView";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { SelectActivity } from "../components/SelectActivity";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
+  const { theme } = useUnistyles();
   const [editActivityOpen, setEditActivityOpen] = useState(false);
 
   return (
     <>
-      <ThemedView type="container">
+      <ThemedView type="container" style={{ gap: theme.spacing(8) }}>
         <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
         <ThemedView style={styles.group}>
