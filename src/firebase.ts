@@ -1,9 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getApps,
   initializeApp,
   setReactNativeAsyncStorage,
 } from "@react-native-firebase/app";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 setReactNativeAsyncStorage(AsyncStorage);
 
@@ -15,6 +15,6 @@ if (getApps().length === 0) {
     projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID!,
     storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET!,
     messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-    appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID!,
+    appId: process.env.EXPO_PUBLIC_FIREBASE_WEB_APP_ID!,
   });
 }

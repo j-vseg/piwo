@@ -1,7 +1,6 @@
 import "@/firebase";
 import "@/themes/unistyles";
 import "@/translations/i18n";
-import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -9,6 +8,7 @@ import { useEffect, useState } from "react";
 
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { queryClient } from "@/queryClient";
+import { onAuthStateChanged } from "@/services/firebase/auth";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
@@ -24,7 +24,7 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    return onAuthStateChanged(getAuth(), (user) => {
+    return onAuthStateChanged((user) => {
       setIsLoggedIn(!!user);
       if (!authReady) {
         setAuthReady(true);

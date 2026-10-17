@@ -21,6 +21,12 @@ const colors = {
     quinary: "#1E1D18",
   },
   transparent: "#00000000",
+  category: {
+    group: "#8C5A2E",
+    weekend: "#3A5A6B",
+    camp: "#5A4A70",
+    action: "#3A6B34",
+  },
   warnings: {
     negative: "#6B3A22",
     neutral: "#2A3D4A",

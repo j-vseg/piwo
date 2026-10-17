@@ -1,16 +1,37 @@
+import { OS } from "@/constants/Os";
 import { createUser } from "@/services/firebase/accounts";
 import { auth } from "@/services/firebase/firebase";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
+import {
+  getAuth as getNativeAuth,
+  onAuthStateChanged as onNativeAuthStateChanged,
+} from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   EmailAuthProvider,
+  onAuthStateChanged as onWebAuthStateChanged,
   reauthenticateWithCredential,
   signInWithEmailAndPassword,
   updateEmail,
   updatePassword,
   User,
 } from "firebase/auth";
+import { Platform } from "react-native";
+
+export function onAuthStateChanged(callback: (user: unknown) => void) {
+  if (Platform.OS === OS.Web) {
+    return onWebAuthStateChanged(auth, callback);
+  }
+  return onNativeAuthStateChanged(getNativeAuth(), callback);
+}
+
+export function getCurrentUser() {
+  if (Platform.OS === OS.Web) {
+    return auth.currentUser;
+  }
+  return getNativeAuth().currentUser;
+}
 
 export async function signInWithEmail(
   email: string,

@@ -1,4 +1,4 @@
-import { View, type ViewProps } from "react-native";
+import { ScrollView, View, type ViewProps } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export type ThemedViewProps = ViewProps & {
@@ -13,7 +13,11 @@ export function ThemedView({
   if (type === "container") {
     return (
       <View style={styles.wrapper}>
-        <View style={[styles.container(), style]} {...otherProps} />
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={[styles.container(), style]}
+          {...otherProps}
+        />
       </View>
     );
   }
@@ -27,12 +31,18 @@ const styles = StyleSheet.create((theme, rt) => ({
     flex: 1,
     alignItems: "center",
   },
-  container: () => ({
+  scrollView: {
     flex: 1,
     width: "100%",
+  },
+  container: () => ({
+    width: "100%",
     maxWidth: 800,
+    alignSelf: "center" as const,
     paddingHorizontal: theme.spacing(3),
     paddingTop: rt.insets.top,
     paddingBottom: rt.insets.bottom + 30,
+    flexDirection: "column",
+    gap: theme.spacing(8),
   }),
 }));

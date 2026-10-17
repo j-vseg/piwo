@@ -1,8 +1,8 @@
-import LottieView from "lottie-react-native";
 import { ReactNode } from "react";
 import { Pressable } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { IconName, IconSymbol } from "./IconSymbol/IconSymbol";
+import LoadingIndicator from "./LoadingIndicator";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
@@ -60,14 +60,7 @@ export default function Button({
             />
           )}
           {isPending ? (
-            <ThemedView style={{ width: 22, height: 22, alignSelf: "center" }}>
-              <LottieView
-                autoPlay
-                loop
-                style={{ width: 22, height: 22 }}
-                source={require("@/assets/loading_dots.json")}
-              />
-            </ThemedView>
+            <LoadingIndicator />
           ) : typeof content === "string" ? (
             <ThemedText
               type="button"
