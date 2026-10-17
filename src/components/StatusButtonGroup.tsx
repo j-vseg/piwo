@@ -54,6 +54,7 @@ export function StatusButtonGroup({
 
 const styles = StyleSheet.create((theme) => ({
   container: {
+    flexGrow: 1,
     flexDirection: "row",
     gap: theme.spacing(2),
     justifyContent: "space-between",

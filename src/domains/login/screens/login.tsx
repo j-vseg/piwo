@@ -5,11 +5,8 @@ import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { signInWithEmail } from "@/services/firebase/auth";
 import { useTranslation } from "@/translations/i18n";
-import {
-    getAuth,
-    signInWithEmailAndPassword,
-} from "@react-native-firebase/auth";
 import { useMutation } from "@tanstack/react-query";
 
 type LoginForm = {
@@ -25,7 +22,7 @@ export default function LoginScreen() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: LoginForm) =>
-      signInWithEmailAndPassword(getAuth(), data.email, data.password),
+      signInWithEmail(data.email, data.password),
   });
 
   return (

@@ -52,8 +52,10 @@ export default function TabsLayout() {
           />
         </NativeTabs.Trigger>
 
-        <NativeTabs.Trigger name="explore">
-          <NativeTabs.Trigger.Label>{t("tabs.explore")}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger name="settings">
+          <NativeTabs.Trigger.Label>
+            {t("tabs.settings")}
+          </NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             src={require("@/assets/images/tabIcons/home.png")}
             renderingMode="template"
@@ -76,11 +78,11 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="settings"
         options={{
-          title: t("tabs.explore"),
+          title: t("tabs.settings"),
           tabBarIcon: ({ color }) => (
-            <IconSymbol weight="500" size={24} name="home" color={color} />
+            <IconSymbol weight="500" size={24} name="settings" color={color} />
           ),
           tabBarLabelStyle: { fontFamily: "Poppins" },
         }}
