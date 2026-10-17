@@ -6,9 +6,9 @@ import { OS } from "@/constants/Os";
 import { auth } from "@/firebase";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser } from "@/services/firebase/auth";
+import { getAuth as getNativeAuth } from "@react-native-firebase/auth";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { getAuth as getNativeAuth } from "@react-native-firebase/auth";
 import { signOut } from "firebase/auth";
 import { useState } from "react";
 import { Control, FieldValues, useForm } from "react-hook-form";
@@ -37,12 +37,12 @@ export default function SettingsScreen() {
     mutationFn: async (password: string) => {
       await deleteUserAccount(user!, password);
     },
+    onSuccess: () => setPasswordConfirmOpen(false),
   });
 
   const handleDeleteConfirm = () => {
     deleteAccountForm.handleSubmit((data) => {
       mutateDelete(data.oldPassword.trim());
-      setPasswordConfirmOpen(false);
     })();
   };
 

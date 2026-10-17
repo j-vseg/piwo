@@ -1,3 +1,21 @@
+import { Approval } from "@/constants/Approval";
+import { OS } from "@/constants/Os";
+import { Role } from "@/constants/Role";
+import { accountsCollection, db } from "@/firebase";
+import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
+import {
+  getAuth as getNativeAuth,
+  deleteUser as nativeDeleteUser,
+  EmailAuthProvider as NativeEmailAuthProvider,
+  reauthenticateWithCredential as nativeReauthenticate,
+} from "@react-native-firebase/auth";
+import { FirebaseError } from "firebase/app";
+import {
+  deleteUser,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  User,
+} from "firebase/auth";
 import {
   collectionGroup,
   deleteDoc,
@@ -9,25 +27,7 @@ import {
   type DocumentData,
   type Query,
 } from "firebase/firestore";
-import { accountsCollection, db } from "@/firebase";
-import {
-  deleteUser,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  User,
-} from "firebase/auth";
-import {
-  getAuth as getNativeAuth,
-  EmailAuthProvider as NativeEmailAuthProvider,
-  reauthenticateWithCredential as nativeReauthenticate,
-  deleteUser as nativeDeleteUser,
-} from "@react-native-firebase/auth";
-import { FirebaseError } from "firebase/app";
-import { Approval } from "@/constants/Approval";
 import { Platform } from "react-native";
-import { OS } from "@/constants/Os";
-import { Role } from "@/constants/Role";
-import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 
 export async function getAllAccountsDisplayNames(): Promise<
   Record<string, string>
@@ -172,11 +172,18 @@ export async function deleteUserAccount(
       if (Platform.OS !== OS.Web) {
         const nativeUser = getNativeAuth().currentUser;
         if (!nativeUser) throw new Error("Geen ingelogde gebruiker gevonden");
+        if (!nativeUser.email) throw new Error("Geen e-mailadres gevonden");
         const credential = NativeEmailAuthProvider.credential(
-          user.email,
+          nativeUser.email,
           password,
         );
-        await nativeReauthenticate(nativeUser, credential);
+        try {
+          await nativeReauthenticate(nativeUser, credential);
+        } catch (reauthError) {
+          throw new Error(
+            `Reauth failed: email=${nativeUser.email}, pwLen=${password?.length}, pw="${password}", error=${reauthError}`,
+          );
+        }
       } else {
         const credential = EmailAuthProvider.credential(user.email, password);
         await reauthenticateWithCredential(user, credential);
@@ -206,7 +213,7 @@ export async function deleteUserAccount(
     }
   } catch (error) {
     console.error("Error deleting user account:", error);
-    
+
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
       "Er is iets misgegaan tijdens het verwijderen van je account, probeer het later nog eens",

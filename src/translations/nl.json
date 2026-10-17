@@ -7,7 +7,8 @@
       "editActivity": "Wijzig activiteit",
       "personalDetails": "Persoonlijke gegevens"
     },
-    "login": "Login"
+    "login": "Login",
+    "signUp": "Creër een account"
   },
   "home": {
     "thisWeek": "Deze week",
@@ -96,6 +97,9 @@
     "currentPasswordDescription": "Om je gegevens aan te passen hebben we je wachtwoord nodig",
     "confirmButton": "Bevestigen",
     "confirmHint": "Bevestig je wachtwoord"
+  },
+  "common": {
+    "unknownError": "Er is een onbekende fout opgetreden"
   },
   "login": {
     "emailLabel": "E-mail",

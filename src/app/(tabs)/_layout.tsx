@@ -76,7 +76,7 @@ export default function TabsLayout() {
         options={{
           title: t("tabs.home"),
           tabBarIcon: ({ color }) => (
-            <IconSymbol weight="500" size={24} name="home" color={color} />
+            <IconSymbol size={24} name={"house-flag" as any} color={color} />
           ),
           tabBarLabelStyle: { fontFamily: "Poppins" },
         }}
@@ -86,12 +86,7 @@ export default function TabsLayout() {
         options={{
           title: t("tabs.settings.main"),
           tabBarIcon: ({ color }) => (
-            <IconSymbol
-              weight="500"
-              size={24}
-              name={"gear" as any}
-              color={color}
-            />
+            <IconSymbol size={24} name={"gear" as any} color={color} />
           ),
           tabBarLabelStyle: { fontFamily: "Poppins" },
         }}

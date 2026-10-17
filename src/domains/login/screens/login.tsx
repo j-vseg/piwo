@@ -9,6 +9,8 @@ import { ThemedView } from "@/components/ThemedView";
 import { signInWithEmail } from "@/services/firebase/auth";
 import { useTranslation } from "@/translations/i18n";
 import { useMutation } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { Pressable } from "react-native";
 
 type LoginForm = {
   email: string;
@@ -30,7 +32,6 @@ export default function LoginScreen() {
     <ThemedView type="container" style={styles.container}>
       <ThemedView style={styles.form}>
         <ThemedText type="h1">{t("tabs.login")}</ThemedText>
-
         {isSuccess && (
           <Alert
             variant="success"
@@ -83,13 +84,18 @@ export default function LoginScreen() {
           }}
         />
 
-        <Button
-          content={t("login.loginButton")}
-          isPending={isPending}
-          onPress={handleSubmit((data) => mutate(data))}
-          accessibilityLabel={t("login.loginButton")}
-          accessibilityHint={t("login.accessibilityHint")}
-        />
+        <ThemedView style={styles.button}>
+          <Button
+            content={t("login.loginButton")}
+            isPending={isPending}
+            onPress={handleSubmit((data) => mutate(data))}
+            accessibilityLabel={t("login.loginButton")}
+            accessibilityHint={t("login.accessibilityHint")}
+          />
+          <Pressable onPress={() => router.push("/sign-up")}>
+            <ThemedText>Nog geen account?</ThemedText>
+          </Pressable>
+        </ThemedView>
       </ThemedView>
     </ThemedView>
   );
@@ -108,5 +114,8 @@ const styles = StyleSheet.create((theme, rt) => ({
     justifyContent: "center",
     paddingHorizontal: theme.spacing(6),
     gap: theme.spacing(4),
+  },
+  button: {
+    gap: theme.spacing(1),
   },
 }));
