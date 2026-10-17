@@ -18,6 +18,13 @@ import { db } from "./firebase";
 
 const eventsCollection = collection(getFirestore(), "events");
 
+export async function getEvent(id: string): Promise<Event> {
+  const docRef = doc(eventsCollection, id);
+  const snap = await getDoc(docRef);
+  if (!snap.exists()) throw new Error(`Event ${id} not found`);
+  return { ...snap.data(), id: snap.id } as Event;
+}
+
 export async function createEvent(
   name: string,
   category: Category,

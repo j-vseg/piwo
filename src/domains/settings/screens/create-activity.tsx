@@ -30,9 +30,6 @@ type ActivityFormData = {
 
 const now = new Date();
 
-const CATEGORIES = Object.values(Category);
-const RECURRENCES = Object.values(Recurrence);
-
 function getDefaultFormValues(): ActivityFormData {
   return {
     name: "",
@@ -181,7 +178,7 @@ export default function CreateActivityScreen() {
               control={methods.control}
               name="recurrence"
               required={false}
-              options={RECURRENCES}
+              options={Object.values(Recurrence)}
               allowDeselect
             />
             <ThemedText type="bodySmaller">
@@ -202,7 +199,7 @@ export default function CreateActivityScreen() {
             label={t("createActivity.categoryLabel")}
             control={methods.control}
             name="category"
-            options={CATEGORIES}
+            options={Object.values(Category)}
             rules={{
               required: t("createActivity.categoryRequired"),
             }}

@@ -3,7 +3,8 @@
     "home": "Home",
     "settings": {
       "main": "Instellingen",
-      "createActivity": "Creëer activiteit"
+      "createActivity": "Creëer activiteit",
+      "editActivity": "Wijzig activiteit"
     },
     "login": "Login"
   },
@@ -41,12 +42,19 @@
     "categoryRequired": "Categorie kan niet leeg zijn",
     "submitButton": "Activiteit aanmaken",
     "submitHint": "Maak een nieuwe activiteit aan",
+    "updateButton": "Wijzigingen opslaan",
+    "updateHint": "Sla de wijzigingen op",
+    "updateSuccess": "Activiteit bijgewerkt!",
+    "updateError": "Het is niet gelukt om de activiteit bij te werken",
+    "deleteButton": "Activiteit verwijderen",
+    "deleteHint": "Verwijder deze activiteit",
+    "deleteSuccess": "Activiteit verwijderd!",
+    "deleteError": "Het is niet gelukt om de activiteit te verwijderen",
     "success": "Activiteit aangemaakt!",
     "error": "Het is niet gelukt om de activiteit aan te maken"
   },
   "settings": {
     "activitiesHeader": "Activiteiten",
-    "editActivity": "Wijzig activiteit",
     "accountHeader": "Account",
     "personalDetails": "Persoonlijke gegevens",
     "signOut": "Uitloggen",

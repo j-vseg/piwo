@@ -1,13 +1,17 @@
+import BottomSheet from "@/components/BottomSheet/BottomSheet";
 import { Group } from "@/components/Group";
 import ListTile from "@/components/ListTile";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { router } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
+import { SelectActivity } from "../components/SelectActivity";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
+  const [editActivityOpen, setEditActivityOpen] = useState(false);
 
   return (
     <ThemedView type="container">
@@ -21,11 +25,13 @@ export default function SettingsScreen() {
             onPress={() => router.push("/(tabs)/settings/create-activity")}
           />
           <ListTile
-            text={t("settings.editActivity")}
-            onPress={() => console.log("yes")}
+            text={t("tabs.settings.editActivity")}
+            onPress={() => setEditActivityOpen(true)}
           />
         </Group>
       </ThemedView>
+
+      <SelectActivity editActivityOpen={editActivityOpen} setEditActivityOpen={setEditActivityOpen} />
 
       <ThemedView style={styles.group}>
         <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>
