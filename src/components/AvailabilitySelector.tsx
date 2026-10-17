@@ -112,7 +112,7 @@ const styles = StyleSheet.create((theme) => ({
         availability === Status.Present || availability === Status.Later
           ? theme.colors.warnings.positive
           : availability === Status.Maybe
-            ? theme.colors.warnings.neutral
+            ? theme.colors.warnings.warning
             : availability === Status.Absent
               ? theme.colors.warnings.negative
               : undefined,

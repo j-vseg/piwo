@@ -68,10 +68,10 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: 16,
     backgroundColor:
       variant === "warning"
-        ? theme.colors.warnings.negative
+        ? theme.colors.warnings.background.error
         : variant === "success"
-          ? theme.colors.warnings.positive
-          : theme.colors.warnings.neutral,
+          ? theme.colors.warnings.background.success
+          : theme.colors.warnings.background.neutral,
     paddingHorizontal: theme.spacing(4),
     paddingVertical: theme.spacing(size === "large" ? 6 : 3),
     gap: theme.spacing(2),

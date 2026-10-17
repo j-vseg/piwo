@@ -28,9 +28,15 @@ const colors = {
     action: "#bdecb6",
   },
   warnings: {
-    negative: "#FFD3B1",
-    neutral: "#DAEBF3",
-    positive: "#E0F1E9",
+    negative: "#f44336",
+    warning: "#ff9800",
+    positive: "#4caf50",
+
+    background: {
+      neutral: "#E6F3FF",
+      success: "#d3f7d1",
+      error: "#fdd9d7",
+    },
   },
 };
 
