@@ -82,7 +82,12 @@ export default function TabsLayout() {
         options={{
           title: t("tabs.settings"),
           tabBarIcon: ({ color }) => (
-            <IconSymbol weight="500" size={24} name="settings" color={color} />
+            <IconSymbol
+              weight="500"
+              size={24}
+              name={"gear" as any}
+              color={color}
+            />
           ),
           tabBarLabelStyle: { fontFamily: "Poppins" },
         }}
