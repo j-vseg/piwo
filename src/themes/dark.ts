@@ -155,7 +155,7 @@ export const darkTheme = {
   fontWeight,
   text,
   tabBar: {
-    inactiveTintColor: colors.dark["greyDark"],
+    inactiveTintColor: colors.dark.black,
     activeTintColor: colors.primitives["primary"],
     backgroundColor: colors.light["white"],
     shadow: "0px -0.33px 0px rgba(255, 255, 255, 0.1)",

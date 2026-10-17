@@ -155,7 +155,7 @@ export const lightTheme = {
   fontWeight,
   text,
   tabBar: {
-    inactiveTintColor: colors.dark["black"],
+    inactiveTintColor: colors.dark.black,
     activeTintColor: colors.primitives["primary"],
     backgroundColor: colors.light["white"],
     shadow: "0px -0.33px 0px rgba(0, 0, 0, 0.1)",

@@ -5,9 +5,9 @@ import { OS } from "@/constants/Os";
 import { useTranslation } from "@/translations/i18n";
 import { Tabs } from "expo-router";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
-import { ComponentProps, useMemo } from "react";
+import { ComponentProps } from "react";
 import { Platform } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { useUnistyles } from "react-native-unistyles";
 
 type BottomTabNavigationOptions = NonNullable<
   ComponentProps<typeof Tabs>["screenOptions"]
@@ -17,23 +17,25 @@ export default function TabsLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
 
-  const screenOptions: BottomTabNavigationOptions = useMemo(() => {
-    return {
-      tabBarInactiveTintColor: theme.tabBar.inactiveTintColor,
-      tabBarActiveTintColor: theme.tabBar.activeTintColor,
-      headerShown: false,
-      tabBarButton: HapticTab,
-      tabBarLabel: ({ color, children }) => (
-        <ThemedText type="menu" style={[{ color }]}>
-          {children}
-        </ThemedText>
-      ),
-      tabBarIconStyle: {
-        overflow: "visible",
-      },
-      tabBarStyle: styles.tabBar,
-    };
-  }, [theme]);
+  const screenOptions: BottomTabNavigationOptions = {
+    tabBarInactiveTintColor: theme.tabBar.inactiveTintColor,
+    tabBarActiveTintColor: theme.tabBar.activeTintColor,
+    headerShown: false,
+    tabBarButton: HapticTab,
+    tabBarLabel: ({ color, children }) => (
+      <ThemedText type="menu" style={[{ color }]}>
+        {children}
+      </ThemedText>
+    ),
+    tabBarIconStyle: {
+      overflow: "visible",
+    },
+    tabBarStyle: {
+      borderTopWidth: 0,
+      backgroundColor: theme.tabBar.backgroundColor,
+      boxShadow: theme.tabBar.shadow,
+    },
+  };
 
   if (Platform.OS !== OS.Web) {
     return (
@@ -86,12 +88,3 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create((theme, rt) => ({
-  tabBar: {
-    borderTopWidth: 0,
-    height: 56 + rt.insets.bottom,
-    backgroundColor: theme.tabBar.backgroundColor,
-    boxShadow: theme.tabBar.shadow,
-  },
-}));
