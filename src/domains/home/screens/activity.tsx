@@ -63,21 +63,19 @@ export default function ActivityScreen({ id }: { id: string }) {
   }
 
   if (isErrorOccurrence || !occurrence) {
-    return (
-      <ErrorMessage>
-        {t("activity.errorOccurrence")}
-      </ErrorMessage>
-    );
+    return <ErrorMessage>{t("activity.errorOccurrence")}</ErrorMessage>;
   }
 
   return (
     <ThemedView type="container">
       <ThemedView style={styles.event}>
-        <ThemedText type="h2">{occurrence.name}</ThemedText>
-        <ThemedText
-          type="bodySmall"
-          style={styles.subtitle}
-        >{`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}</ThemedText>
+        <ThemedView>
+          <ThemedText type="bodyLarge">{occurrence.name}</ThemedText>
+          <ThemedText
+            type="bodySmall"
+            style={styles.subtitle}
+          >{`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}</ThemedText>
+        </ThemedView>
         <AvailabilitySelector occurrenceId={occurrence.id} />
       </ThemedView>
 
@@ -86,9 +84,7 @@ export default function ActivityScreen({ id }: { id: string }) {
         {isLoadingAvailability ? (
           <LoadingIndicator />
         ) : isErrorAvailability ? (
-          <ErrorMessage>
-            {t("activity.errorAvailability")}
-          </ErrorMessage>
+          <ErrorMessage>{t("activity.errorAvailability")}</ErrorMessage>
         ) : (
           <>
             <StatusButtonGroup
@@ -110,9 +106,7 @@ export default function ActivityScreen({ id }: { id: string }) {
                 })}
               />
               {!availability || !availability[selected] ? (
-                <ErrorMessage>
-                  {t("activity.noAvailability")}
-                </ErrorMessage>
+                <ErrorMessage>{t("activity.noAvailability")}</ErrorMessage>
               ) : selected === Status.Present ? (
                 Array.from(
                   new Set([
