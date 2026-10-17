@@ -29,7 +29,7 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: theme.spacing(4),
-    paddingVertical: Platform.OS == OS.Web ? theme.spacing(4) : undefined,
+    paddingVertical: Platform.OS === OS.Web ? theme.spacing(4) : undefined,
     marginBottom: theme.spacing(3),
   },
 }));
