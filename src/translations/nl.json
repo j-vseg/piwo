@@ -1,7 +1,10 @@
 {
   "tabs": {
     "home": "Home",
-    "settings": "Instellingen",
+    "settings": {
+      "main": "Instellingen",
+      "createActivity": "Creëer activiteit"
+    },
     "login": "Login"
   },
   "home": {
@@ -18,6 +21,39 @@
     "errorAvailability": "Het is niet gelukt om het aanwezigheid overzicht op te halen",
     "noAvailability": "Niemand heeft deze aanwezigheid opgegeven",
     "total": "Totaal: {{count}}"
+  },
+  "createActivity": {
+    "nameLabel": "Naam",
+    "namePlaceholder": "Activiteit naam",
+    "nameRequired": "Naam is verplicht",
+    "categoryLabel": "Categorie",
+    "startTimeLabel": "Starttijd",
+    "endTimeLabel": "Eindtijd",
+    "recurrenceLabel": "Herhaling",
+    "recurrenceNone": "Eenmalig",
+    "startTimeRequired": "Start tijd kan niet leeg zijn",
+    "startTimeFuture": "Start tijd moet in de toekomst zijn",
+    "endTimeRequired": "Eind tijd kan niet leeg zijn",
+    "endTimeFuture": "Eind tijd moet in de toekomst zijn",
+    "endTimeAfterStart": "Eind tijd moet na start tijd zijn",
+    "recurrenceHint": "Deze activiteit wordt <bold>herhaald</bold>",
+    "recurrenceHintNone": "Deze activiteit wordt <bold>niet herhaald</bold>",
+    "categoryRequired": "Categorie kan niet leeg zijn",
+    "submitButton": "Activiteit aanmaken",
+    "submitHint": "Maak een nieuwe activiteit aan",
+    "success": "Activiteit aangemaakt!",
+    "error": "Het is niet gelukt om de activiteit aan te maken"
+  },
+  "settings": {
+    "activitiesHeader": "Activiteiten",
+    "editActivity": "Wijzig activiteit",
+    "accountHeader": "Account",
+    "personalDetails": "Persoonlijke gegevens",
+    "signOut": "Uitloggen",
+    "deleteAccount": "Account verwijderen",
+    "aboutHeader": "Over de app",
+    "whatsNew": "Wat is er nieuw?",
+    "aboutApp": "Wat kun je doen met de Piwo app?"
   },
   "explore": {
     "description": "Deze starter app bevat voorbeeldcode\nom je op weg te helpen.",

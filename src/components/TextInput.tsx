@@ -10,7 +10,7 @@ import {
   FieldValues,
   RegisterOptions,
 } from "react-hook-form";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ErrorMessage } from "./ErrorMessage";
 import Label from "./Label";
 import { ThemedView } from "./ThemedView";
@@ -35,6 +35,8 @@ export default function TextInput<T extends FieldValues>({
   rules,
   inputProps,
 }: TextInputProps<T>) {
+  const { theme } = useUnistyles();
+
   return (
     <Controller
       control={control}
@@ -50,6 +52,18 @@ export default function TextInput<T extends FieldValues>({
             <ExpoUITextInput
               defaultValue={value}
               onChangeText={onChange}
+              style={{
+                padding: theme.spacing(3),
+                borderRadius: theme.spacing(2),
+                backgroundColor: theme.colors.dark.greyLight,
+                borderWidth: 0,
+              }}
+              textStyle={{
+                fontFamily: theme.text.bodyMedium.fontFamily,
+                fontWeight: String(theme.text.bodyMedium.fontWeight) as "400",
+                fontSize: theme.text.bodyMedium.fontSize,
+                color: theme.text.text.color,
+              }}
               {...inputProps}
             />
           </Host>
@@ -63,14 +77,6 @@ export default function TextInput<T extends FieldValues>({
 const styles = StyleSheet.create((theme) => ({
   input: {
     gap: theme.spacing(1),
-  },
-  textInput: {
-    fontFamily: "Poppins",
-    fontSize: 16,
-    padding: theme.spacing(3),
-    borderRadius: theme.spacing(2),
-    backgroundColor: theme.colors.dark.greyLight,
-    color: theme.colors.dark.black,
   },
   dot: {
     backgroundColor: theme.colors.primitives.primary,

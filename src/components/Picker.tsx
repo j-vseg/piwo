@@ -1,0 +1,127 @@
+import {
+    Control,
+    Controller,
+    FieldPath,
+    FieldValues,
+    RegisterOptions,
+} from "react-hook-form";
+import { Pressable, ScrollView } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
+import { ErrorMessage } from "./ErrorMessage";
+import Label from "./Label";
+import { ThemedText } from "./ThemedText";
+import { ThemedView } from "./ThemedView";
+
+type PickerProps<T extends FieldValues> = {
+  label: string;
+  required?: boolean;
+  control: Control<T>;
+  name: FieldPath<T>;
+  rules?: RegisterOptions<T, FieldPath<T>>;
+  options: string[];
+  allowDeselect?: boolean;
+};
+
+export default function Picker<T extends FieldValues>({
+  label,
+  required = true,
+  control,
+  name,
+  rules,
+  options,
+  allowDeselect = false,
+}: PickerProps<T>) {
+  return (
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
+        <ThemedView style={styles.field}>
+          <Label>
+            {label}
+            {required && <ThemedView style={styles.dot} />}
+          </Label>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.options}
+          >
+            {allowDeselect && (
+              <Pressable
+                style={[styles.option, !value && styles.optionSelected]}
+                onPress={() => onChange(undefined)}
+              >
+                <ThemedText
+                  type="button"
+                  style={[
+                    styles.optionText,
+                    !value && styles.optionTextSelected,
+                  ]}
+                >
+                  ✕
+                </ThemedText>
+              </Pressable>
+            )}
+            {options.map((option) => (
+              <Pressable
+                key={option}
+                style={[
+                  styles.option,
+                  value === option && styles.optionSelected,
+                ]}
+                onPress={() => onChange(option)}
+              >
+                <ThemedText
+                  type="button"
+                  style={[
+                    styles.optionText,
+                    value === option && styles.optionTextSelected,
+                  ]}
+                >
+                  {option}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </ScrollView>
+          {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
+        </ThemedView>
+      )}
+    />
+  );
+}
+
+const styles = StyleSheet.create((theme) => ({
+  field: {
+    gap: theme.spacing(1),
+  },
+  dot: {
+    backgroundColor: theme.colors.primitives.primary,
+    borderRadius: 99,
+    width: 5,
+    height: 5,
+    marginBottom: 8,
+    marginLeft: 2,
+  },
+  options: {
+    flexDirection: "row",
+    gap: theme.spacing(2),
+  },
+  option: {
+    borderRadius: theme.spacing(2),
+    paddingHorizontal: theme.spacing(5),
+    paddingVertical: theme.spacing(2),
+    backgroundColor: theme.colors.dark.greyLight,
+  },
+  optionSelected: {
+    backgroundColor: theme.colors.primitives.primary,
+  },
+  optionText: {
+    fontFamily: theme.text.bodyMedium.fontFamily,
+    fontWeight: theme.text.bodyMedium.fontWeight,
+    fontSize: theme.text.bodySmall.fontSize,
+  },
+  optionTextSelected: {
+    color: theme.colors.light.white,
+  },
+}));

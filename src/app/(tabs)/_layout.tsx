@@ -54,7 +54,7 @@ export default function TabsLayout() {
 
         <NativeTabs.Trigger name="settings">
           <NativeTabs.Trigger.Label>
-            {t("tabs.settings")}
+            {t("tabs.settings.main")}
           </NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             src={require("@/assets/images/tabIcons/home.png")}
@@ -80,7 +80,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: t("tabs.settings"),
+          title: t("tabs.settings.main"),
           tabBarIcon: ({ color }) => (
             <IconSymbol
               weight="500"
