@@ -9,7 +9,7 @@ import {
   type DocumentData,
   type Query,
 } from "firebase/firestore";
-import { accountsCollection, db } from "./firebase";
+import { accountsCollection, db } from "@/firebase";
 import {
   deleteUser,
   EmailAuthProvider,

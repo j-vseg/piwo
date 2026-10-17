@@ -15,7 +15,7 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
       style={styles.container}
       onPress={() =>
         router.push({
-          pathname: "/(tabs)/index/activity",
+          pathname: "/(tabs)/home/activity",
           params: { id: occurrence.id },
         })
       }

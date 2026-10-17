@@ -1,5 +1,5 @@
 import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "@/firebase";
 import { getAllAccountsDisplayNames } from "./accounts";
 import { Status } from "@/constants/Status";
 import { EventOccurrence } from "@/constants/EventOccurence";

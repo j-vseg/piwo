@@ -1,10 +1,12 @@
 import { OS } from "@/constants/Os";
 import { createUser } from "@/services/firebase/accounts";
-import { auth } from "@/services/firebase/firebase";
+import { auth } from "@/firebase";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import {
   getAuth as getNativeAuth,
   onAuthStateChanged as onNativeAuthStateChanged,
+  signInWithEmailAndPassword as nativeSignIn,
+  createUserWithEmailAndPassword as nativeCreateUser,
 } from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
 import {
@@ -38,6 +40,10 @@ export async function signInWithEmail(
   password: string,
 ): Promise<User> {
   try {
+    if (Platform.OS !== OS.Web) {
+      const cred = await nativeSignIn(getNativeAuth(), email, password);
+      return cred.user as unknown as User;
+    }
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -58,12 +64,16 @@ export async function createAuthUser(
   password: string,
 ): Promise<{ user: User; data: { email: string; password: string } }> {
   try {
+    if (Platform.OS !== OS.Web) {
+      const cred = await nativeCreateUser(getNativeAuth(), email, password);
+      return { user: cred.user as unknown as User, data: { email, password } };
+    }
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password,
     );
-    return { user: userCredential.user, data: { email: email, password: password } };
+    return { user: userCredential.user, data: { email, password } };
   } catch (error) {
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,

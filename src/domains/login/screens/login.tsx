@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { StyleSheet } from "react-native-unistyles";
 
+import { Alert } from "@/components/Alert";
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
@@ -20,7 +21,7 @@ export default function LoginScreen() {
     defaultValues: { email: "", password: "" },
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (data: LoginForm) =>
       signInWithEmail(data.email, data.password),
   });
@@ -29,6 +30,21 @@ export default function LoginScreen() {
     <ThemedView type="container" style={styles.container}>
       <ThemedView style={styles.form}>
         <ThemedText type="h1">{t("tabs.login")}</ThemedText>
+
+        {isSuccess && (
+          <Alert
+            variant="success"
+            size="regular"
+            description={t("login.success")}
+          />
+        )}
+        {isError && (
+          <Alert
+            variant="warning"
+            size="regular"
+            description={t("login.error")}
+          />
+        )}
 
         <TextInput
           label={t("login.emailLabel")}
@@ -79,12 +95,13 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
     justifyContent: "center",
     alignContent: "center",
     backgroundColor: theme.colors.primitives.quinary,
+    transform: [{ translateY: rt.insets.ime * -1 }],
   },
   form: {
     flex: 1,

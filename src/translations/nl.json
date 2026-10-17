@@ -63,6 +63,38 @@
     "whatsNew": "Wat is er nieuw?",
     "aboutApp": "Wat kun je doen met de Piwo app?"
   },
+  "personalDetails": {
+    "nameTitle": "Voor- & achternaam",
+    "firstnameLabel": "Voornaam",
+    "firstnamePlaceholder": "Voornaam",
+    "firstnameRequired": "Voornaam is verplicht",
+    "lastnameLabel": "Achternaam",
+    "lastnamePlaceholder": "Achternaam",
+    "lastnameRequired": "Achternaam is verplicht",
+    "saveNameButton": "Naam opslaan",
+    "saveNameHint": "Sla je naam wijzigingen op",
+    "saveNameSuccess": "Naam bijgewerkt!",
+    "saveNameError": "Het is niet gelukt om je naam bij te werken",
+    "emailTitle": "E-mailadres",
+    "emailLabel": "E-mailadres",
+    "emailPlaceholder": "E-mailadres",
+    "emailRequired": "E-mailadres is verplicht",
+    "emailInvalid": "Voer een geldig e-mailadres in",
+    "saveEmailButton": "E-mailadres opslaan",
+    "saveEmailHint": "Sla je e-mailadres wijziging op",
+    "saveEmailSuccess": "E-mailadres bijgewerkt!",
+    "saveEmailError": "Het is niet gelukt om je e-mailadres bij te werken",
+    "passwordTitle": "Wachtwoord",
+    "newPasswordLabel": "Nieuw wachtwoord",
+    "newPasswordPlaceholder": "Nieuw wachtwoord",
+    "newPasswordRequired": "Nieuw wachtwoord is verplicht",
+    "newPasswordMinLength": "Wachtwoord moet minimaal 8 tekens bevatten",
+    "savePasswordButton": "Wachtwoord opslaan",
+    "savePasswordHint": "Sla je wachtwoord wijziging op",
+    "savePasswordSuccess": "Wachtwoord bijgewerkt!",
+    "savePasswordError": "Het is niet gelukt om je wachtwoord bij te werken",
+    "currentPasswordPrompt": "Vul je huidige wachtwoord in"
+  },
   "explore": {
     "description": "Deze starter app bevat voorbeeldcode\nom je op weg te helpen.",
     "expoDocumentation": "Expo documentatie"
@@ -77,6 +109,8 @@
     "passwordRequired": "Wachtwoord is verplicht",
     "passwordMinLength": "Wachtwoord moet minimaal 8 tekens bevatten",
     "loginButton": "Inloggen",
-    "accessibilityHint": "Log in op je account"
+    "accessibilityHint": "Log in op je account",
+    "success": "Succesvol ingelogd!",
+    "error": "Het is niet gelukt om in te loggen, probeer het later nog eens"
   }
 }

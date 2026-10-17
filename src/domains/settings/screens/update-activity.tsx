@@ -89,7 +89,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
         queryKey: ["occurrences-grouped"],
       });
       setTimeout(() => {
-        router.push({ pathname: "/(tabs)/index/activity", params: { id } });
+        router.push({ pathname: "/(tabs)/home/activity", params: { id } });
       }, 3000);
     },
     onError: (error) => {
@@ -119,7 +119,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
         queryKey: ["occurrences-grouped"],
       });
       setTimeout(() => {
-        router.push("/(tabs)/index");
+        router.push("/(tabs)/home");
       }, 3000);
     },
     onError: (error) => {

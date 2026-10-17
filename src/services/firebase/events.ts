@@ -13,7 +13,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { db, eventsCollection } from "./firebase";
+import { db, eventsCollection } from "@/firebase";
 
 type GroupedOccurrences = {
   date: Date;

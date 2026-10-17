@@ -43,11 +43,15 @@ export default function TabsLayout() {
         backgroundColor={theme.colors.light.white}
         indicatorColor={theme.colors.primitives.quinary}
         labelStyle={{ selected: { color: theme.colors.primitives.primary } }}
+        iconColor={{
+          default: theme.tabBar.inactiveTintColor,
+          selected: theme.tabBar.activeTintColor,
+        }}
       >
-        <NativeTabs.Trigger name="index">
+        <NativeTabs.Trigger name="home">
           <NativeTabs.Trigger.Label>{t("tabs.home")}</NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
-            src={require("@/assets/images/tabIcons/home.png")}
+            src={require("@/assets/images/tabIcons/cabin.png")}
             renderingMode="template"
           />
         </NativeTabs.Trigger>
@@ -57,7 +61,7 @@ export default function TabsLayout() {
             {t("tabs.settings.main")}
           </NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
-            src={require("@/assets/images/tabIcons/home.png")}
+            src={require("@/assets/images/tabIcons/settings.png")}
             renderingMode="template"
           />
         </NativeTabs.Trigger>
@@ -68,7 +72,7 @@ export default function TabsLayout() {
   return (
     <Tabs screenOptions={screenOptions}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: t("tabs.home"),
           tabBarIcon: ({ color }) => (

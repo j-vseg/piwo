@@ -14,7 +14,7 @@ import {
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "@/firebase";
 
 const eventsCollection = collection(getFirestore(), "events");
 
