@@ -1,8 +1,10 @@
 import { useMemo } from "react";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
+import { Alert } from "@/components/Alert";
 import { Divider } from "@/components/Divider";
 import Event from "@/components/Event";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { fetchAllOccurrencesGroupedByDate } from "@/services/firebase/events";
@@ -14,6 +16,7 @@ import ThisWeek from "../components/ThisWeek";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const { theme } = useUnistyles();
   const upcomingMonday = useMemo(() => {
     return nextMonday(startOfToday());
   }, []);
@@ -27,21 +30,30 @@ export default function HomeScreen() {
   });
 
   return (
-    <ThemedView type="container">
+    <ThemedView type="container" style={{ gap: theme.spacing(8) }}>
       <ThemedText type="h1">{t("tabs.home")}</ThemedText>
       <ThisWeek />
 
-      <ThemedText type="h2">{t("home.upcomingActivities")}</ThemedText>
+      <ThemedView style={{ gap: theme.spacing(4) }}>
+        <ThemedText type="h2">{t("home.upcomingActivities")}</ThemedText>
 
-      <ThemedView style={styles.list}></ThemedView>
-      {groupedOccurrences?.map((item) => (
-        <ThemedView key={item.date.toDateString()} style={styles.listItem}>
-          <Divider label={format(item.date, "E d MMM", { locale: nl })} />
-          {item.occurrences.map((occurrence) => (
-            <Event key={occurrence.id} occurrence={occurrence} />
-          ))}
-        </ThemedView>
-      ))}
+        {isLoading && <LoadingIndicator />}
+        {isError && (
+          <Alert
+            variant={"warning"}
+            description={t("home.errorLoadingActivities")}
+            size={"regular"}
+          />
+        )}
+        {groupedOccurrences?.map((item) => (
+          <ThemedView key={item.date.toDateString()} style={styles.listItem}>
+            <Divider label={format(item.date, "E d MMM", { locale: nl })} />
+            {item.occurrences.map((occurrence) => (
+              <Event key={occurrence.id} occurrence={occurrence} />
+            ))}
+          </ThemedView>
+        ))}
+      </ThemedView>
     </ThemedView>
   );
 }

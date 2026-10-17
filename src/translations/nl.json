@@ -15,7 +15,8 @@
     "thisWeekError": "We hebben de activiteiten voor deze week niet op kunnen halen",
     "availabilityMissing": "Geef je aanwezigheid op!",
     "availabilityComplete": "Je bent bij voor deze week!",
-    "upcomingActivities": "Toekomstige activiteiten"
+    "upcomingActivities": "Toekomstige activiteiten",
+    "errorLoadingActivities": "Het is niet gelukt om de activiteiten op te halen"
   },
   "activity": {
     "errorOccurrence": "Het is niet gelukt om de activiteit data op te halen.",

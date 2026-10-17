@@ -20,6 +20,10 @@ const colors = {
     secondary: "#7A8360",
     tertairy: "#8B2A2D",
     quinary: "#1E1D18",
+
+    background: {
+      primary: "#2A2117",
+    },
   },
   transparent: "#00000000",
   category: {
@@ -163,7 +167,7 @@ export const darkTheme = {
   },
   screen: {
     default: {
-      backgroundColor: colors.primitives["quinary"],
+      backgroundColor: colors.primitives.background["primary"],
       headerTintColor: colors.dark["black"],
     },
   },

@@ -44,10 +44,7 @@ export default function TextInput<T extends FieldValues>({
       rules={rules}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <ThemedView style={styles.input}>
-          <Label>
-            {label}
-            {required && <ThemedView style={styles.dot} />}
-          </Label>
+          <Label required={required}>{label}</Label>
           <Host matchContents={{ vertical: true }} style={{ width: "100%" }}>
             <ExpoUITextInput
               defaultValue={value}
@@ -55,7 +52,7 @@ export default function TextInput<T extends FieldValues>({
               style={{
                 padding: theme.spacing(3),
                 borderRadius: theme.spacing(2),
-                backgroundColor: theme.colors.dark.greyLight,
+                backgroundColor: theme.colors.primitives.quinary,
                 borderWidth: 0,
               }}
               textStyle={{
@@ -64,6 +61,7 @@ export default function TextInput<T extends FieldValues>({
                 fontSize: theme.text.bodyMedium.fontSize,
                 color: theme.text.text.color,
               }}
+              placeholderTextColor={theme.colors.dark.greyMedium}
               {...inputProps}
             />
           </Host>

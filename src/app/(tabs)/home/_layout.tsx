@@ -11,6 +11,7 @@ export default function SettingsLayout() {
         name="activity"
         options={{
           headerShown: true,
+          title: "",
           headerTitleAlign: "center",
           headerTitleStyle: {
             fontFamily: theme.text.h3.fontFamily,

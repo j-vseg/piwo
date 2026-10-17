@@ -1,4 +1,5 @@
-import { Pressable } from "react-native";
+import { OS } from "@/constants/Os";
+import { Platform, Pressable } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { IconSymbol } from "../IconSymbol/IconSymbol";
 import { ThemedText } from "../ThemedText";
@@ -28,7 +29,7 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(1),
+    paddingVertical: Platform.OS == OS.Web ? theme.spacing(4) : undefined,
     marginBottom: theme.spacing(3),
   },
 }));

@@ -17,7 +17,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { router } from "expo-router";
-import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
@@ -43,18 +42,16 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     queryFn: () => getEvent(id),
   });
 
-  const methods = useForm<ActivityFormData>();
-
-  useEffect(() => {
-    if (occurrence) {
-      methods.reset({
-        name: occurrence.name,
-        startTime: occurrence.startDate.toDate(),
-        endTime: occurrence.endDate.toDate(),
-        category: occurrence.category,
-      });
-    }
-  }, [occurrence, methods]);
+  const methods = useForm<ActivityFormData>({
+    defaultValues: occurrence
+      ? {
+          name: occurrence.name,
+          startTime: occurrence.startDate.toDate(),
+          endTime: occurrence.endDate.toDate(),
+          category: occurrence.category,
+        }
+      : undefined,
+  });
 
   const [startTime, category] = useWatch({
     control: methods.control,
@@ -142,34 +139,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
 
   return (
     <ThemedView type="container" key={occurrence.id}>
-      <ThemedView style={styles.preview}>
-        <ThemedView>
-          <ThemedText type="bodyLarge">{occurrence.name || "???"}</ThemedText>
-          <ThemedText type="bodySmall" style={styles.subtitle}>
-            {occurrence.recurrence &&
-              `${occurrence.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(occurrence.startDate.toDate(), `${occurrence.recurrence === Recurrence.Weekly ? "EEEE" : occurrence.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(occurrence.endDate.toDate(), isSameDay(occurrence.endDate.toDate(), occurrence.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
-            {!occurrence.recurrence &&
-              `${format(occurrence.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endDate.toDate(), isSameDay(occurrence.endDate.toDate(), occurrence.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
-          </ThemedText>
-        </ThemedView>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.buttonContainer}
-        >
-          {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
-            <ThemedView
-              key={statusOption}
-              style={[styles.previewButton, { backgroundColor: eventColor }]}
-            >
-              <ThemedText type="button" style={styles.previewButtonText}>
-                {statusOption}
-              </ThemedText>
-            </ThemedView>
-          ))}
-        </ScrollView>
-      </ThemedView>
-
       {isSuccessUpdate && (
         <Alert
           variant="success"
@@ -198,6 +167,34 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
           description={t("createActivity.deleteError")}
         />
       )}
+
+      <ThemedView style={styles.preview}>
+        <ThemedView>
+          <ThemedText type="bodyLarge">{occurrence.name || "???"}</ThemedText>
+          <ThemedText type="bodySmall" style={styles.subtitle}>
+            {occurrence.recurrence &&
+              `${occurrence.recurrence === Recurrence.Daily ? "Elke dag" : "Elke"} ${format(occurrence.startDate.toDate(), `${occurrence.recurrence === Recurrence.Weekly ? "EEEE" : occurrence.recurrence === Recurrence.Monthly ? "do" : ""} HH:mm`, { locale: nl })} - ${format(occurrence.endDate.toDate(), isSameDay(occurrence.endDate.toDate(), occurrence.startDate.toDate()) ? "HH:mm" : "EEEE HH:mm", { locale: nl })}`}
+            {!occurrence.recurrence &&
+              `${format(occurrence.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endDate.toDate(), isSameDay(occurrence.endDate.toDate(), occurrence.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
+          </ThemedText>
+        </ThemedView>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.buttonContainer}
+        >
+          {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
+            <ThemedView
+              key={statusOption}
+              style={[styles.previewButton, { backgroundColor: eventColor }]}
+            >
+              <ThemedText type="button" style={styles.previewButtonText}>
+                {statusOption}
+              </ThemedText>
+            </ThemedView>
+          ))}
+        </ScrollView>
+      </ThemedView>
 
       <ThemedView style={styles.form}>
         <TextInput

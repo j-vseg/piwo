@@ -63,7 +63,7 @@ export default function ActivityScreen({ id }: { id: string }) {
     return <LoadingIndicator />;
   }
 
-  if (isErrorOccurrence || !occurrence) {
+  if (isErrorOccurrence || !occurrence || !occurrence.startTime || !occurrence.endTime) {
     return <ErrorMessage>{t("activity.errorOccurrence")}</ErrorMessage>;
   }
 

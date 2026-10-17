@@ -36,7 +36,7 @@ export default function BottomSheet({
   return (
     <ExpoBottomSheet
       ref={sheetRef}
-      snapPoints={["50%", "90%"]}
+      //snapPoints={["50%", "90%"]}
       index={-1}
       enablePanDownToClose
       onClose={onDismiss}
@@ -59,5 +59,6 @@ export default function BottomSheet({
 const styles = StyleSheet.create((theme) => ({
   container: {
     paddingHorizontal: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
   },
 }));

@@ -39,7 +39,7 @@ export function Accordion({
         style={styles.header}
         onPress={() => setOpened(!opened)}
       >
-        <ThemedText type="bodySmall" style={styles.title}>
+        <ThemedText type="bodyMedium" style={styles.title}>
           {title}
         </ThemedText>
         <IconSymbol
