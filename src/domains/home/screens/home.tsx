@@ -7,16 +7,18 @@ import Event from "@/components/Event";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { OS } from "@/constants/Os";
 import { fetchAllOccurrencesGroupedByDate } from "@/services/firebase/events";
 import { useTranslation } from "@/translations/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { format, nextMonday, startOfToday } from "date-fns";
 import { nl } from "date-fns/locale";
+import { Platform } from "react-native";
 import ThisWeek from "../components/ThisWeek";
 
 export default function HomeScreen() {
   const { t } = useTranslation();
-  const { theme } = useUnistyles();
+  const { theme, rt } = useUnistyles();
   const upcomingMonday = useMemo(() => {
     return nextMonday(startOfToday());
   }, []);
@@ -30,7 +32,16 @@ export default function HomeScreen() {
   });
 
   return (
-    <ThemedView type="container" style={{ gap: theme.spacing(8) }}>
+    <ThemedView
+      type="container"
+      style={{
+        gap: theme.spacing(8),
+        paddingTop:
+          Platform.OS === OS.Web
+            ? rt.insets.top + theme.spacing(6)
+            : rt.insets.top + theme.spacing(4),
+      }}
+    >
       <ThemedText type="h1">{t("tabs.home")}</ThemedText>
       <ThisWeek />
 

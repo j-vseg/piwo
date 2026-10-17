@@ -12,10 +12,11 @@ import {
   updateUserPassword,
 } from "@/services/firebase/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { Control, FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
+import { ConfirmPassword } from "../components/ConfirmPassword";
 
 type NameFormData = {
   firstname: string;
@@ -24,10 +25,12 @@ type NameFormData = {
 
 type EmailFormData = {
   email: string;
+  oldPassword: string;
 };
 
 type PasswordFormData = {
   newPassword: string;
+  oldPassword: string;
 };
 
 export default function SettingsScreen() {
@@ -46,12 +49,10 @@ export default function SettingsScreen() {
     },
   });
   const emailForm = useForm<EmailFormData>({
-    defaultValues: { email: user?.email ?? "" },
+    defaultValues: { email: user?.email ?? "", oldPassword: "" },
   });
   const passwordForm = useForm<PasswordFormData>({
-    defaultValues: {
-      newPassword: "",
-    },
+    defaultValues: { newPassword: "", oldPassword: "" },
   });
 
   const {
@@ -62,8 +63,12 @@ export default function SettingsScreen() {
   } = useMutation({
     mutationFn: async (data: NameFormData) => {
       await updateAccountProfile(user!.uid, {
-        firstName: data.firstname,
-        lastName: data.lastname,
+        firstName: data.firstname.trim(),
+        lastName: data.lastname.trim(),
+      });
+      nameForm.reset({
+        firstname: account?.firstName ?? "",
+        lastname: account?.lastName ?? "",
       });
     },
     onSuccess: () => {
@@ -77,186 +82,206 @@ export default function SettingsScreen() {
     isSuccess: isSuccessEmail,
     isError: isErrorEmail,
   } = useMutation({
-    mutationFn: async (data: {
-      data: EmailFormData;
-      currentPassword: string;
-    }) => {
-      await updateUserEmail(user!, data.currentPassword, data.data.email);
+    mutationFn: async (data: { email: string; oldPassword: string }) => {
+      await updateUserEmail(user!, data.oldPassword, data.email);
+      emailForm.reset({ email: user?.email ?? "", oldPassword: "" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["account", user?.uid] });
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
   const {
     mutate: mutatePassword,
     isPending: isPendingPassword,
     isSuccess: isSuccessPassword,
-    isError: isErrorPassword,
+    error: errorPassword,
   } = useMutation({
-    mutationFn: async (data: {
-      currentPassword: string;
-      newPassword: string;
-    }) => {
-      await updateUserPassword(user!, data.currentPassword, data.newPassword);
+    mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
+      await updateUserPassword(user!, data.oldPassword, data.newPassword);
+      passwordForm.reset({ newPassword: "", oldPassword: "" });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["account", user?.uid] });
-      passwordForm.reset({ newPassword: "" });
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
-  const handleUpdatePassword = (data: PasswordFormData) => {
-    const currentPassword = prompt(t("personalDetails.currentPasswordPrompt"));
-    if (currentPassword != null && currentPassword !== "") {
-      mutatePassword({ currentPassword, newPassword: data.newPassword });
-    }
-  };
-  const handleUpdateEmail = (data: EmailFormData) => {
-    const currentPassword = prompt(t("personalDetails.currentPasswordPrompt"));
-    if (currentPassword != null && currentPassword !== "") {
-      mutateEmail({ data: { email: data.email }, currentPassword });
-    }
-  };
+  const [confirmPasswordFor, setConfirmPasswordFor] = useState<
+    "password" | "email" | null
+  >(null);
 
-  useEffect(() => {
-    nameForm.reset({
-      firstname: account?.firstName ?? "",
-      lastname: account?.lastName ?? "",
-    });
-    emailForm.reset({ email: user?.email ?? "" });
-    passwordForm.reset({ newPassword: "" });
-  }, [account, emailForm, nameForm, passwordForm, user?.email]);
+  const handleConfirm = () => {
+    if (confirmPasswordFor === "password") {
+      passwordForm.handleSubmit((data) => {
+        mutatePassword({
+          oldPassword: data.oldPassword.trim(),
+          newPassword: data.newPassword.trim(),
+        });
+        setConfirmPasswordFor(null);
+      })();
+    } else if (confirmPasswordFor === "email") {
+      emailForm.handleSubmit((data) => {
+        mutateEmail({
+          email: data.email.trim(),
+          oldPassword: data.oldPassword.trim(),
+        });
+        setConfirmPasswordFor(null);
+      })();
+    }
+  };
 
   return (
-    <ThemedView type="container">
-      <Group>
-        <Accordion title={t("personalDetails.nameTitle")}>
-          <ThemedView style={styles.group}>
-            {isSuccessName && (
-              <Alert
-                variant="success"
-                size="regular"
-                description={t("personalDetails.saveNameSuccess")}
+    <>
+      <ThemedView type="container">
+        <Group>
+          <Accordion title={t("personalDetails.nameTitle")}>
+            <ThemedView style={styles.group}>
+              {isSuccessName && (
+                <Alert
+                  variant="success"
+                  size="regular"
+                  description={t("personalDetails.saveNameSuccess")}
+                />
+              )}
+              {isErrorName && (
+                <Alert
+                  variant="warning"
+                  size="regular"
+                  description={t("personalDetails.saveNameError")}
+                />
+              )}
+              <TextInput
+                label={t("personalDetails.firstnameLabel")}
+                control={nameForm.control}
+                name="firstname"
+                rules={{ required: t("personalDetails.firstnameRequired") }}
+                inputProps={{
+                  placeholder: t("personalDetails.firstnamePlaceholder"),
+                }}
               />
-            )}
-            {isErrorName && (
-              <Alert
-                variant="warning"
-                size="regular"
-                description={t("personalDetails.saveNameError")}
+              <TextInput
+                label={t("personalDetails.lastnameLabel")}
+                control={nameForm.control}
+                name="lastname"
+                rules={{ required: t("personalDetails.lastnameRequired") }}
+                inputProps={{
+                  placeholder: t("personalDetails.lastnamePlaceholder"),
+                }}
               />
-            )}
-            <TextInput
-              label={t("personalDetails.firstnameLabel")}
-              control={nameForm.control}
-              name="firstname"
-              rules={{ required: t("personalDetails.firstnameRequired") }}
-              inputProps={{
-                placeholder: t("personalDetails.firstnamePlaceholder"),
-              }}
-            />
-            <TextInput
-              label={t("personalDetails.lastnameLabel")}
-              control={nameForm.control}
-              name="lastname"
-              rules={{ required: t("personalDetails.lastnameRequired") }}
-              inputProps={{
-                placeholder: t("personalDetails.lastnamePlaceholder"),
-              }}
-            />
-            <Button
-              content={t("personalDetails.saveNameButton")}
-              isPending={isPendingName}
-              onPress={nameForm.handleSubmit((data) => mutateName(data))}
-              accessibilityLabel={t("personalDetails.saveNameButton")}
-              accessibilityHint={t("personalDetails.saveNameHint")}
-            />
-          </ThemedView>
-        </Accordion>
+              <Button
+                content={t("personalDetails.saveNameButton")}
+                isPending={isPendingName}
+                onPress={nameForm.handleSubmit((data) => mutateName(data))}
+                accessibilityLabel={t("personalDetails.saveNameButton")}
+                accessibilityHint={t("personalDetails.saveNameHint")}
+              />
+            </ThemedView>
+          </Accordion>
 
-        <Accordion title={t("personalDetails.emailTitle")}>
-          <ThemedView style={styles.group}>
-            {isSuccessEmail && (
-              <Alert
-                variant="success"
-                size="regular"
-                description={t("personalDetails.saveEmailSuccess")}
+          <Accordion title={t("personalDetails.emailTitle")}>
+            <ThemedView style={styles.group}>
+              {isSuccessEmail && (
+                <Alert
+                  variant="success"
+                  size="regular"
+                  description={t("personalDetails.saveEmailSuccess")}
+                />
+              )}
+              {isErrorEmail && (
+                <Alert
+                  variant="warning"
+                  size="regular"
+                  description={t("personalDetails.saveEmailError")}
+                />
+              )}
+              <TextInput
+                label={t("personalDetails.emailLabel")}
+                control={emailForm.control}
+                name="email"
+                rules={{
+                  required: t("personalDetails.emailRequired"),
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: t("personalDetails.emailInvalid"),
+                  },
+                }}
+                inputProps={{
+                  placeholder: t("personalDetails.emailPlaceholder"),
+                }}
               />
-            )}
-            {isErrorEmail && (
-              <Alert
-                variant="warning"
-                size="regular"
-                description={t("personalDetails.saveEmailError")}
+              <Button
+                content={t("personalDetails.saveEmailButton")}
+                isPending={isPendingEmail}
+                onPress={emailForm.handleSubmit(() =>
+                  setConfirmPasswordFor("email"),
+                )}
+                accessibilityLabel={t("personalDetails.saveEmailButton")}
+                accessibilityHint={t("personalDetails.saveEmailHint")}
               />
-            )}
-            <TextInput
-              label={t("personalDetails.emailLabel")}
-              control={emailForm.control}
-              name="email"
-              rules={{
-                required: t("personalDetails.emailRequired"),
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: t("personalDetails.emailInvalid"),
-                },
-              }}
-              inputProps={{
-                placeholder: t("personalDetails.emailPlaceholder"),
-              }}
-            />
-            <Button
-              content={t("personalDetails.saveEmailButton")}
-              isPending={isPendingEmail}
-              onPress={emailForm.handleSubmit(handleUpdateEmail)}
-              accessibilityLabel={t("personalDetails.saveEmailButton")}
-              accessibilityHint={t("personalDetails.saveEmailHint")}
-            />
-          </ThemedView>
-        </Accordion>
+            </ThemedView>
+          </Accordion>
 
-        <Accordion title={t("personalDetails.passwordTitle")}>
-          <ThemedView style={styles.group}>
-            {isSuccessPassword && (
-              <Alert
-                variant="success"
-                size="regular"
-                description={t("personalDetails.savePasswordSuccess")}
+          <Accordion title={t("personalDetails.passwordTitle")}>
+            <ThemedView style={styles.group}>
+              {isSuccessPassword && (
+                <Alert
+                  variant="success"
+                  size="regular"
+                  description={t("personalDetails.savePasswordSuccess")}
+                />
+              )}
+              {errorPassword && (
+                <Alert
+                  variant="warning"
+                  size="regular"
+                  description={errorPassword.message}
+                />
+              )}
+              <TextInput
+                label={t("personalDetails.newPasswordLabel")}
+                control={passwordForm.control}
+                name="newPassword"
+                rules={{
+                  required: t("personalDetails.newPasswordRequired"),
+                  minLength: {
+                    value: 8,
+                    message: t("personalDetails.newPasswordMinLength"),
+                  },
+                }}
+                inputProps={{
+                  placeholder: t("personalDetails.newPasswordPlaceholder"),
+                  secureTextEntry: true,
+                }}
               />
-            )}
-            {isErrorPassword && (
-              <Alert
-                variant="warning"
-                size="regular"
-                description={t("personalDetails.savePasswordError")}
+              <Button
+                content={t("personalDetails.savePasswordButton")}
+                isPending={isPendingPassword}
+                onPress={passwordForm.handleSubmit(() =>
+                  setConfirmPasswordFor("password"),
+                )}
+                accessibilityLabel={t("personalDetails.savePasswordButton")}
+                accessibilityHint={t("personalDetails.savePasswordHint")}
               />
-            )}
-            <TextInput
-              label={t("personalDetails.newPasswordLabel")}
-              control={passwordForm.control}
-              name="newPassword"
-              rules={{
-                required: t("personalDetails.newPasswordRequired"),
-                minLength: {
-                  value: 8,
-                  message: t("personalDetails.newPasswordMinLength"),
-                },
-              }}
-              inputProps={{
-                placeholder: t("personalDetails.newPasswordPlaceholder"),
-                secureTextEntry: true,
-              }}
-            />
-            <Button
-              content={t("personalDetails.savePasswordButton")}
-              isPending={isPendingPassword}
-              onPress={passwordForm.handleSubmit(handleUpdatePassword)}
-              accessibilityLabel={t("personalDetails.savePasswordButton")}
-              accessibilityHint={t("personalDetails.savePasswordHint")}
-            />
-          </ThemedView>
-        </Accordion>
-      </Group>
-    </ThemedView>
+            </ThemedView>
+          </Accordion>
+        </Group>
+      </ThemedView>
+
+      <ConfirmPassword
+        isOpen={confirmPasswordFor !== null}
+        onDismiss={() => setConfirmPasswordFor(null)}
+        onConfirm={handleConfirm}
+        control={
+          (confirmPasswordFor === "email"
+            ? emailForm.control
+            : passwordForm.control) as unknown as Control<FieldValues>
+        }
+      />
+    </>
   );
 }
 

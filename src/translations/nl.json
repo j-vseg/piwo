@@ -10,7 +10,6 @@
     "login": "Login"
   },
   "home": {
-    "signOut": "Uitloggen",
     "thisWeek": "Deze week",
     "thisWeekError": "We hebben de activiteiten voor deze week niet op kunnen halen",
     "availabilityMissing": "Geef je aanwezigheid op!",
@@ -33,7 +32,6 @@
     "startTimeLabel": "Starttijd",
     "endTimeLabel": "Eindtijd",
     "recurrenceLabel": "Herhaling",
-    "recurrenceNone": "Eenmalig",
     "startTimeRequired": "Start tijd kan niet leeg zijn",
     "startTimeFuture": "Start tijd moet in de toekomst zijn",
     "endTimeRequired": "Eind tijd kan niet leeg zijn",
@@ -93,12 +91,10 @@
     "savePasswordButton": "Wachtwoord opslaan",
     "savePasswordHint": "Sla je wachtwoord wijziging op",
     "savePasswordSuccess": "Wachtwoord bijgewerkt!",
-    "savePasswordError": "Het is niet gelukt om je wachtwoord bij te werken",
-    "currentPasswordPrompt": "Vul je huidige wachtwoord in"
-  },
-  "explore": {
-    "description": "Deze starter app bevat voorbeeldcode\nom je op weg te helpen.",
-    "expoDocumentation": "Expo documentatie"
+    "currentPasswordPrompt": "Vul je huidige wachtwoord in",
+    "currentPasswordDescription": "Om je gegevens aan te passen hebben we je wachtwoord nodig",
+    "confirmButton": "Bevestigen",
+    "confirmHint": "Bevestig je wachtwoord"
   },
   "login": {
     "emailLabel": "E-mail",

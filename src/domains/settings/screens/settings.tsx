@@ -2,20 +2,31 @@ import { Group } from "@/components/Group";
 import ListTile from "@/components/ListTile";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { OS } from "@/constants/Os";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { SelectActivity } from "../components/SelectActivity";
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
-  const { theme } = useUnistyles();
+  const { theme, rt } = useUnistyles();
   const [editActivityOpen, setEditActivityOpen] = useState(false);
 
   return (
     <>
-      <ThemedView type="container" style={{ gap: theme.spacing(8) }}>
+      <ThemedView
+        type="container"
+        style={{
+          gap: theme.spacing(8),
+          paddingTop:
+            Platform.OS === OS.Web
+              ? rt.insets.top + theme.spacing(6)
+              : rt.insets.top + theme.spacing(4),
+        }}
+      >
         <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
         <ThemedView style={styles.group}>

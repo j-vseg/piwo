@@ -16,8 +16,16 @@ import {
   reauthenticateWithCredential,
   User,
 } from "firebase/auth";
+import {
+  getAuth as getNativeAuth,
+  EmailAuthProvider as NativeEmailAuthProvider,
+  reauthenticateWithCredential as nativeReauthenticate,
+  deleteUser as nativeDeleteUser,
+} from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { Approval } from "@/constants/Approval";
+import { Platform } from "react-native";
+import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 
@@ -160,33 +168,42 @@ export async function deleteUserAccount(
   password: string,
 ): Promise<void> {
   try {
-    // Re-authenticate user first
     if (user.email) {
-      const credential = EmailAuthProvider.credential(user.email, password);
-      await reauthenticateWithCredential(user, credential);
+      if (Platform.OS !== OS.Web) {
+        const nativeUser = getNativeAuth().currentUser;
+        if (!nativeUser) throw new Error("Geen ingelogde gebruiker gevonden");
+        const credential = NativeEmailAuthProvider.credential(
+          user.email,
+          password,
+        );
+        await nativeReauthenticate(nativeUser, credential);
+      } else {
+        const credential = EmailAuthProvider.credential(user.email, password);
+        await reauthenticateWithCredential(user, credential);
+      }
     }
 
-    // Query all availability documents across all occurrences
     const availabilityQuery = collectionGroup(db, "availability");
     const allAvailabilitySnapshot = await getDocs(availabilityQuery);
 
-    // Filter for documents where the document ID matches the user ID
     const userAvailabilityDocs = allAvailabilitySnapshot.docs.filter(
       (doc) => doc.id === user.uid,
     );
 
-    // Delete all availability documents for this user
     const deletePromises: Promise<void>[] = [];
     for (const availabilityDoc of userAvailabilityDocs) {
       deletePromises.push(deleteDoc(availabilityDoc.ref));
     }
 
     await Promise.allSettled(deletePromises);
-    console.log("All availability documents deleted");
 
     await deleteDoc(doc(accountsCollection, user.uid));
-    await deleteUser(user);
-    console.log("Deleted user account");
+    if (Platform.OS !== OS.Web) {
+      const nativeUser = getNativeAuth().currentUser;
+      if (nativeUser) await nativeDeleteUser(nativeUser);
+    } else {
+      await deleteUser(user);
+    }
   } catch (error) {
     console.error("Error deleting user account:", error);
     
