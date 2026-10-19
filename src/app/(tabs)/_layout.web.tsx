@@ -1,10 +1,15 @@
 import { HapticTab } from "@/components/HapticTap";
 import { ThemedText } from "@/components/ThemedText";
+import { Approval } from "@/constants/Approval";
 import { Role } from "@/constants/Role";
+import { accountsCollection } from "@/firebase";
+import { fetchAllAccounts } from "@/services/firebase/accounts";
 import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import { Tabs } from "expo-router";
+import { query, where } from "firebase/firestore";
 import { ComponentProps } from "react";
 import { useUnistyles } from "react-native-unistyles";
 
@@ -16,6 +21,19 @@ export default function TabsLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const role = useAppStore((s) => s.role);
+  const { data } = useQuery({
+    queryKey: ["not-approved-users"],
+    queryFn:
+      role === Role.BoardMember || role === Role.Advisor
+        ? () =>
+            fetchAllAccounts(
+              query(
+                accountsCollection,
+                where("approval", "==", Approval.Unknown),
+              ),
+            )
+        : skipToken,
+  });
 
   const screenOptions: BottomTabNavigationOptions = {
     tabBarInactiveTintColor: theme.tabBar.inactiveTintColor,
@@ -54,7 +72,12 @@ export default function TabsLayout() {
         name="manage"
         options={{
           title: t("tabs.manage"),
-          tabBarBadge: 3,
+          tabBarBadge:
+            data && data.length !== 0
+              ? data.length > 9
+                ? "9+"
+                : String(data.length)
+              : undefined,
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="group" size={24} color={color} />
           ),
