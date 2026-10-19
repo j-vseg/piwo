@@ -17,6 +17,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { router } from "expo-router";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
@@ -42,21 +43,24 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     queryFn: () => getEvent(id),
   });
 
-  const methods = useForm<ActivityFormData>({
-    defaultValues: occurrence
-      ? {
-          name: occurrence.name,
-          startTime: occurrence.startDate.toDate(),
-          endTime: occurrence.endDate.toDate(),
-          category: occurrence.category,
-        }
-      : undefined,
-  });
+  const methods = useForm<ActivityFormData>();
+
+  useEffect(() => {
+    if (occurrence) {
+      methods.reset({
+        name: occurrence.name,
+        startTime: occurrence.startDate.toDate(),
+        endTime: occurrence.endDate.toDate(),
+        category: occurrence.category,
+      });
+    }
+  }, [methods, occurrence]);
 
   const [startTime, category] = useWatch({
     control: methods.control,
     name: ["startTime", "category"],
   });
+  const { isDirty } = methods.formState;
   const {
     mutate: mutateUpdate,
     isSuccess: isSuccessUpdate,
@@ -130,11 +134,13 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
   const eventColor = useEventColor(category);
 
   if (isLoadingOccurrence) {
-    return <LoadingIndicator />;
+    return <LoadingIndicator type="screen" />;
   }
 
   if (isErrorOccurrence || !occurrence) {
-    return <ErrorMessage>{t("activity.errorOccurrence")}</ErrorMessage>;
+    return (
+      <ErrorMessage type="screen">{t("activity.errorOccurrence")}</ErrorMessage>
+    );
   }
 
   return (
@@ -261,7 +267,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
         <Button
           content={t("createActivity.updateButton")}
           isPending={isPendingUpdate}
-          disabled={isSuccessUpdate || isSuccessDelete}
+          disabled={!isDirty || isSuccessUpdate || isSuccessDelete}
           onPress={methods.handleSubmit((data) => mutateUpdate(data))}
           accessibilityLabel={t("createActivity.updateButton")}
           accessibilityHint={t("createActivity.updateHint")}
@@ -312,8 +318,8 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "space-between",
   },
   previewButtonText: {
-    fontFamily: theme.font.inter.regular.fontFamily,
-    fontWeight: theme.font.inter.regular.fontWeight,
+    fontFamily: theme.font.poppins.regular.fontFamily,
+    fontWeight: theme.font.poppins.regular.fontWeight,
     fontSize: 16,
   },
   subtitle: {

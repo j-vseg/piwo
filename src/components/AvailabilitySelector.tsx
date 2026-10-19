@@ -6,6 +6,7 @@ import {
   getUserAvailability,
   setUserAvailability,
 } from "@/services/firebase/availability";
+import { useTranslation } from "@/translations/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ErrorMessage } from "./ErrorMessage";
 import LoadingIndicator from "./LoadingIndicator";
@@ -20,6 +21,7 @@ export function AvailabilitySelector({
   occurrenceId,
   occurrenceCategory,
 }: AvailabilitySelectorProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const user = getCurrentUser();
   const eventColor = useEventColor(occurrenceCategory);
@@ -53,12 +55,12 @@ export function AvailabilitySelector({
   });
 
   if (updateIsPending) {
-    return <LoadingIndicator />;
+    return <LoadingIndicator type="screen" />;
   }
 
   if (updateIsError) {
     return (
-      <ErrorMessage>Het updaten van je aanwezigheid is mislukt</ErrorMessage>
+      <ErrorMessage type="screen">{t("activity.errorUpdateAvailability")}</ErrorMessage>
     );
   }
 

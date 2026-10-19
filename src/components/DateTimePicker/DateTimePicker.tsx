@@ -1,7 +1,7 @@
-import NativeDateTimePicker from "@expo/ui/community/datetime-picker";
+import { DateTimePicker as ExpoDateTimePicker } from "@expo/ui/community/datetime-picker";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   Control,
   Controller,
@@ -22,15 +22,13 @@ type DateTimePickerProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
   rules?: RegisterOptions<T, FieldPath<T>>;
-  mode?: "date" | "time" | "datetime-local";
+  mode?: "date" | "time" | "datetime";
   disabled?: boolean;
 };
 
-type PickerStep = "closed" | "date" | "time";
-
 function formatDisplay(date: Date, mode: string) {
   if (mode === "time") return format(date, "HH:mm", { locale: nl });
-  if (mode === "datetime-local")
+  if (mode === "datetime")
     return format(date, "d MMM yyyy HH:mm", { locale: nl });
   return format(date, "d MMM yyyy", { locale: nl });
 }
@@ -41,11 +39,10 @@ export default function DateTimePicker<T extends FieldValues>({
   control,
   name,
   rules,
-  mode = "datetime-local",
+  mode = "datetime",
   disabled = false,
 }: DateTimePickerProps<T>) {
-  const [step, setStep] = useState<PickerStep>("closed");
-  const pendingDate = useRef<Date>(new Date());
+  const [pickerValue, setPickerValue] = useState<Date | null>(null);
 
   return (
     <Controller
@@ -53,56 +50,27 @@ export default function DateTimePicker<T extends FieldValues>({
       name={name}
       rules={rules}
       render={({ field: { onChange, value }, fieldState: { error } }) => {
-        const dateValue = value as unknown as Date | undefined;
-        const displayDate = dateValue instanceof Date ? dateValue : new Date();
-
-        const openPicker = () => {
-          if (disabled) return;
-          pendingDate.current = displayDate;
-          setStep(mode === "time" ? "time" : "date");
-        };
-
-        const handleDatePicked = (_event: unknown, selectedDate: Date) => {
-          pendingDate.current = selectedDate;
-          if (mode === "datetime-local") {
-            setStep("time");
-          } else {
-            onChange(selectedDate);
-            setStep("closed");
-          }
-        };
-
-        const handleTimePicked = (_event: unknown, selectedDate: Date) => {
-          onChange(selectedDate);
-          setStep("closed");
-        };
-
         return (
           <ThemedView style={styles.field}>
             <Label required={required}>{label}</Label>
             <Pressable
               style={styles.trigger}
-              onPress={openPicker}
+              onPress={() => setPickerValue(value ?? new Date())}
               disabled={disabled}
             >
-              <ThemedText>
-                {dateValue ? formatDisplay(dateValue, mode) : "Selecteer..."}
-              </ThemedText>
+              <ThemedView>
+                <ThemedText>
+                  {value ? formatDisplay(value, mode) : "Selecteer..."}
+                </ThemedText>
+              </ThemedView>
             </Pressable>
-            {step === "date" && (
-              <NativeDateTimePicker
-                value={pendingDate.current}
-                onValueChange={handleDatePicked}
-                onDismiss={() => setStep("closed")}
-                mode="date"
-              />
-            )}
-            {step === "time" && (
-              <NativeDateTimePicker
-                value={pendingDate.current}
-                onValueChange={handleTimePicked}
-                onDismiss={() => setStep("closed")}
-                mode="time"
+            {pickerValue && (
+              <ExpoDateTimePicker
+                value={value}
+                onValueChange={onChange}
+                onDismiss={() => setPickerValue(null)}
+                mode={mode ?? "date"}
+                presentation="dialog"
               />
             )}
             {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}

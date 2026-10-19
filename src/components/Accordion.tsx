@@ -1,10 +1,9 @@
 import { IconSymbol } from "@/components/IconSymbol/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { OS } from "@/constants/Os";
 import { useTranslation } from "@/translations/i18n";
 import { ReactNode, useState } from "react";
-import { Platform, Pressable } from "react-native";
+import { Pressable } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export function Accordion({
@@ -43,15 +42,7 @@ export function Accordion({
           {title}
         </ThemedText>
         <IconSymbol
-          name={
-            Platform.OS === OS.Web
-              ? opened
-                ? ("angle-up" as any)
-                : ("angle-down" as any)
-              : opened
-                ? "keyboard_arrow_up"
-                : "keyboard_arrow_down"
-          }
+          name={opened ? "keyboard_arrow_up" : "keyboard_arrow_down"}
           size={24}
           color={styles.icon.color}
           accessible={false}

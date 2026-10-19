@@ -9,7 +9,7 @@ export default function ManageScreen() {
 
   return (
     <ThemedView type="container" style={styles.container}>
-      <ThemedText>Hrllo</ThemedText>
+      <ThemedText>{t("tabs.manage")}</ThemedText>
     </ThemedView>
   );
 }

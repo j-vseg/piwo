@@ -8,7 +8,8 @@
       "personalDetails": "Persoonlijke gegevens"
     },
     "login": "Login",
-    "signUp": "Creër een account"
+    "signUp": "Creër een account",
+    "manage": "Beheren"
   },
   "home": {
     "thisWeek": "Deze week",
@@ -22,6 +23,7 @@
     "errorOccurrence": "Het is niet gelukt om de activiteit data op te halen.",
     "attendance": "Aanwezigheid",
     "errorAvailability": "Het is niet gelukt om het aanwezigheid overzicht op te halen",
+    "errorUpdateAvailability": "Het updaten van je aanwezigheid is mislukt",
     "noAvailability": "Niemand heeft deze aanwezigheid opgegeven",
     "total": "Totaal: {{count}}"
   },

@@ -71,7 +71,7 @@ export default function CreateActivityScreen() {
         queryKey: ["occurrences-grouped"],
       });
       setTimeout(() => {
-        router.push("/(tabs)");
+        router.push("/(tabs)/home");
       }, 3000);
     },
     onError: (error) => {
@@ -251,8 +251,8 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "space-between",
   },
   previewButtonText: {
-    fontFamily: theme.font.inter.regular.fontFamily,
-    fontWeight: theme.font.inter.regular.fontWeight,
+    fontFamily: theme.font.poppins.regular.fontFamily,
+    fontWeight: theme.font.poppins.regular.fontWeight,
     fontSize: 16,
   },
 }));

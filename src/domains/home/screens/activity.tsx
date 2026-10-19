@@ -60,11 +60,18 @@ export default function ActivityScreen({ id }: { id: string }) {
   }, [navigation, occurrence, eventColor]);
 
   if (isLoadingOccurrence) {
-    return <LoadingIndicator />;
+    return <LoadingIndicator type="screen" />;
   }
 
-  if (isErrorOccurrence || !occurrence || !occurrence.startTime || !occurrence.endTime) {
-    return <ErrorMessage>{t("activity.errorOccurrence")}</ErrorMessage>;
+  if (
+    isErrorOccurrence ||
+    !occurrence ||
+    !occurrence.startTime ||
+    !occurrence.endTime
+  ) {
+    return (
+      <ErrorMessage type="screen">{t("activity.errorOccurrence")}</ErrorMessage>
+    );
   }
 
   return (

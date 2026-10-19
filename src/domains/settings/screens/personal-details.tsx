@@ -12,7 +12,7 @@ import {
   updateUserPassword,
 } from "@/services/firebase/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Control, FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
@@ -42,18 +42,28 @@ export default function SettingsScreen() {
     enabled: !!user,
   });
 
-  const nameForm = useForm<NameFormData>({
-    defaultValues: {
-      firstname: account?.firstName ?? "",
-      lastname: account?.lastName ?? "",
-    },
-  });
-  const emailForm = useForm<EmailFormData>({
-    defaultValues: { email: user?.email ?? "", oldPassword: "" },
-  });
-  const passwordForm = useForm<PasswordFormData>({
-    defaultValues: { newPassword: "", oldPassword: "" },
-  });
+  const nameForm = useForm<NameFormData>();
+  const emailForm = useForm<EmailFormData>();
+  const passwordForm = useForm<PasswordFormData>();
+
+  useEffect(() => {
+    if (account) {
+      nameForm.reset({
+        firstname: account.firstName ?? "",
+        lastname: account.lastName ?? "",
+      });
+    }
+  }, [account, nameForm]);
+
+  useEffect(() => {
+    if (user) {
+      emailForm.reset({ email: user.email ?? "", oldPassword: "" });
+    }
+  }, [user, emailForm]);
+
+  useEffect(() => {
+    passwordForm.reset({ newPassword: "", oldPassword: "" });
+  }, [passwordForm]);
 
   const {
     mutate: mutateName,
@@ -66,10 +76,7 @@ export default function SettingsScreen() {
         firstName: data.firstname.trim(),
         lastName: data.lastname.trim(),
       });
-      nameForm.reset({
-        firstname: account?.firstName ?? "",
-        lastname: account?.lastName ?? "",
-      });
+      nameForm.reset(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["account", user?.uid] });
@@ -175,6 +182,7 @@ export default function SettingsScreen() {
               <Button
                 content={t("personalDetails.saveNameButton")}
                 isPending={isPendingName}
+                disabled={!nameForm.formState.isDirty}
                 onPress={nameForm.handleSubmit((data) => mutateName(data))}
                 accessibilityLabel={t("personalDetails.saveNameButton")}
                 accessibilityHint={t("personalDetails.saveNameHint")}
@@ -216,6 +224,7 @@ export default function SettingsScreen() {
               <Button
                 content={t("personalDetails.saveEmailButton")}
                 isPending={isPendingEmail}
+                disabled={!emailForm.formState.isDirty}
                 onPress={emailForm.handleSubmit(() =>
                   setConfirmPasswordFor("email"),
                 )}
@@ -260,6 +269,7 @@ export default function SettingsScreen() {
               <Button
                 content={t("personalDetails.savePasswordButton")}
                 isPending={isPendingPassword}
+                disabled={!passwordForm.formState.isDirty}
                 onPress={passwordForm.handleSubmit(() =>
                   setConfirmPasswordFor("password"),
                 )}

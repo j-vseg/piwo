@@ -17,7 +17,7 @@ export default function ListTile({
   text,
   iconLeft,
   iconRight = Platform.OS === OS.Web
-    ? ("angle-right" as any)
+    ? ("chevron-right" as any)
     : "chevron_forward",
   onPress,
   textStyle,

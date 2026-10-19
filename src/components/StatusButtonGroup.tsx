@@ -81,8 +81,8 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(2),
   },
   text: {
-    fontFamily: theme.font.inter.regular.fontFamily,
-    fontWeight: theme.font.inter.regular.fontWeight,
+    fontFamily: theme.font.poppins.regular.fontFamily,
+    fontWeight: theme.font.poppins.regular.fontWeight,
     fontSize: 16,
   },
   badge: {
@@ -96,7 +96,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   badgeText: {
     fontSize: 11,
-    fontFamily: theme.font.inter.bold.fontFamily,
-    fontWeight: theme.font.inter.bold.fontWeight,
+    fontFamily: theme.font.poppins.bold.fontFamily,
+    fontWeight: theme.font.poppins.bold.fontWeight,
   },
 }));

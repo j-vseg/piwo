@@ -4,7 +4,13 @@ import { StyleSheet } from "react-native-unistyles";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
-export function ErrorMessage({ children }: { children: ReactNode }) {
+export function ErrorMessage({
+  type,
+  children,
+}: {
+  type?: "screen";
+  children: ReactNode;
+}) {
   useEffect(() => {
     if (!children) return;
     const timeout = setTimeout(() => {
@@ -17,7 +23,7 @@ export function ErrorMessage({ children }: { children: ReactNode }) {
   }, [children]);
 
   return (
-    <ThemedView style={styles.error}>
+    <ThemedView style={styles.error(type)}>
       <ThemedText type="bodySmaller" style={styles.text}>
         {children}
       </ThemedText>
@@ -26,7 +32,7 @@ export function ErrorMessage({ children }: { children: ReactNode }) {
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  error: {
+  error: (type) => ({
     width: "100%",
     minHeight: Platform.select({
       ios:
@@ -39,7 +45,9 @@ const styles = StyleSheet.create((theme, rt) => ({
               : 15,
       android: rt.fontScale >= 1.75 ? 35 : 25,
     }),
-  },
+    backgroundColor:
+      type === "screen" ? theme.screen.default.backgroundColor : undefined,
+  }),
   text: {
     color: theme.colors.warnings.negative,
     width: "100%",

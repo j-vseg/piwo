@@ -56,7 +56,7 @@ export const font = {
       fontWeight: fontWeight.semiBold,
     },
   },
-  inter: {
+  poppins: {
     regular: {
       fontFamily: "Poppins",
       fontWeight: fontWeight.light,
@@ -108,44 +108,44 @@ const text = {
     letterSpacing: -0.5 as const,
   },
   bodyLargest: {
-    fontFamily: font.inter.regularLarge.fontFamily,
-    fontWeight: font.inter.regularLarge.fontWeight,
+    fontFamily: font.poppins.regularLarge.fontFamily,
+    fontWeight: font.poppins.regularLarge.fontWeight,
     fontSize: 40 as const,
   },
   bodyLarge: {
-    fontFamily: font.inter.regularLarge.fontFamily,
-    fontWeight: font.inter.regularLarge.fontWeight,
+    fontFamily: font.poppins.regularLarge.fontFamily,
+    fontWeight: font.poppins.regularLarge.fontWeight,
     fontSize: 18 as const,
   },
   bodyMedium: {
-    fontFamily: font.inter.regular.fontFamily,
-    fontWeight: font.inter.regular.fontWeight,
+    fontFamily: font.poppins.regular.fontFamily,
+    fontWeight: font.poppins.regular.fontWeight,
     fontSize: 16 as const,
   },
   bodySmall: {
-    fontFamily: font.inter.regular.fontFamily,
-    fontWeight: font.inter.regular.fontWeight,
+    fontFamily: font.poppins.regular.fontFamily,
+    fontWeight: font.poppins.regular.fontWeight,
     fontSize: 14 as const,
   },
   bodySmaller: {
-    fontFamily: font.inter.regular.fontFamily,
-    fontWeight: font.inter.regular.fontWeight,
+    fontFamily: font.poppins.regular.fontFamily,
+    fontWeight: font.poppins.regular.fontWeight,
     fontSize: 12 as const,
   },
   menu: {
-    fontFamily: font.inter.bold.fontFamily,
-    fontWeight: font.inter.bold.fontWeight,
+    fontFamily: font.poppins.bold.fontFamily,
+    fontWeight: font.poppins.bold.fontWeight,
     fontSize: 11 as const,
     letterSpacing: 0.2 as const,
   },
   button: {
-    fontFamily: font.inter.bold.fontFamily,
-    fontWeight: font.inter.bold.fontWeight,
+    fontFamily: font.crimsonPro.semibold.fontFamily,
+    fontWeight: font.crimsonPro.semibold.fontWeight,
     fontSize: 16 as const,
   },
   span: {
-    fontFamily: font.inter.regular.fontFamily,
-    fontWeight: font.inter.regular.fontWeight,
+    fontFamily: font.poppins.regular.fontFamily,
+    fontWeight: font.poppins.regular.fontWeight,
     fontSize: 32 as const,
   },
 } as const;

@@ -3,9 +3,11 @@ import ListTile from "@/components/ListTile";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { OS } from "@/constants/Os";
+import { Role } from "@/constants/Role";
 import { auth } from "@/firebase";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser } from "@/services/firebase/auth";
+import { useAppStore } from "@/store/appStore";
 import { getAuth as getNativeAuth } from "@react-native-firebase/auth";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -25,6 +27,7 @@ type DeleteAccountFormData = {
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
+  const role = useAppStore((s) => s.role);
   const [editActivityOpen, setEditActivityOpen] = useState(false);
   const [passwordConfirmOpen, setPasswordConfirmOpen] = useState(false);
 
@@ -70,19 +73,26 @@ export default function SettingsScreen() {
       >
         <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
-        <ThemedView style={styles.group}>
-          <ThemedText type="h5">{t("settings.activitiesHeader")}</ThemedText>
-          <Group>
-            <ListTile
-              text={t("tabs.settings.createActivity")}
-              onPress={() => router.push("/(tabs)/settings/create-activity")}
-            />
-            <ListTile
-              text={t("tabs.settings.editActivity")}
-              onPress={() => setEditActivityOpen(true)}
-            />
-          </Group>
-        </ThemedView>
+        {role === Role.BoardMember ||
+          (role === Role.Advisor && (
+            <ThemedView style={styles.group}>
+              <ThemedText type="h5">
+                {t("settings.activitiesHeader")}
+              </ThemedText>
+              <Group>
+                <ListTile
+                  text={t("tabs.settings.createActivity")}
+                  onPress={() =>
+                    router.push("/(tabs)/settings/create-activity")
+                  }
+                />
+                <ListTile
+                  text={t("tabs.settings.editActivity")}
+                  onPress={() => setEditActivityOpen(true)}
+                />
+              </Group>
+            </ThemedView>
+          ))}
 
         <ThemedView style={styles.group}>
           <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>

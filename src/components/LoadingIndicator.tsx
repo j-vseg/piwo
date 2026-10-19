@@ -2,7 +2,7 @@ import LottieView from "lottie-react-native";
 import { useUnistyles } from "react-native-unistyles";
 import { ThemedView } from "./ThemedView";
 
-export default function LoadingIndicator() {
+export default function LoadingIndicator({ type }: { type?: "screen" }) {
   const { theme } = useUnistyles();
 
   return (
@@ -11,7 +11,8 @@ export default function LoadingIndicator() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: theme.screen.default.backgroundColor,
+        backgroundColor:
+          type === "screen" ? theme.screen.default.backgroundColor : undefined,
       }}
     >
       <ThemedView style={{ width: 22, height: 22 }}>

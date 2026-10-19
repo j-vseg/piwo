@@ -1,16 +1,14 @@
 import {
-  TextInput as ExpoUITextInput,
-  type TextInputProps as ExpoUITextInputProps,
-  Host,
-} from "@expo/ui";
-import { useEffect, useRef, useState } from "react";
-import {
   Control,
+  Controller,
   FieldPath,
   FieldValues,
   RegisterOptions,
-  useController,
 } from "react-hook-form";
+import {
+  TextInput as RNTextInput,
+  TextInputProps as RNTextInputProps,
+} from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ErrorMessage } from "./ErrorMessage";
 import Label from "./Label";
@@ -23,7 +21,7 @@ type TextInputProps<T extends FieldValues> = {
   name: FieldPath<T>;
   rules?: RegisterOptions<T, FieldPath<T>>;
   inputProps?: Omit<
-    ExpoUITextInputProps,
+    RNTextInputProps,
     "value" | "defaultValue" | "onChangeText"
   >;
 };
@@ -37,50 +35,35 @@ export default function TextInput<T extends FieldValues>({
   inputProps,
 }: TextInputProps<T>) {
   const { theme } = useUnistyles();
-  const { field, fieldState } = useController({ control, name, rules });
-  const [resetKey, setResetKey] = useState(0);
-  const internalValue = useRef<string>(field.value);
-
-  useEffect(() => {
-    if (field.value !== internalValue.current) {
-      internalValue.current = field.value;
-      setResetKey((k) => k + 1);
-    }
-  }, [field.value]);
-
-  const handleChange = (text: string) => {
-    internalValue.current = text;
-    field.onChange(text);
-  };
 
   return (
-    <ThemedView style={styles.input}>
-      <Label required={required}>{label}</Label>
-      <Host matchContents={{ vertical: true }} style={{ width: "100%" }}>
-        <ExpoUITextInput
-          key={resetKey}
-          defaultValue={field.value}
-          onChangeText={handleChange}
-          style={{
-            padding: theme.spacing(3),
-            borderRadius: theme.spacing(2),
-            backgroundColor: theme.colors.primitives.quinary,
-            borderWidth: 0,
-          }}
-          textStyle={{
-            fontFamily: theme.text.bodyMedium.fontFamily,
-            fontWeight: String(theme.text.bodyMedium.fontWeight) as "400",
-            fontSize: theme.text.bodyMedium.fontSize,
-            color: theme.text.text.color,
-          }}
-          placeholderTextColor={theme.colors.dark.greyMedium}
-          {...inputProps}
-        />
-      </Host>
-      {fieldState.error?.message && (
-        <ErrorMessage>{fieldState.error.message}</ErrorMessage>
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
+        <ThemedView style={styles.input}>
+          <Label required={required}>{label}</Label>
+          <RNTextInput
+            value={value ?? ""}
+            onChangeText={onChange}
+            style={{
+              padding: theme.spacing(3),
+              borderRadius: theme.spacing(2),
+              backgroundColor: theme.colors.primitives.quinary,
+              borderWidth: 0,
+              fontFamily: theme.text.bodyMedium.fontFamily,
+              fontWeight: String(theme.text.bodyMedium.fontWeight) as "400",
+              fontSize: theme.text.bodyMedium.fontSize,
+              color: theme.text.text.color,
+            }}
+            placeholderTextColor={theme.colors.dark.greyMedium}
+            {...inputProps}
+          />
+          {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
+        </ThemedView>
       )}
-    </ThemedView>
+    />
   );
 }
 

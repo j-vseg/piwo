@@ -96,7 +96,7 @@ importers:
         specifier: 26.4.6
         version: 26.4.6(typescript@6.0.3)
       immer:
-        specifier: ^11.1.21
+        specifier: 11.1.21
         version: 11.1.21
       lottie-react-native:
         specifier: 7.5.0
@@ -144,7 +144,7 @@ importers:
         specifier: 10.1.1
         version: 10.1.1(react@19.2.3)
       zustand:
-        specifier: ^5.0.15
+        specifier: 5.0.15
         version: 5.0.15(@types/react@19.2.2)(immer@11.1.21)(react@19.2.3)(use-sync-external-store@1.7.0(react@19.2.3))
     devDependencies:
       '@types/react':
