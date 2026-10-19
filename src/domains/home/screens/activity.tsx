@@ -84,7 +84,10 @@ export default function ActivityScreen({ id }: { id: string }) {
             style={styles.subtitle}
           >{`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}</ThemedText>
         </ThemedView>
-        <AvailabilitySelector occurrenceId={occurrence.id} />
+        <AvailabilitySelector
+          occurrenceId={occurrence.id}
+          occurrenceCategory={occurrence.category}
+        />
       </ThemedView>
 
       <ThemedView style={styles.availability}>

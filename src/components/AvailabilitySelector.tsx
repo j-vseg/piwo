@@ -55,13 +55,11 @@ export function AvailabilitySelector({
   });
 
   if (updateIsPending) {
-    return <LoadingIndicator type="screen" />;
+    return <LoadingIndicator />;
   }
 
   if (updateIsError) {
-    return (
-      <ErrorMessage type="screen">{t("activity.errorUpdateAvailability")}</ErrorMessage>
-    );
+    return <ErrorMessage>{t("activity.errorUpdateAvailability")}</ErrorMessage>;
   }
 
   return (

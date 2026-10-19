@@ -115,7 +115,12 @@
     "loginButton": "Inloggen",
     "accessibilityHint": "Log in op je account",
     "success": "Succesvol ingelogd!",
-    "error": "Het is niet gelukt om in te loggen, probeer het later nog eens"
+    "error": "Het is niet gelukt om in te loggen, probeer het later nog eens",
+    "noAccount": "Nog geen account?"
+  },
+  "signUp": {
+    "signUpButton": "Creër account",
+    "haveAccount": "Heb je al een account?"
   },
   "verify": {
     "logoutError": "Er is iets misgegaan tijdens het uitloggen, probeer het later nog eens",

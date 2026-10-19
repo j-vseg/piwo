@@ -14,6 +14,8 @@ import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
 import { User } from "@react-native-firebase/auth";
 import { useMutation } from "@tanstack/react-query";
+import { router } from "expo-router";
+import { Pressable } from "react-native";
 
 type SignUpForm = {
   email: string;
@@ -144,14 +146,23 @@ export default function SignUpScreen() {
             autoComplete: "password",
           }}
         />
-
-        <Button
-          content={t("login.loginButton")}
-          isPending={isPendingCreateAuth || isPendingCreateFirestore}
-          onPress={handleSubmit((data) => mutateCreateAuth(data))}
-          accessibilityLabel={t("login.loginButton")}
-          accessibilityHint={t("login.accessibilityHint")}
-        />
+        <ThemedView style={styles.button}>
+          <Button
+            content={t("login.loginButton")}
+            isPending={isPendingCreateAuth || isPendingCreateFirestore}
+            onPress={handleSubmit((data) => mutateCreateAuth(data))}
+            accessibilityLabel={t("signUp.signUpButton")}
+            accessibilityHint={t("login.accessibilityHint")}
+          />
+          <Pressable hitSlop={20} onPress={() => router.push("/")}>
+            <ThemedText
+              style={{ textDecorationLine: "underline" }}
+              type="bodySmaller"
+            >
+              {t("signUp.haveAccount")}
+            </ThemedText>
+          </Pressable>
+        </ThemedView>
       </ThemedView>
     </ThemedView>
   );
@@ -170,5 +181,8 @@ const styles = StyleSheet.create((theme, rt) => ({
     justifyContent: "center",
     paddingHorizontal: theme.spacing(6),
     gap: theme.spacing(4),
+  },
+  button: {
+    gap: theme.spacing(1),
   },
 }));

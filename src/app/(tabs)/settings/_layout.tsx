@@ -21,7 +21,7 @@ export default function SettingsLayout() {
             fontSize: theme.text.h3.fontSize,
           },
           headerStyle: {
-            backgroundColor: theme.screen.default.backgroundColor,
+            backgroundColor: theme.colors.category.weekend,
           },
           headerTintColor: theme.screen.default.headerTintColor,
         }}
@@ -38,7 +38,7 @@ export default function SettingsLayout() {
             fontSize: theme.text.h3.fontSize,
           },
           headerStyle: {
-            backgroundColor: theme.screen.default.backgroundColor,
+            backgroundColor: theme.colors.category.weekend,
           },
           headerTintColor: theme.screen.default.headerTintColor,
         }}
@@ -55,7 +55,7 @@ export default function SettingsLayout() {
             fontSize: theme.text.h3.fontSize,
           },
           headerStyle: {
-            backgroundColor: theme.screen.default.backgroundColor,
+            backgroundColor: theme.colors.category.camp,
           },
           headerTintColor: theme.screen.default.headerTintColor,
         }}

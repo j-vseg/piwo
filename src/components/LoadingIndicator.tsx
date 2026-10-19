@@ -12,7 +12,9 @@ export default function LoadingIndicator({ type }: { type?: "screen" }) {
         justifyContent: "center",
         alignItems: "center",
         backgroundColor:
-          type === "screen" ? theme.screen.default.backgroundColor : undefined,
+          type === "screen"
+            ? theme.screen.default.backgroundColor
+            : "transparent",
       }}
     >
       <ThemedView style={{ width: 22, height: 22 }}>

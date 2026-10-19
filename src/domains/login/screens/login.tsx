@@ -92,8 +92,13 @@ export default function LoginScreen() {
             accessibilityLabel={t("login.loginButton")}
             accessibilityHint={t("login.accessibilityHint")}
           />
-          <Pressable onPress={() => router.push("/sign-up")}>
-            <ThemedText>Nog geen account?</ThemedText>
+          <Pressable hitSlop={20} onPress={() => router.push("/sign-up")}>
+            <ThemedText
+              style={{ textDecorationLine: "underline" }}
+              type="bodySmaller"
+            >
+              {t("login.noAccount")}
+            </ThemedText>
           </Pressable>
         </ThemedView>
       </ThemedView>
