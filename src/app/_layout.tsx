@@ -8,7 +8,9 @@ import { useEffect, useState } from "react";
 
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { queryClient } from "@/queryClient";
+import { getAccount } from "@/services/firebase/accounts";
 import { onAuthStateChanged } from "@/services/firebase/auth";
+import { useAppStore } from "@/store/appStore";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
@@ -24,7 +26,20 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    return onAuthStateChanged((user) => {
+    const { setAccount, clearAccount } = useAppStore.getState();
+    return onAuthStateChanged(async (user) => {
+      const firebaseUser = user as { uid: string; email: string | null } | null;
+      if (firebaseUser) {
+        const account = await getAccount(firebaseUser.uid);
+        if (account) {
+          setAccount({
+            role: account.role,
+            approval: account.approval,
+          });
+        }
+      } else {
+        clearAccount();
+      }
       setIsLoggedIn(!!user);
       if (!authReady) {
         setAuthReady(true);

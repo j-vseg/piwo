@@ -177,13 +177,7 @@ export async function deleteUserAccount(
           nativeUser.email,
           password,
         );
-        try {
-          await nativeReauthenticate(nativeUser, credential);
-        } catch (reauthError) {
-          throw new Error(
-            `Reauth failed: email=${nativeUser.email}, pwLen=${password?.length}, pw="${password}", error=${reauthError}`,
-          );
-        }
+        await nativeReauthenticate(nativeUser, credential);
       } else {
         const credential = EmailAuthProvider.credential(user.email, password);
         await reauthenticateWithCredential(user, credential);

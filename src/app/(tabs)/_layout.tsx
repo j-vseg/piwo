@@ -1,8 +1,10 @@
 import { HapticTab } from "@/components/HapticTap";
-import { IconSymbol } from "@/components/IconSymbol/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { OS } from "@/constants/Os";
+import { Role } from "@/constants/Role";
+import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { ComponentProps } from "react";
@@ -16,6 +18,7 @@ type BottomTabNavigationOptions = NonNullable<
 export default function TabsLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const role = useAppStore((s) => s.role);
 
   const screenOptions: BottomTabNavigationOptions = {
     tabBarInactiveTintColor: theme.tabBar.inactiveTintColor,
@@ -56,6 +59,18 @@ export default function TabsLayout() {
           />
         </NativeTabs.Trigger>
 
+        <NativeTabs.Trigger
+          name="manage"
+          hidden={role !== Role.BoardMember && role !== Role.Advisor}
+        >
+          <NativeTabs.Trigger.Label>Manage</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Badge>9+</NativeTabs.Trigger.Badge>
+          <NativeTabs.Trigger.Icon
+            src={require("@/assets/images/tabIcons/group.png")}
+            renderingMode="template"
+          />
+        </NativeTabs.Trigger>
+
         <NativeTabs.Trigger name="settings">
           <NativeTabs.Trigger.Label>
             {t("tabs.settings.main")}
@@ -76,17 +91,34 @@ export default function TabsLayout() {
         options={{
           title: t("tabs.home"),
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name={"house-flag" as any} color={color} />
+            <MaterialIcons name="home" size={24} color={color} />
           ),
           tabBarLabelStyle: { fontFamily: "Poppins" },
         }}
       />
+
+      <Tabs.Screen
+        name="manage"
+        options={{
+          title: "Manage",
+          tabBarBadge: 3,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="group" size={24} color={color} />
+          ),
+          tabBarLabelStyle: { fontFamily: "Poppins" },
+          href:
+            role === Role.BoardMember || role === Role.Advisor
+              ? "/manage"
+              : null,
+        }}
+      />
+
       <Tabs.Screen
         name="settings"
         options={{
           title: t("tabs.settings.main"),
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name={"gear" as any} color={color} />
+            <MaterialIcons name="settings" size={24} color={color} />
           ),
           tabBarLabelStyle: { fontFamily: "Poppins" },
         }}

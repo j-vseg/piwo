@@ -95,6 +95,9 @@ importers:
       i18next:
         specifier: 26.4.6
         version: 26.4.6(typescript@6.0.3)
+      immer:
+        specifier: ^11.1.21
+        version: 11.1.21
       lottie-react-native:
         specifier: 7.5.0
         version: 7.5.0(@lottiefiles/dotlottie-react@0.20.0(react@19.2.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.2)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
@@ -140,6 +143,9 @@ importers:
       use-debounce:
         specifier: 10.1.1
         version: 10.1.1(react@19.2.3)
+      zustand:
+        specifier: ^5.0.15
+        version: 5.0.15(@types/react@19.2.2)(immer@11.1.21)(react@19.2.3)(use-sync-external-store@1.7.0(react@19.2.3))
     devDependencies:
       '@types/react':
         specifier: 19.2.2
@@ -3047,6 +3053,9 @@ packages:
     resolution: {integrity: sha512-/8UvqAPU9DGTI9k4mxtf49U37Isfwr8Uts96+SBHIkFxPJnHS0Ew4f00sM4Scd8V8EjM0jUNtVDdv1kPdt35lg==}
     engines: {node: '>= 4'}
 
+  immer@11.1.21:
+    resolution: {integrity: sha512-bZSadeCPGdaY5/qRLgr6mDSH1ra21rD3rqpiWk7+QTr4ayYPTE9qZYdLh/NdPhMe0wSrTvHD/Lk8q5EwhUs0aw==}
+
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
@@ -4647,6 +4656,24 @@ packages:
 
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
+  zustand@5.0.15:
+    resolution: {integrity: sha512-MpSEjRiBkA9crSYeOUH32rJC7SVqAbm0Fqcqge/bUi2PPoLcBWKOsG+C8mevmpr8TwXHBVkChbbJiyvkE+i/3A==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
 
 snapshots:
 
@@ -8348,6 +8375,8 @@ snapshots:
 
   ignore@7.0.12: {}
 
+  immer@11.1.21: {}
+
   import-fresh@3.3.1:
     dependencies:
       parent-module: 1.0.1
@@ -10207,3 +10236,10 @@ snapshots:
       zod: 3.25.76
 
   zod@3.25.76: {}
+
+  zustand@5.0.15(@types/react@19.2.2)(immer@11.1.21)(react@19.2.3)(use-sync-external-store@1.7.0(react@19.2.3)):
+    optionalDependencies:
+      '@types/react': 19.2.2
+      immer: 11.1.21
+      react: 19.2.3
+      use-sync-external-store: 1.7.0(react@19.2.3)
