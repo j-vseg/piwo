@@ -55,7 +55,7 @@ export default function SettingsScreen() {
       <ThemedView
         type="container"
         style={{
-          gap: theme.spacing(8),
+          gap: theme.spacing(10),
           paddingTop:
             Platform.OS === OS.Web
               ? rt.insets.top + theme.spacing(6)
@@ -104,7 +104,7 @@ export default function SettingsScreen() {
           </Group>
         </ThemedView>
 
-        <ThemedView style={styles.group}>
+        {/* <ThemedView style={styles.group}>
           <ThemedText type="h5">{t("settings.aboutHeader")}</ThemedText>
           <Group>
             <ListTile
@@ -116,7 +116,7 @@ export default function SettingsScreen() {
               onPress={() => console.log("yes")}
             />
           </Group>
-        </ThemedView>
+        </ThemedView> */}
       </ThemedView>
 
       <SelectActivity

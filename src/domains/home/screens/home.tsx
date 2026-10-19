@@ -35,7 +35,7 @@ export default function HomeScreen() {
     <ThemedView
       type="container"
       style={{
-        gap: theme.spacing(8),
+        gap: theme.spacing(10),
         paddingTop:
           Platform.OS === OS.Web
             ? rt.insets.top + theme.spacing(6)
@@ -64,6 +64,9 @@ export default function HomeScreen() {
             ))}
           </ThemedView>
         ))}
+        <ThemedText style={styles.info}>
+          Meer activiteiten worden zichtbaar bij naderende startdatum
+        </ThemedText>
       </ThemedView>
     </ThemedView>
   );
@@ -76,5 +79,11 @@ const styles = StyleSheet.create((theme) => ({
   listItem: {
     flexDirection: "column",
     gap: theme.spacing(4),
+  },
+  info: {
+    marginVertical: theme.spacing(12),
+    textAlign: "center",
+    color: theme.colors.dark.greyMedium,
+    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
   },
 }));

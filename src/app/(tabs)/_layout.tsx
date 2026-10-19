@@ -4,9 +4,9 @@ import { accountsCollection } from "@/firebase";
 import { fetchAllAccounts } from "@/services/firebase/accounts";
 import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
+import { query, where } from "@react-native-firebase/firestore";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
-import { query, where } from "@react-native-firebase/firestore";
 import { useUnistyles } from "react-native-unistyles";
 
 export default function TabsLayout() {
@@ -36,6 +36,7 @@ export default function TabsLayout() {
         default: theme.tabBar.inactiveTintColor,
         selected: theme.tabBar.activeTintColor,
       }}
+      rippleColor={theme.colors.primitives.quinary}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Label>{t("tabs.home")}</NativeTabs.Trigger.Label>

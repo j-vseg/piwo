@@ -47,7 +47,7 @@ export default function ManageScreen() {
       <ThemedView
         type="container"
         style={{
-          gap: theme.spacing(8),
+          gap: theme.spacing(10),
           paddingTop:
             Platform.OS === OS.Web
               ? rt.insets.top + theme.spacing(6)
