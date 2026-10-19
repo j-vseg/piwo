@@ -11,6 +11,7 @@ type ListTileProps = {
   iconRight?: IconName;
   onPress: () => void;
   textStyle?: TextStyle;
+  disabled?: boolean;
 };
 
 export default function ListTile({
@@ -21,6 +22,7 @@ export default function ListTile({
     : "chevron_forward",
   onPress,
   textStyle,
+  disabled,
 }: ListTileProps) {
   const { theme } = useUnistyles();
 
@@ -29,7 +31,8 @@ export default function ListTile({
       accessibilityRole="button"
       accessibilityLabel={text}
       onPress={onPress}
-      style={styles.listTile}
+      style={styles.listTile(disabled)}
+      disabled={disabled}
     >
       {iconLeft && (
         <ThemedView
@@ -69,7 +72,7 @@ export default function ListTile({
 }
 
 const styles = StyleSheet.create((theme) => ({
-  listTile: {
+  listTile: (disabled: boolean | undefined) => ({
     paddingHorizontal: theme.spacing(4),
     minHeight: 56,
     margin: 0,
@@ -77,11 +80,13 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     flexDirection: "row",
     gap: theme.spacing(4),
-    backgroundColor: theme.colors.light["white"],
+    backgroundColor: disabled
+      ? theme.button.primary.disabled.backgroundColor
+      : theme.colors.light["white"],
     borderBottomWidth: 1,
     borderBottomStyle: "solid",
     borderBottomColor: theme.colors.dark["greyLight"],
-  },
+  }),
   leftContainer: {
     backgroundColor: theme.colors.transparent,
     flexDirection: "row",

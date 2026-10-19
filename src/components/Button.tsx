@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Pressable } from "react-native";
+import { Pressable, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { IconName, IconSymbol } from "./IconSymbol/IconSymbol";
 import LoadingIndicator from "./LoadingIndicator";
@@ -19,6 +19,7 @@ type ButtonProps = {
   iconRight?: IconName;
   disabled?: boolean;
   isPending?: boolean;
+  buttonStyle?: ViewStyle;
 };
 
 export default function Button({
@@ -32,6 +33,7 @@ export default function Button({
   iconRight,
   disabled = false,
   isPending = false,
+  buttonStyle,
 }: ButtonProps) {
   const isDisabled = isPending || disabled;
 
@@ -47,6 +49,7 @@ export default function Button({
       style={({ pressed }) => [
         styles.buttonStyle,
         styles.button(type, pressed, isDisabled),
+        buttonStyle,
       ]}
     >
       {({ pressed }) => (

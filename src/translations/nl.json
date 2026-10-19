@@ -116,5 +116,26 @@
     "accessibilityHint": "Log in op je account",
     "success": "Succesvol ingelogd!",
     "error": "Het is niet gelukt om in te loggen, probeer het later nog eens"
+  },
+  "manage": {
+    "actionOverview": {
+      "title": "Wil je deze gebruiker goedkeuren?",
+      "approveButton": "Goedkeuren",
+      "approveLabel": "Goedkeuren",
+      "approveHint": "Klik om deze gebruiker goed te keuren",
+      "declineButton": "Afkeuren",
+      "declineLabel": "Afkeuren",
+      "declineHint": "Klik om deze gebruiker af te keuren"
+    },
+    "accountOverview": {
+      "currentRole": "{{name}} is momenteel <bold>{{role}}</bold>",
+      "roleLabel": "Rechten aanpassen",
+      "saveButton": "Wijzigingen opslaan",
+      "saveLabel": "Wijzigingen opslaan",
+      "saveHint": "Slaat de nieuwe rechten van deze gebruiker op",
+      "revokeButton": "Toegang tot de app intrekken",
+      "revokeLabel": "Toegang intrekken",
+      "revokeHint": "Trekt de toegang van deze gebruiker tot de app in"
+    }
   }
 }
