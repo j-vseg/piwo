@@ -6,8 +6,11 @@ import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { Approval } from "@/constants/Approval";
+import { Role } from "@/constants/Role";
 import { queryClient } from "@/queryClient";
 import { createAuthUser, createFirestoreUser } from "@/services/firebase/auth";
+import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
 import { User } from "@react-native-firebase/auth";
 import { useMutation } from "@tanstack/react-query";
@@ -56,6 +59,10 @@ export default function SignUpScreen() {
     }) =>
       createFirestoreUser(data.user, data.data.firstname, data.data.lastname),
     onSuccess: () => {
+      useAppStore.getState().setAccount({
+        role: Role.Lid,
+        approval: Approval.Unknown,
+      });
       queryClient.clear();
     },
   });

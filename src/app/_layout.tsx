@@ -54,6 +54,7 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="index" />
+            <Stack.Screen name="sign-up" />
           </Stack.Protected>
           <Stack.Protected guard={isLoggedIn && approval === Approval.Accepted}>
             <Stack.Screen name="(tabs)" />
