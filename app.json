@@ -7,7 +7,10 @@
     "icon": "./assets/images/icon.png",
     "scheme": "piwo",
     "userInterfaceStyle": "automatic",
-    "platforms": ["android", "web"],
+    "platforms": [
+      "android",
+      "web"
+    ],
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -52,7 +55,8 @@
             "node_modules/@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf"
           ]
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -137,7 +137,10 @@
     "maintenanceTitle": "Oh nee!",
     "outdatedTitle": "Je loopt achter!",
     "maintenanceMessage": "We zijn momenteel offline voor onderhoud, probeer het later nog eens.",
-    "outdatedMessage": "Je hebt een verouderde versie van de app, download de laatste versie."
+    "outdatedMessage": "Je hebt een verouderde versie van de app, download de laatste versie.",
+    "downloadError": "Download mislukt. Probeer het opnieuw.",
+    "updateButton": "Update de app",
+    "downloading": "Downloaden..."
   },
   "manage": {
     "actionOverview": {

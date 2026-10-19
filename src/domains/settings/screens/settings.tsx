@@ -7,6 +7,7 @@ import { Role } from "@/constants/Role";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser, signOut } from "@/services/firebase/auth";
 import { useAppStore } from "@/store/appStore";
+import { downloadAndInstallApk } from "@/utils/downloadAndInstallApk";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -50,6 +51,10 @@ export default function SettingsScreen() {
     mutationFn: signOut,
   });
 
+  const { mutate, isPending, isError, isSuccess } = useMutation({
+    mutationFn: downloadAndInstallApk,
+  });
+
   return (
     <>
       <ThemedView
@@ -64,8 +69,7 @@ export default function SettingsScreen() {
       >
         <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
-        {role === Role.BoardMember ||
-          (role === Role.Advisor && (
+        {(role === Role.BoardMember || role === Role.Advisor) && (
             <ThemedView style={styles.group}>
               <ThemedText type="h5">
                 {t("settings.activitiesHeader")}
@@ -83,7 +87,7 @@ export default function SettingsScreen() {
                 />
               </Group>
             </ThemedView>
-          ))}
+        )}
 
         <ThemedView style={styles.group}>
           <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>
@@ -104,19 +108,28 @@ export default function SettingsScreen() {
           </Group>
         </ThemedView>
 
-        {/* <ThemedView style={styles.group}>
+        <ThemedView style={styles.group}>
           <ThemedText type="h5">{t("settings.aboutHeader")}</ThemedText>
           <Group>
             <ListTile
-              text={t("settings.whatsNew")}
-              onPress={() => console.log("yes")}
+              text={"Download de Android app"}
+              onPress={() => mutate()}
+              iconRight={
+                isPending
+                  ? "progress_activity"
+                  : isError
+                    ? "warning"
+                    : isSuccess
+                      ? "check_circle"
+                      : "download"
+              }
             />
-            <ListTile
+            {/* <ListTile
               text={t("settings.aboutApp")}
               onPress={() => console.log("yes")}
-            />
+            /> */}
           </Group>
-        </ThemedView> */}
+        </ThemedView>
       </ThemedView>
 
       <SelectActivity

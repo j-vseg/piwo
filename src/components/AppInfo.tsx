@@ -1,9 +1,13 @@
 import { OS } from "@/constants/Os";
 import { useTranslation } from "@/translations/i18n";
+import { downloadAndInstallApk } from "@/utils/downloadAndInstallApk";
+import { useMutation } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import { Alert } from "./Alert";
 import Button from "./Button";
+import LoadingIndicator from "./LoadingIndicator";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
@@ -13,6 +17,9 @@ type AppInfoProps = {
 
 export default function AppInfo({ status = "maintaince" }: AppInfoProps) {
   const { t } = useTranslation();
+  const { mutate, isPending, isError } = useMutation({
+    mutationFn: downloadAndInstallApk,
+  });
 
   return (
     <ThemedView type="container" style={styles.container}>
@@ -33,11 +40,20 @@ export default function AppInfo({ status = "maintaince" }: AppInfoProps) {
         </ThemedText>
       </ThemedView>
 
+      {isError && (
+        <Alert
+          variant="warning"
+          size="regular"
+          icon="warning"
+          description={t("appInfo.downloadError")}
+        />
+      )}
+
       <Button
-        content={"Update de app"}
+        content={isPending ? <LoadingIndicator /> : t("appInfo.updateButton")}
         accessibilityLabel={""}
         accessibilityHint={""}
-        onPress={() => console.log("yes")}
+        onPress={() => mutate()}
       />
     </ThemedView>
   );
