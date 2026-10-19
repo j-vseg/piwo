@@ -45,3 +45,6 @@ example
 
 # Claude
 claudio.settings.local.json
+
+# APK 
+**.apk
