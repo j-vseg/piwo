@@ -6,7 +6,7 @@ import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
-import { query, where } from "firebase/firestore";
+import { query, where } from "@react-native-firebase/firestore";
 import { useUnistyles } from "react-native-unistyles";
 
 export default function TabsLayout() {

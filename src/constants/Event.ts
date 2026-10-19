@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore";
+import { Timestamp } from "@react-native-firebase/firestore";
 import { Category } from "./Category";
 import { Recurrence } from "./Recurrence";
 

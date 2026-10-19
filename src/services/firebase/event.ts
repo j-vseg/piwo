@@ -13,7 +13,7 @@ import {
   getFirestore,
   Timestamp,
   updateDoc,
-} from "firebase/firestore";
+} from "@react-native-firebase/firestore";
 import { db } from "@/firebase";
 
 const eventsCollection = collection(getFirestore(), "events");

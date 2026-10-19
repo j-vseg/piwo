@@ -4,12 +4,9 @@ import {
   initializeApp as initializeNativeApp,
   setReactNativeAsyncStorage,
 } from "@react-native-firebase/app";
+import { collection, getFirestore } from "@react-native-firebase/firestore";
 import { initializeApp } from "firebase/app";
-import {
-  browserLocalPersistence,
-  initializeAuth,
-} from "firebase/auth";
-import { collection, getFirestore } from "firebase/firestore";
+import { browserLocalPersistence, initializeAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { Platform } from "react-native";
 
@@ -29,8 +26,12 @@ if (getApps().length === 0) {
     appId: process.env.EXPO_PUBLIC_FIREBASE_WEB_APP_ID!,
   });
 }
+const db = getFirestore();
 
-// Web SDK — used on web for auth/firestore/storage, and on native for firestore (shared API)
+const accountsCollection = collection(db, "accounts");
+const eventsCollection = collection(db, "events");
+
+// Web SDK — used on web for auth/storage
 const app = initializeApp({
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -43,7 +44,6 @@ const app = initializeApp({
       : process.env.EXPO_PUBLIC_FIREBASE_ANDROID_APP_ID,
 });
 
-const db = getFirestore(app);
 const storage = getStorage(app);
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -55,8 +55,5 @@ const auth = initializeAuth(app, {
       ? browserLocalPersistence
       : getReactNativePersistence(AsyncStorage),
 });
-
-const accountsCollection = collection(db, "accounts");
-const eventsCollection = collection(db, "events");
 
 export { accountsCollection, app, auth, db, eventsCollection, storage };

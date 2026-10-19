@@ -26,7 +26,7 @@ import {
   updateDoc,
   type DocumentData,
   type Query,
-} from "firebase/firestore";
+} from "@react-native-firebase/firestore";
 import { Platform } from "react-native";
 
 export async function getAllAccountsDisplayNames(): Promise<

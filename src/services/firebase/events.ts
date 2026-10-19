@@ -12,7 +12,7 @@ import {
   query,
   Timestamp,
   where,
-} from "firebase/firestore";
+} from "@react-native-firebase/firestore";
 import { db, eventsCollection } from "@/firebase";
 
 type GroupedOccurrences = {

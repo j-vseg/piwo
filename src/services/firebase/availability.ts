@@ -1,4 +1,4 @@
-import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "@react-native-firebase/firestore";
 import { db } from "@/firebase";
 import { getAllAccountsDisplayNames } from "./accounts";
 import { Status } from "@/constants/Status";

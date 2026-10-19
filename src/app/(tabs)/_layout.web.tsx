@@ -9,7 +9,7 @@ import { useTranslation } from "@/translations/i18n";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { Tabs } from "expo-router";
-import { query, where } from "firebase/firestore";
+import { query, where } from "@react-native-firebase/firestore";
 import { ComponentProps } from "react";
 import { useUnistyles } from "react-native-unistyles";
 
