@@ -22,6 +22,27 @@ for var in "${REQUIRED_VARS[@]}"; do
   fi
 done
 
+read -rp "Enter version (e.g. 1.0.0): " VERSION
+if [ -z "$VERSION" ]; then
+  echo "Error: version is required"
+  exit 1
+fi
+
+# Update version in app.json and package.json
+python3 -I -c "
+import json, sys
+version = sys.argv[1]
+files = sys.argv[2:]
+for f in files:
+    data = json.load(open(f))
+    if 'expo' in data:
+        data['expo']['version'] = version
+    else:
+        data['version'] = version
+    json.dump(data, open(f, 'w'), indent=2)
+    print(f'Updated {f} to {version}')
+" "$VERSION" "$PROJECT_ROOT/app.json" "$PROJECT_ROOT/package.json"
+
 BUILD_GRADLE="$PROJECT_ROOT/android/app/build.gradle"
 KEYSTORE_DEST="$PROJECT_ROOT/android/app/release.keystore"
 
@@ -85,12 +106,6 @@ echo ""
 echo "Build successful!"
 echo ""
 
-read -rp "Enter version tag (e.g. v1.0.0): " VERSION
-if [ -z "$VERSION" ]; then
-  echo "Error: version is required"
-  exit 1
-fi
-
 read -rp "Create as draft release? (y/N): " DRAFT
 DRAFT_FLAG=""
 if [[ "$DRAFT" =~ ^[Yy]$ ]]; then
@@ -99,15 +114,17 @@ fi
 
 cp "$APK_PATH" "$PROJECT_ROOT/piwo.apk"
 
+TAG="v$VERSION"
+
 echo ""
-echo "Creating GitHub release $VERSION..."
-gh release create "$VERSION" "$PROJECT_ROOT/piwo.apk" \
-  --title "Piwo $VERSION" \
+echo "Creating GitHub release $TAG..."
+gh release create "$TAG" "$PROJECT_ROOT/piwo.apk" \
+  --title "Piwo $TAG" \
   --generate-notes \
   $DRAFT_FLAG
 
 rm -f "$PROJECT_ROOT/piwo.apk"
 
 echo ""
-echo "Done! Release $VERSION created."
-echo "Download URL: https://github.com/j-vseg/piwo/releases/download/$VERSION/piwo.apk"
+echo "Done! Release $TAG created."
+echo "Download URL: https://github.com/j-vseg/piwo/releases/download/$TAG/piwo.apk"
