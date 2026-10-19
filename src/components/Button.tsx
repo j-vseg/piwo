@@ -58,7 +58,7 @@ export default function Button({
             <IconSymbol
               size={24}
               name={iconLeft}
-              style={styles.leftIcon(type)}
+              style={styles.leftIcon}
               color={styles.iconColor(type, pressed, isDisabled).color}
             />
           )}
@@ -79,7 +79,7 @@ export default function Button({
           {iconRight && (
             <IconSymbol
               size={24}
-              style={styles.rightIcon(type)}
+              style={styles.rightIcon}
               name={iconRight}
               color={styles.iconColor(type, pressed, isDisabled).color}
             />
@@ -105,12 +105,12 @@ const styles = StyleSheet.create((theme) => ({
     width: "100%",
     justifyContent: "center",
   },
-  leftIcon: (type: ButtonType) => ({
+  leftIcon: {
     marginRight: -24,
-  }),
-  rightIcon: (type: ButtonType) => ({
+  },
+  rightIcon: {
     marginLeft: -24,
-  }),
+  },
   textStyle: {
     flex: 1,
     textAlign: "center",

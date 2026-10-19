@@ -1,3 +1,5 @@
+import { queryClient } from "@/queryClient";
+import { isVersionAboveOrEqualToSupported } from "@/services/firebase/app-version";
 import "@/themes/unistyles";
 import { focusManager } from "@tanstack/react-query";
 import "expo-router/entry";
@@ -18,3 +20,16 @@ focusManager.setEventListener((handleFocus) => {
     sub2?.remove();
   };
 });
+
+async function main() {
+  const noop = () => {};
+  await Promise.allSettled([
+    queryClient
+      .query({
+        queryKey: ["supported"],
+        queryFn: isVersionAboveOrEqualToSupported,
+      })
+      .catch(noop),
+  ]);
+}
+main();

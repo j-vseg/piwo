@@ -6,11 +6,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 
 import { Approval } from "@/constants/Approval";
+import { OS } from "@/constants/Os";
 import { queryClient } from "@/queryClient";
 import { getAccount } from "@/services/firebase/accounts";
+import { isVersionAboveOrEqualToSupported } from "@/services/firebase/app-version";
 import { onAuthStateChanged } from "@/services/firebase/auth";
 import { useAppStore } from "@/store/appStore";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { Platform } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +27,14 @@ export default function RootLayout() {
     Poppins: require("@expo-google-fonts/poppins/400Regular/Poppins_400Regular.ttf"),
     "Poppins-SemiBold": require("@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf"),
   });
+
+  const isSupported = useQuery(
+    {
+      queryKey: ["supported"],
+      queryFn: isVersionAboveOrEqualToSupported,
+    },
+    queryClient,
+  );
 
   useEffect(() => {
     const { setAccount, clearAccount } = useAppStore.getState();
@@ -52,13 +63,31 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       {authReady && fontsLoaded && (
         <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Protected
+            guard={
+              Platform.OS === OS.Android &&
+              isSupported.isSuccess &&
+              isSupported.data === false
+            }
+          >
+            <Stack.Screen
+              name="app-update"
+              options={{
+                headerShown: false,
+                gestureEnabled: false,
+              }}
+            />
+          </Stack.Protected>
+
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="index" />
             <Stack.Screen name="sign-up" />
           </Stack.Protected>
+
           <Stack.Protected guard={isLoggedIn && approval === Approval.Accepted}>
             <Stack.Screen name="(tabs)" />
           </Stack.Protected>
+
           <Stack.Protected guard={isLoggedIn && approval !== Approval.Accepted}>
             <Stack.Screen name="verify" />
           </Stack.Protected>

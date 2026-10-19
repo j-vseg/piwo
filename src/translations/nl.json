@@ -133,6 +133,12 @@
     "deleteAccountButton": "Account verwijderen",
     "deleteAccountHint": "Verwijder je account permanent"
   },
+  "appInfo": {
+    "maintenanceTitle": "Oh nee!",
+    "outdatedTitle": "Je loopt achter!",
+    "maintenanceMessage": "We zijn momenteel offline voor onderhoud, probeer het later nog eens.",
+    "outdatedMessage": "Je hebt een verouderde versie van de app, download de laatste versie."
+  },
   "manage": {
     "actionOverview": {
       "title": "Wil je deze gebruiker goedkeuren?",
