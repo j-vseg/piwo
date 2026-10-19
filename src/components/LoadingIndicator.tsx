@@ -1,5 +1,5 @@
 import LottieView from "lottie-react-native";
-import { useUnistyles } from "react-native-unistyles";
+import { UnistylesRuntime, useUnistyles } from "react-native-unistyles";
 import { ThemedView } from "./ThemedView";
 
 export default function LoadingIndicator({ type }: { type?: "screen" }) {
@@ -20,7 +20,11 @@ export default function LoadingIndicator({ type }: { type?: "screen" }) {
           autoPlay
           loop
           style={{ width: 22, height: 22 }}
-          source={require("@/assets/loading_dots.json")}
+          source={
+            UnistylesRuntime.themeName === "light"
+              ? require("@/assets/lottie/loading_dots/loading_dots.json")
+              : require("@/assets/lottie/loading_dots/loading_dots_white.json")
+          }
         />
       </ThemedView>
     </ThemedView>

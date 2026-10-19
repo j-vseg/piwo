@@ -12,8 +12,7 @@
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundImage": "./assets/images/android-icon-background.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.scoutingmierlo.piwo",
@@ -28,9 +27,12 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#ffd9ad",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "dark": {
+            "backgroundColor": "#2A2117"
+          },
+          "imageWidth": 124
         }
       ],
       [

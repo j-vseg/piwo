@@ -6,7 +6,6 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 
-import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { queryClient } from "@/queryClient";
 import { getAccount } from "@/services/firebase/accounts";
 import { onAuthStateChanged } from "@/services/firebase/auth";
@@ -50,7 +49,6 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AnimatedSplashOverlay />
       {authReady && fontsLoaded && (
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Protected guard={!isLoggedIn}>
