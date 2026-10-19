@@ -1,4 +1,3 @@
-import "@/firebase";
 import "@/themes/unistyles";
 import "@/translations/i18n";
 import { useFonts } from "expo-font";
@@ -6,6 +5,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 
+import { Approval } from "@/constants/Approval";
 import { queryClient } from "@/queryClient";
 import { getAccount } from "@/services/firebase/accounts";
 import { onAuthStateChanged } from "@/services/firebase/auth";
@@ -17,6 +17,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authReady, setAuthReady] = useState(false);
+  const approval = useAppStore((s) => s.approval);
   // expo-font config plugin only embeds fonts for native; web needs runtime loading
   const [fontsLoaded] = useFonts({
     "Crimson Pro": require("@expo-google-fonts/crimson-pro/600SemiBold/CrimsonPro_600SemiBold.ttf"),
@@ -54,8 +55,11 @@ export default function RootLayout() {
           <Stack.Protected guard={!isLoggedIn}>
             <Stack.Screen name="index" />
           </Stack.Protected>
-          <Stack.Protected guard={isLoggedIn}>
+          <Stack.Protected guard={isLoggedIn && approval === Approval.Accepted}>
             <Stack.Screen name="(tabs)" />
+          </Stack.Protected>
+          <Stack.Protected guard={isLoggedIn && approval !== Approval.Accepted}>
+            <Stack.Screen name="verify" />
           </Stack.Protected>
         </Stack>
       )}

@@ -117,6 +117,17 @@
     "success": "Succesvol ingelogd!",
     "error": "Het is niet gelukt om in te loggen, probeer het later nog eens"
   },
+  "verify": {
+    "logoutError": "Er is iets misgegaan tijdens het uitloggen, probeer het later nog eens",
+    "titlePending": "Nog even geduld",
+    "titleDeclined": "Helaas!",
+    "descriptionPending": "Je toelating is nog in verwerking, neem contact op met {{names}} om dit proces te versnellen.",
+    "descriptionDeclined": "Je toelating is helaas afgewezen. Verwijder je account of neem contact op met {{names}} voor meer informatie.",
+    "logoutButton": "Uitloggen",
+    "logoutHint": "Log uit en ga terug naar het inlogscherm",
+    "deleteAccountButton": "Account verwijderen",
+    "deleteAccountHint": "Verwijder je account permanent"
+  },
   "manage": {
     "actionOverview": {
       "title": "Wil je deze gebruiker goedkeuren?",

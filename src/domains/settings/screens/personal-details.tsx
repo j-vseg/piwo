@@ -7,16 +7,16 @@ import { ThemedView } from "@/components/ThemedView";
 import { queryClient } from "@/queryClient";
 import { getAccount, updateAccountProfile } from "@/services/firebase/accounts";
 import {
-  getCurrentUser,
-  updateUserEmail,
-  updateUserPassword,
+    getCurrentUser,
+    updateUserEmail,
+    updateUserPassword,
 } from "@/services/firebase/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Control, FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
-import { ConfirmPassword } from "../components/ConfirmPassword";
+import { ConfirmPassword } from "../../../components/ConfirmPassword";
 
 type NameFormData = {
   firstname: string;

@@ -19,6 +19,7 @@ import {
   onAuthStateChanged as onWebAuthStateChanged,
   reauthenticateWithCredential,
   signInWithEmailAndPassword,
+  signOut as webSignOut,
   updateEmail,
   updatePassword,
   User,
@@ -37,6 +38,14 @@ export function getCurrentUser() {
     return auth.currentUser;
   }
   return getNativeAuth().currentUser;
+}
+
+export async function signOut(): Promise<void> {
+  if (Platform.OS !== OS.Web) {
+    await getNativeAuth().signOut();
+  } else {
+    await webSignOut(auth);
+  }
 }
 
 export async function signInWithEmail(

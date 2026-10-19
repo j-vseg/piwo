@@ -4,20 +4,17 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
-import { auth } from "@/firebase";
 import { deleteUserAccount } from "@/services/firebase/accounts";
-import { getCurrentUser } from "@/services/firebase/auth";
+import { getCurrentUser, signOut } from "@/services/firebase/auth";
 import { useAppStore } from "@/store/appStore";
-import { getAuth as getNativeAuth } from "@react-native-firebase/auth";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { signOut } from "firebase/auth";
 import { useState } from "react";
 import { Control, FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
-import { ConfirmPassword } from "../components/ConfirmPassword";
+import { ConfirmPassword } from "../../../components/ConfirmPassword";
 import { SelectActivity } from "../components/SelectActivity";
 
 type DeleteAccountFormData = {
@@ -50,13 +47,7 @@ export default function SettingsScreen() {
   };
 
   const { mutate: mutateLogout } = useMutation({
-    mutationFn: async () => {
-      if (Platform.OS !== OS.Web) {
-        await getNativeAuth().signOut();
-      } else {
-        await signOut(auth);
-      }
-    },
+    mutationFn: signOut,
   });
 
   return (
