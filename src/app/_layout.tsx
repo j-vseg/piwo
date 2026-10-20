@@ -91,6 +91,14 @@ export default function RootLayout() {
           <Stack.Protected guard={isLoggedIn && approval !== Approval.Accepted}>
             <Stack.Screen name="verify" />
           </Stack.Protected>
+
+          <Stack.Screen
+            name="what-is-new"
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+          />
         </Stack>
       )}
     </QueryClientProvider>
