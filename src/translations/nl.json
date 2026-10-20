@@ -6,7 +6,8 @@
       "createActivity": "Creëer activiteit",
       "editActivity": "Wijzig activiteit",
       "personalDetails": "Persoonlijke gegevens",
-      "installation": "Installatie instructies"
+      "installation": "Installatie instructies",
+      "aboutApp": "Wat kun je doen met de Piwo app?"
     },
     "login": "Login",
     "signUp": "Creër een account",
@@ -65,7 +66,6 @@
     "deleteAccountDescription": "Om je account te verwijderen hebben we je wachtwoord nodig",
     "aboutHeader": "Over de app",
     "whatsNew": "Wat is er nieuw?",
-    "aboutApp": "Wat kun je doen met de Piwo app?",
     "installWebAppAndroid": "Hoe installeer ik een web-app? (Android)",
     "installWebAppApple": "Hoe installeer ik een web-app? (Apple)",
     "downloadApk": "Download de Android app (APK-bestand)",

@@ -103,13 +103,13 @@ export default function SettingsScreen() {
           <ThemedText type="h5">{t("settings.aboutHeader")}</ThemedText>
           <Group>
             <ListTile
+              text={t("tabs.settings.aboutApp")}
+              onPress={() => router.push("/(tabs)/settings/about-app")}
+            />
+            <ListTile
               text={t("tabs.settings.installation")}
               onPress={() => router.push("/(tabs)/settings/installation")}
             />
-            {/* <ListTile
-              text={t("settings.aboutApp")}
-              onPress={() => console.log("yes")}
-            /> */}
           </Group>
         </ThemedView>
       </ThemedView>
