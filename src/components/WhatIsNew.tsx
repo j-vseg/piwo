@@ -28,8 +28,7 @@ const features: FeatureItem[] = [
     icon: "phone_android",
     webIcon: "phone-android",
     title: "Android app",
-    description:
-      "Piwo is nu beschikbaar als Android-app in de Google Play Store.",
+    description: "Piwo is nu beschikbaar als Android-app.",
   },
   {
     icon: "system_update",
