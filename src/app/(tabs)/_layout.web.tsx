@@ -7,9 +7,9 @@ import { fetchAllAccounts } from "@/services/firebase/accounts";
 import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { query, where } from "@react-native-firebase/firestore";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { Tabs } from "expo-router";
-import { query, where } from "@react-native-firebase/firestore";
 import { ComponentProps } from "react";
 import { useUnistyles } from "react-native-unistyles";
 
@@ -22,7 +22,7 @@ export default function TabsLayout() {
   const { theme } = useUnistyles();
   const role = useAppStore((s) => s.role);
   const { data } = useQuery({
-    queryKey: ["not-approved-users"],
+    queryKey: ["not-approved-users-number"],
     queryFn:
       role === Role.BoardMember || role === Role.Advisor
         ? () =>

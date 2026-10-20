@@ -5,7 +5,8 @@
       "main": "Instellingen",
       "createActivity": "Creëer activiteit",
       "editActivity": "Wijzig activiteit",
-      "personalDetails": "Persoonlijke gegevens"
+      "personalDetails": "Persoonlijke gegevens",
+      "installation": "Installatie instructies"
     },
     "login": "Login",
     "signUp": "Creër een account",
@@ -64,7 +65,11 @@
     "deleteAccountDescription": "Om je account te verwijderen hebben we je wachtwoord nodig",
     "aboutHeader": "Over de app",
     "whatsNew": "Wat is er nieuw?",
-    "aboutApp": "Wat kun je doen met de Piwo app?"
+    "aboutApp": "Wat kun je doen met de Piwo app?",
+    "installWebAppAndroid": "Hoe installeer ik een web-app? (Android)",
+    "installWebAppApple": "Hoe installeer ik een web-app? (Apple)",
+    "downloadApk": "Download de Android app (APK-bestand)",
+    "installApk": "Hoe installeer ik een APK-bestand? (Android)"
   },
   "personalDetails": {
     "nameTitle": "Voor- & achternaam",
@@ -140,7 +145,8 @@
     "outdatedMessage": "Je hebt een verouderde versie van de app, download de laatste versie.",
     "downloadError": "Download mislukt. Probeer het opnieuw.",
     "updateButton": "Update de app",
-    "downloading": "Downloaden..."
+    "apkDownloaded": "APK-bestand gedownload",
+    "installApkHelp": "Hoe installeer ik een APK-bestand? (Android)"
   },
   "manage": {
     "actionOverview": {

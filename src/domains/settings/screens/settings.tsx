@@ -7,7 +7,6 @@ import { Role } from "@/constants/Role";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser, signOut } from "@/services/firebase/auth";
 import { useAppStore } from "@/store/appStore";
-import { downloadAndInstallApk } from "@/utils/downloadAndInstallApk";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -51,10 +50,6 @@ export default function SettingsScreen() {
     mutationFn: signOut,
   });
 
-  const { mutate, isPending, isError, isSuccess } = useMutation({
-    mutationFn: downloadAndInstallApk,
-  });
-
   return (
     <>
       <ThemedView
@@ -70,23 +65,19 @@ export default function SettingsScreen() {
         <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
         {(role === Role.BoardMember || role === Role.Advisor) && (
-            <ThemedView style={styles.group}>
-              <ThemedText type="h5">
-                {t("settings.activitiesHeader")}
-              </ThemedText>
-              <Group>
-                <ListTile
-                  text={t("tabs.settings.createActivity")}
-                  onPress={() =>
-                    router.push("/(tabs)/settings/create-activity")
-                  }
-                />
-                <ListTile
-                  text={t("tabs.settings.editActivity")}
-                  onPress={() => setEditActivityOpen(true)}
-                />
-              </Group>
-            </ThemedView>
+          <ThemedView style={styles.group}>
+            <ThemedText type="h5">{t("settings.activitiesHeader")}</ThemedText>
+            <Group>
+              <ListTile
+                text={t("tabs.settings.createActivity")}
+                onPress={() => router.push("/(tabs)/settings/create-activity")}
+              />
+              <ListTile
+                text={t("tabs.settings.editActivity")}
+                onPress={() => setEditActivityOpen(true)}
+              />
+            </Group>
+          </ThemedView>
         )}
 
         <ThemedView style={styles.group}>
@@ -112,17 +103,8 @@ export default function SettingsScreen() {
           <ThemedText type="h5">{t("settings.aboutHeader")}</ThemedText>
           <Group>
             <ListTile
-              text={"Download de Android app"}
-              onPress={() => mutate()}
-              iconRight={
-                isPending
-                  ? "progress_activity"
-                  : isError
-                    ? "warning"
-                    : isSuccess
-                      ? "check_circle"
-                      : "download"
-              }
+              text={t("tabs.settings.installation")}
+              onPress={() => router.push("/(tabs)/settings/installation")}
             />
             {/* <ListTile
               text={t("settings.aboutApp")}

@@ -24,20 +24,32 @@ export function StatusButtonGroup({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
-        <Pressable
-          key={statusOption}
-          style={[
-            styles.button(statusOption, selected),
-            selected !== statusOption && { backgroundColor: eventColor },
-          ]}
-          onPress={() => onSelect(statusOption)}
-          disabled={disabled}
-        >
-          <View style={styles.buttonContent}>
-            <ThemedText type="button" style={styles.text}>
-              {statusOption}
-            </ThemedText>
+      {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => {
+        const isActive =
+          selected === statusOption ||
+          (statusOption === Status.Present && selected === Status.Later);
+
+        return (
+          <Pressable
+            key={statusOption}
+            style={[
+              styles.button(statusOption, isActive ? statusOption : selected),
+              !isActive && { backgroundColor: eventColor },
+            ]}
+            onPress={() => onSelect(statusOption)}
+            onLongPress={
+              statusOption === Status.Present
+                ? () => onSelect(Status.Later)
+                : undefined
+            }
+            disabled={disabled}
+          >
+            <View style={styles.buttonContent}>
+              <ThemedText type="button" style={styles.text}>
+                {isActive && selected === Status.Later
+                  ? Status.Later
+                  : statusOption}
+              </ThemedText>
             {counts?.[statusOption] != null && (
               <View style={styles.badge}>
                 <ThemedText type="bodySmaller" style={styles.badgeText}>
@@ -47,7 +59,8 @@ export function StatusButtonGroup({
             )}
           </View>
         </Pressable>
-      ))}
+        );
+      })}
     </ScrollView>
   );
 }

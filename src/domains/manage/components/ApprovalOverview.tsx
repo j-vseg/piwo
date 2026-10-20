@@ -29,7 +29,7 @@ export function ApprovalOverview({
     }) => updateAccountApproval(userId, approval),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["not-approved-user-number"],
+        queryKey: ["not-approved-users-number"],
       });
       queryClient.invalidateQueries({
         queryKey: ["not-approved-users"],

@@ -28,20 +28,31 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
+read -rp "Enter version code (integer): " VERSION_CODE
+if ! [[ "$VERSION_CODE" =~ ^[0-9]+$ ]]; then
+  echo "Error: version code must be a positive integer"
+  exit 1
+fi
+
 # Update version in app.json and package.json
 python3 -I -c "
 import json, sys
 version = sys.argv[1]
-files = sys.argv[2:]
-for f in files:
-    data = json.load(open(f))
-    if 'expo' in data:
-        data['expo']['version'] = version
-    else:
-        data['version'] = version
-    json.dump(data, open(f, 'w'), indent=2)
-    print(f'Updated {f} to {version}')
-" "$VERSION" "$PROJECT_ROOT/app.json" "$PROJECT_ROOT/package.json"
+app_json = sys.argv[2]
+pkg_json = sys.argv[3]
+
+data = json.load(open(app_json))
+data['expo']['version'] = version
+vc = int(sys.argv[4])
+data['expo'].setdefault('android', {})['versionCode'] = vc
+json.dump(data, open(app_json, 'w'), indent=2)
+print(f'Updated {app_json} to {version} (versionCode {vc})')
+
+data = json.load(open(pkg_json))
+data['version'] = version
+json.dump(data, open(pkg_json, 'w'), indent=2)
+print(f'Updated {pkg_json} to {version}')
+" "$VERSION" "$PROJECT_ROOT/app.json" "$PROJECT_ROOT/package.json" "$VERSION_CODE"
 
 BUILD_GRADLE="$PROJECT_ROOT/android/app/build.gradle"
 KEYSTORE_DEST="$PROJECT_ROOT/android/app/release.keystore"
@@ -106,25 +117,19 @@ echo ""
 echo "Build successful!"
 echo ""
 
-read -rp "Create as draft release? (y/N): " DRAFT
-DRAFT_FLAG=""
-if [[ "$DRAFT" =~ ^[Yy]$ ]]; then
-  DRAFT_FLAG="--draft"
-fi
-
 cp "$APK_PATH" "$PROJECT_ROOT/piwo.apk"
 
 TAG="v$VERSION"
 
 echo ""
-echo "Creating GitHub release $TAG..."
+echo "Creating draft GitHub release $TAG..."
 gh release create "$TAG" "$PROJECT_ROOT/piwo.apk" \
-  --title "Piwo $TAG" \
+  --title "$TAG" \
   --generate-notes \
-  $DRAFT_FLAG
+  --draft
 
 rm -f "$PROJECT_ROOT/piwo.apk"
 
 echo ""
-echo "Done! Release $TAG created."
-echo "Download URL: https://github.com/j-vseg/piwo/releases/download/$TAG/piwo.apk"
+echo "Done! Draft release $TAG created."
+echo "Publish the release on GitHub when you're ready — the tag will be created at that point."

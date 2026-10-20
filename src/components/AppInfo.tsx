@@ -3,8 +3,8 @@ import { useTranslation } from "@/translations/i18n";
 import { downloadAndInstallApk } from "@/utils/downloadAndInstallApk";
 import { useMutation } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { Platform } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
+import { Linking, Platform, Pressable } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { Alert } from "./Alert";
 import Button from "./Button";
 import LoadingIndicator from "./LoadingIndicator";
@@ -12,13 +12,24 @@ import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
 type AppInfoProps = {
-  status?: "maintaince" | "outdated";
+  status?: "outdated";
 };
 
-export default function AppInfo({ status = "maintaince" }: AppInfoProps) {
+export default function AppInfo({ status = "outdated" }: AppInfoProps) {
   const { t } = useTranslation();
-  const { mutate, isPending, isError } = useMutation({
+  const { theme } = useUnistyles();
+  const { mutate, isPending, isError, isSuccess } = useMutation({
     mutationFn: downloadAndInstallApk,
+    onError: (error) => console.log(error),
+  });
+
+  const { mutate: openLink } = useMutation({
+    mutationFn: async (url: string) => {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      }
+    },
   });
 
   return (
@@ -29,14 +40,10 @@ export default function AppInfo({ status = "maintaince" }: AppInfoProps) {
       />
       <ThemedView style={styles.content}>
         <ThemedText type="h1" style={styles.title}>
-          {status === "maintaince"
-            ? t("appInfo.maintenanceTitle")
-            : t("appInfo.outdatedTitle")}
+          {t("appInfo.outdatedTitle")}
         </ThemedText>
         <ThemedText style={styles.messageText}>
-          {status === "maintaince"
-            ? t("appInfo.maintenanceMessage")
-            : t("appInfo.outdatedMessage")}
+          {t("appInfo.outdatedMessage")}
         </ThemedText>
       </ThemedView>
 
@@ -49,12 +56,44 @@ export default function AppInfo({ status = "maintaince" }: AppInfoProps) {
         />
       )}
 
-      <Button
-        content={isPending ? <LoadingIndicator /> : t("appInfo.updateButton")}
-        accessibilityLabel={""}
-        accessibilityHint={""}
-        onPress={() => mutate()}
-      />
+      <ThemedView style={styles.button}>
+        <Button
+          content={
+            isPending ? (
+              <LoadingIndicator />
+            ) : isSuccess ? (
+              t("appInfo.apkDownloaded")
+            ) : (
+              t("appInfo.updateButton")
+            )
+          }
+          accessibilityLabel={""}
+          accessibilityHint={""}
+          onPress={() => mutate()}
+          iconLeft={isSuccess ? "check" : "android"}
+          buttonStyle={
+            isSuccess
+              ? {
+                  backgroundColor: theme.colors.warnings.positive,
+                  borderColor: theme.colors.warnings.positive,
+                }
+              : undefined
+          }
+        />
+        <Pressable
+          hitSlop={20}
+          onPress={() =>
+            openLink("https://www.youtube.com/watch?v=qe48iIleM5U")
+          }
+        >
+          <ThemedText
+            style={{ textDecorationLine: "underline" }}
+            type="bodySmaller"
+          >
+            {t("appInfo.installApkHelp")}
+          </ThemedText>
+        </Pressable>
+      </ThemedView>
     </ThemedView>
   );
 }
@@ -82,5 +121,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   messageText: {
     textAlign: "center",
     marginBottom: theme.spacing(4),
+  },
+  button: {
+    gap: theme.spacing(1),
   },
 }));

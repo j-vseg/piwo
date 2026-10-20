@@ -14,7 +14,7 @@ export default function TabsLayout() {
   const { theme } = useUnistyles();
   const role = useAppStore((s) => s.role);
   const { data } = useQuery({
-    queryKey: ["not-approved-users"],
+    queryKey: ["not-approved-users-number"],
     queryFn:
       role === Role.BoardMember || role === Role.Advisor
         ? () =>
