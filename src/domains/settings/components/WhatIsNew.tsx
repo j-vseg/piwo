@@ -18,6 +18,13 @@ type FeatureItem = {
 
 const features: FeatureItem[] = [
   {
+    icon: "dark_mode",
+    webIcon: "dark-mode",
+    title: "Donker en licht thema",
+    description:
+      "De app past zich automatisch aan naar een donker of licht thema op basis van je systeeminstellingen.",
+  },
+  {
     icon: "person_remove",
     webIcon: "person-remove",
     title: "Toegang intrekken",
