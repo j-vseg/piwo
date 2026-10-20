@@ -2,12 +2,15 @@
   "expo": {
     "name": "Piwo",
     "slug": "piwo",
-    "version": "2.3.1",
+    "version": "2.3.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "piwo",
     "userInterfaceStyle": "automatic",
-    "platforms": ["android", "web"],
+    "platforms": [
+      "android",
+      "web"
+    ],
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -17,7 +20,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.scoutingmierlo.piwo",
       "googleServicesFile": "./google-services/google-services.json",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "output": "single",
