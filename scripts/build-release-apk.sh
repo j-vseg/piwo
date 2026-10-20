@@ -54,6 +54,10 @@ json.dump(data, open(pkg_json, 'w'), indent=2)
 print(f'Updated {pkg_json} to {version}')
 " "$VERSION" "$PROJECT_ROOT/app.json" "$PROJECT_ROOT/package.json" "$VERSION_CODE"
 
+echo "Running prebuild..."
+cd "$PROJECT_ROOT"
+pnpm run prebuild
+
 BUILD_GRADLE="$PROJECT_ROOT/android/app/build.gradle"
 KEYSTORE_DEST="$PROJECT_ROOT/android/app/release.keystore"
 
