@@ -123,17 +123,4 @@ echo ""
 
 cp "$APK_PATH" "$PROJECT_ROOT/piwo.apk"
 
-TAG="v$VERSION"
-
-echo ""
-echo "Creating draft GitHub release $TAG..."
-gh release create "$TAG" "$PROJECT_ROOT/piwo.apk" \
-  --title "$TAG" \
-  --generate-notes \
-  --draft
-
-rm -f "$PROJECT_ROOT/piwo.apk"
-
-echo ""
-echo "Done! Draft release $TAG created."
-echo "Publish the release on GitHub when you're ready — the tag will be created at that point."
+echo "APK copied to $PROJECT_ROOT/piwo.apk"
