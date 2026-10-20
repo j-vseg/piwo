@@ -6,7 +6,7 @@ import LoadingIndicator from "./LoadingIndicator";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
-type ButtonType = "primary";
+type ButtonType = "primary" | "secondary";
 
 type ButtonProps = {
   content: ReactNode;

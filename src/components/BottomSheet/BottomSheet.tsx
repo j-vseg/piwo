@@ -1,5 +1,6 @@
 import { OS } from "@/constants/Os";
 import ExpoBottomSheet, {
+  BottomSheetScrollView,
   BottomSheetView,
   type BottomSheetMethods,
 } from "@expo/ui/community/bottom-sheet";
@@ -14,6 +15,7 @@ type BottomSheetProps = {
   title: string;
   isPresented: boolean;
   onDismiss: () => void;
+  scrollable?: boolean;
 };
 
 export default function BottomSheet({
@@ -21,6 +23,7 @@ export default function BottomSheet({
   title,
   isPresented,
   onDismiss,
+  scrollable = true,
 }: BottomSheetProps) {
   const { theme } = useUnistyles();
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -33,10 +36,13 @@ export default function BottomSheet({
     }
   }, [isPresented]);
 
+  const Wrapper = scrollable ? BottomSheetScrollView : BottomSheetView;
+
   return (
     <ExpoBottomSheet
       ref={sheetRef}
-      //snapPoints={["50%", "90%"]}
+      snapPoints={["50%", "90%"]}
+      enableDynamicSizing={false}
       index={-1}
       enablePanDownToClose
       onClose={onDismiss}
@@ -44,14 +50,14 @@ export default function BottomSheet({
         backgroundColor: theme.screen.default.backgroundColor,
       }}
     >
-      <BottomSheetView>
+      <Wrapper>
         <Header title={title} onClose={onDismiss} />
         {Platform.OS === OS.Web ? (
           <ThemedView type="container">{children}</ThemedView>
         ) : (
           <ThemedView style={styles.container}>{children}</ThemedView>
         )}
-      </BottomSheetView>
+      </Wrapper>
     </ExpoBottomSheet>
   );
 }

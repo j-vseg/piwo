@@ -192,6 +192,26 @@ export const darkTheme = {
         textColor: colors.dark["greyMedium"],
       },
     },
+    secondary: {
+      default: {
+        backgroundColor: colors.primitives["secondary"],
+        borderColor: colors.primitives["secondary"],
+        iconColor: colors.light["white"],
+        textColor: colors.light["white"],
+      },
+      active: {
+        backgroundColor: colors.button["primaryActiveBG"],
+        borderColor: colors.button["primaryActiveBG"],
+        iconColor: colors.dark["black"],
+        textColor: colors.dark["black"],
+      },
+      disabled: {
+        backgroundColor: colors.dark["greyLight"],
+        borderColor: colors.dark["greyLight"],
+        iconColor: colors.dark["greyMedium"],
+        textColor: colors.dark["greyMedium"],
+      },
+    },
   },
   spacing: (v: number) => v * 4,
 };

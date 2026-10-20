@@ -96,6 +96,24 @@ export default function SettingsLayout() {
           headerTintColor: theme.screen.default.headerTintColor,
         }}
       />
+
+      <Stack.Screen
+        name="what-is-new"
+        options={{
+          headerShown: true,
+          title: t("tabs.settings.whatIsNew"),
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontFamily: theme.text.h3.fontFamily,
+            fontWeight: theme.text.h3.fontWeight,
+            fontSize: theme.text.h3.fontSize,
+          },
+          headerStyle: {
+            backgroundColor: theme.colors.category.action,
+          },
+          headerTintColor: theme.screen.default.headerTintColor,
+        }}
+      />
     </Stack>
   );
 }

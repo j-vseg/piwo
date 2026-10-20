@@ -11,7 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { router } from "expo-router";
-import { FlatList, Platform, Pressable } from "react-native";
+import { BottomSheetFlatList } from "@expo/ui/community/bottom-sheet";
+import { Platform, Pressable } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 export function SelectActivity({
@@ -36,6 +37,7 @@ export function SelectActivity({
       title={"Selecteer een activiteit"}
       isPresented={editActivityOpen}
       onDismiss={() => setEditActivityOpen(false)}
+      scrollable={false}
     >
       {isLoadingEvents ? (
         <LoadingIndicator />
@@ -48,7 +50,7 @@ export function SelectActivity({
           Er zijn geen activiteiten gevonden om te wijzigen
         </ErrorMessage>
       ) : (
-        <FlatList
+        <BottomSheetFlatList
           data={events}
           keyExtractor={(event) => event.id}
           contentContainerStyle={styles.list}
