@@ -61,16 +61,8 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="what-is-new"
-          options={{
-            headerShown: false,
-            gestureEnabled: false,
-          }}
-        />
-
-        <Stack.Protected guard={authReady && fontsLoaded}>
+      {authReady && fontsLoaded && (
+        <Stack screenOptions={{ headerShown: false }}>
           <Stack.Protected
             guard={
               Platform.OS === OS.Android &&
@@ -99,8 +91,8 @@ export default function RootLayout() {
           <Stack.Protected guard={isLoggedIn && approval !== Approval.Accepted}>
             <Stack.Screen name="verify" />
           </Stack.Protected>
-        </Stack.Protected>
-      </Stack>
+        </Stack>
+      )}
     </QueryClientProvider>
   );
 }
