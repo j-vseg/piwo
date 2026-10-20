@@ -124,3 +124,19 @@ echo ""
 cp "$APK_PATH" "$PROJECT_ROOT/piwo.apk"
 
 echo "APK copied to $PROJECT_ROOT/piwo.apk"
+
+echo ""
+echo "Committing version bump..."
+cd "$PROJECT_ROOT"
+git add app.json package.json
+git commit -m "chore: bump version to v$VERSION ($VERSION_CODE)"
+git push
+
+echo "Creating GitHub draft release v$VERSION..."
+gh release create "v$VERSION" \
+  "$PROJECT_ROOT/piwo.apk#piwo-v${VERSION}.apk" \
+  --title "v$VERSION" \
+  --draft \
+  --generate-notes
+
+echo "Draft release v$VERSION created successfully!"
