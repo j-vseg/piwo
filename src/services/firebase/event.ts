@@ -1,3 +1,8 @@
+import { Category } from "@/constants/Category";
+import { Event } from "@/constants/Event";
+import { Recurrence } from "@/constants/Recurrence";
+import { generateOccurrences } from "@/utils/generateOccurences";
+import { addWeeks, subWeeks } from "date-fns";
 import {
   addDoc,
   collection,
@@ -5,16 +10,20 @@ import {
   doc,
   getDoc,
   getDocs,
+  getFirestore,
   Timestamp,
   updateDoc,
-} from "firebase/firestore";
-import { eventsCollection } from "./firebase";
-import { Recurrence } from "@/types/recurrence";
-import { Category } from "@/types/category";
-import { Event } from "@/types/event";
-import { generateOccurrences } from "@/utils/generateOccurences";
-import { addWeeks, subWeeks } from "date-fns";
-import { db } from "./firebase";
+} from "@react-native-firebase/firestore";
+import { db } from "@/firebase";
+
+const eventsCollection = collection(getFirestore(), "events");
+
+export async function getEvent(id: string): Promise<Event> {
+  const docRef = doc(eventsCollection, id);
+  const snap = await getDoc(docRef);
+  if (!snap.exists()) throw new Error(`Event ${id} not found`);
+  return { ...snap.data(), id: snap.id } as Event;
+}
 
 export async function createEvent(
   name: string,

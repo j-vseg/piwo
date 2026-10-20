@@ -1,35 +1,50 @@
-import { nl } from "date-fns/locale";
-import { AvailabilitySelector } from "./AvailabilitySelector";
-import { EventOccurrence } from "@/types/eventOccurence";
+import { StyleSheet } from "react-native-unistyles";
+
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { EventOccurrence } from "@/constants/EventOccurence";
 import { format, isSameDay } from "date-fns";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth";
+import { nl } from "date-fns/locale";
+import { router } from "expo-router";
+import { Pressable } from "react-native";
+import { AvailabilitySelector } from "./AvailabilitySelector";
 
-export function Event({ occurrence }: { occurrence: EventOccurrence }) {
-  const { push } = useRouter();
-  const { user } = useAuth();
-
+export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
   return (
-    <div
-      key={occurrence.id}
-      className="rounded-2xl p-4 bg-white"
-      onClick={
-        user
-          ? () => push(`/activity?id=${encodeURIComponent(occurrence.id)}`)
-          : undefined
+    <Pressable
+      style={styles.container}
+      onPress={() =>
+        router.push({
+          pathname: "/(tabs)/home/activity",
+          params: { id: occurrence.id },
+        })
       }
     >
-      <h4 className="font-semibold font-poppins! wrap-break-word leading-[0.85] mb-2">{occurrence.name}</h4>
-      <p className="text-sm text-gray-500">
-        {`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
-      </p>
+      <ThemedView>
+        <ThemedText type="bodyLarge">{occurrence.name}</ThemedText>
+        <ThemedText type="bodySmall" style={styles.subtitle}>
+          {`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
+        </ThemedText>
+      </ThemedView>
 
-      <div className="mt-2" onClick={(e) => e.stopPropagation()}>
-        <AvailabilitySelector
-          occurrenceId={occurrence.id}
-          occurrenceCategory={occurrence.category}
-        />
-      </div>
-    </div>
+      <AvailabilitySelector
+        occurrenceId={occurrence.id}
+        occurrenceCategory={occurrence.category}
+      />
+    </Pressable>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.light.white,
+    borderRadius: 16,
+    padding: theme.spacing(4),
+    flexDirection: "column",
+    gap: theme.spacing(4),
+  },
+  subtitle: {
+    color: theme.colors.dark.greyMedium,
+  },
+}));

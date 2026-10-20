@@ -1,22 +1,62 @@
+import { OS } from "@/constants/Os";
+import { auth } from "@/firebase";
 import { createUser } from "@/services/firebase/accounts";
-import { auth } from "@/services/firebase/firebase";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
+import {
+  getAuth as getNativeAuth,
+  createUserWithEmailAndPassword as nativeCreateUser,
+  EmailAuthProvider as NativeEmailAuthProvider,
+  reauthenticateWithCredential as nativeReauthenticate,
+  signInWithEmailAndPassword as nativeSignIn,
+  onAuthStateChanged as onNativeAuthStateChanged,
+  updateEmail as nativeUpdateEmail,
+  updatePassword as nativeUpdatePassword,
+} from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   EmailAuthProvider,
+  onAuthStateChanged as onWebAuthStateChanged,
   reauthenticateWithCredential,
   signInWithEmailAndPassword,
+  signOut as webSignOut,
   updateEmail,
   updatePassword,
   User,
 } from "firebase/auth";
+import { Platform } from "react-native";
+
+export function onAuthStateChanged(callback: (user: unknown) => void) {
+  if (Platform.OS === OS.Web) {
+    return onWebAuthStateChanged(auth, callback);
+  }
+  return onNativeAuthStateChanged(getNativeAuth(), callback);
+}
+
+export function getCurrentUser() {
+  if (Platform.OS === OS.Web) {
+    return auth.currentUser;
+  }
+  return getNativeAuth().currentUser;
+}
+
+export async function signOut(): Promise<void> {
+  if (Platform.OS !== OS.Web) {
+    await getNativeAuth().signOut();
+  } else {
+    await webSignOut(auth);
+  }
+}
 
 export async function signInWithEmail(
   email: string,
   password: string,
 ): Promise<User> {
   try {
+    if (Platform.OS !== OS.Web) {
+      const cred = await nativeSignIn(getNativeAuth(), email, password);
+      return cred.user as unknown as User;
+    }
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -37,12 +77,16 @@ export async function createAuthUser(
   password: string,
 ): Promise<{ user: User; data: { email: string; password: string } }> {
   try {
+    if (Platform.OS !== OS.Web) {
+      const cred = await nativeCreateUser(getNativeAuth(), email, password);
+      return { user: cred.user as unknown as User, data: { email, password } };
+    }
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password,
     );
-    return { user: userCredential.user, data: { email: email, password: password } };
+    return { user: userCredential.user, data: { email, password } };
   } catch (error) {
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
@@ -52,7 +96,11 @@ export async function createAuthUser(
   }
 }
 
-export async function createFirestoreUser(user: User, firstname: string, lastname: string): Promise<void> {
+export async function createFirestoreUser(
+  user: User,
+  firstname: string,
+  lastname: string,
+): Promise<void> {
   try {
     await createUser(user.uid, firstname, lastname);
   } catch (error) {
@@ -64,17 +112,33 @@ export async function createFirestoreUser(user: User, firstname: string, lastnam
   }
 }
 
-async function reauthenticate(user: User, currentPassword: string): Promise<void> {
+async function reauthenticate(
+  user: User,
+  currentPassword: string,
+): Promise<void> {
   if (!user.email) {
     throw new Error("Geen e-mailadres gekoppeld aan dit account");
   }
-  const credential = EmailAuthProvider.credential(user.email, currentPassword);
   try {
-    await reauthenticateWithCredential(user, credential);
+    if (Platform.OS !== OS.Web) {
+      const nativeUser = getNativeAuth().currentUser;
+      if (!nativeUser) throw new Error("Geen ingelogde gebruiker gevonden");
+      const credential = NativeEmailAuthProvider.credential(
+        user.email,
+        currentPassword,
+      );
+      await nativeReauthenticate(nativeUser, credential);
+    } else {
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword,
+      );
+      await reauthenticateWithCredential(user, credential);
+    }
   } catch (error) {
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
-      "Huidig wachtwoord is onjuist",
+      "Re-authenticatie mislukt",
     );
     throw new Error(customMessage);
   }
@@ -87,11 +151,17 @@ export async function updateUserEmail(
 ): Promise<void> {
   try {
     await reauthenticate(user, currentPassword);
-    await updateEmail(user, newEmail);
+    if (Platform.OS !== OS.Web) {
+      const nativeUser = getNativeAuth().currentUser;
+      if (!nativeUser) throw new Error("Geen ingelogde gebruiker gevonden");
+      await nativeUpdateEmail(nativeUser, newEmail);
+    } else {
+      await updateEmail(user, newEmail);
+    }
   } catch (error) {
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
-      "Er is iets misgegaan bij het wijzigen van je e-mailadres, probeer het later nog eens",
+      "Het is niet gelukt om je e-mailadres bij te werken",
     );
     throw new Error(customMessage);
   }
@@ -104,11 +174,17 @@ export async function updateUserPassword(
 ): Promise<void> {
   try {
     await reauthenticate(user, currentPassword);
-    await updatePassword(user, newPassword);
+    if (Platform.OS !== OS.Web) {
+      const nativeUser = getNativeAuth().currentUser;
+      if (!nativeUser) throw new Error("Geen ingelogde gebruiker gevonden");
+      await nativeUpdatePassword(nativeUser, newPassword);
+    } else {
+      await updatePassword(user, newPassword);
+    }
   } catch (error) {
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
-      "Er is iets misgegaan bij het wijzigen van je wachtwoord, probeer het later nog eens",
+      "Het is niet gelukt om je wachtwoord bij te werken",
     );
     throw new Error(customMessage);
   }

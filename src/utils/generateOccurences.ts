@@ -1,8 +1,8 @@
-import { EventOccurrence } from "@/types/eventOccurence";
-import { Event } from "@/types/event";
-import { Timestamp } from "firebase/firestore";
-import { Recurrence } from "@/types/recurrence";
+import { Event } from "@/constants/Event";
+import { EventOccurrence } from "@/constants/EventOccurence";
+import { Recurrence } from "@/constants/Recurrence";
 import { addWeeks } from "date-fns";
+import { Timestamp } from "@react-native-firebase/firestore";
 
 export function generateOccurrences(
   event: Event,

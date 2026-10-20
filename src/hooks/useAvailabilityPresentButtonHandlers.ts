@@ -1,6 +1,6 @@
+import { Status } from "@/constants/Status";
 import { useCallback, useEffect } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { Status } from "@/types/status";
 
 export function useAvailabilityPresentButtonHandlers(
   availability: Status | undefined,

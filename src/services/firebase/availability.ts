@@ -1,8 +1,8 @@
-import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "firebase/firestore";
-import { Status } from "@/types/status";
-import { db } from "./firebase";
-import { EventOccurrence } from "@/types/eventOccurence";
+import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "@react-native-firebase/firestore";
+import { db } from "@/firebase";
 import { getAllAccountsDisplayNames } from "./accounts";
+import { Status } from "@/constants/Status";
+import { EventOccurrence } from "@/constants/EventOccurence";
 
 /**
  * Get a user's availability for a specific occurrence.

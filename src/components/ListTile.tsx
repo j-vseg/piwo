@@ -1,26 +1,101 @@
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { OS } from "@/constants/Os";
+import { Platform, Pressable, type TextStyle } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { IconName, IconSymbol } from "./IconSymbol/IconSymbol";
+import { ThemedText } from "./ThemedText";
+import { ThemedView } from "./ThemedView";
+
+type ListTileProps = {
+  text: string;
+  iconLeft?: IconName;
+  iconRight?: IconName;
+  onPress: () => void;
+  textStyle?: TextStyle;
+  disabled?: boolean;
+};
 
 export default function ListTile({
-  children,
+  text,
+  iconLeft,
+  iconRight = Platform.OS === OS.Web
+    ? ("chevron-right" as any)
+    : "chevron_forward",
+  onPress,
+  textStyle,
   disabled,
-  className,
-  ...buttonProps
-}: {
-  children: ReactNode;
-} & ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ListTileProps) {
+  const { theme } = useUnistyles();
+
   return (
-    <button
-      className={`w-full max-w-3xl mx-auto bg-white py-3 px-3 flex gap-4 items-center justify-between border-b border-b-gray-300 ${disabled ? "bg-gray-100!" : undefined} ${className}`}
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={text}
+      onPress={onPress}
+      style={styles.listTile(disabled)}
       disabled={disabled}
-      {...buttonProps}
     >
-      <p className={`${disabled ? "text-gray-500!" : undefined}`}>{children}</p>
-      <FontAwesomeIcon
-        icon={faChevronRight}
-        className={`max-h-3! text-gray-400 ${disabled ? "text-gray-500!" : undefined} ${className}`}
-      />
-    </button>
+      {iconLeft && (
+        <ThemedView
+          style={styles.leftContainer}
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+        >
+          <IconSymbol
+            size={24}
+            name={iconLeft}
+            color={theme.colors.dark["black"]}
+            style={{ fontWeight: theme.fontWeight.extraLight }}
+          />
+        </ThemedView>
+      )}
+      <ThemedText
+        type="bodyMedium"
+        style={[styles.text, textStyle]}
+        accessible={false}
+        importantForAccessibility="no-hide-descendants"
+      >
+        {text}
+      </ThemedText>
+      <ThemedView
+        style={styles.rightContainer}
+        importantForAccessibility="no-hide-descendants"
+      >
+        <IconSymbol
+          size={24}
+          name={iconRight}
+          color={theme.colors.dark["black"]}
+          accessible={false}
+        />
+      </ThemedView>
+    </Pressable>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  listTile: (disabled: boolean | undefined) => ({
+    paddingHorizontal: theme.spacing(4),
+    minHeight: 56,
+    margin: 0,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing(4),
+    backgroundColor: disabled
+      ? theme.button.primary.disabled.backgroundColor
+      : theme.colors.light["white"],
+    borderBottomWidth: 1,
+    borderBottomStyle: "solid",
+    borderBottomColor: theme.colors.dark["greyLight"],
+  }),
+  leftContainer: {
+    backgroundColor: theme.colors.transparent,
+    flexDirection: "row",
+  },
+  rightContainer: {
+    backgroundColor: theme.colors.transparent,
+    flexDirection: "row",
+  },
+  text: {
+    flex: 1,
+  },
+}));

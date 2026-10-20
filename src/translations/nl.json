@@ -1,0 +1,173 @@
+{
+  "tabs": {
+    "home": "Home",
+    "settings": {
+      "main": "Instellingen",
+      "createActivity": "Creëer activiteit",
+      "editActivity": "Wijzig activiteit",
+      "personalDetails": "Persoonlijke gegevens",
+      "installation": "Installatie instructies",
+      "aboutApp": "Wat kun je doen met de Piwo app?",
+      "whatIsNew": "What's new!"
+    },
+    "login": "Login",
+    "signUp": "Creër een account",
+    "manage": "Beheren"
+  },
+  "home": {
+    "thisWeek": "Deze week",
+    "thisWeekError": "We hebben de activiteiten voor deze week niet op kunnen halen",
+    "availabilityMissing": "Geef je aanwezigheid op!",
+    "availabilityComplete": "Je bent bij voor deze week!",
+    "upcomingActivities": "Toekomstige activiteiten",
+    "errorLoadingActivities": "Het is niet gelukt om de activiteiten op te halen"
+  },
+  "activity": {
+    "errorOccurrence": "Het is niet gelukt om de activiteit data op te halen.",
+    "attendance": "Aanwezigheid",
+    "errorAvailability": "Het is niet gelukt om het aanwezigheid overzicht op te halen",
+    "errorUpdateAvailability": "Het updaten van je aanwezigheid is mislukt",
+    "noAvailability": "Niemand heeft deze aanwezigheid opgegeven",
+    "total": "Totaal: {{count}}"
+  },
+  "createActivity": {
+    "nameLabel": "Naam",
+    "namePlaceholder": "Activiteit naam",
+    "nameRequired": "Naam is verplicht",
+    "categoryLabel": "Categorie",
+    "startTimeLabel": "Starttijd",
+    "endTimeLabel": "Eindtijd",
+    "recurrenceLabel": "Herhaling",
+    "startTimeRequired": "Start tijd kan niet leeg zijn",
+    "startTimeFuture": "Start tijd moet in de toekomst zijn",
+    "endTimeRequired": "Eind tijd kan niet leeg zijn",
+    "endTimeFuture": "Eind tijd moet in de toekomst zijn",
+    "endTimeAfterStart": "Eind tijd moet na start tijd zijn",
+    "recurrenceHint": "Deze activiteit wordt <bold>herhaald</bold>",
+    "recurrenceHintNone": "Deze activiteit wordt <bold>niet herhaald</bold>",
+    "categoryRequired": "Categorie kan niet leeg zijn",
+    "submitButton": "Activiteit aanmaken",
+    "submitHint": "Maak een nieuwe activiteit aan",
+    "updateButton": "Wijzigingen opslaan",
+    "updateHint": "Sla de wijzigingen op",
+    "updateSuccess": "Activiteit bijgewerkt!",
+    "updateError": "Het is niet gelukt om de activiteit bij te werken",
+    "deleteButton": "Activiteit verwijderen",
+    "deleteHint": "Verwijder deze activiteit",
+    "deleteSuccess": "Activiteit verwijderd!",
+    "deleteError": "Het is niet gelukt om de activiteit te verwijderen",
+    "success": "Activiteit aangemaakt!",
+    "error": "Het is niet gelukt om de activiteit aan te maken"
+  },
+  "settings": {
+    "activitiesHeader": "Activiteiten",
+    "accountHeader": "Account",
+    "signOut": "Uitloggen",
+    "deleteAccount": "Account verwijderen",
+    "deleteAccountDescription": "Om je account te verwijderen hebben we je wachtwoord nodig",
+    "aboutHeader": "Over de app",
+    "whatsNew": "Wat is er nieuw?",
+    "installWebAppAndroid": "Hoe installeer ik een web-app? (Android)",
+    "installWebAppApple": "Hoe installeer ik een web-app? (Apple)",
+    "downloadApk": "Download de Android app (APK-bestand)",
+    "installApk": "Hoe installeer ik een APK-bestand? (Android)"
+  },
+  "personalDetails": {
+    "nameTitle": "Voor- & achternaam",
+    "firstnameLabel": "Voornaam",
+    "firstnamePlaceholder": "Voornaam",
+    "firstnameRequired": "Voornaam is verplicht",
+    "lastnameLabel": "Achternaam",
+    "lastnamePlaceholder": "Achternaam",
+    "lastnameRequired": "Achternaam is verplicht",
+    "saveNameButton": "Naam opslaan",
+    "saveNameHint": "Sla je naam wijzigingen op",
+    "saveNameSuccess": "Naam bijgewerkt!",
+    "saveNameError": "Het is niet gelukt om je naam bij te werken",
+    "emailTitle": "E-mailadres",
+    "emailLabel": "E-mailadres",
+    "emailPlaceholder": "E-mailadres",
+    "emailRequired": "E-mailadres is verplicht",
+    "emailInvalid": "Voer een geldig e-mailadres in",
+    "saveEmailButton": "E-mailadres opslaan",
+    "saveEmailHint": "Sla je e-mailadres wijziging op",
+    "saveEmailSuccess": "E-mailadres bijgewerkt!",
+    "saveEmailError": "Het is niet gelukt om je e-mailadres bij te werken",
+    "passwordTitle": "Wachtwoord",
+    "newPasswordLabel": "Nieuw wachtwoord",
+    "newPasswordPlaceholder": "Nieuw wachtwoord",
+    "newPasswordRequired": "Nieuw wachtwoord is verplicht",
+    "newPasswordMinLength": "Wachtwoord moet minimaal 8 tekens bevatten",
+    "savePasswordButton": "Wachtwoord opslaan",
+    "savePasswordHint": "Sla je wachtwoord wijziging op",
+    "savePasswordSuccess": "Wachtwoord bijgewerkt!",
+    "currentPasswordPrompt": "Vul je huidige wachtwoord in",
+    "currentPasswordDescription": "Om je gegevens aan te passen hebben we je wachtwoord nodig",
+    "confirmButton": "Bevestigen",
+    "confirmHint": "Bevestig je wachtwoord"
+  },
+  "common": {
+    "unknownError": "Er is een onbekende fout opgetreden"
+  },
+  "login": {
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "E-mail",
+    "emailRequired": "E-mail is verplicht",
+    "emailInvalid": "Voer een geldig e-mailadres in",
+    "passwordLabel": "Wachtwoord",
+    "passwordPlaceholder": "Wachtwoord",
+    "passwordRequired": "Wachtwoord is verplicht",
+    "passwordMinLength": "Wachtwoord moet minimaal 8 tekens bevatten",
+    "loginButton": "Inloggen",
+    "accessibilityHint": "Log in op je account",
+    "success": "Succesvol ingelogd!",
+    "error": "Het is niet gelukt om in te loggen, probeer het later nog eens",
+    "noAccount": "Nog geen account?"
+  },
+  "signUp": {
+    "signUpButton": "Creër account",
+    "haveAccount": "Heb je al een account?"
+  },
+  "verify": {
+    "logoutError": "Er is iets misgegaan tijdens het uitloggen, probeer het later nog eens",
+    "titlePending": "Nog even geduld",
+    "titleDeclined": "Helaas!",
+    "descriptionPending": "Je toelating is nog in verwerking, neem contact op met {{names}} om dit proces te versnellen.",
+    "descriptionDeclined": "Je toelating is helaas afgewezen. Verwijder je account of neem contact op met {{names}} voor meer informatie.",
+    "logoutButton": "Uitloggen",
+    "logoutHint": "Log uit en ga terug naar het inlogscherm",
+    "deleteAccountButton": "Account verwijderen",
+    "deleteAccountHint": "Verwijder je account permanent"
+  },
+  "appInfo": {
+    "maintenanceTitle": "Oh nee!",
+    "outdatedTitle": "Je loopt achter!",
+    "maintenanceMessage": "We zijn momenteel offline voor onderhoud, probeer het later nog eens.",
+    "outdatedMessage": "Je hebt een verouderde versie van de app, download de laatste versie.",
+    "downloadError": "Download mislukt. Probeer het opnieuw.",
+    "updateButton": "Update de app",
+    "apkDownloaded": "APK-bestand gedownload",
+    "installApkHelp": "Hoe installeer ik een APK-bestand? (Android)"
+  },
+  "manage": {
+    "actionOverview": {
+      "title": "Wil je deze gebruiker goedkeuren?",
+      "approveButton": "Goedkeuren",
+      "approveLabel": "Goedkeuren",
+      "approveHint": "Klik om deze gebruiker goed te keuren",
+      "declineButton": "Afkeuren",
+      "declineLabel": "Afkeuren",
+      "declineHint": "Klik om deze gebruiker af te keuren"
+    },
+    "accountOverview": {
+      "currentRole": "{{name}} is momenteel <bold>{{role}}</bold>",
+      "roleLabel": "Rechten aanpassen",
+      "saveButton": "Wijzigingen opslaan",
+      "saveLabel": "Wijzigingen opslaan",
+      "saveHint": "Slaat de nieuwe rechten van deze gebruiker op",
+      "revokeButton": "Toegang tot de app intrekken",
+      "revokeLabel": "Toegang intrekken",
+      "revokeHint": "Trekt de toegang van deze gebruiker tot de app in"
+    }
+  }
+}
