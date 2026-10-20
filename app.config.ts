@@ -8,7 +8,7 @@ loadEnv({ path: IS_PROD ? ".env.prod" : ".env.dev" });
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: IS_PROD ? "Piwo" : "Piwo [DEV]",
   slug: "piwo",
-  version: "0.0.0",
+  version: "2.3.2",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: IS_PROD ? "piwo" : "piwo-dev",
@@ -20,11 +20,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
     },
-    package: IS_PROD ? "com.scoutingmierlo.piwo" : "com.scoutingmierlo.piwo.dev",
+    package: IS_PROD
+      ? "com.scoutingmierlo.piwo"
+      : "com.scoutingmierlo.piwo.dev",
     googleServicesFile: IS_PROD
       ? "./google-services/google-services.json"
       : "./google-services/google-services-dev.json",
-    versionCode: 1,
+    versionCode: 5,
   },
   web: {
     output: "single",
