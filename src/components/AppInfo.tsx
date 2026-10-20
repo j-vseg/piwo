@@ -1,6 +1,7 @@
 import { OS } from "@/constants/Os";
 import { useTranslation } from "@/translations/i18n";
 import { downloadAndInstallApk } from "@/utils/downloadAndInstallApk";
+import { getPageUrl } from "@/utils/getPageUrl";
 import { useMutation } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useState } from "react";
@@ -9,10 +10,10 @@ import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { Alert } from "./Alert";
 import BottomSheet from "./BottomSheet/BottomSheet";
 import Button from "./Button";
+import IntegratedWebView from "./IntegratedWebView";
 import LoadingIndicator from "./LoadingIndicator";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
-import WhatIsNewOverview from "./WhatIsNew";
 
 type AppInfoProps = {
   status?: "outdated";
@@ -113,8 +114,9 @@ export default function AppInfo({ status = "outdated" }: AppInfoProps) {
         title={t("tabs.settings.whatIsNew")}
         isPresented={newOpen}
         onDismiss={() => setNewOpen(false)}
+        scrollable={false}
       >
-        <WhatIsNewOverview />
+        <IntegratedWebView url={getPageUrl("/what-is-new")} />
       </BottomSheet>
     </>
   );
