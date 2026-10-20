@@ -78,7 +78,7 @@ export default function IntegratedWebView({ url }: IntegratedWebViewProps) {
 
   if (!isAllowedUrl(url) || viewState === "error") {
     return (
-      <ThemedView type="container">
+      <ThemedView type="container" style={{ flex: 1 }}>
         <Alert
           icon="info"
           size="large"
@@ -90,7 +90,7 @@ export default function IntegratedWebView({ url }: IntegratedWebViewProps) {
   }
 
   return (
-    <>
+    <ThemedView style={{ flex: 1 }}>
       <WebView
         source={{ uri: uri }}
         style={styles.webview}
@@ -103,7 +103,7 @@ export default function IntegratedWebView({ url }: IntegratedWebViewProps) {
         originWhitelist={["https://*", "http://*"]}
       />
       {viewState === "loading" && <LoadingIndicator type="screen" />}
-    </>
+    </ThemedView>
   );
 }
 
