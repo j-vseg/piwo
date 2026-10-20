@@ -1,13 +1,16 @@
 # Piwo
+
 **Piwo** is an Expo (React Native) app I built in my free time for a hobby group I'm part of. It helps everyone easily keep track of their availability for group activities. It runs on Android and web.
 
 ## ✨ Features
+
 - 🗓️ Track member availability for upcoming events
 - 🔐 Firebase Authentication (Email/Password)
 - ☁️ Cloud Firestore for real-time data storage
 - 📱 Android APK + web (Firebase Hosting)
 
 ## 🚀 Tech Stack
+
 - **Expo / React Native** — cross-platform UI
 - **Expo Router** — file-based routing
 - **React Native Firebase** — auth & Firestore
@@ -17,6 +20,7 @@
 - **Firebase Hosting** — web deployment
 
 ## 🔧 Getting Started
+
 To run this project locally:
 
 ```bash
@@ -40,17 +44,16 @@ Follow these steps when you are ready to ship a new version to production.
 
 1. **Generate release notes** — Run the `release-notes` skill to generate the release note for GitHub and the in-app WhatsNewOverview component.
 
-2. **Build the Android APK** — Run `pnpm run build:android`. The script prompts for a version and version code, updates `app.json` and `package.json`, runs prebuild, builds a signed APK, and creates a draft GitHub release with the APK attached.
+2. **Build the Android APK** — Run `pnpm run build:android`. The script prompts for a version and version code, updates `app.json` and `package.json`, runs prebuild, builds a signed APK, commits the changes, and creates a draft GitHub release with the APK attached.
 
 3. **Build the web export** — Run `pnpm run build:web` to export the web app to the `dist/` directory.
 
 4. **Deploy to Firebase** — Run `firebase deploy` to push the web build to Firebase Hosting.
 
-5. **Commit the changes** — Commit version bumps, updated release notes, and any other changes to `main`.
-
-6. **Publish the GitHub release** — Add the generated release notes to the draft release on GitHub and publish it.
+5. **Publish the GitHub release** — Add the generated release notes to the draft release on GitHub and publish it.
 
 ## 📁 Project Structure
+
 ```
 src/
   ├── app/            # Expo Router pages and layouts
@@ -68,7 +71,9 @@ scripts/
 ```
 
 ## 🤝 Contributions
+
 This project was built for personal use, but feel free to fork it or suggest improvements!
 
 ## 📃 License
+
 MIT – use it freely.

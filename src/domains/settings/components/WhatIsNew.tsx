@@ -1,12 +1,12 @@
+import { Group } from "@/components/Group";
+import { IconName, IconSymbol } from "@/components/IconSymbol/IconSymbol";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
 import { useAppStore } from "@/store/appStore";
 import { Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
-import { Group } from "./Group";
-import { IconName, IconSymbol } from "./IconSymbol/IconSymbol";
-import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
 
 type FeatureItem = {
   icon: IconName;
