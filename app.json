@@ -19,7 +19,8 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.scoutingmierlo.piwo",
-      "googleServicesFile": "./google-services/google-services.json"
+      "googleServicesFile": "./google-services/google-services.json",
+      "versionCode": 2
     },
     "web": {
       "output": "single",
