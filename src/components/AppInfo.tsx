@@ -114,6 +114,7 @@ export default function AppInfo({ status = "outdated" }: AppInfoProps) {
         title={t("tabs.settings.whatIsNew")}
         isPresented={newOpen}
         onDismiss={() => setNewOpen(false)}
+        scrollable={false}
       >
         <IntegratedWebView url={getPageUrl("/what-is-new")} />
       </BottomSheet>

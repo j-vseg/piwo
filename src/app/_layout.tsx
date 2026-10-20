@@ -79,7 +79,16 @@ export default function RootLayout() {
             />
           </Stack.Protected>
 
-          <Stack.Protected guard={!isLoggedIn}>
+          <Stack.Protected
+            guard={
+              !isLoggedIn &&
+              !(
+                Platform.OS === OS.Android &&
+                isSupported.isSuccess &&
+                isSupported.data === false
+              )
+            }
+          >
             <Stack.Screen name="index" />
             <Stack.Screen name="sign-up" />
           </Stack.Protected>
@@ -91,6 +100,14 @@ export default function RootLayout() {
           <Stack.Protected guard={isLoggedIn && approval !== Approval.Accepted}>
             <Stack.Screen name="verify" />
           </Stack.Protected>
+
+          <Stack.Screen
+            name="what-is-new"
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+          />
         </Stack>
       )}
     </QueryClientProvider>

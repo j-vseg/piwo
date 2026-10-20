@@ -15,7 +15,13 @@ export type IntegratedWebViewProps = {
 };
 
 type ViewState = "loading" | "ready" | "error";
-const ALLOWED_HOSTS = [process.env.EXPO_PUBLIC_FIREBASE_WEB_URL];
+const ALLOWED_HOSTS = [process.env.EXPO_PUBLIC_FIREBASE_WEB_URL].map((h) => {
+  try {
+    return new URL(h ?? "").hostname;
+  } catch {
+    return h ?? "";
+  }
+});
 
 export function isAllowedUrl(url: string): boolean {
   try {
@@ -37,10 +43,7 @@ export function buildUrl(baseUrl: string): string {
   return url.toString();
 }
 
-export default function IntegratedWebView({
-  url,
-  headerBackgroundColor,
-}: IntegratedWebViewProps) {
+export default function IntegratedWebView({ url }: IntegratedWebViewProps) {
   const { t } = useTranslation();
   const [viewState, setViewState] = useState<ViewState>("loading");
   const uri = useMemo(() => buildUrl(url), [url]);
@@ -87,7 +90,7 @@ export default function IntegratedWebView({
   }
 
   return (
-    <ThemedView type="container">
+    <>
       <WebView
         source={{ uri: uri }}
         style={styles.webview}
@@ -100,11 +103,11 @@ export default function IntegratedWebView({
         originWhitelist={["https://*", "http://*"]}
       />
       {viewState === "loading" && <LoadingIndicator type="screen" />}
-    </ThemedView>
+    </>
   );
 }
 
-const styles = StyleSheet.create((theme, rt) => ({
+const styles = StyleSheet.create(() => ({
   webview: {
     flex: 1,
     backgroundColor: "transparent",

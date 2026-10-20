@@ -50,12 +50,21 @@ export default function BottomSheet({
         backgroundColor: theme.screen.default.backgroundColor,
       }}
     >
-      <Wrapper>
+      <Wrapper style={scrollable ? undefined : { flex: 1 }}>
         <Header title={title} onClose={onDismiss} />
         {Platform.OS === OS.Web ? (
-          <ThemedView type="container">{children}</ThemedView>
+          <ThemedView
+            type="container"
+            style={scrollable ? undefined : { flex: 1 }}
+          >
+            {children}
+          </ThemedView>
         ) : (
-          <ThemedView style={styles.container}>{children}</ThemedView>
+          <ThemedView
+            style={[styles.container, scrollable ? undefined : { flex: 1 }]}
+          >
+            {children}
+          </ThemedView>
         )}
       </Wrapper>
     </ExpoBottomSheet>
