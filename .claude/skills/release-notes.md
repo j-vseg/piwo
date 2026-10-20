@@ -50,9 +50,9 @@ Generate two outputs based on merged PRs since the latest git tag:
 
    If a category has no PRs, omit it entirely.
 
-7. Format the output as:
+7. Format the output as a markdown code block so the user can copy it directly. Use this structure:
 
-```
+````markdown
 ## New Features
 
 - Description of the feature by @author in #number
@@ -68,7 +68,7 @@ Generate two outputs based on merged PRs since the latest git tag:
 - Description of the maintenance task by @author in #number
 
 **Full Changelog**: <previous_tag>...<base_tag>
-```
+````
 
 ### Formatting rules
 
@@ -117,9 +117,7 @@ Only add items for PRs categorized as **New Features** or **Bug Fixes** that are
    - Keep descriptions concise (1–2 sentences).
    - Set `adminOnly: true` if the feature is only visible to board members / advisors.
 
-5. Add new features at the end of the array, before the last entry (the "Installeren als app" item should stay last).
-
-6. Do NOT remove existing features — only add new ones.
+5. Remove all existing features from the array and replace them with only the new ones from this release. The "Installeren als app" item should stay last.
 
 ### Ask before applying
 

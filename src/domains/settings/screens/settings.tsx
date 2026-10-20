@@ -105,6 +105,7 @@ export default function SettingsScreen() {
             <ListTile
               text={t("tabs.settings.whatIsNew")}
               onPress={() => router.push("/(tabs)/settings/what-is-new")}
+              iconLeft={Platform.OS === OS.Web ? "stars" : "stars_2"}
             />
             <ListTile
               text={t("tabs.settings.aboutApp")}

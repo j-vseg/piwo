@@ -1,3 +1,4 @@
+import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
 import { useAppStore } from "@/store/appStore";
 import { Platform } from "react-native";
@@ -6,7 +7,6 @@ import { Group } from "./Group";
 import { IconName, IconSymbol } from "./IconSymbol/IconSymbol";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
-import { OS } from "@/constants/Os";
 
 type FeatureItem = {
   icon: IconName;
@@ -18,69 +18,32 @@ type FeatureItem = {
 
 const features: FeatureItem[] = [
   {
-    icon: "event",
-    webIcon: "event",
-    title: "Activiteiten bekijken",
-    description:
-      "Bekijk alle aankomende activiteiten, inclusief groepsavonden, weekenden, kampen en acties.",
-  },
-  {
-    icon: "check_circle",
-    webIcon: "check-circle",
-    title: "Aanwezigheid opgeven",
-    description:
-      "Geef per activiteit aan of je aanwezig, afwezig of misschien komt. Houd het aanwezig-knopje lang ingedrukt om de status 'Later' te selecteren.",
-  },
-  {
-    icon: "groups",
-    webIcon: "group",
-    title: "Aanwezigheid van anderen bekijken",
-    description:
-      "Bekijk per activiteit wie er komt, wie er misschien komt en wie er niet bij is.",
-  },
-  {
-    icon: "today",
-    webIcon: "today",
-    title: "Weekoverzicht",
-    description:
-      "Zie in één oogopslag alle activiteiten van deze week en of je je aanwezigheid al hebt opgegeven.",
-  },
-  {
-    icon: "event_repeat",
-    webIcon: "repeat",
-    title: "Terugkerende activiteiten",
-    description:
-      "Activiteiten kunnen dagelijks, wekelijks of maandelijks terugkeren. Geef je aanwezigheid per keer op.",
-  },
-  {
-    icon: "edit_calendar",
-    webIcon: "edit",
-    title: "Activiteiten beheren",
-    description:
-      "Maak nieuwe activiteiten aan, bewerk bestaande activiteiten en verwijder activiteiten die niet meer nodig zijn.",
+    icon: "person_remove",
+    webIcon: "person-remove",
+    title: "Toegang intrekken",
+    description: "Trek de toegang van een gebruiker in wanneer nodig.",
     adminOnly: true,
   },
   {
-    icon: "how_to_reg",
-    webIcon: "how-to-reg",
-    title: "Ledenbeheer",
+    icon: "phone_android",
+    webIcon: "phone-android",
+    title: "Android app",
     description:
-      "Keur nieuwe gebruikers goed of af, ken rollen toe en trek toegang in wanneer nodig.",
-    adminOnly: true,
+      "Piwo is nu beschikbaar als Android-app in de Google Play Store.",
   },
   {
-    icon: "person_edit",
-    webIcon: "person",
-    title: "Persoonlijke gegevens aanpassen",
+    icon: "system_update",
+    webIcon: "system-update",
+    title: "App updates (Android-app)",
     description:
-      "Wijzig je naam, e-mailadres of wachtwoord via de instellingen.",
+      "Ontvang een melding wanneer er een nieuwe versie van de app beschikbaar is.",
   },
   {
     icon: "install_mobile",
     webIcon: "get-app",
-    title: "Installeren als app",
+    title: "Installatiehandleidingen",
     description:
-      "Installeer de Piwo app als web-app op je telefoon of download de Android-app.",
+      "Stapsgewijze instructies voor het installeren van de app op Android en iOS.",
   },
 ];
 
