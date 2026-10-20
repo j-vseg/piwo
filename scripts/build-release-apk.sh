@@ -128,7 +128,7 @@ echo "APK copied to $PROJECT_ROOT/piwo.apk"
 echo ""
 echo "Committing version bump..."
 cd "$PROJECT_ROOT"
-git add app.json package.json
+git add -A
 git commit -m "chore: bump version to v$VERSION ($VERSION_CODE)"
 git push
 
