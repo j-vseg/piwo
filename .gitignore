@@ -52,3 +52,7 @@ claudio.settings.local.json
 # Firebase
 .firebaserc
 .firebase
+
+# Env
+.env.prod
+.env.dev

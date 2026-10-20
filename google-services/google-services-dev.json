@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "590621253653",
+    "project_id": "piwo-dev",
+    "storage_bucket": "piwo-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590621253653:android:5ef0f8ebf0c1b6d8676e1c",
+        "android_client_info": {
+          "package_name": "com.scoutingmierlo.piwo.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1XyDDSNJieMG7KjBtMuZfDIW6erp5Nuc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
