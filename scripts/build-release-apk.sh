@@ -7,9 +7,15 @@ export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home 2>/dev/null || true)}"
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-if [ -f "$PROJECT_ROOT/.env" ]; then
+if [ "${APP_VARIANT:-}" = "production" ]; then
+  ENV_FILE="$PROJECT_ROOT/.env.prod"
+else
+  ENV_FILE="$PROJECT_ROOT/.env.dev"
+fi
+
+if [ -f "$ENV_FILE" ]; then
   set -a
-  eval "$(grep -v '^#' "$PROJECT_ROOT/.env" | grep -v '^$' | sed 's/=\(.*\)/='"'"'\1'"'"'/')"
+  eval "$(grep -v '^#' "$ENV_FILE" | grep -v '^$' | sed 's/=\(.*\)/='"'"'\1'"'"'/')"
   set +a
 fi
 
@@ -34,25 +40,26 @@ if ! [[ "$VERSION_CODE" =~ ^[0-9]+$ ]]; then
   exit 1
 fi
 
-# Update version in app.json and package.json
+# Update version in app.config.ts and package.json
 python3 -I -c "
-import json, sys
-version = sys.argv[1]
-app_json = sys.argv[2]
-pkg_json = sys.argv[3]
+import re, json, sys
 
-data = json.load(open(app_json))
-data['expo']['version'] = version
-vc = int(sys.argv[4])
-data['expo'].setdefault('android', {})['versionCode'] = vc
-json.dump(data, open(app_json, 'w'), indent=2)
-print(f'Updated {app_json} to {version} (versionCode {vc})')
+version = sys.argv[1]
+version_code = sys.argv[2]
+config_file = sys.argv[3]
+pkg_json = sys.argv[4]
+
+content = open(config_file).read()
+content = re.sub(r'version: \"[^\"]+\"', f'version: \"{version}\"', content, count=1)
+content = re.sub(r'versionCode: \d+', f'versionCode: {version_code}', content, count=1)
+open(config_file, 'w').write(content)
+print(f'Updated {config_file} to {version} (versionCode {version_code})')
 
 data = json.load(open(pkg_json))
 data['version'] = version
 json.dump(data, open(pkg_json, 'w'), indent=2)
 print(f'Updated {pkg_json} to {version}')
-" "$VERSION" "$PROJECT_ROOT/app.json" "$PROJECT_ROOT/package.json" "$VERSION_CODE"
+" "$VERSION" "$VERSION_CODE" "$PROJECT_ROOT/app.config.ts" "$PROJECT_ROOT/package.json"
 
 echo "Running prebuild..."
 cd "$PROJECT_ROOT"
@@ -125,18 +132,20 @@ cp "$APK_PATH" "$PROJECT_ROOT/piwo.apk"
 
 echo "APK copied to $PROJECT_ROOT/piwo.apk"
 
-echo ""
-echo "Committing version bump..."
-cd "$PROJECT_ROOT"
-git add -A
-git commit -m "chore: bump version to v$VERSION ($VERSION_CODE)"
-git push
+if [ "${APP_VARIANT:-}" = "production" ]; then
+  echo ""
+  echo "Committing version bump..."
+  cd "$PROJECT_ROOT"
+  git add -A
+  git commit -m "chore: bump version to v$VERSION ($VERSION_CODE)"
+  git push
 
-echo "Creating GitHub draft release v$VERSION..."
-gh release create "v$VERSION" \
-  "$PROJECT_ROOT/piwo.apk#piwo-v${VERSION}.apk" \
-  --title "v$VERSION" \
-  --draft \
-  --generate-notes
+  echo "Creating GitHub draft release v$VERSION..."
+  gh release create "v$VERSION" \
+    "$PROJECT_ROOT/piwo.apk#piwo-v${VERSION}.apk" \
+    --title "v$VERSION" \
+    --draft \
+    --generate-notes
 
-echo "Draft release v$VERSION created successfully!"
+  echo "Draft release v$VERSION created successfully!"
+fi

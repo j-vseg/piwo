@@ -1,7 +1,7 @@
 {
   "name": "piwo",
   "main": "index.ts",
-  "version": "2.3.2",
+  "version": "0.0.0",
   "dependencies": {
     "@expo-google-fonts/crimson-pro": "0.4.2",
     "@expo-google-fonts/poppins": "0.4.1",
@@ -64,12 +64,15 @@
   "scripts": {
     "start": "expo start",
     "prebuild": "bunx expo prebuild",
+    "prebuild:prod": "APP_VARIANT=production bunx expo prebuild",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
     "build:android": "bash ./scripts/build-release-apk.sh",
-    "build:web": "pnpx expo export --platform web --output-dir dist"
+    "build:web": "pnpx expo export --platform web --output-dir dist",
+    "build:android:prod": "APP_VARIANT=production bash ./scripts/build-release-apk.sh",
+    "build:web:prod": "APP_VARIANT=production pnpx expo export --platform web --output-dir dist"
   },
   "private": true
 }

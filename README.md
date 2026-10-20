@@ -44,9 +44,9 @@ Follow these steps when you are ready to ship a new version to production.
 
 1. **Generate release notes** — Run the `release-notes` skill to generate the release note for GitHub and the in-app WhatsNewOverview component.
 
-2. **Build the Android APK** — Run `pnpm run build:android`. The script prompts for a version and version code, updates `app.json` and `package.json`, runs prebuild, builds a signed APK, commits the changes, and creates a draft GitHub release with the APK attached.
+2. **Build the Android APK** — Run `pnpm run build:android:prod`. The script prompts for a version and version code, updates `app.json` and `package.json`, runs prebuild, builds a signed APK, commits the changes, and creates a draft GitHub release with the APK attached.
 
-3. **Build the web export** — Run `pnpm run build:web` to export the web app to the `dist/` directory.
+3. **Build the web export** — Run `pnpm run build:web:prod` to export the web app to the `dist/` directory.
 
 4. **Deploy to Firebase** — Run `firebase deploy` to push the web build to Firebase Hosting.
 
