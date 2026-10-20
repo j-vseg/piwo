@@ -20,7 +20,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.scoutingmierlo.piwo",
       "googleServicesFile": "./google-services/google-services.json",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "output": "single",

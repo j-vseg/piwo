@@ -1,56 +1,74 @@
-# Welcome to your Expo app 👋
+# Piwo
+**Piwo** is an Expo (React Native) app I built in my free time for a hobby group I'm part of. It helps everyone easily keep track of their availability for group activities. It runs on Android and web.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## ✨ Features
+- 🗓️ Track member availability for upcoming events
+- 🔐 Firebase Authentication (Email/Password)
+- ☁️ Cloud Firestore for real-time data storage
+- 📱 Android APK + web (Firebase Hosting)
 
-## Get started
+## 🚀 Tech Stack
+- **Expo / React Native** — cross-platform UI
+- **Expo Router** — file-based routing
+- **React Native Firebase** — auth & Firestore
+- **Zustand** — state management
+- **React Query** — server-state caching
+- **Unistyles** — styling
+- **Firebase Hosting** — web deployment
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 🔧 Getting Started
+To run this project locally:
 
 ```bash
-npm run reset-project
+git clone https://github.com/j-vseg/piwo.git
+cd piwo
+pnpm install
+pnpm run prebuild
+pnpm run android   # run on Android
+pnpm run web       # run on web
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Make sure to:
 
-### Other setup steps
+- Set up Firebase for Web and Android in your Firebase Console
+- Configure your Firebase credentials (e.g. environment variables or Firebase config)
+- Place `google-services.json` in the `google-services/` directory
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## 🚢 Release process
 
-## Learn more
+Follow these steps when you are ready to ship a new version to production.
 
-To learn more about developing your project with Expo, look at the following resources:
+1. **Generate release notes** — Run the `release-notes` skill to generate the release note for GitHub and the in-app WhatsNewOverview component.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+2. **Build the Android APK** — Run `pnpm run build:android`. The script prompts for a version and version code, updates `app.json` and `package.json`, runs prebuild, builds a signed APK, and creates a draft GitHub release with the APK attached.
 
-## Join the community
+3. **Build the web export** — Run `pnpm run build:web` to export the web app to the `dist/` directory.
 
-Join our community of developers creating universal apps.
+4. **Deploy to Firebase** — Run `firebase deploy` to push the web build to Firebase Hosting.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+5. **Commit the changes** — Commit version bumps, updated release notes, and any other changes to `main`.
+
+6. **Publish the GitHub release** — Add the generated release notes to the draft release on GitHub and publish it.
+
+## 📁 Project Structure
+```
+src/
+  ├── app/            # Expo Router pages and layouts
+  ├── components/     # Reusable UI components
+  ├── constants/      # App-wide constants
+  ├── domains/        # Feature modules (home, login, manage, settings, sign-up, verify)
+  ├── hooks/          # Custom React hooks
+  ├── services/       # Firebase and other API integrations
+  ├── store/          # Zustand stores
+  ├── themes/         # Unistyles theme definitions
+  ├── translations/   # i18n translation files
+  └── utils/          # Helper functions
+scripts/
+  └── build-release-apk.sh  # Android release build + GitHub draft release
+```
+
+## 🤝 Contributions
+This project was built for personal use, but feel free to fork it or suggest improvements!
+
+## 📃 License
+MIT – use it freely.
