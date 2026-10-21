@@ -7,6 +7,7 @@ import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser, signOut } from "@/services/firebase/auth";
+import { requestWebNotificationPermission } from "@/services/notifications.web";
 import { useAppStore } from "@/store/appStore";
 import { Host, Switch } from "@expo/ui";
 import { useMutation } from "@tanstack/react-query";
@@ -85,6 +86,18 @@ export default function SettingsScreen() {
       const { status: newStatus } =
         await Notifications.requestPermissionsAsync();
       setNotificationsEnabled(newStatus === "granted");
+    },
+  });
+
+  const {
+    mutate: toggleWebNotification,
+    isPending: isWebPending,
+    isError: isWebError,
+  } = useMutation({
+    mutationFn: async () => {
+      if (webPermission !== "default") return;
+      const result = await requestWebNotificationPermission();
+      setWebPermission(result);
     },
   });
 
@@ -184,19 +197,31 @@ export default function SettingsScreen() {
                     ? t("settings.notificationsWebUnsupported")
                     : webPermission === "granted"
                       ? t("settings.notificationsWebEnabled")
-                      : t("settings.notificationsWebDisabled")
+                      : webPermission === "denied"
+                        ? t("settings.notificationsWebDisabled")
+                        : undefined
                 }
-                onPress={() => {}}
+                onPress={() => toggleWebNotification()}
                 iconRight={
-                  <Host matchContents>
-                    <Switch
-                      value={webPermission === "granted"}
-                      onValueChange={() => {}}
-                      disabled
-                    />
-                  </Host>
+                  isWebPending ? (
+                    <LoadingIndicator />
+                  ) : isWebError ? (
+                    "warning"
+                  ) : (
+                    <Host matchContents>
+                      <Switch
+                        value={webPermission === "granted"}
+                        onValueChange={() => toggleWebNotification()}
+                        disabled={webPermission !== "default" || isWebPending}
+                      />
+                    </Host>
+                  )
                 }
-                disabled
+                disabled={
+                  !("Notification" in window && "PushManager" in window) ||
+                  webPermission !== "default" ||
+                  isWebPending
+                }
               />
             )}
             <ListTile
