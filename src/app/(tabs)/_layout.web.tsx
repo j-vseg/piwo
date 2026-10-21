@@ -1,8 +1,8 @@
 import { HapticTab } from "@/components/HapticTap";
 import { ThemedText } from "@/components/ThemedText";
+import { accountsCollection } from "@/config/firebase";
 import { Approval } from "@/constants/Approval";
 import { Role } from "@/constants/Role";
-import { accountsCollection } from "@/firebase";
 import { fetchAllAccounts } from "@/services/firebase/accounts";
 import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";

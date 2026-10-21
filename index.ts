@@ -1,9 +1,9 @@
+import "@/config/firebase/messaging";
 import { queryClient } from "@/queryClient";
 import { isVersionAboveOrEqualToSupported } from "@/services/firebase/app-version";
 import "@/themes/unistyles";
 import { focusManager } from "@tanstack/react-query";
 import "expo-router/entry";
-import { getMessaging, onRegistered } from "firebase/messaging";
 import { AppState, Platform } from "react-native";
 
 // Refetch stale queries when the app returns from the background.
@@ -22,32 +22,6 @@ focusManager.setEventListener((handleFocus) => {
   };
 });
 
-if (Platform.OS !== "web") {
-  const {
-    getMessaging,
-    getToken,
-    onMessage,
-    setBackgroundMessageHandler,
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-  } = require("@react-native-firebase/messaging");
-  const messaging = getMessaging();
-  getToken(messaging).then((token: string) =>
-    console.log("FCM registration token:", token),
-  );
-  setBackgroundMessageHandler(messaging, async (remoteMessage: unknown) => {
-    console.log("Message handled in the background!", remoteMessage);
-  });
-  onMessage(messaging, (remoteMessage: unknown) => {
-    console.log("FCM foreground message:", remoteMessage);
-  });
-} else {
-  const messaging = getMessaging();
-  onRegistered(messaging, (token) => {
-    console.log("FCM web token:", token);
-  });
-}
-
-// Prefectch supportde app-version
 async function main() {
   const noop = () => {};
   await Promise.allSettled([

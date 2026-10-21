@@ -1,5 +1,5 @@
+import { db } from "@/config/firebase";
 import { collection, doc, getDoc } from "@react-native-firebase/firestore";
-import { db } from "@/firebase";
 import * as Application from "expo-application";
 
 const VERSION_COLLECTION = "appVersion";
@@ -29,8 +29,12 @@ async function getLatestSupportedVersion(): Promise<string> {
  * @returns 1 if version1 > version2, -1 if version1 < version2, 0 if equal
  */
 function compareVersions(version1: string, version2: string): number {
-  const v1Parts = version1.split(".").map((part) => parseInt(part.replace(/\D/g, ""), 10) || 0);
-  const v2Parts = version2.split(".").map((part) => parseInt(part.replace(/\D/g, ""), 10) || 0);
+  const v1Parts = version1
+    .split(".")
+    .map((part) => parseInt(part.replace(/\D/g, ""), 10) || 0);
+  const v2Parts = version2
+    .split(".")
+    .map((part) => parseInt(part.replace(/\D/g, ""), 10) || 0);
 
   const maxLength = Math.max(v1Parts.length, v2Parts.length);
 
@@ -55,7 +59,9 @@ export async function isVersionAboveOrEqualToSupported(): Promise<boolean> {
     const currentVersion = Application.nativeApplicationVersion ?? "0.0.0";
 
     if (!latestSupportedVersion) {
-      console.warn("Latest supported version not available, assuming current version is supported");
+      console.warn(
+        "Latest supported version not available, assuming current version is supported",
+      );
       return true;
     }
 

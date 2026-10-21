@@ -1,32 +1,32 @@
+import { accountsCollection, db } from "@/config/firebase";
 import { Approval } from "@/constants/Approval";
 import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
-import { accountsCollection, db } from "@/firebase";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import {
-  getAuth as getNativeAuth,
-  deleteUser as nativeDeleteUser,
-  EmailAuthProvider as NativeEmailAuthProvider,
-  reauthenticateWithCredential as nativeReauthenticate,
+    getAuth as getNativeAuth,
+    deleteUser as nativeDeleteUser,
+    EmailAuthProvider as NativeEmailAuthProvider,
+    reauthenticateWithCredential as nativeReauthenticate,
 } from "@react-native-firebase/auth";
+import {
+    collectionGroup,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc,
+    updateDoc,
+    type DocumentData,
+    type Query,
+} from "@react-native-firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import {
-  deleteUser,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  User,
+    deleteUser,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    User,
 } from "firebase/auth";
-import {
-  collectionGroup,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  updateDoc,
-  type DocumentData,
-  type Query,
-} from "@react-native-firebase/firestore";
 import { Platform } from "react-native";
 
 export async function getAllAccountsDisplayNames(): Promise<

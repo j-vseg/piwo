@@ -1,28 +1,28 @@
+import { auth } from "@/config/firebase";
 import { OS } from "@/constants/Os";
-import { auth } from "@/firebase";
 import { createUser } from "@/services/firebase/accounts";
 import { getFirebaseErrorMessage } from "@/utils/getFirebaseErrorMessage";
 import {
-  getAuth as getNativeAuth,
-  createUserWithEmailAndPassword as nativeCreateUser,
-  EmailAuthProvider as NativeEmailAuthProvider,
-  reauthenticateWithCredential as nativeReauthenticate,
-  signInWithEmailAndPassword as nativeSignIn,
-  onAuthStateChanged as onNativeAuthStateChanged,
-  updateEmail as nativeUpdateEmail,
-  updatePassword as nativeUpdatePassword,
+    getAuth as getNativeAuth,
+    createUserWithEmailAndPassword as nativeCreateUser,
+    EmailAuthProvider as NativeEmailAuthProvider,
+    reauthenticateWithCredential as nativeReauthenticate,
+    signInWithEmailAndPassword as nativeSignIn,
+    updateEmail as nativeUpdateEmail,
+    updatePassword as nativeUpdatePassword,
+    onAuthStateChanged as onNativeAuthStateChanged,
 } from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
 import {
-  createUserWithEmailAndPassword,
-  EmailAuthProvider,
-  onAuthStateChanged as onWebAuthStateChanged,
-  reauthenticateWithCredential,
-  signInWithEmailAndPassword,
-  signOut as webSignOut,
-  updateEmail,
-  updatePassword,
-  User,
+    createUserWithEmailAndPassword,
+    EmailAuthProvider,
+    onAuthStateChanged as onWebAuthStateChanged,
+    reauthenticateWithCredential,
+    signInWithEmailAndPassword,
+    updateEmail,
+    updatePassword,
+    User,
+    signOut as webSignOut,
 } from "firebase/auth";
 import { Platform } from "react-native";
 
