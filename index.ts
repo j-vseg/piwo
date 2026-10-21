@@ -3,6 +3,7 @@ import { isVersionAboveOrEqualToSupported } from "@/services/firebase/app-versio
 import "@/themes/unistyles";
 import { focusManager } from "@tanstack/react-query";
 import "expo-router/entry";
+import { getMessaging, onRegistered } from "firebase/messaging";
 import { AppState, Platform } from "react-native";
 
 // Refetch stale queries when the app returns from the background.
@@ -21,6 +22,24 @@ focusManager.setEventListener((handleFocus) => {
   };
 });
 
+if (Platform.OS !== "web") {
+  const {
+    getMessaging,
+    setBackgroundMessageHandler,
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+  } = require("@react-native-firebase/messaging");
+  const messaging = getMessaging();
+  setBackgroundMessageHandler(messaging, async (remoteMessage: unknown) => {
+    console.log("Message handled in the background!", remoteMessage);
+  });
+} else {
+  const messaging = getMessaging();
+  onRegistered(messaging, (token) => {
+    console.log("FCM web token:", token);
+  });
+}
+
+// Prefectch supportde app-version
 async function main() {
   const noop = () => {};
   await Promise.allSettled([

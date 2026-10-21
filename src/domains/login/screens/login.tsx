@@ -7,6 +7,7 @@ import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { signInWithEmail } from "@/services/firebase/auth";
+import { requestUserPermission } from "@/services/notifications";
 import { useTranslation } from "@/translations/i18n";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -26,6 +27,9 @@ export default function LoginScreen() {
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (data: LoginForm) =>
       signInWithEmail(data.email, data.password),
+    onSuccess: () => {
+      requestUserPermission();
+    },
   });
 
   return (
