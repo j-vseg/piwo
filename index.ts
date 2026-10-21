@@ -34,3 +34,9 @@ async function main() {
   ]);
 }
 main();
+
+if (Platform.OS !== "web") {
+  import("@/services/notifications").then(({ registerForPushNotifications }) =>
+    registerForPushNotifications(),
+  );
+}

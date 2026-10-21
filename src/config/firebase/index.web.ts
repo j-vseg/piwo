@@ -30,6 +30,16 @@ onMessage(webMessaging, (payload) => {
 navigator.serviceWorker
   .register("/firebase-messaging-sw.js")
   .then((swRegistration) => {
+    const config = {
+      type: "FIREBASE_CONFIG",
+      config: { ...webSdkBaseConfig, appId: process.env.EXPO_PUBLIC_FIREBASE_WEB_APP_ID },
+    };
+    if (swRegistration.active) {
+      swRegistration.active.postMessage(config);
+    } else {
+      navigator.serviceWorker.ready.then((reg) => reg.active?.postMessage(config));
+    }
+
     if (Notification.permission !== "granted") return;
 
     register(webMessaging, {

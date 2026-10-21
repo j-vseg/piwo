@@ -7,7 +7,6 @@ import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser, signOut } from "@/services/firebase/auth";
-import { requestWebNotificationPermission } from "@/services/notifications.web";
 import { useAppStore } from "@/store/appStore";
 import { Host, Switch } from "@expo/ui";
 import { useMutation } from "@tanstack/react-query";
@@ -96,6 +95,9 @@ export default function SettingsScreen() {
   } = useMutation({
     mutationFn: async () => {
       if (webPermission !== "default") return;
+      const { requestWebNotificationPermission } = await import(
+        "@/services/notifications.web"
+      );
       const result = await requestWebNotificationPermission();
       setWebPermission(result);
     },
