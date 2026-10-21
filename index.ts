@@ -25,12 +25,20 @@ focusManager.setEventListener((handleFocus) => {
 if (Platform.OS !== "web") {
   const {
     getMessaging,
+    getToken,
+    onMessage,
     setBackgroundMessageHandler,
     // eslint-disable-next-line @typescript-eslint/no-require-imports
   } = require("@react-native-firebase/messaging");
   const messaging = getMessaging();
+  getToken(messaging).then((token: string) =>
+    console.log("FCM registration token:", token),
+  );
   setBackgroundMessageHandler(messaging, async (remoteMessage: unknown) => {
     console.log("Message handled in the background!", remoteMessage);
+  });
+  onMessage(messaging, (remoteMessage: unknown) => {
+    console.log("FCM foreground message:", remoteMessage);
   });
 } else {
   const messaging = getMessaging();
