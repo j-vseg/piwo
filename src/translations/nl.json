@@ -67,7 +67,7 @@
     "notificationsEnabled": "Navigeert naar de app's instellingen zodat je de notificaties uit kan zetten",
     "notificationsWebEnabled": "Je kan de notificaties uitzetten via je browserinstellingen.",
     "notificationsWebDisabled": "Je kan de notificaties aanzetten via je browserinstellingen.",
-    "notificationsWebUnsupported": "Jouw browser ondersteunt geen notificaties. Gebruik Chrome of Safari.",
+    "notificationsWebUnsupported": "Jouw browser ondersteunt geen notificaties. Gebruik een Chromium browser zoals Chrome of Edge.",
     "signOut": "Uitloggen",
     "deleteAccount": "Account verwijderen",
     "deleteAccountDescription": "Om je account te verwijderen hebben we je wachtwoord nodig",

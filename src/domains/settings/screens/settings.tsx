@@ -32,20 +32,20 @@ export default function SettingsScreen() {
   const [passwordConfirmOpen, setPasswordConfirmOpen] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [permanentlyDenied, setPermanentlyDenied] = useState(false);
+  const isWebPushSupported =
+    Platform.OS === OS.Web && "Notification" in window && "chrome" in window;
   const [webPermission, setWebPermission] = useState(
-    Platform.OS === OS.Web && "Notification" in window
-      ? Notification.permission
-      : "default",
+    isWebPushSupported ? Notification.permission : "default",
   );
 
   useEffect(() => {
-    if (Platform.OS !== OS.Web || !("Notification" in window)) return;
+    if (!isWebPushSupported) return;
 
     navigator.permissions.query({ name: "notifications" }).then((status) => {
       setWebPermission(Notification.permission);
       status.onchange = () => setWebPermission(Notification.permission);
     });
-  }, []);
+  }, [isWebPushSupported]);
 
   useEffect(() => {
     if (Platform.OS === OS.Web) return;
@@ -195,7 +195,7 @@ export default function SettingsScreen() {
               <ListTile
                 title={t("settings.notifications")}
                 subtitle={
-                  !("Notification" in window && "PushManager" in window)
+                  !("Notification" in window && "chrome" in window)
                     ? t("settings.notificationsWebUnsupported")
                     : webPermission === "granted"
                       ? t("settings.notificationsWebEnabled")
@@ -220,7 +220,7 @@ export default function SettingsScreen() {
                   )
                 }
                 disabled={
-                  !("Notification" in window && "PushManager" in window) ||
+                  !("Notification" in window && "chrome" in window) ||
                   webPermission !== "default" ||
                   isWebPending
                 }
