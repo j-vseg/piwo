@@ -30,6 +30,8 @@ onMessage(webMessaging, (payload) => {
 navigator.serviceWorker
   .register("/firebase-messaging-sw.js")
   .then((swRegistration) => {
+    if (Notification.permission !== "granted") return;
+
     register(webMessaging, {
       vapidKey: process.env.EXPO_PUBLIC_FIREBASE_WEB_NOTIFICATION_KEY_PAIR,
       serviceWorkerRegistration: swRegistration,

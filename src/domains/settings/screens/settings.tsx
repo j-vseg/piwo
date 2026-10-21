@@ -32,6 +32,20 @@ export default function SettingsScreen() {
   const [passwordConfirmOpen, setPasswordConfirmOpen] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [permanentlyDenied, setPermanentlyDenied] = useState(false);
+  const [webPermission, setWebPermission] = useState(
+    Platform.OS === OS.Web && "Notification" in window
+      ? Notification.permission
+      : "default",
+  );
+
+  useEffect(() => {
+    if (Platform.OS !== OS.Web || !("Notification" in window)) return;
+
+    navigator.permissions.query({ name: "notifications" }).then((status) => {
+      setWebPermission(Notification.permission);
+      status.onchange = () => setWebPermission(Notification.permission);
+    });
+  }, []);
 
   useEffect(() => {
     if (Platform.OS === OS.Web) return;
@@ -166,15 +180,17 @@ export default function SettingsScreen() {
               <ListTile
                 title={t("settings.notifications")}
                 subtitle={
-                  Notification.permission === "granted"
-                    ? t("settings.notificationsWebEnabled")
-                    : t("settings.notificationsWebDisabled")
+                  !("Notification" in window && "PushManager" in window)
+                    ? t("settings.notificationsWebUnsupported")
+                    : webPermission === "granted"
+                      ? t("settings.notificationsWebEnabled")
+                      : t("settings.notificationsWebDisabled")
                 }
                 onPress={() => {}}
                 iconRight={
                   <Host matchContents>
                     <Switch
-                      value={Notification.permission === "granted"}
+                      value={webPermission === "granted"}
                       onValueChange={() => {}}
                       disabled
                     />
