@@ -31,7 +31,7 @@ export default function InstallationScreen() {
     <ThemedView type="container">
       <Group>
         <ListTile
-          text={t("settings.installWebAppAndroid")}
+          title={t("settings.installWebAppAndroid")}
           onPress={() =>
             openLink(
               "https://support.google.com/chrome/answer/9658361?hl=nl&co=GENIE.Platform%3DAndroid",
@@ -49,7 +49,7 @@ export default function InstallationScreen() {
           }
         />
         <ListTile
-          text={t("settings.installWebAppApple")}
+          title={t("settings.installWebAppApple")}
           onPress={() => openLink("https://support.apple.com/nl-nl/104996")}
           iconLeft="language"
           iconRight={
@@ -63,7 +63,7 @@ export default function InstallationScreen() {
           }
         />
         <ListTile
-          text={t("settings.installApk")}
+          title={t("settings.installApk")}
           onPress={() =>
             openLink("https://www.youtube.com/watch?v=qe48iIleM5U")
           }
@@ -79,7 +79,7 @@ export default function InstallationScreen() {
           }
         />
         <ListTile
-          text={t("settings.downloadApk")}
+          title={t("settings.downloadApk")}
           onPress={() => mutate()}
           iconLeft="android"
           iconRight={

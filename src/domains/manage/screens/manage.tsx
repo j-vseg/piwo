@@ -64,7 +64,7 @@ export default function ManageScreen() {
                 {notApprovedData.map((user) => (
                   <ListTile
                     key={user.id}
-                    text={`${user.firstName} ${user.lastName}`}
+                    title={`${user.firstName} ${user.lastName}`}
                     onPress={() => setApprovalOpen(user.id)}
                   />
                 ))}
@@ -91,7 +91,7 @@ export default function ManageScreen() {
                 {accounts?.map((user) => (
                   <ListTile
                     key={user.id}
-                    text={`${user.firstName} ${user.lastName}`}
+                    title={`${user.firstName} ${user.lastName}`}
                     onPress={() => setActionOpen(user)}
                     disabled={user.id === getAuth().currentUser?.uid}
                   />
