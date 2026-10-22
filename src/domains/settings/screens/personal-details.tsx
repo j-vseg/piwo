@@ -7,9 +7,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { queryClient } from "@/queryClient";
 import { getAccount, updateAccountProfile } from "@/services/firebase/accounts";
 import {
-    getCurrentUser,
-    updateUserEmail,
-    updateUserPassword,
+  getCurrentUser,
+  updateUserEmail,
+  updateUserPassword,
 } from "@/services/firebase/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -219,6 +219,9 @@ export default function SettingsScreen() {
                 }}
                 inputProps={{
                   placeholder: t("personalDetails.emailPlaceholder"),
+                  autoCapitalize: "none",
+                  keyboardType: "email-address",
+                  autoComplete: "email",
                 }}
               />
               <Button
@@ -264,6 +267,9 @@ export default function SettingsScreen() {
                 inputProps={{
                   placeholder: t("personalDetails.newPasswordPlaceholder"),
                   secureTextEntry: true,
+                  autoComplete: "password",
+                  autoCorrect: false,
+                  autoCapitalize: "none",
                 }}
               />
               <Button

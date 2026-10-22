@@ -81,7 +81,10 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => (
             <MaterialIcons name="group" size={24} color={color} />
           ),
-          tabBarLabelStyle: { fontFamily: "Poppins" },
+          tabBarLabelStyle: {
+            fontFamily: "Poppins",
+            backgroundColor: theme.colors.warnings.negative,
+          },
           href:
             role === Role.BoardMember || role === Role.Advisor
               ? "/manage"

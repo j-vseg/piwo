@@ -144,6 +144,8 @@ export default function SignUpScreen() {
             placeholder: t("login.passwordPlaceholder"),
             secureTextEntry: true,
             autoComplete: "password",
+            autoCorrect: false,
+            autoCapitalize: "none",
           }}
         />
         <ThemedView style={styles.button}>
@@ -154,7 +156,7 @@ export default function SignUpScreen() {
             accessibilityLabel={t("signUp.signUpButton")}
             accessibilityHint={t("login.accessibilityHint")}
           />
-          <Pressable hitSlop={20} onPress={() => router.push("/")}>
+          <Pressable hitSlop={10} onPress={() => router.push("/")}>
             <ThemedText
               style={{ textDecorationLine: "underline" }}
               type="bodySmaller"

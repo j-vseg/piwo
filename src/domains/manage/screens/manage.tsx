@@ -74,28 +74,40 @@ export default function ManageScreen() {
         )}
 
         <ThemedView style={{ gap: theme.spacing(4) }}>
-          <ThemedText type="h3">Gebruikers beheren</ThemedText>
+          <ThemedText type="h3">{t("manage.manageUsers")}</ThemedText>
           {isLoadingAccounts ? (
             <LoadingIndicator />
           ) : isErrorAccounts ? (
             <Alert
               variant={"warning"}
-              description={
-                "Er is iets missgegaan met het ophalen van alles accounts"
-              }
+              description={t("manage.manageUsersError")}
               size={"regular"}
             />
           ) : (
             <ThemedView>
               <Group>
-                {accounts?.map((user) => (
-                  <ListTile
-                    key={user.id}
-                    title={`${user.firstName} ${user.lastName}`}
-                    onPress={() => setActionOpen(user)}
-                    disabled={user.id === getAuth().currentUser?.uid}
-                  />
-                ))}
+                {accounts?.map((user) => {
+                  if (user.approval !== Approval.Declined) {
+                    return (
+                      <ListTile
+                        key={user.id}
+                        title={`${user.firstName} ${user.lastName}`}
+                        onPress={() => setActionOpen(user)}
+                        subtitle={
+                          user.id === getAuth().currentUser?.uid
+                            ? t("manage.you")
+                            : user.approval === Approval.Unknown
+                              ? t("manage.userWaiting")
+                              : undefined
+                        }
+                        disabled={
+                          user.id === getAuth().currentUser?.uid ||
+                          user.approval === Approval.Unknown
+                        }
+                      />
+                    );
+                  }
+                })}
               </Group>
             </ThemedView>
           )}

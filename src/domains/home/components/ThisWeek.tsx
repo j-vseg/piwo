@@ -52,7 +52,6 @@ export default function ThisWeek() {
       ) : (
         <>
           <Alert
-            icon={userIsMissingAvailability ? "warning" : "check"}
             variant={userIsMissingAvailability ? "warning" : "success"}
             description={t(
               userIsMissingAvailability

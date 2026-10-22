@@ -72,11 +72,12 @@ export function ActionOverview({
         queryKey: ["accounts"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["not-approved-user-number"],
+        queryKey: ["not-approved-users-number"],
       });
       queryClient.invalidateQueries({
         queryKey: ["not-approved-users"],
       });
+      setOpen(undefined);
     },
     onError: (error) => {
       console.log(error);

@@ -8,7 +8,7 @@ import {
 } from "@/services/firebase/availability";
 import { useTranslation } from "@/translations/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ErrorMessage } from "./ErrorMessage";
+import { Alert } from "./Alert";
 import LoadingIndicator from "./LoadingIndicator";
 import { StatusButtonGroup } from "./StatusButtonGroup";
 
@@ -43,7 +43,7 @@ export function AvailabilitySelector({
         queryKey: ["user-availability", occurrenceId, user?.uid],
       });
       queryClient.invalidateQueries({
-        queryKey: ["has-entered-weekly-availability", user?.uid],
+        queryKey: ["has-entered-weekly-availability"],
       });
       queryClient.invalidateQueries({
         queryKey: ["occurrenceAvailability", occurrenceId],
@@ -59,7 +59,13 @@ export function AvailabilitySelector({
   }
 
   if (updateIsError) {
-    return <ErrorMessage>{t("activity.errorUpdateAvailability")}</ErrorMessage>;
+    return (
+      <Alert
+        description={t("activity.errorUpdateAvailability")}
+        variant="warning"
+        size="regular"
+      />
+    );
   }
 
   return (

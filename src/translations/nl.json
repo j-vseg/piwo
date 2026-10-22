@@ -20,6 +20,7 @@
     "availabilityMissing": "Geef je aanwezigheid op!",
     "availabilityComplete": "Je bent bij voor deze week!",
     "upcomingActivities": "Toekomstige activiteiten",
+    "noUpcomingActivities": "Er zijn geen toekomstige activiteiten gepland",
     "errorLoadingActivities": "Het is niet gelukt om de activiteiten op te halen"
   },
   "activity": {
@@ -156,6 +157,10 @@
     "installApkHelp": "Hoe installeer ik een APK-bestand? (Android)"
   },
   "manage": {
+    "manageUsers": "Gebruikers beheren",
+    "manageUsersError": "Er is iets missgegaan met het ophalen van alle accounts",
+    "you": "Je kan je eigen rechten niet aanpassen",
+    "userWaiting": "Gebruiker is in afwachting",
     "actionOverview": {
       "title": "Wil je deze gebruiker goedkeuren?",
       "approveButton": "Goedkeuren",

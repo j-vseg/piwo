@@ -56,6 +56,14 @@ export default function HomeScreen() {
             size={"regular"}
           />
         )}
+        {!groupedOccurrences ||
+          (groupedOccurrences && groupedOccurrences.length === 0 && (
+            <Alert
+              variant="info"
+              description={t("home.noUpcomingActivities")}
+              size={"regular"}
+            />
+          ))}
         {groupedOccurrences?.map((item) => (
           <ThemedView key={item.date.toDateString()} style={styles.listItem}>
             <Divider label={format(item.date, "E d MMM", { locale: nl })} />
@@ -64,9 +72,11 @@ export default function HomeScreen() {
             ))}
           </ThemedView>
         ))}
-        <ThemedText style={styles.info}>
-          Meer activiteiten worden zichtbaar bij naderende startdatum
-        </ThemedText>
+        {groupedOccurrences && groupedOccurrences.length !== 0 && (
+          <ThemedText style={styles.info}>
+            Meer activiteiten worden zichtbaar bij naderende startdatum
+          </ThemedText>
+        )}
       </ThemedView>
     </ThemedView>
   );
