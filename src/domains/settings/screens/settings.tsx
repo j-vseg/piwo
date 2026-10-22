@@ -101,9 +101,8 @@ export default function SettingsScreen() {
   } = useMutation({
     mutationFn: async () => {
       if (webPermission !== "default") return;
-      const { requestWebNotificationPermission } = await import(
-        "@/services/notifications.web"
-      );
+      const { requestWebNotificationPermission } =
+        await import("@/services/notifications.web");
       const result = await requestWebNotificationPermission();
       setWebPermission(result);
     },
@@ -184,8 +183,6 @@ export default function SettingsScreen() {
                     <LoadingIndicator />
                   ) : isError ? (
                     "warning"
-                  ) : permanentlyDenied ? (
-                    "chevron_forward"
                   ) : (
                     <Host matchContents>
                       <Switch
