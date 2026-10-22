@@ -8,7 +8,7 @@ loadEnv({ path: IS_PROD ? ".env.prod" : ".env.dev" });
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: IS_PROD ? "Piwo" : "Piwo [DEV]",
   slug: "piwo",
-  version: "2.4.1",
+  version: "2.4.2",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: IS_PROD ? "piwo" : "piwo-dev",
@@ -26,7 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     googleServicesFile: IS_PROD
       ? "./google-services/google-services.json"
       : "./google-services/google-services-dev.json",
-    versionCode: 6,
+    versionCode: 7,
   },
   web: {
     output: "single",
