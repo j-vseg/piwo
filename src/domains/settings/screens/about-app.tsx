@@ -76,6 +76,13 @@ const features: FeatureItem[] = [
       "Wijzig je naam, e-mailadres of wachtwoord via de instellingen.",
   },
   {
+    icon: "notifications",
+    webIcon: "notifications",
+    title: "Pushmeldingen",
+    description:
+      "Ontvang pushmeldingen op Android en in de web-app. Schakel meldingen in of uit via de instellingen.",
+  },
+  {
     icon: "install_mobile",
     webIcon: "get-app",
     title: "Installeren als app",

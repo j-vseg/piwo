@@ -176,7 +176,7 @@ if [ "$DO_WEB" = true ]; then
   fi
 
   echo "Deploying to Firebase Hosting..."
-  pnpx firebase deploy --only hosting
+  pnpx --yes firebase-tools deploy --only hosting
 
   echo "Web deploy complete!"
 fi

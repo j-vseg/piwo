@@ -18,6 +18,13 @@ type FeatureItem = {
 
 const features: FeatureItem[] = [
   {
+    icon: "notifications",
+    webIcon: "notifications",
+    title: "Pushmeldingen",
+    description:
+      "Ontvang pushmeldingen op Android en in de web-app. Schakel meldingen in of uit via de instellingen.",
+  },
+  {
     icon: "dark_mode",
     webIcon: "dark-mode",
     title: "Donker en licht thema",
