@@ -21,7 +21,8 @@
     "availabilityComplete": "Je bent bij voor deze week!",
     "upcomingActivities": "Toekomstige activiteiten",
     "noUpcomingActivities": "Er zijn geen toekomstige activiteiten gepland",
-    "errorLoadingActivities": "Het is niet gelukt om de activiteiten op te halen"
+    "errorLoadingActivities": "Het is niet gelukt om de activiteiten op te halen",
+    "moreIncoming": "Meer activiteiten worden zichtbaar bij naderende startdatum"
   },
   "activity": {
     "errorOccurrence": "Het is niet gelukt om de activiteit data op te halen.",

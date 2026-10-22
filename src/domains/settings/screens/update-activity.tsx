@@ -20,7 +20,7 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { ScrollView } from "react-native";
+import { Platform, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 type ActivityFormData = {
@@ -220,6 +220,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
             label={t("createActivity.startTimeLabel")}
             control={methods.control}
             name="startTime"
+            {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.startTimeRequired"),
               validate: (value) => {
@@ -238,6 +239,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
             label={t("createActivity.endTimeLabel")}
             control={methods.control}
             name="endTime"
+            {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.endTimeRequired"),
               validate: (value) => {

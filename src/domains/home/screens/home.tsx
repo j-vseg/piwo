@@ -73,9 +73,7 @@ export default function HomeScreen() {
           </ThemedView>
         ))}
         {groupedOccurrences && groupedOccurrences.length !== 0 && (
-          <ThemedText style={styles.info}>
-            Meer activiteiten worden zichtbaar bij naderende startdatum
-          </ThemedText>
+          <ThemedText style={styles.info}>{t("home.moreIncoming")}</ThemedText>
         )}
       </ThemedView>
     </ThemedView>
