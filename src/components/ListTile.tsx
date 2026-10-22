@@ -57,7 +57,7 @@ export default function ListTile({
       <ThemedView style={styles.textContainer}>
         <ThemedText
           type="bodyMedium"
-          style={[styles.text, textStyle]}
+          style={textStyle}
           accessible={false}
           importantForAccessibility="no-hide-descendants"
         >
@@ -66,7 +66,7 @@ export default function ListTile({
         {subtitle && (
           <ThemedText
             type="bodySmaller"
-            style={[styles.text, textStyle]}
+            style={textStyle}
             accessible={false}
             importantForAccessibility="no-hide-descendants"
           >
@@ -120,6 +120,7 @@ const styles = StyleSheet.create((theme) => ({
   rightContainer: {
     backgroundColor: theme.colors.transparent,
     flexDirection: "row",
+    alignItems: "center",
   },
   textContainer: {
     flex: 1,
@@ -127,5 +128,4 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
   },
-  text: {},
 }));
