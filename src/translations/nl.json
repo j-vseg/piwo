@@ -58,7 +58,9 @@
     "deleteSuccess": "Activiteit verwijderd!",
     "deleteError": "Het is niet gelukt om de activiteit te verwijderen",
     "success": "Activiteit aangemaakt!",
-    "error": "Het is niet gelukt om de activiteit aan te maken"
+    "error": "Het is niet gelukt om de activiteit aan te maken",
+    "getActivitiesError": "Er is een fout opgetreden bij het ophalen van de activiteiten",
+        "getActivitiesEmpty": "r zijn geen activiteiten gevonden om te wijzigen"
   },
   "settings": {
     "activitiesHeader": "Activiteiten",
