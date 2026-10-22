@@ -179,7 +179,6 @@ export default function CreateActivityScreen() {
               name="recurrence"
               required={false}
               options={Object.values(Recurrence)}
-              allowDeselect
             />
             <ThemedText type="bodySmaller">
               <Trans
