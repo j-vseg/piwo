@@ -91,19 +91,17 @@ export default function IntegratedWebView({ url }: IntegratedWebViewProps) {
 
   return (
     <ThemedView style={{ flex: 1 }}>
-      <ThemedView style={viewState === "loading" ? styles.hiddenWebview : styles.webview}>
-        <WebView
-          source={{ uri: uri }}
-          style={styles.webview}
-          onLoadEnd={handleLoadEnd}
-          onError={handleError}
-          onHttpError={handleError}
-          onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
-          javaScriptEnabled
-          startInLoadingState={false}
-          originWhitelist={["https://*", "http://*"]}
-        />
-      </ThemedView>
+      <WebView
+        source={{ uri: uri }}
+        style={styles.webview}
+        onLoadEnd={handleLoadEnd}
+        onError={handleError}
+        onHttpError={handleError}
+        onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
+        javaScriptEnabled
+        startInLoadingState={false}
+        originWhitelist={["https://*", "http://*"]}
+      />
       {viewState === "loading" && <LoadingIndicator type="screen" />}
     </ThemedView>
   );
@@ -113,10 +111,6 @@ const styles = StyleSheet.create(() => ({
   webview: {
     flex: 1,
     backgroundColor: "transparent",
-  },
-  hiddenWebview: {
-    height: 0,
-    overflow: "hidden" as const,
   },
   loadingOverlay: {
     ...({
