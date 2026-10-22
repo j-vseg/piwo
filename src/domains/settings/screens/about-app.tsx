@@ -5,90 +5,28 @@ import { ThemedView } from "@/components/ThemedView";
 import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
 import { useAppStore } from "@/store/appStore";
+import { useTranslation } from "@/translations/i18n";
 import { Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 type FeatureItem = {
   icon: IconName;
   webIcon: string;
-  title: string;
-  description: string;
+  translationKey: string;
   adminOnly?: boolean;
 };
 
 const features: FeatureItem[] = [
-  {
-    icon: "event",
-    webIcon: "event",
-    title: "Activiteiten bekijken",
-    description:
-      "Bekijk alle aankomende activiteiten, inclusief groepsavonden, weekenden, kampen en acties.",
-  },
-  {
-    icon: "check_circle",
-    webIcon: "check-circle",
-    title: "Aanwezigheid opgeven",
-    description:
-      "Geef per activiteit aan of je aanwezig, afwezig of misschien komt. Houd het aanwezig-knopje lang ingedrukt om de status 'Later' te selecteren.",
-  },
-  {
-    icon: "groups",
-    webIcon: "group",
-    title: "Aanwezigheid van anderen bekijken",
-    description:
-      "Bekijk per activiteit wie er komt, wie er misschien komt en wie er niet bij is.",
-  },
-  {
-    icon: "today",
-    webIcon: "today",
-    title: "Weekoverzicht",
-    description:
-      "Zie in één oogopslag alle activiteiten van deze week en of je je aanwezigheid al hebt opgegeven.",
-  },
-  {
-    icon: "event_repeat",
-    webIcon: "repeat",
-    title: "Terugkerende activiteiten",
-    description:
-      "Activiteiten kunnen dagelijks, wekelijks of maandelijks terugkeren. Geef je aanwezigheid per keer op.",
-  },
-  {
-    icon: "edit_calendar",
-    webIcon: "edit",
-    title: "Activiteiten beheren",
-    description:
-      "Maak nieuwe activiteiten aan, bewerk bestaande activiteiten en verwijder activiteiten die niet meer nodig zijn.",
-    adminOnly: true,
-  },
-  {
-    icon: "how_to_reg",
-    webIcon: "how-to-reg",
-    title: "Ledenbeheer",
-    description:
-      "Keur nieuwe gebruikers goed of af, ken rollen toe en trek toegang in wanneer nodig.",
-    adminOnly: true,
-  },
-  {
-    icon: "person_edit",
-    webIcon: "person",
-    title: "Persoonlijke gegevens aanpassen",
-    description:
-      "Wijzig je naam, e-mailadres of wachtwoord via de instellingen.",
-  },
-  {
-    icon: "notifications",
-    webIcon: "notifications",
-    title: "Pushmeldingen",
-    description:
-      "Ontvang pushmeldingen op Android en in de web-app. Schakel meldingen in of uit via de instellingen.",
-  },
-  {
-    icon: "install_mobile",
-    webIcon: "get-app",
-    title: "Installeren als app",
-    description:
-      "Installeer de Piwo app als web-app op je telefoon of download de Android-app.",
-  },
+  { icon: "event", webIcon: "event", translationKey: "viewActivities" },
+  { icon: "check_circle", webIcon: "check-circle", translationKey: "submitAvailability" },
+  { icon: "groups", webIcon: "group", translationKey: "viewOthersAvailability" },
+  { icon: "today", webIcon: "today", translationKey: "weekOverview" },
+  { icon: "event_repeat", webIcon: "repeat", translationKey: "recurringActivities" },
+  { icon: "edit_calendar", webIcon: "edit", translationKey: "manageActivities", adminOnly: true },
+  { icon: "how_to_reg", webIcon: "how-to-reg", translationKey: "memberManagement", adminOnly: true },
+  { icon: "person_edit", webIcon: "person", translationKey: "personalDetails" },
+  { icon: "notifications", webIcon: "notifications", translationKey: "pushNotifications" },
+  { icon: "install_mobile", webIcon: "get-app", translationKey: "installAsApp" },
 ];
 
 function getIcon(feature: FeatureItem): IconName {
@@ -96,6 +34,7 @@ function getIcon(feature: FeatureItem): IconName {
 }
 
 export default function AboutAppScreen() {
+  const { t } = useTranslation();
   const { theme } = useUnistyles();
   const role = useAppStore((s) => s.role);
   const isAdmin = role === Role.BoardMember || role === Role.Advisor;
@@ -117,10 +56,10 @@ export default function AboutAppScreen() {
               </ThemedView>
               <ThemedView style={styles.textContainer}>
                 <ThemedText type="bodyLarge" weight="600">
-                  {feature.title}
+                  {t(`aboutApp.${feature.translationKey}.title`)}
                 </ThemedText>
                 <ThemedText type="bodySmall" style={styles.description}>
-                  {feature.description}
+                  {t(`aboutApp.${feature.translationKey}.description`)}
                 </ThemedText>
               </ThemedView>
             </ThemedView>

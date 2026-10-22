@@ -158,6 +158,48 @@
     "apkDownloaded": "APK-bestand gedownload",
     "installApkHelp": "Hoe installeer ik een APK-bestand? (Android)"
   },
+  "aboutApp": {
+    "viewActivities": {
+      "title": "Activiteiten bekijken",
+      "description": "Bekijk alle aankomende activiteiten, inclusief groepsavonden, weekenden, kampen en acties."
+    },
+    "submitAvailability": {
+      "title": "Aanwezigheid opgeven",
+      "description": "Geef per activiteit aan of je aanwezig, afwezig of misschien komt. Houd het aanwezig-knopje lang ingedrukt om de status 'Later' te selecteren."
+    },
+    "viewOthersAvailability": {
+      "title": "Aanwezigheid van anderen bekijken",
+      "description": "Bekijk per activiteit wie er komt, wie er misschien komt en wie er niet bij is."
+    },
+    "weekOverview": {
+      "title": "Weekoverzicht",
+      "description": "Zie in één oogopslag alle activiteiten van deze week en of je je aanwezigheid al hebt opgegeven."
+    },
+    "recurringActivities": {
+      "title": "Terugkerende activiteiten",
+      "description": "Activiteiten kunnen dagelijks, wekelijks of maandelijks terugkeren. Geef je aanwezigheid per keer op."
+    },
+    "manageActivities": {
+      "title": "Activiteiten beheren",
+      "description": "Maak nieuwe activiteiten aan, bewerk bestaande activiteiten en verwijder activiteiten die niet meer nodig zijn."
+    },
+    "memberManagement": {
+      "title": "Ledenbeheer",
+      "description": "Keur nieuwe gebruikers goed of af, ken rollen toe en trek toegang in wanneer nodig."
+    },
+    "personalDetails": {
+      "title": "Persoonlijke gegevens aanpassen",
+      "description": "Wijzig je naam, e-mailadres of wachtwoord via de instellingen."
+    },
+    "pushNotifications": {
+      "title": "Pushmeldingen",
+      "description": "Ontvang pushmeldingen op Android en in de web-app. Schakel meldingen in of uit via de instellingen."
+    },
+    "installAsApp": {
+      "title": "Installeren als app",
+      "description": "Installeer de Piwo app als web-app op je telefoon of download de Android-app."
+    }
+  },
   "manage": {
     "manageUsers": "Gebruikers beheren",
     "manageUsersError": "Er is iets missgegaan met het ophalen van alle accounts",

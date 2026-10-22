@@ -8,6 +8,7 @@ argument: (optional) A specific tag to generate notes from (e.g. "v2.2.0"). If o
 # Release Notes & Features Generator
 
 Generate up to three outputs based on merged PRs since the latest git tag:
+
 1. **GitHub release notes** — markdown for the GitHub release
 2. **In-app "What's New" update** — update the features array in `src/domains/settings/components/WhatIsNew.tsx`
 3. **About App features update** — if applicable, update the features array in `src/domains/settings/screens/about-app.tsx`
@@ -26,12 +27,15 @@ Generate up to three outputs based on merged PRs since the latest git tag:
      ```
 
 2. Find the previous tag (the one before the base tag) to build the changelog range:
+
    ```
    git tag --sort=-creatordate
    ```
+
    The range is `<previous_tag>...<base_tag>`.
 
 3. Get all commits in that range:
+
    ```
    git log <previous_tag>...<base_tag> --format="%H %s"
    ```
@@ -39,6 +43,7 @@ Generate up to three outputs based on merged PRs since the latest git tag:
 4. The `origin` remote may not host the PRs. Check all remotes with `git remote -v` and use the one that resolves on GitHub (e.g. `io-origin` pointing to `iodigital-com/firan-dxp-app`). Use that repo for all `gh` commands with `--repo <owner/repo>`.
 
 5. Extract PR numbers from commit messages (look for `(#123)` pattern). For each PR number, fetch its details:
+
    ```
    gh pr view <number> --repo <owner/repo> --json title,body,author,number
    ```
@@ -53,7 +58,7 @@ Generate up to three outputs based on merged PRs since the latest git tag:
 
 7. Format the output as a markdown code block so the user can copy it directly. Use this structure:
 
-````markdown
+```markdown
 ## New Features
 
 - Description of the feature by @author in #number
@@ -69,7 +74,7 @@ Generate up to three outputs based on merged PRs since the latest git tag:
 - Description of the maintenance task by @author in #number
 
 **Full Changelog**: <previous_tag>...<base_tag>
-````
+```
 
 ### Formatting rules
 
@@ -97,6 +102,7 @@ Only add items for PRs categorized as **New Features** or **Bug Fixes** that are
 1. Read the current features array in `src/domains/settings/components/WhatIsNew.tsx`.
 
 2. For each relevant new feature or notable fix, add a new `FeatureItem` entry to the array. Each entry has this shape:
+
    ```ts
    {
      icon: "material_icon_name",      // native icon (Material Symbols Outlined)
@@ -140,21 +146,36 @@ Only update this file when a release introduces a **new core capability** of the
 1. Read the current features array in `src/domains/settings/screens/about-app.tsx`.
 
 2. For each applicable new core feature, add a new `FeatureItem` entry. The shape is identical to Part 2:
+
    ```ts
    {
      icon: "material_icon_name",      // Android icon (Material Symbols Outlined, snake_case)
      webIcon: "web-icon-name",        // web icon (MaterialIcons from @expo/vector-icons, kebab-case)
-     title: "Feature title",          // short Dutch title
-     description: "Feature description in Dutch.",
+     translationKey: "featureKey",    // key under the "aboutApp" namespace in nl.json
      adminOnly?: true,                // optional, only if the feature is admin-specific
    }
    ```
 
-3. **Icon selection rules** — same as Part 2: both `icon` and `webIcon` must be valid on their respective platforms (Android and web). Always verify both exist.
+   The component uses `t(`aboutApp.${feature.translationKey}.title`)` and `t(`aboutApp.${feature.translationKey}.description`)` to render the text.
 
-4. **Content rules** — same as Part 2: Dutch, concise, `adminOnly` where applicable.
+3. **Translation file update** — After the user confirms the proposed features, add the title and description text to `src/translations/nl.json` under the `"aboutApp"` key **before** updating the feature array. Each feature gets its own nested object keyed by the `translationKey`:
 
-5. Add new entries in a logical position among the existing features. The `"Installeren als app"` item must remain last.
+   ```json
+   {
+     "aboutApp": {
+       "<featureKey>": {
+         "title": "Dutch title",
+         "description": "Dutch description."
+       }
+     }
+   }
+   ```
+
+4. **Icon selection rules** — same as Part 2: both `icon` and `webIcon` must be valid on their respective platforms (Android and web). Always verify both exist.
+
+5. **Content rules** — same as Part 2: Dutch, concise, `adminOnly` where applicable.
+
+6. Add new entries in a logical position among the existing features. The `"Installeren als app"` item must remain last.
 
 ### Ask before applying
 
