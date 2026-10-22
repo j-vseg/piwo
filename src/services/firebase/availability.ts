@@ -1,8 +1,15 @@
-import { doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "@react-native-firebase/firestore";
-import { db } from "@/firebase";
-import { getAllAccountsDisplayNames } from "./accounts";
-import { Status } from "@/constants/Status";
+import { db } from "@/config/firebase";
 import { EventOccurrence } from "@/constants/EventOccurence";
+import { Status } from "@/constants/Status";
+import {
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc,
+} from "@react-native-firebase/firestore";
+import { getAllAccountsDisplayNames } from "./accounts";
 
 /**
  * Get a user's availability for a specific occurrence.
@@ -79,10 +86,10 @@ export async function isUserMissingAvailability(
 }
 
 export async function getOccurrenceAvailability(
-  occurrenceId: string
+  occurrenceId: string,
 ): Promise<Record<Status, string[]> | null> {
   const availabilitySnapshot = await getDocs(
-    collection(db, `eventOccurrences/${occurrenceId}/availability`)
+    collection(db, `eventOccurrences/${occurrenceId}/availability`),
   );
 
   if (availabilitySnapshot.empty) {
@@ -90,12 +97,15 @@ export async function getOccurrenceAvailability(
   }
 
   const displayNames = await getAllAccountsDisplayNames();
-  const groupedByStatus: Record<Status, string[]> = {} as Record<Status, string[]>;
-  
+  const groupedByStatus: Record<Status, string[]> = {} as Record<
+    Status,
+    string[]
+  >;
+
   availabilitySnapshot.forEach((doc) => {
     const status = doc.data().availability as Status;
     const userId = doc.id;
-    
+
     if (!groupedByStatus[status]) {
       groupedByStatus[status] = [];
     }

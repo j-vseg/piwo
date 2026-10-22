@@ -1,20 +1,20 @@
+import { db } from "@/config/firebase";
 import { Category } from "@/constants/Category";
 import { Event } from "@/constants/Event";
 import { Recurrence } from "@/constants/Recurrence";
 import { generateOccurrences } from "@/utils/generateOccurences";
-import { addWeeks, subWeeks } from "date-fns";
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  getFirestore,
-  Timestamp,
-  updateDoc,
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    getFirestore,
+    Timestamp,
+    updateDoc,
 } from "@react-native-firebase/firestore";
-import { db } from "@/firebase";
+import { addWeeks, subWeeks } from "date-fns";
 
 const eventsCollection = collection(getFirestore(), "events");
 

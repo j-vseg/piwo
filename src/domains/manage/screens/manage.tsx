@@ -4,9 +4,9 @@ import ListTile from "@/components/ListTile";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { accountsCollection } from "@/config/firebase";
 import { Approval } from "@/constants/Approval";
 import { OS } from "@/constants/Os";
-import { accountsCollection } from "@/firebase";
 import { fetchAllAccounts } from "@/services/firebase/accounts";
 import { useTranslation } from "@/translations/i18n";
 import { getAuth } from "@react-native-firebase/auth";
@@ -64,7 +64,7 @@ export default function ManageScreen() {
                 {notApprovedData.map((user) => (
                   <ListTile
                     key={user.id}
-                    text={`${user.firstName} ${user.lastName}`}
+                    title={`${user.firstName} ${user.lastName}`}
                     onPress={() => setApprovalOpen(user.id)}
                   />
                 ))}
@@ -91,7 +91,7 @@ export default function ManageScreen() {
                 {accounts?.map((user) => (
                   <ListTile
                     key={user.id}
-                    text={`${user.firstName} ${user.lastName}`}
+                    title={`${user.firstName} ${user.lastName}`}
                     onPress={() => setActionOpen(user)}
                     disabled={user.id === getAuth().currentUser?.uid}
                   />

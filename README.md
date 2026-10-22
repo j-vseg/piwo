@@ -42,15 +42,16 @@ Make sure to:
 
 Follow these steps when you are ready to ship a new version to production.
 
-1. **Generate release notes** — Run the `release-notes` skill to generate the release note for GitHub and the in-app WhatsNewOverview component.
+1. **Generate release notes** — Run the `release-notes-and-features` skill to generate the GitHub release notes, update the in-app "What's New" list, and update the About App features if applicable.
 
-2. **Build the Android APK** — Run `pnpm run build:android:prod`. The script prompts for a version and version code, updates `app.json` and `package.json`, runs prebuild, builds a signed APK, commits the changes, and creates a draft GitHub release with the APK attached.
+2. **Run the release script** — Run `pnpm run release:prod`. The script lets you choose the release type:
+   - **Android release** — prompts for version and version code, runs prebuild, builds a signed APK
+   - **Web release** — generates the service worker, builds the web export, and deploys to Firebase Hosting
+   - **Both** — runs both Android and web releases in sequence
 
-3. **Build the web export** — Run `pnpm run build:web:prod` to export the web app to the `dist/` directory.
+   For production releases, the script also commits the version bump and creates a draft GitHub release (with the APK attached if Android was built).
 
-4. **Deploy to Firebase** — Run `firebase deploy` to push the web build to Firebase Hosting.
-
-5. **Publish the GitHub release** — Add the generated release notes to the draft release on GitHub and publish it.
+3. **Publish the GitHub release** — Add the generated release notes to the draft release on GitHub and publish it.
 
 ## 📁 Project Structure
 
@@ -67,7 +68,7 @@ src/
   ├── translations/   # i18n translation files
   └── utils/          # Helper functions
 scripts/
-  └── build-release-apk.sh  # Android release build + GitHub draft release
+  └── release.sh            # Release script (Android, web, or both)
 ```
 
 ## 🤝 Contributions

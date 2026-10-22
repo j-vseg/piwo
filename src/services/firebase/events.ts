@@ -1,19 +1,19 @@
+import { db, eventsCollection } from "@/config/firebase";
 import { Event } from "@/constants/Event";
 import { EventOccurrence } from "@/constants/EventOccurence";
 import { Recurrence } from "@/constants/Recurrence";
 import { generateOccurrences } from "@/utils/generateOccurences";
-import { addWeeks, endOfYesterday, format, subWeeks } from "date-fns";
 import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  Timestamp,
-  where,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    Timestamp,
+    where,
 } from "@react-native-firebase/firestore";
-import { db, eventsCollection } from "@/firebase";
+import { addWeeks, endOfYesterday, format, subWeeks } from "date-fns";
 
 type GroupedOccurrences = {
   date: Date;

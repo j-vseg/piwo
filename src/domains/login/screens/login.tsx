@@ -7,10 +7,12 @@ import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { signInWithEmail } from "@/services/firebase/auth";
+import { requestUserPermission } from "@/services/notifications";
+import { OS } from "@/constants/Os";
 import { useTranslation } from "@/translations/i18n";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { Pressable } from "react-native";
+import { Platform, Pressable } from "react-native";
 
 type LoginForm = {
   email: string;
@@ -26,6 +28,16 @@ export default function LoginScreen() {
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (data: LoginForm) =>
       signInWithEmail(data.email, data.password),
+    onSuccess: async () => {
+      if (Platform.OS === OS.Web) {
+        const { requestWebNotificationPermission } = await import(
+          "@/services/notifications.web"
+        );
+        requestWebNotificationPermission();
+      } else {
+        requestUserPermission();
+      }
+    },
   });
 
   return (

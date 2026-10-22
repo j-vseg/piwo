@@ -3,9 +3,9 @@ import Button from "@/components/Button";
 import { ConfirmPassword } from "@/components/ConfirmPassword";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { accountsCollection } from "@/config/firebase";
 import { Approval } from "@/constants/Approval";
 import { Role } from "@/constants/Role";
-import { accountsCollection } from "@/firebase";
 import {
     deleteUserAccount,
     fetchAllAccounts,

@@ -1,3 +1,4 @@
+import "@/config/firebase/messaging";
 import { queryClient } from "@/queryClient";
 import { isVersionAboveOrEqualToSupported } from "@/services/firebase/app-version";
 import "@/themes/unistyles";
@@ -33,3 +34,9 @@ async function main() {
   ]);
 }
 main();
+
+if (Platform.OS !== "web") {
+  import("@/services/notifications").then(({ registerForPushNotifications }) =>
+    registerForPushNotifications(),
+  );
+}

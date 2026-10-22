@@ -56,3 +56,4 @@ claudio.settings.local.json
 # Env
 .env.prod
 .env.dev
+public/firebase-messaging-sw.js

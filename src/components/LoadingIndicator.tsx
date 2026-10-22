@@ -8,7 +8,7 @@ export default function LoadingIndicator({ type }: { type?: "screen" }) {
   return (
     <ThemedView
       style={{
-        flex: 1,
+        flex: type === "screen" ? 1 : undefined,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor:
