@@ -8,7 +8,7 @@ loadEnv({ path: IS_PROD ? ".env.prod" : ".env.dev" });
 export default ({ config }: ConfigContext): ExpoConfig => ({
   name: IS_PROD ? "Piwo" : "Piwo [DEV]",
   slug: "piwo",
-  version: "2.4.0",
+  version: "2.4.1",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: IS_PROD ? "piwo" : "piwo-dev",
