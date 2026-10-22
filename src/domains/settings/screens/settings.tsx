@@ -32,11 +32,17 @@ export default function SettingsScreen() {
   const [passwordConfirmOpen, setPasswordConfirmOpen] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [permanentlyDenied, setPermanentlyDenied] = useState(false);
-  const isWebPushSupported =
-    Platform.OS === OS.Web && "Notification" in window && "chrome" in window;
-  const [webPermission, setWebPermission] = useState(
-    isWebPushSupported ? Notification.permission : "default",
-  );
+  const [isWebPushSupported, setIsWebPushSupported] = useState(false);
+  const [webPermission, setWebPermission] =
+    useState<NotificationPermission>("default");
+
+  useEffect(() => {
+    if (Platform.OS !== OS.Web) return;
+
+    import("firebase/messaging").then(({ isSupported }) =>
+      isSupported().then((supported) => setIsWebPushSupported(supported)),
+    );
+  }, []);
 
   useEffect(() => {
     if (!isWebPushSupported) return;
@@ -195,7 +201,7 @@ export default function SettingsScreen() {
               <ListTile
                 title={t("settings.notifications")}
                 subtitle={
-                  !("Notification" in window && "chrome" in window)
+                  !isWebPushSupported
                     ? t("settings.notificationsWebUnsupported")
                     : webPermission === "granted"
                       ? t("settings.notificationsWebEnabled")
@@ -220,7 +226,7 @@ export default function SettingsScreen() {
                   )
                 }
                 disabled={
-                  !("Notification" in window && "chrome" in window) ||
+                  !isWebPushSupported ||
                   webPermission !== "default" ||
                   isWebPending
                 }

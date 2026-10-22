@@ -1,8 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { browserLocalPersistence, initializeAuth } from "firebase/auth";
 import {
+  type Messaging,
   getMessaging,
   getToken,
+  isSupported,
   onMessage,
   onRegistered,
   register,
@@ -17,32 +19,40 @@ const app = initializeApp({
   appId: process.env.EXPO_PUBLIC_FIREBASE_WEB_APP_ID,
 });
 
-const webMessaging = getMessaging(app);
-onRegistered(webMessaging, (fid) => {
-  console.log("FCM FID:", fid);
-});
-onMessage(webMessaging, (payload) => {
-  console.log("FCM foreground message:", payload);
-  new Notification(payload.notification?.title ?? "Notification", {
-    body: payload.notification?.body,
-  });
-});
-navigator.serviceWorker
-  .register("/firebase-messaging-sw.js")
-  .then((swRegistration) => {
-    if (Notification.permission !== "granted") return;
+const messagingReady: Promise<Messaging | null> = (async () => {
+  const supported = await isSupported();
+  if (!supported) return null;
 
-    register(webMessaging, {
+  const messaging = getMessaging(app);
+
+  onRegistered(messaging, (fid) => {
+    console.log("FCM FID:", fid);
+  });
+
+  onMessage(messaging, (payload) => {
+    console.log("FCM foreground message:", payload);
+    new Notification(payload.notification?.title ?? "Notification", {
+      body: payload.notification?.body,
+    });
+  });
+
+  const swRegistration = await navigator.serviceWorker.register(
+    "/firebase-messaging-sw.js",
+  );
+
+  if (Notification.permission === "granted") {
+    register(messaging, {
       vapidKey: process.env.EXPO_PUBLIC_FIREBASE_WEB_NOTIFICATION_KEY_PAIR,
       serviceWorkerRegistration: swRegistration,
     });
-    // Deprecated but the only way to get the FCM registration token
-    // needed for the Firebase Console "Send test message" flow.
-    getToken(webMessaging, {
+    getToken(messaging, {
       vapidKey: process.env.EXPO_PUBLIC_FIREBASE_WEB_NOTIFICATION_KEY_PAIR,
       serviceWorkerRegistration: swRegistration,
     }).then((token) => console.log("FCM registration token:", token));
-  });
+  }
+
+  return messaging;
+})();
 
 const storage = getStorage(app);
 
@@ -56,6 +66,6 @@ export {
   auth,
   db,
   eventsCollection,
+  messagingReady,
   storage,
-  webMessaging,
 };

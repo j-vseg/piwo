@@ -8,7 +8,9 @@ const envFile = IS_PROD ? ".env.prod" : ".env.dev";
 const envPath = resolve(scriptDir, "..", envFile);
 
 if (!existsSync(envPath)) {
-  console.error(`Missing ${envFile} — cannot generate firebase-messaging-sw.js`);
+  console.error(
+    `Missing ${envFile} — cannot generate firebase-messaging-sw.js`,
+  );
   process.exit(1);
 }
 
@@ -29,6 +31,7 @@ importScripts("https://www.gstatic.com/firebasejs/13.0.0/firebase-messaging-comp
 firebase.initializeApp(${firebaseConfig});
 
 const messaging = firebase.messaging();
+
 messaging.onBackgroundMessage((payload) => {
   console.log("[firebase-messaging-sw.js] Background message:", payload);
   self.registration.showNotification(payload.notification?.title, {

@@ -1,5 +1,8 @@
 import "@/config/firebase";
-import { getMessaging, onRegistered } from "firebase/messaging";
+import { getMessaging, isSupported, onRegistered } from "firebase/messaging";
 
-const messaging = getMessaging();
-onRegistered(messaging, () => {});
+isSupported().then((supported) => {
+  if (!supported) return;
+  const messaging = getMessaging();
+  onRegistered(messaging, () => {});
+});
