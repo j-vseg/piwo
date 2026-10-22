@@ -176,7 +176,7 @@ if [ "$DO_WEB" = true ]; then
   fi
 
   echo "Deploying to Firebase Hosting..."
-  pnpx firebase deploy --only hosting
+  pnpx firebase-tools deploy --only hosting
 
   echo "Web deploy complete!"
 fi
@@ -189,8 +189,12 @@ if [ "${APP_VARIANT:-}" = "production" ]; then
 
   echo "Committing version bump..."
   cd "$PROJECT_ROOT"
+  COMMIT_MSG="chore: bump version to v$VERSION"
+  if [ -n "${VERSION_CODE:-}" ]; then
+    COMMIT_MSG="$COMMIT_MSG ($VERSION_CODE)"
+  fi
   git add -A
-  git commit -m "chore: bump version to v$VERSION${VERSION_CODE:+ ($VERSION_CODE)}"
+  git commit -m "$COMMIT_MSG"
   git push
 
   echo "Creating GitHub draft release v$VERSION..."
