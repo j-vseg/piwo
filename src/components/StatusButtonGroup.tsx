@@ -45,20 +45,24 @@ export function StatusButtonGroup({
             disabled={disabled}
           >
             <View style={styles.buttonContent}>
-              <ThemedText type="button" style={styles.text}>
+              <ThemedText type="button" style={styles.text} selectable={false}>
                 {isActive && selected === Status.Later
                   ? Status.Later
                   : statusOption}
               </ThemedText>
-            {counts?.[statusOption] != null && (
-              <View style={styles.badge}>
-                <ThemedText type="bodySmaller" style={styles.badgeText}>
-                  {counts[statusOption]}
-                </ThemedText>
-              </View>
-            )}
-          </View>
-        </Pressable>
+              {counts?.[statusOption] != null && (
+                <View style={styles.badge}>
+                  <ThemedText
+                    type="bodySmaller"
+                    style={styles.badgeText}
+                    selectable={false}
+                  >
+                    {counts[statusOption]}
+                  </ThemedText>
+                </View>
+              )}
+            </View>
+          </Pressable>
         );
       })}
     </ScrollView>

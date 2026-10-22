@@ -1,5 +1,5 @@
+import { Alert } from "@/components/Alert";
 import BottomSheet from "@/components/BottomSheet/BottomSheet";
-import { ErrorMessage } from "@/components/ErrorMessage";
 import { IconSymbol } from "@/components/IconSymbol/IconSymbol";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
@@ -7,11 +7,12 @@ import { ThemedView } from "@/components/ThemedView";
 import { OS } from "@/constants/Os";
 import { Recurrence } from "@/constants/Recurrence";
 import { fetchAllEvents } from "@/services/firebase/events";
+import { useTranslation } from "@/translations/i18n";
+import { BottomSheetFlatList } from "@expo/ui/community/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { router } from "expo-router";
-import { BottomSheetFlatList } from "@expo/ui/community/bottom-sheet";
 import { Platform, Pressable } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -23,6 +24,7 @@ export function SelectActivity({
   setEditActivityOpen: (value: boolean) => void;
 }) {
   const { theme } = useUnistyles();
+  const { t } = useTranslation();
   const {
     data: events,
     isLoading: isLoadingEvents,
@@ -42,13 +44,17 @@ export function SelectActivity({
       {isLoadingEvents ? (
         <LoadingIndicator />
       ) : isErrorEvents ? (
-        <ErrorMessage>
-          Er is een fout opgetreden bij het ophalen van de activiteiten
-        </ErrorMessage>
-      ) : !events ? (
-        <ErrorMessage>
-          Er zijn geen activiteiten gevonden om te wijzigen
-        </ErrorMessage>
+        <Alert
+          description={t("createActivity.getActivitiesError")}
+          variant="warning"
+          size="regular"
+        />
+      ) : !events || events.length === 0 ? (
+        <Alert
+          description={t("createActivity.getActivitiesEmpty")}
+          variant="info"
+          size="regular"
+        />
       ) : (
         <BottomSheetFlatList
           data={events}

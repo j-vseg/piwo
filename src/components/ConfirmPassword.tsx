@@ -30,9 +30,7 @@ export function ConfirmPassword({
       onDismiss={onDismiss}
     >
       <ThemedView style={{ gap: theme.spacing(4) }}>
-        <ThemedText>
-          {description}
-        </ThemedText>
+        <ThemedText>{description}</ThemedText>
 
         <TextInput
           label={t("login.passwordLabel")}

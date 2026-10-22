@@ -1,7 +1,6 @@
 import { Alert } from "@/components/Alert";
 import { AvailabilitySelector } from "@/components/AvailabilitySelector";
 import { Divider } from "@/components/Divider";
-import { ErrorMessage } from "@/components/ErrorMessage";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { StatusButtonGroup } from "@/components/StatusButtonGroup";
 import { ThemedText } from "@/components/ThemedText";
@@ -70,7 +69,11 @@ export default function ActivityScreen({ id }: { id: string }) {
     !occurrence.endTime
   ) {
     return (
-      <ErrorMessage type="screen">{t("activity.errorOccurrence")}</ErrorMessage>
+      <Alert
+        description={t("activity.errorOccurrence")}
+        variant="warning"
+        size="regular"
+      />
     );
   }
 
@@ -95,7 +98,11 @@ export default function ActivityScreen({ id }: { id: string }) {
         {isLoadingAvailability ? (
           <LoadingIndicator />
         ) : isErrorAvailability ? (
-          <ErrorMessage>{t("activity.errorAvailability")}</ErrorMessage>
+          <Alert
+            description={t("activity.errorAvailability")}
+            variant="warning"
+            size="regular"
+          />
         ) : (
           <>
             <StatusButtonGroup

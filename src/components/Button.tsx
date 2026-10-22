@@ -67,6 +67,7 @@ export default function Button({
           ) : typeof content === "string" ? (
             <ThemedText
               type="button"
+              selectable={false}
               style={[styles.textStyle, styles.text(type, pressed, isDisabled)]}
             >
               {content}

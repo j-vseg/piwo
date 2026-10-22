@@ -113,7 +113,11 @@ export default function SettingsScreen() {
     defaultValues: { oldPassword: "" },
   });
 
-  const { mutate: mutateDelete } = useMutation({
+  const {
+    mutate: mutateDelete,
+    isPending: isDeletePending,
+    isError: isDeleteError,
+  } = useMutation({
     mutationFn: async (password: string) => {
       await deleteUserAccount(user!, password);
     },
@@ -126,7 +130,11 @@ export default function SettingsScreen() {
     })();
   };
 
-  const { mutate: mutateLogout } = useMutation({
+  const {
+    mutate: mutateLogout,
+    isPending: isLogoutPending,
+    isError: isLogoutError,
+  } = useMutation({
     mutationFn: signOut,
   });
 
@@ -232,11 +240,39 @@ export default function SettingsScreen() {
             <ListTile
               title={t("settings.signOut")}
               onPress={() => mutateLogout()}
+              subtitle={isLogoutError ? t("settings.signOutError") : undefined}
+              iconRight={
+                isLogoutPending ? (
+                  <LoadingIndicator />
+                ) : isLogoutError ? (
+                  "warning"
+                ) : Platform.OS === OS.Web ? (
+                  ("chevron-right" as any)
+                ) : (
+                  "chevron_forward"
+                )
+              }
+              disabled={isLogoutPending}
             />
             <ListTile
               title={t("settings.deleteAccount")}
+              subtitle={
+                isDeleteError ? t("settings.deleteAccountError") : undefined
+              }
               onPress={() => setPasswordConfirmOpen(true)}
               textStyle={{ color: theme.colors.warnings.negative }}
+              iconRight={
+                isDeletePending ? (
+                  <LoadingIndicator />
+                ) : isDeleteError ? (
+                  "warning"
+                ) : Platform.OS === OS.Web ? (
+                  ("chevron-right" as any)
+                ) : (
+                  "chevron_forward"
+                )
+              }
+              disabled={isDeletePending}
             />
           </Group>
         </ThemedView>

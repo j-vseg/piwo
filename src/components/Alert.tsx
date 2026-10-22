@@ -15,7 +15,11 @@ export type AlertProps = {
 export function Alert({
   variant,
   description,
-  icon,
+  icon = variant === "info"
+    ? "info"
+    : variant === "warning"
+      ? "warning"
+      : "check",
   size,
   hasShadow,
 }: AlertProps) {

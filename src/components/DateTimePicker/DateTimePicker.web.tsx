@@ -29,7 +29,7 @@ export default function DateTimePicker<T extends FieldValues>({
   mode = "datetime-local",
   disabled = false,
 }: DateTimePickerProps<T>) {
-  const { theme } = useUnistyles();
+  const { theme, rt } = useUnistyles();
 
   return (
     <Controller
@@ -65,6 +65,7 @@ export default function DateTimePicker<T extends FieldValues>({
                 backgroundColor: theme.colors.primitives.quinary,
                 border: "none",
                 outline: "none",
+                colorScheme: rt.themeName,
               }}
             />
             {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}

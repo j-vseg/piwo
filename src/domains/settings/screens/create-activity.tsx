@@ -16,7 +16,7 @@ import { addHours } from "date-fns";
 import { router } from "expo-router";
 import { useForm, useWatch } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
-import { ScrollView } from "react-native";
+import { Platform, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { DisplayTime } from "../components/DisplayTime";
 
@@ -141,6 +141,7 @@ export default function CreateActivityScreen() {
             label={t("createActivity.startTimeLabel")}
             control={methods.control}
             name="startTime"
+            {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.startTimeRequired"),
               validate: (value) => {
@@ -157,6 +158,7 @@ export default function CreateActivityScreen() {
             label={t("createActivity.endTimeLabel")}
             control={methods.control}
             name="endTime"
+            {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.endTimeRequired"),
               validate: (value) => {
@@ -179,7 +181,6 @@ export default function CreateActivityScreen() {
               name="recurrence"
               required={false}
               options={Object.values(Recurrence)}
-              allowDeselect
             />
             <ThemedText type="bodySmaller">
               <Trans

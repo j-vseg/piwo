@@ -33,7 +33,7 @@ export default function VerifyScreen() {
   const deleteAccountForm = useForm<DeleteAccountFormData>({
     defaultValues: { oldPassword: "" },
   });
-  const { data: authUsers } = useQuery({
+  const { data: authUsers, isError: isAuthUsersError } = useQuery({
     queryKey: ["auth-users"],
     queryFn: () =>
       fetchAllAccounts(
@@ -106,9 +106,13 @@ export default function VerifyScreen() {
           )}
 
           <ThemedText>
-            {approval === Approval.Unknown
-              ? t("verify.descriptionPending", { names: authUsersNames })
-              : t("verify.descriptionDeclined", { names: authUsersNames })}
+            {!authUsersNames || isAuthUsersError || (authUsersNames && authUsersNames.length === 0)
+              ? approval === Approval.Unknown
+                ? t("verify.descriptionPendingNoAccounts")
+                : t("verify.descriptionDeclinedNoAccounts")
+              : approval === Approval.Unknown
+                ? t("verify.descriptionPending", { names: authUsersNames })
+                : t("verify.descriptionDeclined", { names: authUsersNames })}
           </ThemedText>
         </ThemedView>
 

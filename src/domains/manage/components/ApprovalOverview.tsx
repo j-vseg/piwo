@@ -37,6 +37,7 @@ export function ApprovalOverview({
       queryClient.invalidateQueries({
         queryKey: ["accounts"],
       });
+      setOpen(undefined);
     },
     onError: (error) => {
       console.log(error);

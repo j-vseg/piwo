@@ -1,4 +1,8 @@
-import { DateTimePicker as ExpoDateTimePicker } from "@expo/ui/community/datetime-picker";
+import {
+  DatePickerDialog,
+  Host,
+  TimePickerDialog,
+} from "@expo/ui/jetpack-compose";
 import { format } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useState } from "react";
@@ -10,7 +14,7 @@ import {
   RegisterOptions,
 } from "react-hook-form";
 import { Pressable } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ErrorMessage } from "../ErrorMessage";
 import Label from "../Label";
 import { ThemedText } from "../ThemedText";
@@ -42,7 +46,9 @@ export default function DateTimePicker<T extends FieldValues>({
   mode = "datetime",
   disabled = false,
 }: DateTimePickerProps<T>) {
-  const [pickerValue, setPickerValue] = useState<Date | null>(null);
+  const { theme } = useUnistyles();
+  const [dialogStep, setDialogStep] = useState<"date" | "time" | null>(null);
+  const [pendingDate, setPendingDate] = useState<Date | null>(null);
 
   return (
     <Controller
@@ -50,12 +56,22 @@ export default function DateTimePicker<T extends FieldValues>({
       name={name}
       rules={rules}
       render={({ field: { onChange, value }, fieldState: { error } }) => {
+        const open = () => {
+          setPendingDate(value ?? new Date());
+          setDialogStep(mode === "time" ? "time" : "date");
+        };
+
+        const dismiss = () => {
+          setDialogStep(null);
+          setPendingDate(null);
+        };
+
         return (
           <ThemedView style={styles.field}>
             <Label required={required}>{label}</Label>
             <Pressable
               style={styles.trigger}
-              onPress={() => setPickerValue(value ?? new Date())}
+              onPress={open}
               disabled={disabled}
             >
               <ThemedView>
@@ -64,14 +80,37 @@ export default function DateTimePicker<T extends FieldValues>({
                 </ThemedText>
               </ThemedView>
             </Pressable>
-            {pickerValue && (
-              <ExpoDateTimePicker
-                value={value}
-                onValueChange={onChange}
-                onDismiss={() => setPickerValue(null)}
-                mode={mode ?? "date"}
-                presentation="dialog"
-              />
+            {dialogStep === "date" && (
+              <Host>
+                <DatePickerDialog
+                  initialDate={pendingDate?.toISOString()}
+                  onDateSelected={(date) => {
+                    if (mode === "datetime") {
+                      setPendingDate(date);
+                      setDialogStep("time");
+                    } else {
+                      onChange(date);
+                      dismiss();
+                    }
+                  }}
+                  onDismissRequest={dismiss}
+                  color={theme.colors.primitives.primary}
+                />
+              </Host>
+            )}
+            {dialogStep === "time" && (
+              <Host>
+                <TimePickerDialog
+                  initialDate={pendingDate?.toISOString()}
+                  is24Hour
+                  onDateSelected={(date) => {
+                    onChange(date);
+                    dismiss();
+                  }}
+                  onDismissRequest={dismiss}
+                  color={theme.colors.primitives.primary}
+                />
+              </Host>
             )}
             {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
           </ThemedView>

@@ -8,6 +8,7 @@ import {
 import { Pressable, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { ErrorMessage } from "./ErrorMessage";
+import { IconSymbol } from "./IconSymbol/IconSymbol";
 import Label from "./Label";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
@@ -19,7 +20,6 @@ type PickerProps<T extends FieldValues> = {
   name: FieldPath<T>;
   rules?: RegisterOptions<T, FieldPath<T>>;
   options: string[];
-  allowDeselect?: boolean;
 };
 
 export default function Picker<T extends FieldValues>({
@@ -29,7 +29,6 @@ export default function Picker<T extends FieldValues>({
   name,
   rules,
   options,
-  allowDeselect = false,
 }: PickerProps<T>) {
   return (
     <Controller
@@ -44,14 +43,15 @@ export default function Picker<T extends FieldValues>({
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.options}
           >
-            {allowDeselect && (
+            {!required && (
               <Pressable
                 style={styles.option(!value)}
                 onPress={() => onChange(undefined)}
               >
-                <ThemedText type="button" style={styles.optionText(!value)}>
-                  ✕
-                </ThemedText>
+                <IconSymbol
+                  name="close"
+                  color={styles.optionText(!value).color}
+                />
               </Pressable>
             )}
             {options.map((option) => (
@@ -88,6 +88,8 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: theme.spacing(2),
     paddingHorizontal: theme.spacing(5),
     paddingVertical: theme.spacing(2),
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: selected
       ? theme.colors.primitives.tertairy
       : theme.colors.primitives.quinary,
