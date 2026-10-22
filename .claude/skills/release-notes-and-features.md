@@ -1,15 +1,16 @@
 ---
-name: release-notes
-description: Generate release notes from git history since the latest tag. Produces GitHub release notes AND updates the in-app "What's New" features list.
+name: release-notes-and-features
+description: Generate release notes from git history since the latest tag. Produces GitHub release notes, updates the in-app "What's New" list, and updates the About App features if applicable.
 user_invocable: true
 argument: (optional) A specific tag to generate notes from (e.g. "v2.2.0"). If omitted, uses the latest tag.
 ---
 
-# Release Notes Generator
+# Release Notes & Features Generator
 
-Generate two outputs based on merged PRs since the latest git tag:
+Generate up to three outputs based on merged PRs since the latest git tag:
 1. **GitHub release notes** — markdown for the GitHub release
-2. **In-app "What's New" update** — update the features array in `src/components/WhatIsNew.tsx`
+2. **In-app "What's New" update** — update the features array in `src/domains/settings/components/WhatIsNew.tsx`
+3. **About App features update** — if applicable, update the features array in `src/domains/settings/screens/about-app.tsx`
 
 ---
 
@@ -85,7 +86,7 @@ Generate two outputs based on merged PRs since the latest git tag:
 
 ## Part 2: In-App "What's New" Update
 
-After generating the GitHub release notes, update the features array in `src/components/WhatIsNew.tsx` with any new user-facing features from this release.
+After generating the GitHub release notes, update the features array in `src/domains/settings/components/WhatIsNew.tsx` with any new user-facing features from this release.
 
 ### When to update
 
@@ -93,7 +94,7 @@ Only add items for PRs categorized as **New Features** or **Bug Fixes** that are
 
 ### How to update
 
-1. Read the current features array in `src/components/WhatIsNew.tsx`.
+1. Read the current features array in `src/domains/settings/components/WhatIsNew.tsx`.
 
 2. For each relevant new feature or notable fix, add a new `FeatureItem` entry to the array. Each entry has this shape:
    ```ts
@@ -106,9 +107,10 @@ Only add items for PRs categorized as **New Features** or **Bug Fixes** that are
    }
    ```
 
-3. **Icon selection rules:**
-   - `icon` — use any Material Symbols Outlined icon name (snake_case, e.g. `"event"`, `"check_circle"`, `"how_to_reg"`)
-   - `webIcon` — must be a valid `MaterialIcons` name from `@expo/vector-icons`. These use kebab-case (e.g. `"event"`, `"check-circle"`, `"how-to-reg"`). Check `src/components/IconSymbol/IconSymbol.web.tsx` which imports `MaterialIcons` from `@expo/vector-icons`. Not all native icon names exist on web — when in doubt, pick a safe common icon like `"star"`, `"info"`, `"add"`, `"person"`, `"settings"`.
+3. **Icon selection rules (must work on both Android and web):**
+   - `icon` — used on Android (Material Symbols Outlined, snake_case, e.g. `"event"`, `"check_circle"`, `"how_to_reg"`)
+   - `webIcon` — used on web (`MaterialIcons` from `@expo/vector-icons`, kebab-case, e.g. `"event"`, `"check-circle"`, `"how-to-reg"`). Not all native icon names exist on web.
+   - **Always verify both icons exist.** Check `src/components/IconSymbol/IconSymbol.web.tsx` for web icon imports. When in doubt, pick a safe icon that exists on both platforms: `"event"`, `"star"`, `"info"`, `"add"`, `"person"`, `"settings"`, `"check-circle"` / `"check_circle"`.
    - When native and web icon names match (e.g. `"event"`), use the same value for both.
    - When they differ, provide both (e.g. `icon: "how_to_reg"`, `webIcon: "how-to-reg"`).
 
@@ -122,3 +124,38 @@ Only add items for PRs categorized as **New Features** or **Bug Fixes** that are
 ### Ask before applying
 
 Present the proposed new feature items to the user before editing the file. Let them confirm or adjust wording, icons, and which items to include.
+
+---
+
+## Part 3: About App Features Update
+
+After updating the "What's New" list, check whether any new features from this release should be added to the permanent app feature list in `src/domains/settings/screens/about-app.tsx`.
+
+### When to update
+
+Only update this file when a release introduces a **new core capability** of the app — something a new user would want to know about. Examples: a new screen, a new major interaction pattern, a new user role feature. Do **not** add incremental improvements, bug fixes, or minor enhancements — those belong in "What's New" only.
+
+### How to update
+
+1. Read the current features array in `src/domains/settings/screens/about-app.tsx`.
+
+2. For each applicable new core feature, add a new `FeatureItem` entry. The shape is identical to Part 2:
+   ```ts
+   {
+     icon: "material_icon_name",      // Android icon (Material Symbols Outlined, snake_case)
+     webIcon: "web-icon-name",        // web icon (MaterialIcons from @expo/vector-icons, kebab-case)
+     title: "Feature title",          // short Dutch title
+     description: "Feature description in Dutch.",
+     adminOnly?: true,                // optional, only if the feature is admin-specific
+   }
+   ```
+
+3. **Icon selection rules** — same as Part 2: both `icon` and `webIcon` must be valid on their respective platforms (Android and web). Always verify both exist.
+
+4. **Content rules** — same as Part 2: Dutch, concise, `adminOnly` where applicable.
+
+5. Add new entries in a logical position among the existing features. The `"Installeren als app"` item must remain last.
+
+### Ask before applying
+
+Present the proposed changes to the user before editing the file. If no features from this release qualify as core capabilities, skip this step and inform the user that no about-app update is needed.

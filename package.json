@@ -75,9 +75,9 @@
     "web": "expo start --web",
     "web:prod": "APP_VARIANT=production expo start --web",
     "lint": "expo lint",
-    "build:android": "bash ./scripts/build-release-apk.sh",
+    "release": "bash ./scripts/release.sh",
+    "release:prod": "APP_VARIANT=production bash ./scripts/release.sh",
     "build:web": "pnpx expo export --platform web --output-dir dist",
-    "build:android:prod": "APP_VARIANT=production bash ./scripts/build-release-apk.sh",
     "build:web:prod": "APP_VARIANT=production pnpx expo export --platform web --output-dir dist"
   },
   "private": true
