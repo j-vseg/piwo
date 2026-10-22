@@ -1,6 +1,7 @@
 import { Alert } from "@/components/Alert";
 import BottomSheet from "@/components/BottomSheet/BottomSheet";
 import Button from "@/components/Button";
+import Picker from "@/components/Picker";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Approval } from "@/constants/Approval";
@@ -14,7 +15,6 @@ import { Trans, useTranslation } from "@/translations/i18n";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
-import RolePicker from "./RolePicker";
 
 export type Account = {
   id: string;
@@ -39,9 +39,7 @@ export function ActionOverview({
 }) {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
-  const methods = useForm<ActionFormData>({
-    defaultValues: { role: user.role },
-  });
+  const methods = useForm<ActionFormData>();
   const { isPending, error, mutate } = useMutation({
     mutationFn: ({ userId, role }: { userId: string; role: Role }) =>
       updateAccountRole(userId, role),
@@ -116,12 +114,12 @@ export function ActionOverview({
         </ThemedText>
 
         <ThemedView style={{ gap: theme.spacing(4) }}>
-          <RolePicker
+          <Picker
             label={t("manage.accountOverview.roleLabel")}
             control={methods.control}
-            name={"role"}
+            name="role"
             required={false}
-            userRole={user.role}
+            options={Object.values(Role).filter((r) => r !== user.role)}
           />
 
           <Button
