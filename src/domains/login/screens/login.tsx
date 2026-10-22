@@ -109,6 +109,7 @@ export default function LoginScreen() {
             <ThemedText
               style={{ textDecorationLine: "underline" }}
               type="bodySmaller"
+              selectable={false}
             >
               {t("login.noAccount")}
             </ThemedText>

@@ -160,6 +160,7 @@ export default function SignUpScreen() {
             <ThemedText
               style={{ textDecorationLine: "underline" }}
               type="bodySmaller"
+              selectable={false}
             >
               {t("signUp.haveAccount")}
             </ThemedText>
