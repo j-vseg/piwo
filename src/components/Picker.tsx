@@ -88,6 +88,8 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: theme.spacing(2),
     paddingHorizontal: theme.spacing(5),
     paddingVertical: theme.spacing(2),
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: selected
       ? theme.colors.primitives.tertairy
       : theme.colors.primitives.quinary,
