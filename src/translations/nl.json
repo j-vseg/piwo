@@ -8,7 +8,11 @@
       "personalDetails": "Persoonlijke gegevens",
       "installation": "Installatie instructies",
       "aboutApp": "Wat kun je doen met de Piwo app?",
-      "whatIsNew": "What's new!"
+      "whatIsNew": {
+        "title": "What's new!",
+        "button": "Terug naar de app",
+        "intro": "Jippie! Een nieuwe versie staat live! Hier onder vind je de dingen die zijn aangepast."
+      }
     },
     "login": "Login",
     "signUp": "Creër een account",

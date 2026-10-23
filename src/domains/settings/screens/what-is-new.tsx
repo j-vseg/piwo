@@ -1,5 +1,5 @@
 import { ThemedView } from "@/components/ThemedView";
-import WhatIsNewOverview from "../components/WhatIsNew";
+import WhatIsNewOverview from "@/components/WhatIsNew/WhatIsNew";
 
 export default function WhatIsNewScreen() {
   return (

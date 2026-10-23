@@ -16,6 +16,7 @@ type BottomSheetProps = {
   isPresented: boolean;
   onDismiss: () => void;
   scrollable?: boolean;
+  initialSnapIndex?: number;
 };
 
 export default function BottomSheet({
@@ -24,17 +25,18 @@ export default function BottomSheet({
   isPresented,
   onDismiss,
   scrollable = true,
+  initialSnapIndex = 0,
 }: BottomSheetProps) {
   const { theme } = useUnistyles();
   const sheetRef = useRef<BottomSheetMethods>(null);
 
   useEffect(() => {
     if (isPresented) {
-      sheetRef.current?.snapToIndex(0);
+      sheetRef.current?.snapToIndex(initialSnapIndex);
     } else {
       sheetRef.current?.close();
     }
-  }, [isPresented]);
+  }, [isPresented, initialSnapIndex]);
 
   const Wrapper = scrollable ? BottomSheetScrollView : BottomSheetView;
 

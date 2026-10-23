@@ -10,7 +10,7 @@ argument: (optional) A specific tag to generate notes from (e.g. "v2.2.0"). If o
 Generate up to three outputs based on merged PRs since the latest git tag:
 
 1. **GitHub release notes** — markdown for the GitHub release
-2. **In-app "What's New" update** — update the features array in `src/domains/settings/components/WhatIsNew.tsx`
+2. **In-app "What's New" update** — update the features array in `src/components/WhatIsNew/WhatIsNew.tsx`
 3. **About App features update** — if applicable, update the features array in `src/domains/settings/screens/about-app.tsx`
 
 ---
@@ -91,7 +91,7 @@ Generate up to three outputs based on merged PRs since the latest git tag:
 
 ## Part 2: In-App "What's New" Update
 
-After generating the GitHub release notes, update the features array in `src/domains/settings/components/WhatIsNew.tsx` with any new user-facing features from this release.
+After generating the GitHub release notes, update the features array in `src/components/WhatIsNew/WhatIsNew.tsx` with any new user-facing features from this release.
 
 ### When to update
 
@@ -99,7 +99,7 @@ Only add items for PRs categorized as **New Features** or **Bug Fixes** that are
 
 ### How to update
 
-1. Read the current features array in `src/domains/settings/components/WhatIsNew.tsx`.
+1. Read the current features array in `src/components/WhatIsNew/WhatIsNew.tsx`.
 
 2. For each relevant new feature or notable fix, add a new `FeatureItem` entry to the array. Each entry has this shape:
 
@@ -126,6 +126,8 @@ Only add items for PRs categorized as **New Features** or **Bug Fixes** that are
    - Set `adminOnly: true` if the feature is only visible to board members / advisors.
 
 5. Remove all existing features from the array and replace them with only the new ones from this release. The "Installeren als app" item should stay last.
+
+6. **Bump `FEATURES_VERSION`** — After updating the features array, increment the `FEATURES_VERSION` constant (exported from the same file) by 1. This triggers the auto-show "What's New" bottom sheet on web for all users who haven't seen the new version yet.
 
 ### Ask before applying
 
