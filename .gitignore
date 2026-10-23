@@ -50,7 +50,6 @@ claudio.settings.local.json
 **.apk
 
 # Firebase
-.firebaserc
 .firebase
 
 # Env
