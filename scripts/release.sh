@@ -176,7 +176,11 @@ if [ "$DO_WEB" = true ]; then
   fi
 
   echo "Deploying to Firebase Hosting..."
-  pnpx firebase-tools deploy --only hosting
+  if [ "${APP_VARIANT:-}" = "production" ]; then
+    pnpx firebase-tools deploy --only hosting --project prod
+  else
+    pnpx firebase-tools deploy --only hosting --project dev
+  fi
 
   echo "Web deploy complete!"
 fi

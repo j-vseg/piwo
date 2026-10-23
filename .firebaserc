@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "piwo-dev",
+    "dev": "piwo-dev",
+    "prod": "piwo-4487e"
+  }
+}
