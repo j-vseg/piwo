@@ -281,7 +281,7 @@ export default function SettingsScreen() {
           <ThemedText type="h5">{t("settings.aboutHeader")}</ThemedText>
           <Group>
             <ListTile
-              title={t("tabs.settings.whatIsNew")}
+              title={t("tabs.settings.whatIsNew.title")}
               onPress={() => router.push("/(tabs)/settings/what-is-new")}
               iconLeft={Platform.OS === OS.Web ? "stars" : "stars_2"}
             />

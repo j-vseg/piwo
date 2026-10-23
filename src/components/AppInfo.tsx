@@ -64,7 +64,7 @@ export default function AppInfo({ status = "outdated" }: AppInfoProps) {
 
         <ThemedView style={styles.button}>
           <Button
-            content={t("tabs.settings.whatIsNew")}
+            content={t("tabs.settings.whatIsNew.title")}
             accessibilityLabel={""}
             accessibilityHint={""}
             onPress={() => setNewOpen(true)}
@@ -111,7 +111,7 @@ export default function AppInfo({ status = "outdated" }: AppInfoProps) {
       </ThemedView>
 
       <BottomSheet
-        title={t("tabs.settings.whatIsNew")}
+        title={t("tabs.settings.whatIsNew.title")}
         isPresented={newOpen}
         onDismiss={() => setNewOpen(false)}
         scrollable={false}

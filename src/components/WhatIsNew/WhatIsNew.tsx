@@ -16,6 +16,8 @@ type FeatureItem = {
   adminOnly?: boolean;
 };
 
+export const FEATURES_VERSION = 0;
+
 const features: FeatureItem[] = [
   {
     icon: "notifications",

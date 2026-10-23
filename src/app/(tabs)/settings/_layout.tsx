@@ -107,7 +107,7 @@ export default function SettingsLayout() {
         name="what-is-new"
         options={{
           headerShown: true,
-          title: t("tabs.settings.whatIsNew"),
+          title: t("tabs.settings.whatIsNew.title"),
           headerTitleAlign: "center",
           headerTitleStyle: {
             fontFamily: theme.text.h3.fontFamily,

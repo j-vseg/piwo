@@ -47,6 +47,7 @@ Follow these steps when you are ready to ship a new version to production.
 2. **Run the release script** — Run `pnpm run release:prod`. The script lets you choose the release type:
    - **Android release** — prompts for version and version code, runs prebuild, builds a signed APK
    - **Web release** — generates the service worker, builds the web export, and deploys to Firebase Hosting
+     > **Important:** After a web release, upload the latest version from the `piwo.apk` to the web releae so users can still install the latest version via the `app-update` screen.
    - **Both** — runs both Android and web releases in sequence
 
    For production releases, the script also commits the version bump and creates a draft GitHub release (with the APK attached if Android was built).

@@ -8,16 +8,19 @@ import { storage } from "./storage";
 type AppState = {
   role: Role | null;
   approval: Approval | null;
+  lastSeenFeaturesVersion: number | undefined;
 };
 
 type Actions = {
   setAccount: (data: { role: Role; approval: Approval }) => void;
   clearAccount: () => void;
+  setLastSeenFeaturesVersion: (version: number) => void;
 };
 
 const defaultState: AppState = {
   role: null,
   approval: null,
+  lastSeenFeaturesVersion: undefined,
 };
 
 export const useAppStore = create<AppState & Actions>()(
@@ -33,7 +36,13 @@ export const useAppStore = create<AppState & Actions>()(
 
       clearAccount: () =>
         set((state) => {
-          Object.assign(state, defaultState);
+          state.role = null;
+          state.approval = null;
+        }),
+
+      setLastSeenFeaturesVersion: (version) =>
+        set((state) => {
+          state.lastSeenFeaturesVersion = version;
         }),
     })),
     {

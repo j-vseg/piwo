@@ -1,5 +1,6 @@
 import { HapticTab } from "@/components/HapticTap";
 import { ThemedText } from "@/components/ThemedText";
+import WhatIsNewBottomSheet from "@/components/WhatIsNew/WhatIsNewBottomSheet.web";
 import { accountsCollection } from "@/config/firebase";
 import { Approval } from "@/constants/Approval";
 import { Role } from "@/constants/Role";
@@ -56,52 +57,55 @@ export default function TabsLayout() {
   };
 
   return (
-    <Tabs screenOptions={screenOptions}>
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: t("tabs.home"),
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="cabin" size={24} color={color} />
-          ),
-          tabBarLabelStyle: { fontFamily: "Poppins" },
-        }}
-      />
+    <>
+      <Tabs screenOptions={screenOptions}>
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: t("tabs.home"),
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons name="cabin" size={24} color={color} />
+            ),
+            tabBarLabelStyle: { fontFamily: "Poppins" },
+          }}
+        />
 
-      <Tabs.Screen
-        name="manage"
-        options={{
-          title: t("tabs.manage"),
-          tabBarBadge:
-            data && data.length !== 0
-              ? data.length > 9
-                ? "9+"
-                : String(data.length)
-              : undefined,
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="group" size={24} color={color} />
-          ),
-          tabBarLabelStyle: {
-            fontFamily: "Poppins",
-            backgroundColor: theme.colors.warnings.negative,
-          },
-          href:
-            role === Role.BoardMember || role === Role.Advisor
-              ? "/manage"
-              : null,
-        }}
-      />
+        <Tabs.Screen
+          name="manage"
+          options={{
+            title: t("tabs.manage"),
+            tabBarBadge:
+              data && data.length !== 0
+                ? data.length > 9
+                  ? "9+"
+                  : String(data.length)
+                : undefined,
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons name="group" size={24} color={color} />
+            ),
+            tabBarLabelStyle: {
+              fontFamily: "Poppins",
+              backgroundColor: theme.colors.warnings.negative,
+            },
+            href:
+              role === Role.BoardMember || role === Role.Advisor
+                ? "/manage"
+                : null,
+          }}
+        />
 
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: t("tabs.settings.main"),
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="settings" size={24} color={color} />
-          ),
-          tabBarLabelStyle: { fontFamily: "Poppins" },
-        }}
-      />
-    </Tabs>
+        <Tabs.Screen
+          name="settings"
+          options={{
+            title: t("tabs.settings.main"),
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons name="settings" size={24} color={color} />
+            ),
+            tabBarLabelStyle: { fontFamily: "Poppins" },
+          }}
+        />
+      </Tabs>
+      <WhatIsNewBottomSheet />
+    </>
   );
 }
