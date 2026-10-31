@@ -138,7 +138,16 @@
     "accessibilityHint": "Log in op je account",
     "success": "Succesvol ingelogd!",
     "error": "Het is niet gelukt om in te loggen, probeer het later nog eens",
-    "noAccount": "Nog geen account?"
+    "noAccount": "Nog geen account?",
+    "forgotPassword": {
+      "title": "Wachtwoord vergeten?",
+      "description": "We sturen je een email met daarin een link om je wachtwoord te reseten.",
+      "success": "De email is verstuurd! Pas op! Deze kan in de spam belanden!",
+      "button": "Reset email versturen",
+      "hints": {
+        "button": "Verstuurd een email om de wachtwoord te reseten"
+      }
+    }
   },
   "signUp": {
     "signUpButton": "Creër account",

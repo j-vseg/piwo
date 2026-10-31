@@ -11,6 +11,7 @@ import {
     updateEmail as nativeUpdateEmail,
     updatePassword as nativeUpdatePassword,
     onAuthStateChanged as onNativeAuthStateChanged,
+    sendPasswordResetEmail as nativeSendPasswordResetEmail,
 } from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
 import {
@@ -22,6 +23,7 @@ import {
     updateEmail,
     updatePassword,
     User,
+    sendPasswordResetEmail,
     signOut as webSignOut,
 } from "firebase/auth";
 import { Platform } from "react-native";
@@ -185,6 +187,22 @@ export async function updateUserPassword(
     const customMessage = getFirebaseErrorMessage(
       error as FirebaseError,
       "Het is niet gelukt om je wachtwoord bij te werken",
+    );
+    throw new Error(customMessage);
+  }
+}
+
+export async function resetPassword(email: string): Promise<void> {
+  try {
+    if (Platform.OS !== OS.Web) {
+      await nativeSendPasswordResetEmail(getNativeAuth(), email);
+    } else {
+      await sendPasswordResetEmail(auth, email);
+    }
+  } catch (error) {
+    const customMessage = getFirebaseErrorMessage(
+      error as FirebaseError,
+      "Het is niet gelukt om een wachtwoord reset e-mail te versturen",
     );
     throw new Error(customMessage);
   }
