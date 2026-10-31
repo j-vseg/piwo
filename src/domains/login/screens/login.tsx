@@ -12,7 +12,9 @@ import { requestUserPermission } from "@/services/notifications";
 import { useTranslation } from "@/translations/i18n";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
+import { useState } from "react";
 import { Platform, Pressable } from "react-native";
+import { EmailSheet } from "../components/EmailSheet";
 
 type LoginForm = {
   email: string;
@@ -24,6 +26,7 @@ export default function LoginScreen() {
   const { control, handleSubmit } = useForm<LoginForm>({
     defaultValues: { email: "", password: "" },
   });
+  const [emailOpen, setEmailOpen] = useState(false);
 
   const { mutate, isPending, isSuccess, isError } = useMutation({
     mutationFn: async (data: LoginForm) =>
@@ -40,83 +43,98 @@ export default function LoginScreen() {
   });
 
   return (
-    <ThemedView type="container" style={styles.container}>
-      <ThemedView style={styles.form}>
-        <ThemedText type="h1">{t("tabs.login")}</ThemedText>
-        {isSuccess && (
-          <Alert
-            variant="success"
-            size="regular"
-            description={t("login.success")}
-          />
-        )}
-        {isError && (
-          <Alert
-            variant="warning"
-            size="regular"
-            description={t("login.error")}
-          />
-        )}
+    <>
+      <ThemedView type="container" style={styles.container}>
+        <ThemedView style={styles.form}>
+          <ThemedText type="h1">{t("tabs.login")}</ThemedText>
+          {isSuccess && (
+            <Alert
+              variant="success"
+              size="regular"
+              description={t("login.success")}
+            />
+          )}
+          {isError && (
+            <Alert
+              variant="warning"
+              size="regular"
+              description={t("login.error")}
+            />
+          )}
 
-        <TextInput
-          label={t("login.emailLabel")}
-          control={control}
-          name="email"
-          rules={{
-            required: t("login.emailRequired"),
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: t("login.emailInvalid"),
-            },
-          }}
-          inputProps={{
-            placeholder: t("login.emailPlaceholder"),
-            autoCapitalize: "none",
-            keyboardType: "email-address",
-            autoComplete: "email",
-          }}
-        />
-
-        <TextInput
-          label={t("login.passwordLabel")}
-          control={control}
-          name="password"
-          rules={{
-            required: t("login.passwordRequired"),
-            minLength: {
-              value: 8,
-              message: t("login.passwordMinLength"),
-            },
-          }}
-          inputProps={{
-            placeholder: t("login.passwordPlaceholder"),
-            secureTextEntry: true,
-            autoComplete: "password",
-            autoCorrect: false,
-            autoCapitalize: "none",
-          }}
-        />
-
-        <ThemedView style={styles.button}>
-          <Button
-            content={t("login.loginButton")}
-            isPending={isPending}
-            onPress={handleSubmit((data) => mutate(data))}
-            accessibilityLabel={t("login.loginButton")}
-            accessibilityHint={t("login.accessibilityHint")}
+          <TextInput
+            label={t("login.emailLabel")}
+            control={control}
+            name="email"
+            rules={{
+              required: t("login.emailRequired"),
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: t("login.emailInvalid"),
+              },
+            }}
+            inputProps={{
+              placeholder: t("login.emailPlaceholder"),
+              autoCapitalize: "none",
+              keyboardType: "email-address",
+              autoComplete: "email",
+            }}
           />
-          <Pressable hitSlop={10} onPress={() => router.push("/sign-up")}>
-            <ThemedText
-              style={{ textDecorationLine: "underline" }}
-              type="bodySmaller"
-              selectable={false}
-            >
-              {t("login.noAccount")}
-            </ThemedText>
-          </Pressable>
+
+          <ThemedView style={styles.spacing}>
+            <TextInput
+              label={t("login.passwordLabel")}
+              control={control}
+              name="password"
+              rules={{
+                required: t("login.passwordRequired"),
+                minLength: {
+                  value: 8,
+                  message: t("login.passwordMinLength"),
+                },
+              }}
+              inputProps={{
+                placeholder: t("login.passwordPlaceholder"),
+                secureTextEntry: true,
+                autoComplete: "password",
+                autoCorrect: false,
+                autoCapitalize: "none",
+              }}
+            />
+            <Pressable hitSlop={10} onPress={() => setEmailOpen(!emailOpen)}>
+              <ThemedText
+                style={{ textDecorationLine: "underline" }}
+                type="bodySmaller"
+                selectable={false}
+              >
+                {t("login.forgotPassword.title")}
+              </ThemedText>
+            </Pressable>
+          </ThemedView>
+
+          <ThemedView style={styles.spacing}>
+            <Button
+              content={t("login.loginButton")}
+              isPending={isPending}
+              onPress={handleSubmit((data) => mutate(data))}
+              accessibilityLabel={t("login.loginButton")}
+              accessibilityHint={t("login.accessibilityHint")}
+            />
+            <Pressable hitSlop={10} onPress={() => router.push("/sign-up")}>
+              <ThemedText
+                style={{ textDecorationLine: "underline" }}
+                type="bodySmaller"
+                selectable={false}
+              >
+                {t("login.noAccount")}
+              </ThemedText>
+            </Pressable>
+          </ThemedView>
         </ThemedView>
       </ThemedView>
-    </ThemedView>
+
+      <EmailSheet open={emailOpen} setOpen={setEmailOpen} />
+    </>
   );
 }
 
@@ -134,7 +152,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingHorizontal: theme.spacing(6),
     gap: theme.spacing(4),
   },
-  button: {
+  spacing: {
     gap: theme.spacing(1),
   },
 }));
