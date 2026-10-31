@@ -2,11 +2,13 @@ import { accountsCollection } from "@/config/firebase";
 import { Approval } from "@/constants/Approval";
 import { Role } from "@/constants/Role";
 import { fetchAllAccounts } from "@/services/firebase/accounts";
+import { deletePastEvents } from "@/services/firebase/events";
 import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
 import { query, where } from "@react-native-firebase/firestore";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
+import { useEffect } from "react";
 import { useUnistyles } from "react-native-unistyles";
 
 export default function TabsLayout() {
@@ -26,6 +28,10 @@ export default function TabsLayout() {
             )
         : skipToken,
   });
+
+  useEffect(() => {
+    deletePastEvents().catch(console.error);
+  }, []);
 
   return (
     <NativeTabs
