@@ -2,8 +2,14 @@
   "name": "email-templates",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "dev": "email dev"
+  },
   "dependencies": {
     "react": "catalog:default",
     "react-email": "catalog:default"
+  },
+  "devDependencies": {
+    "@react-email/ui": "catalog:default"
   }
 }
