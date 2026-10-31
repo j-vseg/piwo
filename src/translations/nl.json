@@ -236,6 +236,10 @@
       "title": "Pushmeldingen",
       "description": "Ontvang pushmeldingen op Android en in de web-app. Schakel meldingen in of uit via de instellingen."
     },
+    "buyBeerCard": {
+      "title": "Bierkaart kopen",
+      "description": "Koop een bierkaart via een betaallink in de instellingen."
+    },
     "installAsApp": {
       "title": "Installeren als app",
       "description": "Installeer de Piwo app als web-app op je telefoon of download de Android-app."

@@ -26,6 +26,7 @@ const features: FeatureItem[] = [
   { icon: "how_to_reg", webIcon: "how-to-reg", translationKey: "memberManagement", adminOnly: true },
   { icon: "person_edit", webIcon: "person", translationKey: "personalDetails" },
   { icon: "notifications", webIcon: "notifications", translationKey: "pushNotifications" },
+  { icon: "credit_card", webIcon: "credit-card", translationKey: "buyBeerCard" },
   { icon: "install_mobile", webIcon: "get-app", translationKey: "installAsApp" },
 ];
 

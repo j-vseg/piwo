@@ -1,7 +1,7 @@
 {
   "name": "piwo",
   "main": "index.ts",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "dependencies": {
     "@expo-google-fonts/crimson-pro": "catalog:expo",
     "@expo-google-fonts/poppins": "catalog:expo",

@@ -16,49 +16,28 @@ type FeatureItem = {
   adminOnly?: boolean;
 };
 
-export const FEATURES_VERSION = 0;
+export const FEATURES_VERSION = 1;
 
 const features: FeatureItem[] = [
   {
-    icon: "notifications",
-    webIcon: "notifications",
-    title: "Pushmeldingen",
+    icon: "lock",
+    webIcon: "lock",
+    title: "Wachtwoord vergeten",
     description:
-      "Ontvang pushmeldingen op Android en in de web-app. Schakel meldingen in of uit via de instellingen.",
+      "Wachtwoord vergeten? Vraag een herstellink aan via het inlogscherm.",
   },
   {
-    icon: "dark_mode",
-    webIcon: "dark-mode",
-    title: "Donker en licht thema",
-    description:
-      "De app past zich automatisch aan naar een donker of licht thema op basis van je systeeminstellingen.",
+    icon: "credit_card",
+    webIcon: "credit-card",
+    title: "Bierkaart kopen",
+    description: "Koop een bierkaart via een betaallink in de instellingen.",
   },
   {
-    icon: "person_remove",
-    webIcon: "person-remove",
-    title: "Toegang intrekken",
-    description: "Trek de toegang van een gebruiker in wanneer nodig.",
+    icon: "edit",
+    webIcon: "edit",
+    title: "Bierkaart-link beheren",
+    description: "Pas als penningmeester de betaallink voor de bierkaart aan.",
     adminOnly: true,
-  },
-  {
-    icon: "phone_android",
-    webIcon: "phone-android",
-    title: "Android app",
-    description: "Piwo is nu beschikbaar als Android-app.",
-  },
-  {
-    icon: "system_update",
-    webIcon: "system-update",
-    title: "App updates (Android-app)",
-    description:
-      "Ontvang een melding wanneer er een nieuwe versie van de app beschikbaar is.",
-  },
-  {
-    icon: "install_mobile",
-    webIcon: "get-app",
-    title: "Installatiehandleidingen",
-    description:
-      "Stapsgewijze instructies voor het installeren van de app op Android en iOS.",
   },
 ];
 
