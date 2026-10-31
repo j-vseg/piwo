@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "email dev"
+    "dev": "email dev",
+    "export": "email export --pretty"
   },
   "dependencies": {
     "react": "catalog:default",
