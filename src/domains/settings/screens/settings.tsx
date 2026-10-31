@@ -1,3 +1,4 @@
+import { Alert } from "@/components/Alert";
 import { Group } from "@/components/Group";
 import ListTile from "@/components/ListTile";
 import LoadingIndicator from "@/components/LoadingIndicator";
@@ -7,9 +8,10 @@ import { OS } from "@/constants/Os";
 import { Role } from "@/constants/Role";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser, signOut } from "@/services/firebase/auth";
+import { getBeerCardUrl } from "@/services/firebase/beer-card";
 import { useAppStore } from "@/store/appStore";
 import { Host, Switch } from "@expo/ui";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -18,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { AppState, Linking, Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ConfirmPassword } from "../../../components/ConfirmPassword";
+import { BeerCardUrlSheet } from "../components/BeerCardUrlSheet";
 import { SelectActivity } from "../components/SelectActivity";
 
 type DeleteAccountFormData = {
@@ -35,6 +38,11 @@ export default function SettingsScreen() {
   const [isWebPushSupported, setIsWebPushSupported] = useState(false);
   const [webPermission, setWebPermission] =
     useState<NotificationPermission>("default");
+  const [beerCardUrlOpen, setBeerCardUrlOpen] = useState(false);
+  const { data: beerCardUrl, isError: isErrorbeerCardUrl } = useQuery({
+    queryKey: ["beer-card-url"],
+    queryFn: () => getBeerCardUrl(),
+  });
 
   useEffect(() => {
     if (Platform.OS !== OS.Web) return;
@@ -138,6 +146,15 @@ export default function SettingsScreen() {
     mutationFn: signOut,
   });
 
+  const { mutate: openLink, isPending: isPendingOpenLink } = useMutation({
+    mutationFn: async (url: string) => {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      }
+    },
+  });
+
   return (
     <>
       <ThemedView
@@ -167,6 +184,40 @@ export default function SettingsScreen() {
             </Group>
           </ThemedView>
         )}
+
+        <ThemedView style={styles.group}>
+          <ThemedText type="h5">{t("settings.beer_card.title")}</ThemedText>
+          {isErrorbeerCardUrl ? (
+            <Alert
+              variant="warning"
+              description={t("settings.beer_card.fetch_error")}
+              size={"regular"}
+            />
+          ) : (
+            <Group>
+              <ListTile
+                title={t("settings.beer_card.buy_beer_card")}
+                onPress={() => beerCardUrl && openLink(beerCardUrl)}
+                iconLeft={Platform.OS === OS.Web ? "sports-bar" : "sports_bar"}
+                iconRight={
+                  isPendingOpenLink ? (
+                    <LoadingIndicator />
+                  ) : Platform.OS === OS.Web ? (
+                    ("chevron-right" as any)
+                  ) : (
+                    "chevron_forward"
+                  )
+                }
+              />
+              {(role === Role.BoardMember || role === Role.Advisor) && (
+                <ListTile
+                  title={t("settings.beer_card.buy_beer_card_url")}
+                  onPress={() => setBeerCardUrlOpen(!beerCardUrlOpen)}
+                />
+              )}
+            </Group>
+          )}
+        </ThemedView>
 
         <ThemedView style={styles.group}>
           <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>
@@ -308,6 +359,12 @@ export default function SettingsScreen() {
         onConfirm={handleDeleteConfirm}
         control={deleteAccountForm.control as unknown as Control<FieldValues>}
         description={t("settings.deleteAccountDescription")}
+      />
+
+      <BeerCardUrlSheet
+        open={beerCardUrlOpen}
+        setOpen={setBeerCardUrlOpen}
+        url={beerCardUrl!}
       />
     </>
   );

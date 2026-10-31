@@ -86,7 +86,25 @@
     "installWebAppAndroid": "Hoe installeer ik een web-app? (Android)",
     "installWebAppApple": "Hoe installeer ik een web-app? (Apple)",
     "downloadApk": "Download de Android app (APK-bestand)",
-    "installApk": "Hoe installeer ik een APK-bestand? (Android)"
+    "installApk": "Hoe installeer ik een APK-bestand? (Android)",
+    "beer_card": {
+      "title": "Bierkaart",
+      "description": "Pas hier de link voor de bierkaart kopen aan. Dit is een Rabobank Betaalverzoek link.",
+      "buy_beer_card": "Bierkaart kopen",
+      "buy_beer_card_url": "Link Bierkaart kopen aanpassen (Penningmeester)",
+      "input": {
+        "label": "Rabobank betaalverzoek link",
+        "placeholder": "https://",
+        "required": "Rabobank betaalverzoek link is verplicht",
+        "invalid": "Dit is geen Rabobank betaalverzoek link"
+      },
+      "button": {
+        "label": "Link aanpassen"
+      },
+      "success": "Link is aangepast!",
+      "error": "Het is niet gelukt om de link aan te passen",
+      "fetch_error": "Het is niet gelukt om de imformatie over de bierkaart op te halen"
+    }
   },
   "personalDetails": {
     "nameTitle": "Voor- & achternaam",
