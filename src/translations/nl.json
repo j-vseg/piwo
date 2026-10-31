@@ -1,4 +1,9 @@
 {
+  "notFound": {
+    "title": "Pagina niet gevonden",
+    "description": "Je hebt iets gevonden wat niet bestaat, dus krijg je maar een katten foto.",
+    "link": "Ga terug naar home"
+  },
   "tabs": {
     "home": "Home",
     "settings": {
