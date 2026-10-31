@@ -5,13 +5,14 @@ import { accountsCollection } from "@/config/firebase";
 import { Approval } from "@/constants/Approval";
 import { Role } from "@/constants/Role";
 import { fetchAllAccounts } from "@/services/firebase/accounts";
+import { deletePastEvents } from "@/services/firebase/events";
 import { useAppStore } from "@/store/appStore";
 import { useTranslation } from "@/translations/i18n";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { query, where } from "@react-native-firebase/firestore";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { Tabs } from "expo-router";
-import { ComponentProps } from "react";
+import { ComponentProps, useEffect } from "react";
 import { useUnistyles } from "react-native-unistyles";
 
 type BottomTabNavigationOptions = NonNullable<
@@ -55,6 +56,10 @@ export default function TabsLayout() {
       boxShadow: theme.tabBar.shadow,
     },
   };
+
+  useEffect(() => {
+    deletePastEvents().catch(console.error);
+  }, []);
 
   return (
     <>
