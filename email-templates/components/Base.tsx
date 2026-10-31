@@ -10,6 +10,7 @@ import {
   Tailwind,
 } from "react-email";
 import { tailwindConfig } from "../tailwind.config";
+import { Footer } from "./Footer";
 import { Header } from "./Header";
 
 export function Base({ children }: Readonly<{ children: ReactNode }>) {
@@ -63,11 +64,13 @@ export function Base({ children }: Readonly<{ children: ReactNode }>) {
             fontStyle="normal"
           />
         </Head>
-
-        <Body>
-          <Container>
-            <Header />
-            <Section>{children}</Section>
+        <Body className="bg-primary m-0">
+          <Container className="max-w-[672px] mt-[10vh] mx-auto mb-10 px-4">
+            <Section className="py-10 px-4 sm:p-10 bg-white rounded-3xl">
+              <Header />
+              {children}
+              <Footer />
+            </Section>
           </Container>
         </Body>
       </Tailwind>
