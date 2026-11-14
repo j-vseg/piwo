@@ -1,9 +1,9 @@
 const colors = {
   button: {
-    primaryActiveBG: "#B85A3A",
+    primaryActiveBG: "#C43038",
     secondaryActiveBG: "#2A1510",
     tertiaryDefaultBG: "#2A1510",
-    tertiaryActiveBG: "#B85A3A",
+    tertiaryActiveBG: "#C43038",
   },
   dark: {
     black: "#FFFFFF",
@@ -21,13 +21,13 @@ const colors = {
     white_40: "#00000066",
   },
   primitives: {
-    primary: "#B85A3A",
-    primary_AA: "#B85A3A",
+    primary: "#C43038",
+    primary_AA: "#C43038",
     quaternary_48: "#3A1A14",
     quaternary: "#2A1510",
     quinaryDarker: "#2A2226",
     quinary: "#1C1618",
-    secondary: "#A8706A",
+    secondary: "#8B5050",
     secondary_AA: "#F2DDD8",
     secondary_AA_40: "#F2DDD840",
     secondaryLight: "#3D2028",
@@ -237,10 +237,10 @@ export const darkTheme = {
       default: {
         backgroundColor: colors.primitives["secondary"],
         borderColor: colors.primitives["secondary"],
-        iconColor: colors.primitives["secondary_AA"],
-        textColor: colors.primitives["secondary_AA"],
+        iconColor: colors.dark["black"],
+        textColor: colors.dark["black"],
         innerShadow: {
-          color: colors.primitives["primary_AA"],
+          color: "#6B1A2266",
           x: 0,
           y: -4,
           blur: 0,
@@ -250,10 +250,10 @@ export const darkTheme = {
       active: {
         backgroundColor: colors.primitives["primary"],
         borderColor: colors.primitives["primary"],
-        iconColor: colors.primitives["secondary_AA"],
-        textColor: colors.primitives["secondary_AA"],
+        iconColor: colors.dark["black"],
+        textColor: colors.dark["black"],
         innerShadow: {
-          color: "#00000066",
+          color: "#6B1A2266",
           x: 0,
           y: -4,
           blur: 0,
