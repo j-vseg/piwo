@@ -58,7 +58,9 @@ export default function TabsLayout() {
         name="bestuur"
         hidden={role !== Role.BoardMember && role !== Role.Advisor}
       >
-        <NativeTabs.Trigger.Label>{t("tabs.bestuur")}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>
+          {t("tabs.bestuur.title")}
+        </NativeTabs.Trigger.Label>
         {data && data.length > 0 && (
           <NativeTabs.Trigger.Badge>
             {data.length > 9 ? "9+" : String(data.length)}

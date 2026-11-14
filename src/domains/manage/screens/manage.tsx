@@ -1,7 +1,5 @@
-import { Alert } from "@/components/Alert";
 import { Group } from "@/components/Group";
 import ListTile from "@/components/ListTile";
-import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { accountsCollection } from "@/config/firebase";
@@ -9,13 +7,12 @@ import { Approval } from "@/constants/Approval";
 import { OS } from "@/constants/Os";
 import { fetchAllAccounts } from "@/services/firebase/accounts";
 import { useTranslation } from "@/translations/i18n";
-import { getAuth } from "@react-native-firebase/auth";
 import { query, where } from "@react-native-firebase/firestore";
 import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Platform } from "react-native";
-import { useUnistyles } from "react-native-unistyles";
-import { Account, ActionOverview } from "../components/ActionOverview";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ApprovalOverview } from "../components/ApprovalOverview";
 
 export default function ManageScreen() {
@@ -24,22 +21,12 @@ export default function ManageScreen() {
   const [approvalOpen, setApprovalOpen] = useState<string | undefined>(
     undefined,
   );
-  const [actionOpen, setActionOpen] = useState<Account | undefined>(undefined);
   const { data: notApprovedData } = useQuery({
     queryKey: ["not-approved-users"],
     queryFn: () =>
       fetchAllAccounts(
         query(accountsCollection, where("approval", "==", Approval.Unknown)),
       ),
-  });
-
-  const {
-    data: accounts,
-    isLoading: isLoadingAccounts,
-    isError: isErrorAccounts,
-  } = useQuery({
-    queryKey: ["accounts"],
-    queryFn: () => fetchAllAccounts(),
   });
 
   return (
@@ -54,7 +41,7 @@ export default function ManageScreen() {
               : rt.insets.top + theme.spacing(4),
         }}
       >
-        <ThemedText type="h1">{t("tabs.bestuur")}</ThemedText>
+        <ThemedText type="h1">{t("tabs.bestuur.title")}</ThemedText>
 
         {notApprovedData && notApprovedData.length !== 0 && (
           <ThemedView style={{ gap: theme.spacing(4) }}>
@@ -73,44 +60,14 @@ export default function ManageScreen() {
           </ThemedView>
         )}
 
-        <ThemedView style={{ gap: theme.spacing(4) }}>
-          <ThemedText type="h3">{t("bestuur.manageUsers")}</ThemedText>
-          {isLoadingAccounts ? (
-            <LoadingIndicator />
-          ) : isErrorAccounts ? (
-            <Alert
-              variant={"warning"}
-              description={t("bestuur.manageUsersError")}
-              size={"regular"}
+        <ThemedView style={styles.group}>
+          <ThemedText type="h5">{t("bestuur.users")}</ThemedText>
+          <Group>
+            <ListTile
+              title={t("tabs.bestuur.manageUsers")}
+              onPress={() => router.push("/(tabs)/bestuur/manage-user")}
             />
-          ) : (
-            <ThemedView>
-              <Group>
-                {accounts?.map((user) => {
-                  if (user.approval !== Approval.Declined) {
-                    return (
-                      <ListTile
-                        key={user.id}
-                        title={`${user.firstName} ${user.lastName}`}
-                        onPress={() => setActionOpen(user)}
-                        subtitle={
-                          user.id === getAuth().currentUser?.uid
-                            ? t("bestuur.you")
-                            : user.approval === Approval.Unknown
-                              ? t("bestuur.userWaiting")
-                              : undefined
-                        }
-                        disabled={
-                          user.id === getAuth().currentUser?.uid ||
-                          user.approval === Approval.Unknown
-                        }
-                      />
-                    );
-                  }
-                })}
-              </Group>
-            </ThemedView>
-          )}
+          </Group>
         </ThemedView>
       </ThemedView>
 
@@ -122,14 +79,13 @@ export default function ManageScreen() {
           userId={approvalOpen}
         />
       )}
-
-      {actionOpen && (
-        <ActionOverview
-          open={!!actionOpen}
-          setOpen={setActionOpen}
-          user={actionOpen}
-        />
-      )}
     </>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  group: {
+    flexDirection: "column",
+    gap: theme.spacing(2),
+  },
+}));

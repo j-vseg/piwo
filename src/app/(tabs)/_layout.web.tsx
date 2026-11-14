@@ -78,7 +78,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="bestuur"
           options={{
-            title: t("tabs.bestuur"),
+            title: t("tabs.bestuur.title"),
             tabBarBadge:
               data && data.length !== 0
                 ? data.length > 9
