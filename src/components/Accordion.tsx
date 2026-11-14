@@ -90,6 +90,5 @@ const styles = StyleSheet.create((theme) => ({
   },
   descriptionContainer: {
     paddingVertical: theme.spacing(6),
-    paddingHorizontal: theme.spacing(4),
   },
 }));

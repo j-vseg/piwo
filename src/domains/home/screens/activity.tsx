@@ -39,7 +39,12 @@ export default function ActivityScreen({ id }: { id: string }) {
   });
   const eventColor = useEventColor(occurrence?.category);
   const counts = useMemo(() => {
-    if (!availability) return undefined;
+    if (!availability)
+      return {
+        [Status.Present]: 0,
+        [Status.Maybe]: 0,
+        [Status.Absent]: 0,
+      };
     return {
       [Status.Present]:
         (availability[Status.Present]?.length ?? 0) +
@@ -199,7 +204,7 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.light.white,
     borderRadius: 8,
     paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(2),
+    paddingVertical: theme.spacing(3.5),
     flexDirection: "row",
     justifyContent: "space-between",
   },
