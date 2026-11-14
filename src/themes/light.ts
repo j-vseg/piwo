@@ -231,8 +231,8 @@ export const lightTheme = {
     full: 80,
   },
   tabBar: {
-    inactiveTintColor: colors.dark["black"],
-    activeTintColor: colors.primitives["primary"],
+    inactiveTintColor: colors.primitives["secondary_AA"],
+    activeTintColor: colors.category["groupDark"],
     backgroundColor: colors.light["white"],
     shadow: "0px -0.33px 0px rgba(0, 0, 0, 0.1)",
   },

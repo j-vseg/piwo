@@ -37,14 +37,14 @@ export default function TabsLayout() {
     <NativeTabs
       backgroundColor={theme.colors.light.white}
       indicatorColor={theme.colors.primitives.quinary}
-      labelStyle={{ selected: { color: theme.colors.primitives.primary } }}
+      labelStyle={{ selected: { color: theme.tabBar.activeTintColor } }}
       iconColor={{
         default: theme.tabBar.inactiveTintColor,
         selected: theme.tabBar.activeTintColor,
       }}
       rippleColor={theme.colors.primitives.quinary}
       badgeBackgroundColor={theme.colors.warnings["error"]}
-      badgeTextColor={theme.colors.dark.black}
+      badgeTextColor={theme.colors.light["white"]}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Label>{t("tabs.home")}</NativeTabs.Trigger.Label>

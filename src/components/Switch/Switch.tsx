@@ -20,7 +20,7 @@ export function Switch({ value, disabled }: SwitchProps) {
           value ? theme.colors.light["white"] : theme.colors.dark["greyMedium"]
         }
         trackColor={{
-          true: theme.colors.primitives["primary"],
+          true: theme.colors.category["groupDark"],
           false: theme.colors.light["offWhite"],
         }}
       />

@@ -17,8 +17,8 @@ export function Switch({ value, disabled }: SwitchProps) {
         enabled={!disabled}
         colors={{
           checkedThumbColor: theme.colors.light["white"],
-          checkedTrackColor: theme.colors.primitives["primary"],
-          checkedBorderColor: theme.colors.primitives["primary"],
+          checkedTrackColor: theme.colors.category["groupDark"],
+          checkedBorderColor: theme.colors.category["groupDark"],
           uncheckedThumbColor: theme.colors.dark["greyMedium"],
           uncheckedTrackColor: theme.colors.dark["greyLight"],
           uncheckedBorderColor: theme.colors.dark["greyMedium"],
