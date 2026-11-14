@@ -8,16 +8,15 @@ import { OS } from "@/constants/Os";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser, signOut } from "@/services/firebase/auth";
 import { getBeerCardUrl } from "@/services/firebase/beer-card";
-import { Host, Switch } from "@expo/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Control, FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AppState, Linking, Platform } from "react-native";
+import { Linking, Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ConfirmPassword } from "../../../components/ConfirmPassword";
+import { NotificationSettings } from "../components/NotificationSettings";
 
 type DeleteAccountFormData = {
   oldPassword: string;
@@ -27,11 +26,6 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
   const [passwordConfirmOpen, setPasswordConfirmOpen] = useState(false);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [permanentlyDenied, setPermanentlyDenied] = useState(false);
-  const [isWebPushSupported, setIsWebPushSupported] = useState(false);
-  const [webPermission, setWebPermission] =
-    useState<NotificationPermission>("default");
   const { data: greenBeerCardUrl, isError: isErrorGreenBeerCard } = useQuery({
     queryKey: ["beer-card-url", "green"],
     queryFn: () => getBeerCardUrl("green"),
@@ -39,78 +33,6 @@ export default function SettingsScreen() {
   const { data: pinkBeerCardUrl, isError: isErrorPinkBeerCard } = useQuery({
     queryKey: ["beer-card-url", "pink"],
     queryFn: () => getBeerCardUrl("pink"),
-  });
-
-  useEffect(() => {
-    if (Platform.OS !== OS.Web) return;
-
-    import("firebase/messaging").then(({ isSupported }) =>
-      isSupported().then((supported) => setIsWebPushSupported(supported)),
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!isWebPushSupported) return;
-
-    navigator.permissions.query({ name: "notifications" }).then((status) => {
-      setWebPermission(Notification.permission);
-      status.onchange = () => setWebPermission(Notification.permission);
-    });
-  }, [isWebPushSupported]);
-
-  useEffect(() => {
-    if (Platform.OS === OS.Web) return;
-
-    const checkPermission = async () => {
-      const { status, canAskAgain } = await Notifications.getPermissionsAsync();
-      setNotificationsEnabled(status === "granted");
-      setPermanentlyDenied(status === "denied" && !canAskAgain);
-    };
-
-    checkPermission();
-
-    const subscription = AppState.addEventListener("change", (state) => {
-      if (state === "active") checkPermission();
-    });
-
-    return () => subscription.remove();
-  }, []);
-
-  const {
-    mutate: toggleNotification,
-    isPending,
-    isError,
-  } = useMutation({
-    mutationFn: async () => {
-      if (notificationsEnabled) {
-        Linking.openSettings();
-        return;
-      }
-
-      const { status, canAskAgain } = await Notifications.getPermissionsAsync();
-      if (status !== "granted" && !canAskAgain) {
-        Linking.openSettings();
-        return;
-      }
-
-      const { status: newStatus } =
-        await Notifications.requestPermissionsAsync();
-      setNotificationsEnabled(newStatus === "granted");
-    },
-  });
-
-  const {
-    mutate: toggleWebNotification,
-    isPending: isWebPending,
-    isError: isWebError,
-  } = useMutation({
-    mutationFn: async () => {
-      if (webPermission !== "default") return;
-      const { requestWebNotificationPermission } =
-        await import("@/services/notifications.web");
-      const result = await requestWebNotificationPermission();
-      setWebPermission(result);
-    },
   });
 
   const user = getCurrentUser();
@@ -241,68 +163,7 @@ export default function SettingsScreen() {
               title={t("tabs.settings.personalDetails")}
               onPress={() => router.push("/(tabs)/settings/personal-details")}
             />
-            {Platform.OS !== OS.Web ? (
-              <ListTile
-                title={t("settings.notifications")}
-                subtitle={
-                  notificationsEnabled
-                    ? t("settings.notificationsEnabled")
-                    : permanentlyDenied
-                      ? t("settings.notificationsDisabled")
-                      : undefined
-                }
-                onPress={() => toggleNotification()}
-                iconRight={
-                  isPending ? (
-                    <LoadingIndicator />
-                  ) : isError ? (
-                    "warning"
-                  ) : (
-                    <Host matchContents>
-                      <Switch
-                        value={notificationsEnabled}
-                        onValueChange={() => toggleNotification()}
-                      />
-                    </Host>
-                  )
-                }
-                iconLeft={permanentlyDenied ? "settings" : undefined}
-              />
-            ) : (
-              <ListTile
-                title={t("settings.notifications")}
-                subtitle={
-                  !isWebPushSupported
-                    ? t("settings.notificationsWebUnsupported")
-                    : webPermission === "granted"
-                      ? t("settings.notificationsWebEnabled")
-                      : webPermission === "denied"
-                        ? t("settings.notificationsWebDisabled")
-                        : undefined
-                }
-                onPress={() => toggleWebNotification()}
-                iconRight={
-                  isWebPending ? (
-                    <LoadingIndicator />
-                  ) : isWebError ? (
-                    "warning"
-                  ) : (
-                    <Host matchContents>
-                      <Switch
-                        value={webPermission === "granted"}
-                        onValueChange={() => toggleWebNotification()}
-                        disabled={webPermission !== "default" || isWebPending}
-                      />
-                    </Host>
-                  )
-                }
-                disabled={
-                  !isWebPushSupported ||
-                  webPermission !== "default" ||
-                  isWebPending
-                }
-              />
-            )}
+            <NotificationSettings />
             <ListTile
               title={t("settings.signOut")}
               onPress={() => mutateLogout()}
