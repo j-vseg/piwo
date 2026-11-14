@@ -437,6 +437,86 @@ export const darkTheme = {
         textColor: colors.dark["greyMedium_60"],
       },
     },
+    categoryGroup: {
+      default: {
+        backgroundColor: colors.category["group"],
+        borderColor: colors.category["group"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+      },
+      active: {
+        backgroundColor: colors.primitives["secondary_AA"],
+        borderColor: colors.primitives["secondary_AA"],
+        iconColor: colors.light["offWhite"],
+        textColor: colors.light["offWhite"],
+      },
+      disabled: {
+        backgroundColor: colors.category["group"],
+        borderColor: colors.category["group"],
+        iconColor: colors.primitives["secondary_AA_40"],
+        textColor: colors.primitives["secondary_AA_40"],
+      },
+    },
+    categoryWeekend: {
+      default: {
+        backgroundColor: colors.category["weekend"],
+        borderColor: colors.category["weekend"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+      },
+      active: {
+        backgroundColor: colors.primitives["secondary_AA"],
+        borderColor: colors.primitives["secondary_AA"],
+        iconColor: colors.light["offWhite"],
+        textColor: colors.light["offWhite"],
+      },
+      disabled: {
+        backgroundColor: colors.category["weekend"],
+        borderColor: colors.category["weekend"],
+        iconColor: colors.primitives["secondary_AA_40"],
+        textColor: colors.primitives["secondary_AA_40"],
+      },
+    },
+    categoryCamp: {
+      default: {
+        backgroundColor: colors.category["camp"],
+        borderColor: colors.category["camp"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+      },
+      active: {
+        backgroundColor: colors.primitives["secondary_AA"],
+        borderColor: colors.primitives["secondary_AA"],
+        iconColor: colors.light["offWhite"],
+        textColor: colors.light["offWhite"],
+      },
+      disabled: {
+        backgroundColor: colors.category["camp"],
+        borderColor: colors.category["camp"],
+        iconColor: colors.primitives["secondary_AA_40"],
+        textColor: colors.primitives["secondary_AA_40"],
+      },
+    },
+    categoryAction: {
+      default: {
+        backgroundColor: colors.category["action"],
+        borderColor: colors.category["action"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+      },
+      active: {
+        backgroundColor: colors.primitives["secondary_AA"],
+        borderColor: colors.primitives["secondary_AA"],
+        iconColor: colors.light["offWhite"],
+        textColor: colors.light["offWhite"],
+      },
+      disabled: {
+        backgroundColor: colors.category["action"],
+        borderColor: colors.category["action"],
+        iconColor: colors.primitives["secondary_AA_40"],
+        textColor: colors.primitives["secondary_AA_40"],
+      },
+    },
   },
   sections: {
     home: {

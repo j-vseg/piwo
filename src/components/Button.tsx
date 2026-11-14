@@ -1,3 +1,4 @@
+import { lightTheme } from "@/themes/light";
 import { ReactNode } from "react";
 import { Pressable, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
@@ -6,10 +7,10 @@ import LoadingIndicator from "./LoadingIndicator";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
-type ButtonType = "primary" | "secondary" | "tertiary" | "error" | "warning" | "success";
+export type ButtonType = keyof typeof lightTheme.button;
 
 type ButtonProps = {
-  content: ReactNode;
+  content: ReactNode | ((pressed: boolean, textColor: string) => ReactNode);
   accessibilityLabel: string;
   accessibilityHint: string;
   onPress: () => void;
@@ -49,42 +50,50 @@ export default function Button({
       style={({ pressed }) => [
         styles.buttonStyle,
         styles.button(type, pressed, isDisabled),
+        buttonStyle,
       ]}
     >
-      {({ pressed }) => (
-        <>
-          {iconLeft && (
-            <IconSymbol
-              size={24}
-              name={iconLeft}
-              color={styles.iconColor(type, pressed, isDisabled).color}
-              style={styles.leftIcon(type)}
-            />
-          )}
-          {isPending ? (
-            <LoadingIndicator />
-          ) : typeof content === "string" ? (
-            <ThemedText
-              type="button"
-              style={[styles.textStyle, styles.text(type, pressed, isDisabled)]}
-            >
-              {content}
-            </ThemedText>
-          ) : (
-            <ThemedView style={[styles.textStyle, styles.content]}>
-              {content}
-            </ThemedView>
-          )}
-          {iconRight && (
-            <IconSymbol
-              size={24}
-              color={styles.iconColor(type, pressed, isDisabled).color}
-              style={styles.rightIcon(type)}
-              name={iconRight}
-            />
-          )}
-        </>
-      )}
+      {({ pressed }) => {
+        const textColor = String(
+          styles.text(type, pressed, isDisabled).color,
+        );
+        return (
+          <>
+            {iconLeft && (
+              <IconSymbol
+                size={24}
+                name={iconLeft}
+                color={styles.iconColor(type, pressed, isDisabled).color}
+                style={styles.leftIcon(type)}
+              />
+            )}
+            {isPending ? (
+              <LoadingIndicator />
+            ) : typeof content === "function" ? (
+              content(pressed, textColor)
+            ) : typeof content === "string" ? (
+              <ThemedText
+                type="button"
+                style={[styles.textStyle, { color: textColor }]}
+              >
+                {content}
+              </ThemedText>
+            ) : (
+              <ThemedView style={[styles.textStyle, styles.content]}>
+                {content}
+              </ThemedView>
+            )}
+            {iconRight && (
+              <IconSymbol
+                size={24}
+                color={styles.iconColor(type, pressed, isDisabled).color}
+                style={styles.rightIcon(type)}
+                name={iconRight}
+              />
+            )}
+          </>
+        );
+      }}
     </Pressable>
   );
 }

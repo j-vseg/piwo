@@ -56,7 +56,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     }
   }, [methods, occurrence]);
 
-  const [startTime] = useWatch({
+  const [startTime, category] = useWatch({
     control: methods.control,
     name: ["startTime", "category"],
   });
@@ -182,7 +182,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
               `${format(occurrence.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endDate.toDate(), isSameDay(occurrence.endDate.toDate(), occurrence.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
           </ThemedText>
         </ThemedView>
-        <StatusButtonGroup disabled onSelect={() => {}} />
+        <StatusButtonGroup disabled category={category} onSelect={() => {}} />
       </ThemedView>
 
       <ThemedView style={styles.form}>

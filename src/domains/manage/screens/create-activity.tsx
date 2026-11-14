@@ -45,9 +45,9 @@ export default function CreateActivityScreen() {
   const methods = useForm<ActivityFormData>({
     defaultValues: getDefaultFormValues(),
   });
-  const [name, startTime, endTime, recurrence] = useWatch({
+  const [name, startTime, endTime, category, recurrence] = useWatch({
     control: methods.control,
-    name: ["name", "startTime", "endTime", "recurrence"],
+    name: ["name", "startTime", "endTime", "category", "recurrence"],
   });
 
   const { mutate, isSuccess, isPending, isError } = useMutation({
@@ -91,7 +91,7 @@ export default function CreateActivityScreen() {
               recurrence={recurrence}
             />
           </ThemedView>
-          <StatusButtonGroup disabled onSelect={() => {}} />
+          <StatusButtonGroup disabled category={category} onSelect={() => {}} />
         </ThemedView>
 
         {isSuccess && (

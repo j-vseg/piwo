@@ -1,3 +1,4 @@
+import { Category } from "@/constants/Category";
 import { Status } from "@/constants/Status";
 import { getCurrentUser } from "@/services/firebase/auth";
 import {
@@ -12,10 +13,12 @@ import { StatusButtonGroup } from "./StatusButtonGroup";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
+  category?: Category;
 }
 
 export function AvailabilitySelector({
   occurrenceId,
+  category,
 }: AvailabilitySelectorProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -65,6 +68,7 @@ export function AvailabilitySelector({
   return (
     <StatusButtonGroup
       selected={availability}
+      category={category}
       onSelect={(status) => updateMutate(status)}
     />
   );

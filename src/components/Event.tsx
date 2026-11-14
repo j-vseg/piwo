@@ -28,7 +28,7 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
         </ThemedText>
       </ThemedView>
 
-      <AvailabilitySelector occurrenceId={occurrence.id} />
+      <AvailabilitySelector occurrenceId={occurrence.id} category={occurrence.category} />
     </Pressable>
   );
 }

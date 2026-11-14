@@ -89,7 +89,10 @@ export default function ActivityScreen({ id }: { id: string }) {
             style={styles.subtitle}
           >{`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}</ThemedText>
         </ThemedView>
-        <AvailabilitySelector occurrenceId={occurrence.id} />
+        <AvailabilitySelector
+          occurrenceId={occurrence.id}
+          category={occurrence.category}
+        />
       </ThemedView>
 
       <ThemedView style={styles.availability}>
@@ -121,7 +124,11 @@ export default function ActivityScreen({ id }: { id: string }) {
                       : (availability?.[selected]?.length ?? 0),
                 })}
               />
-              {!availability || !availability[selected] ? (
+              {!availability ||
+              (selected === Status.Present
+                ? !availability[Status.Present]?.length &&
+                  !availability[Status.Later]?.length
+                : !availability[selected]?.length) ? (
                 <Alert
                   variant={"info"}
                   description={t("activity.noAvailability")}

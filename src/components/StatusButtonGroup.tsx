@@ -1,8 +1,10 @@
+import { Category } from "@/constants/Category";
 import { AVAILABILITY_SELECTOR_STATUSES, Status } from "@/constants/Status";
-import { Pressable, ScrollView, View } from "react-native";
-import { StyleSheet } from "react-native-unistyles";
-import { ThemedText } from "./ThemedText";
 import { lightTheme } from "@/themes/light";
+import { ScrollView, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
+import Button from "./Button";
+import { ThemedText } from "./ThemedText";
 
 type ButtonVariant = keyof typeof lightTheme.button;
 
@@ -13,10 +15,18 @@ const STATUS_BUTTON_VARIANT: Record<Status, ButtonVariant> = {
   [Status.Absent]: "error",
 };
 
+const CATEGORY_BUTTON_VARIANT: Record<Category, ButtonVariant> = {
+  [Category.Group]: "categoryGroup",
+  [Category.Weekend]: "categoryWeekend",
+  [Category.Camp]: "categoryCamp",
+  [Category.Action]: "categoryAction",
+};
+
 interface StatusButtonGroupProps {
   selected?: Status | null;
   disabled?: boolean;
   counts?: Partial<Record<Status, number>>;
+  category?: Category;
   onSelect: (status: Status) => void;
 }
 
@@ -24,6 +34,7 @@ export function StatusButtonGroup({
   selected,
   disabled,
   counts,
+  category,
   onSelect,
 }: StatusButtonGroupProps) {
   return (
@@ -39,8 +50,15 @@ export function StatusButtonGroup({
         const variant = STATUS_BUTTON_VARIANT[statusOption];
 
         return (
-          <Pressable
+          <Button
             key={statusOption}
+            accessibilityLabel={
+              isActive && selected === Status.Later
+                ? Status.Later
+                : statusOption
+            }
+            accessibilityHint={"undefined"}
+            type={isActive ? variant : category ? CATEGORY_BUTTON_VARIANT[category] : "secondary"}
             onPress={() => onSelect(statusOption)}
             onLongPress={
               statusOption === Status.Present
@@ -48,51 +66,32 @@ export function StatusButtonGroup({
                 : undefined
             }
             disabled={disabled}
-          >
-            {({ pressed }) => (
-              <View style={styles.buttonContainer}>
-                <View
-                  style={[
-                    styles.buttonInner,
-                    !isActive && styles.buttonInnerDefault,
-                    pressed && styles.buttonInnerPressed(variant),
-                    isActive && styles.buttonInnerActive(variant),
-                  ]}
+            buttonStyle={styles.statusButton}
+            content={(_, textColor) => (
+              <View style={styles.buttonContent}>
+                <ThemedText
+                  type="bodySmall"
+                  style={{ color: textColor }}
+                  selectable={false}
                 >
-                  <View style={styles.buttonContent}>
+                  {isActive && selected === Status.Later
+                    ? Status.Later
+                    : statusOption}
+                </ThemedText>
+                {counts?.[statusOption] != null && (
+                  <View style={styles.badge}>
                     <ThemedText
-                      type="bodySmall"
-                      style={[
-                        styles.label,
-                        pressed && styles.labelPressed(variant),
-                        isActive && styles.labelActive(variant),
-                      ]}
+                      type="bodySmaller"
+                      style={[styles.badgeText, { color: textColor }]}
                       selectable={false}
                     >
-                      {isActive && selected === Status.Later
-                        ? Status.Later
-                        : statusOption}
+                      {counts[statusOption]}
                     </ThemedText>
-                    {counts?.[statusOption] != null && (
-                      <View style={styles.badge}>
-                        <ThemedText
-                          type="bodySmaller"
-                          style={[
-                            styles.badgeText,
-                            pressed && styles.labelPressed(variant),
-                            isActive && styles.labelActive(variant),
-                          ]}
-                          selectable={false}
-                        >
-                          {counts[statusOption]}
-                        </ThemedText>
-                      </View>
-                    )}
                   </View>
-                </View>
+                )}
               </View>
             )}
-          </Pressable>
+          />
         );
       })}
     </ScrollView>
@@ -106,56 +105,20 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(2),
     justifyContent: "space-between",
   },
-  buttonContainer: {
+  statusButton: {
+    width: "auto",
     minHeight: 48,
     minWidth: 48,
-    justifyContent: "center" as const,
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
   },
-  buttonInner: {
-    borderRadius: theme.borderRadius["full"],
-    paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(3),
-    justifyContent: "center" as const,
-    alignItems: "center" as const,
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  buttonInnerDefault: {
-    backgroundColor: theme.button.secondary["default"].backgroundColor,
-    borderColor: theme.button.secondary["default"].borderColor,
-    borderRadius: theme.borderRadius["lg"],
-    borderBottomWidth: 4,
-    borderBottomColor: theme.button.secondary["default"].innerShadow.color,
-  },
-  buttonInnerPressed: (variant: ButtonVariant) => ({
-    backgroundColor: theme.button[variant]["active"].backgroundColor,
-    borderColor: theme.button[variant]["active"].borderColor,
-    borderRadius: theme.borderRadius["lg"],
-    borderBottomWidth: 4,
-    borderBottomColor: theme.button[variant]["active"].innerShadow.color,
-  }),
-  buttonInnerActive: (variant: ButtonVariant) => ({
-    backgroundColor: theme.button[variant]["default"].backgroundColor,
-    borderColor: theme.button[variant]["default"].borderColor,
-    borderRadius: theme.borderRadius["lg"],
-    borderBottomWidth: 4,
-    borderBottomColor: theme.button[variant]["default"].innerShadow.color,
-  }),
   buttonContent: {
     flexDirection: "row" as const,
     alignItems: "center" as const,
     gap: theme.spacing(2),
   },
-  label: {
-    textAlign: "center" as const,
-    color: theme.button.secondary["default"].textColor,
-  },
-  labelPressed: (variant: ButtonVariant) => ({
-    color: theme.button[variant]["active"].textColor,
-  }),
-  labelActive: (variant: ButtonVariant) => ({
-    color: theme.button[variant]["default"].textColor,
-  }),
   badge: {
     backgroundColor: theme.colors.dark.black_10,
     borderRadius: 10,
