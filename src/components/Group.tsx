@@ -6,9 +6,9 @@ export function Group({ children, style }: ViewProps) {
   return <ThemedView style={[styles.Group, style]}>{children}</ThemedView>;
 }
 
-const styles = StyleSheet.create(() => ({
+const styles = StyleSheet.create((theme) => ({
   Group: {
-    borderRadius: 16,
+    borderRadius: theme.borderRadius["lg"],
     overflow: "hidden",
   },
 }));

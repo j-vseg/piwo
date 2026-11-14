@@ -75,7 +75,7 @@ export default function BottomSheet({
 
 const styles = StyleSheet.create((theme) => ({
   container: {
-    paddingHorizontal: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    paddingHorizontal: theme.spacing(6),
+    paddingBottom: theme.spacing(6),
   },
 }));

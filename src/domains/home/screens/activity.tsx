@@ -80,21 +80,18 @@ export default function ActivityScreen({ id }: { id: string }) {
   return (
     <ThemedView type="container">
       <ThemedView style={styles.event}>
-        <ThemedView>
+        <ThemedView style={styles.text}>
           <ThemedText type="bodyLarge">{occurrence.name}</ThemedText>
           <ThemedText
             type="bodySmall"
             style={styles.subtitle}
           >{`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}</ThemedText>
         </ThemedView>
-        <AvailabilitySelector
-          occurrenceId={occurrence.id}
-          occurrenceCategory={occurrence.category}
-        />
+        <AvailabilitySelector occurrenceId={occurrence.id} />
       </ThemedView>
 
       <ThemedView style={styles.availability}>
-        <ThemedText type="h2">{t("activity.attendance")}</ThemedText>
+        <ThemedText type="h3">{t("activity.attendance")}</ThemedText>
         {isLoadingAvailability ? (
           <LoadingIndicator />
         ) : isErrorAvailability ? (
@@ -107,7 +104,6 @@ export default function ActivityScreen({ id }: { id: string }) {
           <>
             <StatusButtonGroup
               selected={selected}
-              eventColor={eventColor}
               disabled={isLoadingAvailability}
               counts={counts}
               onSelect={setSelected}
@@ -184,22 +180,24 @@ const styles = StyleSheet.create((theme) => ({
   },
   availability: {
     flexDirection: "column",
-    gap: theme.spacing(4),
+    gap: theme.spacing(6),
   },
   displayNames: {
     flexDirection: "column",
-    gap: theme.spacing(2),
+    gap: theme.spacing(4),
     marginTop: theme.spacing(4),
   },
   nameItem: {
     backgroundColor: theme.colors.light.white,
     borderRadius: 8,
-    paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(2),
+    padding: theme.spacing(4),
     flexDirection: "row",
     justifyContent: "space-between",
   },
   status: {
     color: theme.colors.dark.greyMedium,
+  },
+  text: {
+    gap: theme.spacing(4),
   },
 }));

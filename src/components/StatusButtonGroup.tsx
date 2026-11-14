@@ -2,10 +2,19 @@ import { AVAILABILITY_SELECTOR_STATUSES, Status } from "@/constants/Status";
 import { Pressable, ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { ThemedText } from "./ThemedText";
+import { lightTheme } from "@/themes/light";
+
+type ButtonVariant = keyof typeof lightTheme.button;
+
+const STATUS_BUTTON_VARIANT: Record<Status, ButtonVariant> = {
+  [Status.Present]: "success",
+  [Status.Later]: "success",
+  [Status.Maybe]: "warning",
+  [Status.Absent]: "error",
+};
 
 interface StatusButtonGroupProps {
   selected?: Status | null;
-  eventColor: string;
   disabled?: boolean;
   counts?: Partial<Record<Status, number>>;
   onSelect: (status: Status) => void;
@@ -13,7 +22,6 @@ interface StatusButtonGroupProps {
 
 export function StatusButtonGroup({
   selected,
-  eventColor,
   disabled,
   counts,
   onSelect,
@@ -28,14 +36,11 @@ export function StatusButtonGroup({
         const isActive =
           selected === statusOption ||
           (statusOption === Status.Present && selected === Status.Later);
+        const variant = STATUS_BUTTON_VARIANT[statusOption];
 
         return (
           <Pressable
             key={statusOption}
-            style={[
-              styles.button(statusOption, isActive ? statusOption : selected),
-              !isActive && { backgroundColor: eventColor },
-            ]}
             onPress={() => onSelect(statusOption)}
             onLongPress={
               statusOption === Status.Present
@@ -44,24 +49,49 @@ export function StatusButtonGroup({
             }
             disabled={disabled}
           >
-            <View style={styles.buttonContent}>
-              <ThemedText type="button" style={styles.text} selectable={false}>
-                {isActive && selected === Status.Later
-                  ? Status.Later
-                  : statusOption}
-              </ThemedText>
-              {counts?.[statusOption] != null && (
-                <View style={styles.badge}>
-                  <ThemedText
-                    type="bodySmaller"
-                    style={styles.badgeText}
-                    selectable={false}
-                  >
-                    {counts[statusOption]}
-                  </ThemedText>
+            {({ pressed }) => (
+              <View style={styles.buttonContainer}>
+                <View
+                  style={[
+                    styles.buttonInner,
+                    !isActive && styles.buttonInnerDefault,
+                    pressed && styles.buttonInnerPressed(variant),
+                    isActive && styles.buttonInnerActive(variant),
+                  ]}
+                >
+                  <View style={styles.buttonContent}>
+                    <ThemedText
+                      type="bodySmall"
+                      style={[
+                        styles.label,
+                        pressed && styles.labelPressed(variant),
+                        isActive && styles.labelActive(variant),
+                      ]}
+                      selectable={false}
+                    >
+                      {isActive && selected === Status.Later
+                        ? Status.Later
+                        : statusOption}
+                    </ThemedText>
+                    {counts?.[statusOption] != null && (
+                      <View style={styles.badge}>
+                        <ThemedText
+                          type="bodySmaller"
+                          style={[
+                            styles.badgeText,
+                            pressed && styles.labelPressed(variant),
+                            isActive && styles.labelActive(variant),
+                          ]}
+                          selectable={false}
+                        >
+                          {counts[statusOption]}
+                        </ThemedText>
+                      </View>
+                    )}
+                  </View>
                 </View>
-              )}
-            </View>
+              </View>
+            )}
           </Pressable>
         );
       })}
@@ -76,32 +106,56 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(2),
     justifyContent: "space-between",
   },
-  button: (statusOption: Status, selected?: Status | null) => ({
-    borderRadius: 8,
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(1),
+  buttonContainer: {
+    minHeight: 48,
+    minWidth: 48,
+    justifyContent: "center" as const,
+  },
+  buttonInner: {
+    borderRadius: theme.borderRadius["full"],
+    paddingHorizontal: theme.spacing(4),
+    paddingVertical: theme.spacing(3),
+    justifyContent: "center" as const,
     alignItems: "center" as const,
-    ...(selected === statusOption && {
-      backgroundColor:
-        selected === Status.Present || selected === Status.Later
-          ? theme.colors.warnings.positive
-          : selected === Status.Maybe
-            ? theme.colors.warnings.warning
-            : selected === Status.Absent
-              ? theme.colors.warnings.negative
-              : undefined,
-    }),
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  buttonInnerDefault: {
+    backgroundColor: theme.button.secondary["default"].backgroundColor,
+    borderColor: theme.button.secondary["default"].borderColor,
+    borderRadius: theme.borderRadius["lg"],
+    borderBottomWidth: 4,
+    borderBottomColor: theme.button.secondary["default"].innerShadow.color,
+  },
+  buttonInnerPressed: (variant: ButtonVariant) => ({
+    backgroundColor: theme.button[variant]["active"].backgroundColor,
+    borderColor: theme.button[variant]["active"].borderColor,
+    borderRadius: theme.borderRadius["lg"],
+    borderBottomWidth: 4,
+    borderBottomColor: theme.button[variant]["active"].innerShadow.color,
+  }),
+  buttonInnerActive: (variant: ButtonVariant) => ({
+    backgroundColor: theme.button[variant]["default"].backgroundColor,
+    borderColor: theme.button[variant]["default"].borderColor,
+    borderRadius: theme.borderRadius["lg"],
+    borderBottomWidth: 4,
+    borderBottomColor: theme.button[variant]["default"].innerShadow.color,
   }),
   buttonContent: {
     flexDirection: "row" as const,
     alignItems: "center" as const,
     gap: theme.spacing(2),
   },
-  text: {
-    fontFamily: theme.font.googleSansFlex.regular.fontFamily,
-    fontWeight: theme.font.googleSansFlex.regular.fontWeight,
-    fontSize: 16,
+  label: {
+    textAlign: "center" as const,
+    color: theme.button.secondary["default"].textColor,
   },
+  labelPressed: (variant: ButtonVariant) => ({
+    color: theme.button[variant]["active"].textColor,
+  }),
+  labelActive: (variant: ButtonVariant) => ({
+    color: theme.button[variant]["default"].textColor,
+  }),
   badge: {
     backgroundColor: theme.colors.dark.black_10,
     borderRadius: 10,

@@ -69,7 +69,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   header: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
     gap: theme.spacing(1),
   },

@@ -1,6 +1,4 @@
-import { Category } from "@/constants/Category";
 import { Status } from "@/constants/Status";
-import { useEventColor } from "@/hooks/useEventColor";
 import { getCurrentUser } from "@/services/firebase/auth";
 import {
   getUserAvailability,
@@ -14,18 +12,14 @@ import { StatusButtonGroup } from "./StatusButtonGroup";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
-  occurrenceCategory?: Category;
 }
 
 export function AvailabilitySelector({
   occurrenceId,
-  occurrenceCategory,
 }: AvailabilitySelectorProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const user = getCurrentUser();
-  const eventColor = useEventColor(occurrenceCategory);
-
   const { data: availability } = useQuery({
     queryKey: ["user-availability", occurrenceId, user?.uid],
     queryFn: () => getUserAvailability(occurrenceId, user!.uid),
@@ -71,7 +65,6 @@ export function AvailabilitySelector({
   return (
     <StatusButtonGroup
       selected={availability}
-      eventColor={eventColor}
       onSelect={(status) => updateMutate(status)}
     />
   );

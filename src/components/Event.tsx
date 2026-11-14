@@ -20,17 +20,14 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
         })
       }
     >
-      <ThemedView>
+      <ThemedView style={styles.text}>
         <ThemedText type="bodyLarge">{occurrence.name}</ThemedText>
         <ThemedText type="bodySmall" style={styles.subtitle}>
           {`${format(occurrence.startTime.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endTime.toDate(), isSameDay(occurrence.endTime.toDate(), occurrence.startTime.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
         </ThemedText>
       </ThemedView>
 
-      <AvailabilitySelector
-        occurrenceId={occurrence.id}
-        occurrenceCategory={occurrence.category}
-      />
+      <AvailabilitySelector occurrenceId={occurrence.id} />
     </Pressable>
   );
 }
@@ -38,10 +35,14 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
 const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.light.white,
-    borderRadius: 16,
-    padding: theme.spacing(4),
+    backgroundColor: theme.colors.light["white"],
+    borderRadius: theme.borderRadius["lg"],
+    paddingHorizontal: theme.spacing(4),
+    paddingVertical: theme.spacing(5),
     flexDirection: "column",
+    gap: theme.spacing(4),
+  },
+  text: {
     gap: theme.spacing(4),
   },
   subtitle: {

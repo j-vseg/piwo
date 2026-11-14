@@ -46,133 +46,129 @@ export default function SettingsScreen() {
 
   return (
     <ThemedView
-        type="container"
-        style={{
-          gap: theme.spacing(10),
-          paddingTop:
-            Platform.OS === OS.Web
-              ? rt.insets.top + theme.spacing(6)
-              : rt.insets.top + theme.spacing(4),
-        }}
-      >
-        <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
+      type="container"
+      style={{
+        gap: theme.spacing(10),
+        paddingTop:
+          Platform.OS === OS.Web
+            ? rt.insets.top + theme.spacing(6)
+            : rt.insets.top + theme.spacing(4),
+      }}
+    >
+      <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
-        <ThemedView style={styles.group}>
-          <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
-          {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
-            (isErrorPinkBeerCard || !pinkBeerCardUrl) && (
-              <Alert
-                variant="warning"
-                description={t("bestuur.beer_card.fetch_error")}
-                size={"regular"}
-              />
-            )}
-          {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
-            !(isErrorPinkBeerCard || !pinkBeerCardUrl) && (
-              <Alert
-                variant="warning"
-                description={t("bestuur.beer_card.fetch_error_green")}
-                size={"regular"}
-              />
-            )}
-          {(isErrorPinkBeerCard || !pinkBeerCardUrl) &&
-            !(isErrorGreenBeerCard || !greenBeerCardUrl) && (
-              <Alert
-                variant="warning"
-                description={t("bestuur.beer_card.fetch_error_pink")}
-                size={"regular"}
-              />
-            )}
-          {(greenBeerCardUrl || pinkBeerCardUrl) && (
-            <Group>
-              {greenBeerCardUrl && (
-                <ListTile
-                  title={t("bestuur.beer_card.buy_green")}
-                  onPress={() => openLink(greenBeerCardUrl)}
-                  iconLeft={
-                    Platform.OS === OS.Web ? "sports-bar" : "sports_bar"
-                  }
-                  iconRight={
-                    isPendingOpenLink ? (
-                      <LoadingIndicator />
-                    ) : Platform.OS === OS.Web ? (
-                      ("chevron-right" as any)
-                    ) : (
-                      "chevron_forward"
-                    )
-                  }
-                />
-              )}
-              {pinkBeerCardUrl && (
-                <ListTile
-                  title={t("bestuur.beer_card.buy_pink")}
-                  onPress={() => openLink(pinkBeerCardUrl)}
-                  iconLeft={
-                    Platform.OS === OS.Web ? "local-bar" : "local_bar"
-                  }
-                  iconRight={
-                    isPendingOpenLink ? (
-                      <LoadingIndicator />
-                    ) : Platform.OS === OS.Web ? (
-                      ("chevron-right" as any)
-                    ) : (
-                      "chevron_forward"
-                    )
-                  }
-                />
-              )}
-            </Group>
+      <ThemedView style={styles.group}>
+        <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
+        {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
+          (isErrorPinkBeerCard || !pinkBeerCardUrl) && (
+            <Alert
+              variant="warning"
+              description={t("bestuur.beer_card.fetch_error")}
+              size={"regular"}
+            />
           )}
-        </ThemedView>
-
-        <ThemedView style={styles.group}>
-          <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>
+        {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
+          !(isErrorPinkBeerCard || !pinkBeerCardUrl) && (
+            <Alert
+              variant="warning"
+              description={t("bestuur.beer_card.fetch_error_green")}
+              size={"regular"}
+            />
+          )}
+        {(isErrorPinkBeerCard || !pinkBeerCardUrl) &&
+          !(isErrorGreenBeerCard || !greenBeerCardUrl) && (
+            <Alert
+              variant="warning"
+              description={t("bestuur.beer_card.fetch_error_pink")}
+              size={"regular"}
+            />
+          )}
+        {(greenBeerCardUrl || pinkBeerCardUrl) && (
           <Group>
-            <ListTile
-              title={t("tabs.settings.personalDetails")}
-              onPress={() => router.push("/(tabs)/settings/personal-details")}
-            />
-            <NotificationSettings />
-            <ListTile
-              title={t("settings.signOut")}
-              onPress={() => mutateLogout()}
-              subtitle={isLogoutError ? t("settings.signOutError") : undefined}
-              iconRight={
-                isLogoutPending ? (
-                  <LoadingIndicator />
-                ) : isLogoutError ? (
-                  "warning"
-                ) : Platform.OS === OS.Web ? (
-                  ("chevron-right" as any)
-                ) : (
-                  "chevron_forward"
-                )
-              }
-              disabled={isLogoutPending}
-            />
-            <DeleteAccountSettings />
+            {greenBeerCardUrl && (
+              <ListTile
+                title={t("bestuur.beer_card.buy_green")}
+                onPress={() => openLink(greenBeerCardUrl)}
+                iconLeft={Platform.OS === OS.Web ? "sports-bar" : "sports_bar"}
+                iconRight={
+                  isPendingOpenLink ? (
+                    <LoadingIndicator />
+                  ) : Platform.OS === OS.Web ? (
+                    ("chevron-right" as any)
+                  ) : (
+                    "chevron_forward"
+                  )
+                }
+              />
+            )}
+            {pinkBeerCardUrl && (
+              <ListTile
+                title={t("bestuur.beer_card.buy_pink")}
+                onPress={() => openLink(pinkBeerCardUrl)}
+                iconLeft={Platform.OS === OS.Web ? "local-bar" : "local_bar"}
+                iconRight={
+                  isPendingOpenLink ? (
+                    <LoadingIndicator />
+                  ) : Platform.OS === OS.Web ? (
+                    ("chevron-right" as any)
+                  ) : (
+                    "chevron_forward"
+                  )
+                }
+              />
+            )}
           </Group>
-        </ThemedView>
-
-        <ThemedView style={styles.group}>
-          <ThemedText type="h5">{t("settings.aboutHeader")}</ThemedText>
-          <Group>
-            <ListTile
-              title={t("tabs.settings.whatIsNew.title")}
-              onPress={() => router.push("/(tabs)/settings/what-is-new")}
-              iconLeft={Platform.OS === OS.Web ? "stars" : "stars_2"}
-            />
-            <ListTile
-              title={t("tabs.settings.aboutApp")}
-              onPress={() => router.push("/(tabs)/settings/about-app")}
-            />
-            <ListTile
-              title={t("tabs.settings.installation")}
-              onPress={() => router.push("/(tabs)/settings/installation")}
-            />
-          </Group>
-        </ThemedView>
+        )}
       </ThemedView>
+
+      <ThemedView style={styles.group}>
+        <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>
+        <Group>
+          <ListTile
+            title={t("tabs.settings.personalDetails")}
+            onPress={() => router.push("/(tabs)/settings/personal-details")}
+          />
+          <NotificationSettings />
+          <ListTile
+            title={t("settings.signOut")}
+            onPress={() => mutateLogout()}
+            subtitle={isLogoutError ? t("settings.signOutError") : undefined}
+            iconRight={
+              isLogoutPending ? (
+                <LoadingIndicator />
+              ) : isLogoutError ? (
+                "warning"
+              ) : Platform.OS === OS.Web ? (
+                ("chevron-right" as any)
+              ) : (
+                "chevron_forward"
+              )
+            }
+            disabled={isLogoutPending}
+          />
+          <DeleteAccountSettings />
+        </Group>
+      </ThemedView>
+
+      <ThemedView style={styles.group}>
+        <ThemedText type="h5">{t("settings.aboutHeader")}</ThemedText>
+        <Group>
+          <ListTile
+            title={t("tabs.settings.whatIsNew.title")}
+            onPress={() => router.push("/(tabs)/settings/what-is-new")}
+            iconLeft={Platform.OS === OS.Web ? "stars" : "stars_2"}
+          />
+          <ListTile
+            title={t("tabs.settings.aboutApp")}
+            onPress={() => router.push("/(tabs)/settings/about-app")}
+          />
+          <ListTile
+            title={t("tabs.settings.installation")}
+            onPress={() => router.push("/(tabs)/settings/installation")}
+          />
+        </Group>
+      </ThemedView>
+    </ThemedView>
   );
 }
 

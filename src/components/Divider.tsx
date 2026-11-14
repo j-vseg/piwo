@@ -32,7 +32,6 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.dark.greyMedium,
   },
   label: {
-    textTransform: "uppercase",
     fontFamily: theme.font.niramit.semibold.fontFamily,
     color: theme.colors.dark.greyMedium,
   },

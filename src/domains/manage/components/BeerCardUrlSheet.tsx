@@ -123,6 +123,6 @@ export function BeerCardUrlSheet({
 
 const styles = StyleSheet.create((theme) => ({
   container: {
-    gap: theme.spacing(4),
+    gap: theme.spacing(8),
   },
 }));

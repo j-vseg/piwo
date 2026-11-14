@@ -48,8 +48,8 @@ export default function TextInput<T extends FieldValues>({
             value={value ?? ""}
             onChangeText={onChange}
             style={{
-              padding: theme.spacing(3),
-              borderRadius: theme.spacing(2),
+              padding: theme.spacing(4),
+              borderRadius: theme.borderRadius["lg"],
               backgroundColor: theme.colors.primitives.quinary,
               borderWidth: 0,
               fontFamily: theme.text.bodyMedium.fontFamily,
@@ -69,11 +69,11 @@ export default function TextInput<T extends FieldValues>({
 
 const styles = StyleSheet.create((theme) => ({
   input: {
-    gap: theme.spacing(1),
+    gap: theme.spacing(2),
   },
   dot: {
     backgroundColor: theme.colors.primitives.primary,
-    borderRadius: 99,
+    borderRadius: theme.borderRadius["full"],
     width: 5,
     height: 5,
     marginBottom: 8,

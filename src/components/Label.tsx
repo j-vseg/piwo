@@ -42,10 +42,10 @@ const styles = StyleSheet.create((theme) => ({
   },
   dot: {
     backgroundColor: theme.colors.primitives.primary,
-    borderRadius: 99,
+    borderRadius: theme.borderRadius["full"],
     width: 5,
     height: 5,
-    marginTop: 4,
+    marginTop: -2,
     marginLeft: 2,
   },
 }));

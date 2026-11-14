@@ -44,7 +44,7 @@ export default function ThisWeek() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="h2">{t("home.thisWeek")}</ThemedText>
+      <ThemedText type="h3">{t("home.thisWeek")}</ThemedText>
       {isLoadingThisWeek || isLoadingAvailability ? (
         <LoadingIndicator />
       ) : isErrorThisWeek || isErrorAvailabilty ? (

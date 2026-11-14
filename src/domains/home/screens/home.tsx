@@ -45,8 +45,8 @@ export default function HomeScreen() {
       <ThemedText type="h1">{t("tabs.home")}</ThemedText>
       <ThisWeek />
 
-      <ThemedView style={{ gap: theme.spacing(4) }}>
-        <ThemedText type="h2">{t("home.upcomingActivities")}</ThemedText>
+      <ThemedView style={{ gap: theme.spacing(6) }}>
+        <ThemedText type="h3">{t("home.upcomingActivities")}</ThemedText>
 
         {isLoading && <LoadingIndicator />}
         {isError && (
@@ -73,7 +73,9 @@ export default function HomeScreen() {
           </ThemedView>
         ))}
         {groupedOccurrences && groupedOccurrences.length !== 0 && (
-          <ThemedText style={styles.info}>{t("home.moreIncoming")}</ThemedText>
+          <ThemedText type="bodySmall" style={styles.info}>
+            {t("home.moreIncoming")}
+          </ThemedText>
         )}
       </ThemedView>
     </ThemedView>

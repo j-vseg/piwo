@@ -66,7 +66,7 @@ export default function ListTile({
         {subtitle && (
           <ThemedText
             type="bodySmaller"
-            style={textStyle}
+            style={[styles.subtitle, textStyle]}
             accessible={false}
             importantForAccessibility="no-hide-descendants"
           >
@@ -98,8 +98,7 @@ export default function ListTile({
 
 const styles = StyleSheet.create((theme) => ({
   listTile: (disabled: boolean | undefined) => ({
-    paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(2),
+    padding: theme.spacing(4),
     minHeight: 56,
     margin: 0,
     justifyContent: "space-between",
@@ -107,7 +106,7 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     gap: theme.spacing(4),
     backgroundColor: disabled
-      ? theme.button.primary.disabled.backgroundColor
+      ? theme.colors.dark["greyLight"]
       : theme.colors.light["white"],
     borderBottomWidth: 1,
     borderBottomStyle: "solid",
@@ -127,5 +126,9 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.transparent,
     justifyContent: "center",
     flexDirection: "column",
+    gap: theme.spacing(3),
+  },
+  subtitle: {
+    color: theme.colors.dark["greyDark"],
   },
 }));

@@ -69,7 +69,7 @@ const styles = StyleSheet.create((theme) => ({
     size: AlertProps["size"],
     hasShadow: AlertProps["hasShadow"],
   ) => ({
-    borderRadius: 16,
+    borderRadius: theme.borderRadius["lg"],
     backgroundColor:
       variant === "warning"
         ? theme.colors.warnings["negative"]
@@ -77,8 +77,8 @@ const styles = StyleSheet.create((theme) => ({
           ? theme.colors.warnings["positive"]
           : theme.colors.warnings["neutral"],
     paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(size === "large" ? 6 : 3),
-    gap: theme.spacing(2),
+    paddingVertical: theme.spacing(size === "large" ? 8 : 4),
+    gap: theme.spacing(4),
     flexDirection: size === "large" ? "column" : "row",
     alignItems: size === "large" ? "stretch" : "center",
     ...(hasShadow && {
