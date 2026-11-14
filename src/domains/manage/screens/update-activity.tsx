@@ -9,6 +9,7 @@ import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
+import { OS } from "@/constants/Os";
 import { Recurrence } from "@/constants/Recurrence";
 import { queryClient } from "@/queryClient";
 import { deleteEvent, getEvent, updateEvent } from "@/services/firebase/event";
@@ -264,6 +265,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
           onPress={() => mutateDelete()}
           accessibilityLabel={t("createActivity.deleteButton")}
           accessibilityHint={t("createActivity.deleteHint")}
+          type="error"
         />
       </ThemedView>
     </ThemedView>
@@ -282,7 +284,7 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(4),
   },
   previewText: {
-    gap: theme.spacing(4),
+    gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),
   },
   form: {
     flexDirection: "column",

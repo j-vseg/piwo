@@ -3,10 +3,11 @@ import { StyleSheet } from "react-native-unistyles";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { EventOccurrence } from "@/constants/EventOccurence";
+import { OS } from "@/constants/Os";
 import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { router } from "expo-router";
-import { Pressable } from "react-native";
+import { Platform, Pressable } from "react-native";
 import { AvailabilitySelector } from "./AvailabilitySelector";
 
 export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
@@ -43,7 +44,7 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(4),
   },
   text: {
-    gap: theme.spacing(4),
+    gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),
   },
   subtitle: {
     color: theme.colors.dark.greyMedium,

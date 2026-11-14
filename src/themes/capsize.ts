@@ -3,8 +3,6 @@ import googleSansFlex from "@capsizecss/metrics/googleSansFlex";
 import niramit from "@capsizecss/metrics/niramit";
 import { PixelRatio, Platform } from "react-native";
 
-const isWeb = Platform.OS === "web";
-
 // Keyed by the fontFamily names the theme uses. The values match the bundled font files.
 const fontMetrics: Record<string, typeof googleSansFlex> = {
   "Google Sans Flex": googleSansFlex,
@@ -31,12 +29,6 @@ export function getTextTrim({
   lineHeight?: number;
   fontScale?: number;
 }): TextTrim | undefined {
-  // On web, the browser's CSS line-height model already positions text correctly within the line
-  // box, so the margin-based trims are not needed and would produce different results from native.
-  if (isWeb) {
-    return undefined;
-  }
-
   const metrics = fontFamily ? fontMetrics[fontFamily] : undefined;
   if (!metrics || !fontSize) {
     return undefined;

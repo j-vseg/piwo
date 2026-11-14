@@ -5,6 +5,7 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import { StatusButtonGroup } from "@/components/StatusButtonGroup";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { OS } from "@/constants/Os";
 import { Status } from "@/constants/Status";
 import { useEventColor } from "@/hooks/useEventColor";
 import { getOccurrenceAvailability } from "@/services/firebase/availability";
@@ -15,6 +16,7 @@ import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useNavigation } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
+import { Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function ActivityScreen({ id }: { id: string }) {
@@ -198,6 +200,6 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.dark.greyMedium,
   },
   text: {
-    gap: theme.spacing(4),
+    gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),
   },
 }));

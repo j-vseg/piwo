@@ -18,6 +18,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { Platform, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { DisplayTime } from "../../settings/components/DisplayTime";
+import { OS } from "@/constants/Os";
 
 type ActivityFormData = {
   name: string;
@@ -216,7 +217,7 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(4),
   },
   previewText: {
-    gap: theme.spacing(4),
+    gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),
   },
   form: {
     flexDirection: "column",

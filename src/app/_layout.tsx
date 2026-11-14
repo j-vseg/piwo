@@ -12,6 +12,7 @@ import { getAccount } from "@/services/firebase/accounts";
 import { isVersionAboveOrEqualToSupported } from "@/services/firebase/app-version";
 import { onAuthStateChanged } from "@/services/firebase/auth";
 import { useAppStore } from "@/store/appStore";
+import { loadWebFontWeights } from "@/themes/loadWebFontWeights";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Platform } from "react-native";
 
@@ -24,10 +25,15 @@ export default function RootLayout() {
   // expo-font config plugin only embeds fonts for native; web needs runtime loading
   const [fontsLoaded] = useFonts({
     "Google Sans Flex": require("@expo-google-fonts/google-sans-flex/400Regular/GoogleSansFlex_400Regular.ttf"),
-    "Google Sans Flex SemiBold": require("@expo-google-fonts/google-sans-flex/600SemiBold/GoogleSansFlex_600SemiBold.ttf"),
     Niramit: require("@expo-google-fonts/niramit/400Regular/Niramit_400Regular.ttf"),
-    "Niramit-SemiBold": require("@expo-google-fonts/niramit/600SemiBold/Niramit_600SemiBold.ttf"),
   });
+  // On web, useFonts registers every @font-face without a font-weight descriptor, so the browser
+  // uses the 400 file with faux-bold for other weights. Register the real files for 500/700/600.
+  const [webFontsReady, setWebFontsReady] = useState(Platform.OS !== "web");
+  useEffect(() => {
+    if (Platform.OS !== "web" || !fontsLoaded) return;
+    loadWebFontWeights().then(() => setWebFontsReady(true));
+  }, [fontsLoaded]);
 
   const isSupported = useQuery(
     {
@@ -62,7 +68,7 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {authReady && fontsLoaded && (
+      {authReady && fontsLoaded && webFontsReady && (
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Protected
             guard={
