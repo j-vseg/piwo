@@ -39,7 +39,7 @@ const colors = {
     group: "#8C5A2E",
     weekend: "#3A5A6B",
     camp: "#5A4A70",
-    action: "#3A6B34",
+    action: "#5A8B40",
   },
   warnings: {
     negative: "#3A1A18",
@@ -537,7 +537,7 @@ export const darkTheme = {
     },
   },
   shadow: {
-    boxShadow: "0px 0px 19px 0px #0000003D",
+    boxShadow: "0px 0px 19px 0px #FFFFFF0A",
   },
   spacing: (v: number) => v * 4,
 };

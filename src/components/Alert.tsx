@@ -21,7 +21,7 @@ export function Alert({
       ? "warning"
       : "check",
   size,
-  hasShadow,
+  hasShadow = true,
 }: AlertProps) {
   const { theme } = useUnistyles();
 
@@ -81,9 +81,7 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(4),
     flexDirection: size === "large" ? "column" : "row",
     alignItems: size === "large" ? "stretch" : "center",
-    ...(hasShadow && {
-      boxShadow: `-1px 1px 5px 2px ${theme.colors.dark["black_10"]}`,
-    }),
+    ...(hasShadow && theme.shadow),
   }),
   description: (variant: AlertProps["variant"], size: AlertProps["size"]) => ({
     textAlign: size === "large" ? "center" : "left",

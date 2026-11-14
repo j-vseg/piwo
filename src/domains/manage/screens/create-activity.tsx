@@ -7,6 +7,7 @@ import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
+import { OS } from "@/constants/Os";
 import { Recurrence } from "@/constants/Recurrence";
 import { queryClient } from "@/queryClient";
 import { createEvent } from "@/services/firebase/event";
@@ -18,7 +19,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { Platform, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { DisplayTime } from "../../settings/components/DisplayTime";
-import { OS } from "@/constants/Os";
 
 type ActivityFormData = {
   name: string;
@@ -215,6 +215,7 @@ const styles = StyleSheet.create((theme) => ({
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
+    ...theme.shadow,
   },
   previewText: {
     gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),

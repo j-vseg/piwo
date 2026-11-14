@@ -183,6 +183,7 @@ const styles = StyleSheet.create((theme) => ({
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
+    ...theme.shadow,
   },
   subtitle: {
     color: theme.colors.dark.greyMedium,

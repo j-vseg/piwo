@@ -282,6 +282,7 @@ const styles = StyleSheet.create((theme) => ({
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
+    ...theme.shadow,
   },
   previewText: {
     gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),

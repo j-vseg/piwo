@@ -28,7 +28,10 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
         </ThemedText>
       </ThemedView>
 
-      <AvailabilitySelector occurrenceId={occurrence.id} category={occurrence.category} />
+      <AvailabilitySelector
+        occurrenceId={occurrence.id}
+        category={occurrence.category}
+      />
     </Pressable>
   );
 }
@@ -42,6 +45,7 @@ const styles = StyleSheet.create((theme) => ({
     paddingVertical: theme.spacing(5),
     flexDirection: "column",
     gap: theme.spacing(4),
+    ...theme.shadow,
   },
   text: {
     gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),
