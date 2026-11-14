@@ -8,8 +8,8 @@ import { Approval } from "@/constants/Approval";
 import { Role } from "@/constants/Role";
 import { queryClient } from "@/queryClient";
 import {
-  updateAccountApproval,
-  updateAccountRole,
+    updateAccountApproval,
+    updateAccountRole,
 } from "@/services/firebase/accounts";
 import { Trans, useTranslation } from "@/translations/i18n";
 import { useMutation } from "@tanstack/react-query";
@@ -107,7 +107,7 @@ export function ActionOverview({
 
         <ThemedText>
           <Trans
-            i18nKey="manage.accountOverview.currentRole"
+            i18nKey="bestuur.accountOverview.currentRole"
             values={{ name: user.firstName, role: user.role }}
             components={{ bold: <ThemedText weight="bold" /> }}
           />
@@ -115,7 +115,7 @@ export function ActionOverview({
 
         <ThemedView style={{ gap: theme.spacing(4) }}>
           <Picker
-            label={t("manage.accountOverview.roleLabel")}
+            label={t("bestuur.accountOverview.roleLabel")}
             control={methods.control}
             name="role"
             required={false}
@@ -123,9 +123,9 @@ export function ActionOverview({
           />
 
           <Button
-            content={t("manage.accountOverview.saveButton")}
-            accessibilityLabel={t("manage.accountOverview.saveLabel")}
-            accessibilityHint={t("manage.accountOverview.saveHint")}
+            content={t("bestuur.accountOverview.saveButton")}
+            accessibilityLabel={t("bestuur.accountOverview.saveLabel")}
+            accessibilityHint={t("bestuur.accountOverview.saveHint")}
             isPending={isPending}
             disabled={!methods.formState.isDirty}
             iconLeft="edit"
@@ -138,9 +138,9 @@ export function ActionOverview({
         </ThemedView>
 
         <Button
-          content={t("manage.accountOverview.revokeButton")}
-          accessibilityLabel={t("manage.accountOverview.revokeLabel")}
-          accessibilityHint={t("manage.accountOverview.revokeHint")}
+          content={t("bestuur.accountOverview.revokeButton")}
+          accessibilityLabel={t("bestuur.accountOverview.revokeLabel")}
+          accessibilityHint={t("bestuur.accountOverview.revokeHint")}
           isPending={isRevokePending}
           iconLeft="close"
           onPress={() => revokeMutate({ userId: user.id })}

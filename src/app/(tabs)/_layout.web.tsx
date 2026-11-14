@@ -76,9 +76,9 @@ export default function TabsLayout() {
         />
 
         <Tabs.Screen
-          name="manage"
+          name="bestuur"
           options={{
-            title: t("tabs.manage"),
+            title: t("tabs.bestuur"),
             tabBarBadge:
               data && data.length !== 0
                 ? data.length > 9
@@ -86,7 +86,7 @@ export default function TabsLayout() {
                   : String(data.length)
                 : undefined,
             tabBarIcon: ({ color }) => (
-              <MaterialIcons name="group" size={24} color={color} />
+              <MaterialIcons name="groups" size={24} color={color} />
             ),
             tabBarLabelStyle: {
               fontFamily: "Poppins",
@@ -94,7 +94,7 @@ export default function TabsLayout() {
             },
             href:
               role === Role.BoardMember || role === Role.Advisor
-                ? "/manage"
+                ? "/bestuur"
                 : null,
           }}
         />

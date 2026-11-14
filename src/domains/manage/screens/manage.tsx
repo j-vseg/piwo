@@ -54,7 +54,7 @@ export default function ManageScreen() {
               : rt.insets.top + theme.spacing(4),
         }}
       >
-        <ThemedText type="h1">{t("tabs.manage")}</ThemedText>
+        <ThemedText type="h1">{t("tabs.bestuur")}</ThemedText>
 
         {notApprovedData && notApprovedData.length !== 0 && (
           <ThemedView style={{ gap: theme.spacing(4) }}>
@@ -74,13 +74,13 @@ export default function ManageScreen() {
         )}
 
         <ThemedView style={{ gap: theme.spacing(4) }}>
-          <ThemedText type="h3">{t("manage.manageUsers")}</ThemedText>
+          <ThemedText type="h3">{t("bestuur.manageUsers")}</ThemedText>
           {isLoadingAccounts ? (
             <LoadingIndicator />
           ) : isErrorAccounts ? (
             <Alert
               variant={"warning"}
-              description={t("manage.manageUsersError")}
+              description={t("bestuur.manageUsersError")}
               size={"regular"}
             />
           ) : (
@@ -95,9 +95,9 @@ export default function ManageScreen() {
                         onPress={() => setActionOpen(user)}
                         subtitle={
                           user.id === getAuth().currentUser?.uid
-                            ? t("manage.you")
+                            ? t("bestuur.you")
                             : user.approval === Approval.Unknown
-                              ? t("manage.userWaiting")
+                              ? t("bestuur.userWaiting")
                               : undefined
                         }
                         disabled={

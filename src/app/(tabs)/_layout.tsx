@@ -55,17 +55,17 @@ export default function TabsLayout() {
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger
-        name="manage"
+        name="bestuur"
         hidden={role !== Role.BoardMember && role !== Role.Advisor}
       >
-        <NativeTabs.Trigger.Label>{t("tabs.manage")}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t("tabs.bestuur")}</NativeTabs.Trigger.Label>
         {data && data.length > 0 && (
           <NativeTabs.Trigger.Badge>
             {data.length > 9 ? "9+" : String(data.length)}
           </NativeTabs.Trigger.Badge>
         )}
         <NativeTabs.Trigger.Icon
-          src={require("@/assets/images/tabIcons/group.png")}
+          src={require("@/assets/images/tabIcons/groups.png")}
           renderingMode="template"
         />
       </NativeTabs.Trigger>

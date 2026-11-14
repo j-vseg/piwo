@@ -21,7 +21,7 @@
     },
     "login": "Login",
     "signUp": "Creër een account",
-    "manage": "Beheren"
+    "bestuur": "Bestuur"
   },
   "home": {
     "thisWeek": "Deze week",
@@ -245,7 +245,7 @@
       "description": "Installeer de Piwo app als web-app op je telefoon of download de Android-app."
     }
   },
-  "manage": {
+  "bestuur": {
     "manageUsers": "Gebruikers beheren",
     "manageUsersError": "Er is iets missgegaan met het ophalen van alle accounts",
     "you": "Je kan je eigen rechten niet aanpassen",
