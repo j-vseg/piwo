@@ -5,27 +5,19 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { OS } from "@/constants/Os";
-import { deleteUserAccount } from "@/services/firebase/accounts";
-import { getCurrentUser, signOut } from "@/services/firebase/auth";
+import { signOut } from "@/services/firebase/auth";
 import { getBeerCardUrl } from "@/services/firebase/beer-card";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useState } from "react";
-import { Control, FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Linking, Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
-import { ConfirmPassword } from "../../../components/ConfirmPassword";
+import { DeleteAccountSettings } from "../components/DeleteAccountSettings";
 import { NotificationSettings } from "../components/NotificationSettings";
-
-type DeleteAccountFormData = {
-  oldPassword: string;
-};
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
-  const [passwordConfirmOpen, setPasswordConfirmOpen] = useState(false);
   const { data: greenBeerCardUrl, isError: isErrorGreenBeerCard } = useQuery({
     queryKey: ["beer-card-url", "green"],
     queryFn: () => getBeerCardUrl("green"),
@@ -34,28 +26,6 @@ export default function SettingsScreen() {
     queryKey: ["beer-card-url", "pink"],
     queryFn: () => getBeerCardUrl("pink"),
   });
-
-  const user = getCurrentUser();
-  const deleteAccountForm = useForm<DeleteAccountFormData>({
-    defaultValues: { oldPassword: "" },
-  });
-
-  const {
-    mutate: mutateDelete,
-    isPending: isDeletePending,
-    isError: isDeleteError,
-  } = useMutation({
-    mutationFn: async (password: string) => {
-      await deleteUserAccount(user!, password);
-    },
-    onSuccess: () => setPasswordConfirmOpen(false),
-  });
-
-  const handleDeleteConfirm = () => {
-    deleteAccountForm.handleSubmit((data) => {
-      mutateDelete(data.oldPassword.trim());
-    })();
-  };
 
   const {
     mutate: mutateLogout,
@@ -75,8 +45,7 @@ export default function SettingsScreen() {
   });
 
   return (
-    <>
-      <ThemedView
+    <ThemedView
         type="container"
         style={{
           gap: theme.spacing(10),
@@ -181,26 +150,7 @@ export default function SettingsScreen() {
               }
               disabled={isLogoutPending}
             />
-            <ListTile
-              title={t("settings.deleteAccount")}
-              subtitle={
-                isDeleteError ? t("settings.deleteAccountError") : undefined
-              }
-              onPress={() => setPasswordConfirmOpen(true)}
-              textStyle={{ color: theme.colors.warnings.negative }}
-              iconRight={
-                isDeletePending ? (
-                  <LoadingIndicator />
-                ) : isDeleteError ? (
-                  "warning"
-                ) : Platform.OS === OS.Web ? (
-                  ("chevron-right" as any)
-                ) : (
-                  "chevron_forward"
-                )
-              }
-              disabled={isDeletePending}
-            />
+            <DeleteAccountSettings />
           </Group>
         </ThemedView>
 
@@ -223,15 +173,6 @@ export default function SettingsScreen() {
           </Group>
         </ThemedView>
       </ThemedView>
-
-      <ConfirmPassword
-        isOpen={passwordConfirmOpen}
-        onDismiss={() => setPasswordConfirmOpen(false)}
-        onConfirm={handleDeleteConfirm}
-        control={deleteAccountForm.control as unknown as Control<FieldValues>}
-        description={t("settings.deleteAccountDescription")}
-      />
-    </>
   );
 }
 
