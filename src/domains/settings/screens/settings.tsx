@@ -32,9 +32,13 @@ export default function SettingsScreen() {
   const [isWebPushSupported, setIsWebPushSupported] = useState(false);
   const [webPermission, setWebPermission] =
     useState<NotificationPermission>("default");
-  const { data: beerCardUrl, isError: isErrorbeerCardUrl } = useQuery({
-    queryKey: ["beer-card-url"],
-    queryFn: () => getBeerCardUrl(),
+  const { data: greenBeerCardUrl, isError: isErrorGreenBeerCard } = useQuery({
+    queryKey: ["beer-card-url", "green"],
+    queryFn: () => getBeerCardUrl("green"),
+  });
+  const { data: pinkBeerCardUrl, isError: isErrorPinkBeerCard } = useQuery({
+    queryKey: ["beer-card-url", "pink"],
+    queryFn: () => getBeerCardUrl("pink"),
   });
 
   useEffect(() => {
@@ -164,28 +168,68 @@ export default function SettingsScreen() {
 
         <ThemedView style={styles.group}>
           <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
-          {isErrorbeerCardUrl ? (
-            <Alert
-              variant="warning"
-              description={t("bestuur.beer_card.fetch_error")}
-              size={"regular"}
-            />
-          ) : (
-            <Group>
-              <ListTile
-                title={t("bestuur.beer_card.buy_beer_card")}
-                onPress={() => beerCardUrl && openLink(beerCardUrl)}
-                iconLeft={Platform.OS === OS.Web ? "sports-bar" : "sports_bar"}
-                iconRight={
-                  isPendingOpenLink ? (
-                    <LoadingIndicator />
-                  ) : Platform.OS === OS.Web ? (
-                    ("chevron-right" as any)
-                  ) : (
-                    "chevron_forward"
-                  )
-                }
+          {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
+            (isErrorPinkBeerCard || !pinkBeerCardUrl) && (
+              <Alert
+                variant="warning"
+                description={t("bestuur.beer_card.fetch_error")}
+                size={"regular"}
               />
+            )}
+          {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
+            !(isErrorPinkBeerCard || !pinkBeerCardUrl) && (
+              <Alert
+                variant="warning"
+                description={t("bestuur.beer_card.fetch_error_green")}
+                size={"regular"}
+              />
+            )}
+          {(isErrorPinkBeerCard || !pinkBeerCardUrl) &&
+            !(isErrorGreenBeerCard || !greenBeerCardUrl) && (
+              <Alert
+                variant="warning"
+                description={t("bestuur.beer_card.fetch_error_pink")}
+                size={"regular"}
+              />
+            )}
+          {(greenBeerCardUrl || pinkBeerCardUrl) && (
+            <Group>
+              {greenBeerCardUrl && (
+                <ListTile
+                  title={t("bestuur.beer_card.buy_green")}
+                  onPress={() => openLink(greenBeerCardUrl)}
+                  iconLeft={
+                    Platform.OS === OS.Web ? "sports-bar" : "sports_bar"
+                  }
+                  iconRight={
+                    isPendingOpenLink ? (
+                      <LoadingIndicator />
+                    ) : Platform.OS === OS.Web ? (
+                      ("chevron-right" as any)
+                    ) : (
+                      "chevron_forward"
+                    )
+                  }
+                />
+              )}
+              {pinkBeerCardUrl && (
+                <ListTile
+                  title={t("bestuur.beer_card.buy_pink")}
+                  onPress={() => openLink(pinkBeerCardUrl)}
+                  iconLeft={
+                    Platform.OS === OS.Web ? "local-bar" : "local_bar"
+                  }
+                  iconRight={
+                    isPendingOpenLink ? (
+                      <LoadingIndicator />
+                    ) : Platform.OS === OS.Web ? (
+                      ("chevron-right" as any)
+                    ) : (
+                      "chevron_forward"
+                    )
+                  }
+                />
+              )}
             </Group>
           )}
         </ThemedView>
