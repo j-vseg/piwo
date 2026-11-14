@@ -1,13 +1,17 @@
 import { Alert } from "@/components/Alert";
 import BottomSheet from "@/components/BottomSheet/BottomSheet";
 import Button from "@/components/Button";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { queryClient } from "@/queryClient";
-import { updateBeerCardUrl } from "@/services/firebase/beer-card";
+import {
+  getBeerCardUrl,
+  updateBeerCardUrl,
+} from "@/services/firebase/beer-card";
 import { useTranslation } from "@/translations/i18n";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -18,18 +22,20 @@ type UpdateUrlForm = {
 export function BeerCardUrlSheet({
   open,
   setOpen,
-  url,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
-  url: string;
 }) {
   const { t } = useTranslation();
+  const { data: url, isLoading } = useQuery({
+    queryKey: ["beer-card-url"],
+    queryFn: () => getBeerCardUrl(),
+  });
   const {
     control,
     handleSubmit,
     reset: resetForm,
-  } = useForm<UpdateUrlForm>({ defaultValues: { url } });
+  } = useForm<UpdateUrlForm>({ defaultValues: { url: url ?? undefined } });
   const {
     isPending,
     isSuccess,
@@ -50,7 +56,7 @@ export function BeerCardUrlSheet({
 
   return (
     <BottomSheet
-      title={t("settings.beer_card.input.label")}
+      title={t("bestuur.beer_card.input.label")}
       isPresented={open}
       onDismiss={() => {
         resetForm();
@@ -59,10 +65,12 @@ export function BeerCardUrlSheet({
       }}
     >
       <ThemedView style={styles.container}>
+        {isLoading && <LoadingIndicator />}
+
         {isError && (
           <Alert
             variant="warning"
-            description={t("settings.beer_card.error")}
+            description={t("bestuur.beer_card.error")}
             size={"regular"}
           />
         )}
@@ -70,26 +78,27 @@ export function BeerCardUrlSheet({
         {isSuccess && (
           <Alert
             variant="success"
-            description={t("settings.beer_card.success")}
+            description={t("bestuur.beer_card.success")}
             size={"regular"}
           />
         )}
 
-        <ThemedText>{t("settings.beer_card.description")}</ThemedText>
+        <ThemedText>{t("bestuur.beer_card.description")}</ThemedText>
 
         <TextInput
-          label={t("settings.beer_card.input.label")}
+          label={t("bestuur.beer_card.input.label")}
           control={control}
           name="url"
           rules={{
-            required: t("settings.beer_card.input.required"),
+            required: t("bestuur.beer_card.input.required"),
             pattern: {
-              value: /^https:\/\/betaalverzoek\.rabobank\.nl\/betaalverzoek\/?.*$/,
-              message: t("settings.beer_card.input.invalid"),
+              value:
+                /^https:\/\/betaalverzoek\.rabobank\.nl\/betaalverzoek\/?.*$/,
+              message: t("bestuur.beer_card.input.invalid"),
             },
           }}
           inputProps={{
-            placeholder: t("settings.beer_card.input.placeholder"),
+            placeholder: t("bestuur.beer_card.input.placeholder"),
             autoCapitalize: "none",
             keyboardType: "url",
             autoComplete: "url",
@@ -98,8 +107,8 @@ export function BeerCardUrlSheet({
         />
 
         <Button
-          content={t("settings.beer_card.button.label")}
-          accessibilityLabel={t("settings.beer_card.button.label")}
+          content={t("bestuur.beer_card.button.label")}
+          accessibilityLabel={t("bestuur.beer_card.button.label")}
           accessibilityHint={""}
           isPending={isPending}
           onPress={handleSubmit((data) => mutate({ url: data.url }))}

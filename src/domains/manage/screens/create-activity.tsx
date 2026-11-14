@@ -18,7 +18,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
 import { Platform, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
-import { DisplayTime } from "../components/DisplayTime";
+import { DisplayTime } from "../../settings/components/DisplayTime";
 
 type ActivityFormData = {
   name: string;

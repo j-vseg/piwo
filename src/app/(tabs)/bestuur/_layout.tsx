@@ -32,6 +32,41 @@ export default function ManageLayout() {
             headerTintColor: theme.screen.default.headerTintColor,
           }}
         />
+
+        <Stack.Screen
+          name="create-activity"
+          options={{
+            headerShown: true,
+            title: t("tabs.settings.createActivity"),
+            headerTitleAlign: "center",
+            headerTitleStyle: {
+              fontFamily: theme.text.h3.fontFamily,
+              fontWeight: theme.text.h3.fontWeight,
+              fontSize: theme.text.h3.fontSize,
+            },
+            headerStyle: {
+              backgroundColor: theme.colors.category.weekend,
+            },
+            headerTintColor: theme.screen.default.headerTintColor,
+          }}
+        />
+        <Stack.Screen
+          name="update-activity"
+          options={{
+            headerShown: true,
+            title: t("tabs.settings.editActivity"),
+            headerTitleAlign: "center",
+            headerTitleStyle: {
+              fontFamily: theme.text.h3.fontFamily,
+              fontWeight: theme.text.h3.fontWeight,
+              fontSize: theme.text.h3.fontSize,
+            },
+            headerStyle: {
+              backgroundColor: theme.colors.category.weekend,
+            },
+            headerTintColor: theme.screen.default.headerTintColor,
+          }}
+        />
       </Stack.Protected>
     </Stack>
   );

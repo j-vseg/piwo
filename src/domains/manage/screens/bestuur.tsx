@@ -14,10 +14,14 @@ import { useState } from "react";
 import { Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ApprovalOverview } from "../components/ApprovalOverview";
+import { BeerCardUrlSheet } from "../components/BeerCardUrlSheet";
+import { SelectActivity } from "../components/SelectActivity";
 
 export default function ManageScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
+  const [editActivityOpen, setEditActivityOpen] = useState(false);
+  const [beerCardUrlOpen, setBeerCardUrlOpen] = useState(false);
   const [approvalOpen, setApprovalOpen] = useState<string | undefined>(
     undefined,
   );
@@ -60,16 +64,49 @@ export default function ManageScreen() {
           </ThemedView>
         )}
 
-        <ThemedView style={styles.group}>
-          <ThemedText type="h5">{t("bestuur.users")}</ThemedText>
-          <Group>
-            <ListTile
-              title={t("tabs.bestuur.manageUsers")}
-              onPress={() => router.push("/(tabs)/bestuur/manage-user")}
-            />
-          </Group>
+        <ThemedView style={{ gap: theme.spacing(4) }}>
+          <ThemedText type="h3">Beheren</ThemedText>
+
+          <ThemedView style={styles.group}>
+            <ThemedText type="h5">{t("bestuur.users")}</ThemedText>
+            <Group>
+              <ListTile
+                title={t("tabs.bestuur.manageUsers")}
+                onPress={() => router.push("/(tabs)/bestuur/manage-user")}
+              />
+            </Group>
+          </ThemedView>
+
+          <ThemedView style={styles.group}>
+            <ThemedText type="h5">{t("settings.activitiesHeader")}</ThemedText>
+            <Group>
+              <ListTile
+                title={t("tabs.settings.createActivity")}
+                onPress={() => router.push("/(tabs)/bestuur/create-activity")}
+              />
+              <ListTile
+                title={t("tabs.settings.editActivity")}
+                onPress={() => setEditActivityOpen(true)}
+              />
+            </Group>
+          </ThemedView>
+
+          <ThemedView style={styles.group}>
+            <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
+            <Group>
+              <ListTile
+                title={t("bestuur.beer_card.buy_beer_card_url")}
+                onPress={() => setBeerCardUrlOpen(!beerCardUrlOpen)}
+              />
+            </Group>
+          </ThemedView>
         </ThemedView>
       </ThemedView>
+
+      <SelectActivity
+        editActivityOpen={editActivityOpen}
+        setEditActivityOpen={setEditActivityOpen}
+      />
 
       {approvalOpen && (
         <ApprovalOverview
@@ -79,6 +116,8 @@ export default function ManageScreen() {
           userId={approvalOpen}
         />
       )}
+
+      <BeerCardUrlSheet open={beerCardUrlOpen} setOpen={setBeerCardUrlOpen} />
     </>
   );
 }
