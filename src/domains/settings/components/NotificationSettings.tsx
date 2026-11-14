@@ -1,8 +1,8 @@
 import ListTile from "@/components/ListTile";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import { Switch } from "@/components/Switch/Switch";
 import { OS } from "@/constants/Os";
 import { queryClient } from "@/queryClient";
-import { Host, Switch } from "@expo/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { useTranslation } from "react-i18next";
@@ -34,6 +34,7 @@ export function NotificationSettings() {
     queryKey: WEB_PUSH_SUPPORTED_QUERY_KEY,
     queryFn: async () => {
       const { isSupported } = await import("firebase/messaging");
+      console.log(await isSupported());
       return isSupported();
     },
     networkMode: "always",
@@ -78,7 +79,10 @@ export function NotificationSettings() {
     isError: isWebError,
   } = useMutation({
     mutationFn: async () => {
-      if (webPermission !== "default") return;
+      if (webPermission !== "default") {
+        Linking.openSettings();
+        return;
+      }
       const { requestWebNotificationPermission } =
         await import("@/services/notifications.web");
       const result = await requestWebNotificationPermission();
@@ -104,12 +108,7 @@ export function NotificationSettings() {
           ) : isError ? (
             "warning"
           ) : (
-            <Host matchContents>
-              <Switch
-                value={notificationsEnabled}
-                onValueChange={() => toggleNotification()}
-              />
-            </Host>
+            <Switch value={notificationsEnabled} />
           )
         }
         iconLeft={permanentlyDenied ? "settings" : undefined}
@@ -136,17 +135,14 @@ export function NotificationSettings() {
         ) : isWebError ? (
           "warning"
         ) : (
-          <Host matchContents>
-            <Switch
-              value={webPermission === "granted"}
-              onValueChange={() => toggleWebNotification()}
-              disabled={webPermission !== "default" || isWebPending}
-            />
-          </Host>
+          <Switch value={webPermission === "granted"} />
         )
       }
-      disabled={
-        !isWebPushSupported || webPermission !== "default" || isWebPending
+      disabled={!isWebPushSupported || isWebPending}
+      iconLeft={
+        webPermission !== "default" && isWebPushSupported
+          ? "settings"
+          : undefined
       }
     />
   );
