@@ -125,6 +125,7 @@ export default function AppInfo({ status = "outdated" }: AppInfoProps) {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.screen.default.backgroundColor,
     gap: theme.spacing(10),
@@ -135,7 +136,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   content: {
     alignItems: "center",
-    gap: theme.spacing(2),
+    gap: theme.spacing(8),
   },
   title: {
     textAlign: "center",
@@ -147,6 +148,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     marginBottom: theme.spacing(4),
   },
   button: {
-    gap: theme.spacing(1),
+    gap: theme.spacing(2),
   },
 }));

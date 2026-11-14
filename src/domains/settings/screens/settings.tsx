@@ -172,6 +172,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create((theme) => ({
   group: {
     flexDirection: "column",
-    gap: theme.spacing(2),
+    gap: theme.spacing(4),
   },
 }));

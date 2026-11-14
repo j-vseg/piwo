@@ -72,7 +72,9 @@ export default function SignUpScreen() {
   return (
     <ThemedView type="container" style={styles.container}>
       <ThemedView style={styles.form}>
-        <ThemedText type="h1">{t("tabs.signUp")}</ThemedText>
+        <ThemedText type="h1" style={styles.title}>
+          {t("tabs.signUp")}
+        </ThemedText>
 
         {isSuccessCreateFirestore && (
           <Alert
@@ -187,5 +189,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   button: {
     gap: theme.spacing(1),
+  },
+  title: {
+    marginBottom: theme.spacing(4),
   },
 }));

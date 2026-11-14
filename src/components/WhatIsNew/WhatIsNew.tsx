@@ -65,9 +65,7 @@ export default function WhatIsNewOverview() {
               />
             </ThemedView>
             <ThemedView style={styles.textContainer}>
-              <ThemedText type="bodyLarge" weight="600">
-                {feature.title}
-              </ThemedText>
+              <ThemedText type="h4">{feature.title}</ThemedText>
               <ThemedText type="bodySmall" style={styles.description}>
                 {feature.description}
               </ThemedText>
@@ -96,7 +94,7 @@ const styles = StyleSheet.create((theme) => ({
   textContainer: {
     flex: 1,
     backgroundColor: theme.colors.transparent,
-    gap: theme.spacing(1),
+    gap: Platform.OS === OS.Web ? theme.spacing(2) : theme.spacing(4),
   },
   description: {
     color: theme.colors.dark.greyMedium,
