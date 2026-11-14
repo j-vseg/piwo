@@ -59,30 +59,27 @@ export default function SettingsScreen() {
 
       <ThemedView style={styles.group}>
         <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
-        {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
-          (isErrorPinkBeerCard || !pinkBeerCardUrl) && (
-            <Alert
-              variant="warning"
-              description={t("bestuur.beer_card.fetch_error")}
-              size={"regular"}
-            />
-          )}
-        {(isErrorGreenBeerCard || !greenBeerCardUrl) &&
-          !(isErrorPinkBeerCard || !pinkBeerCardUrl) && (
-            <Alert
-              variant="warning"
-              description={t("bestuur.beer_card.fetch_error_green")}
-              size={"regular"}
-            />
-          )}
-        {(isErrorPinkBeerCard || !pinkBeerCardUrl) &&
-          !(isErrorGreenBeerCard || !greenBeerCardUrl) && (
-            <Alert
-              variant="warning"
-              description={t("bestuur.beer_card.fetch_error_pink")}
-              size={"regular"}
-            />
-          )}
+        {isErrorGreenBeerCard && isErrorPinkBeerCard && (
+          <Alert
+            variant="warning"
+            description={t("bestuur.beer_card.fetch_error")}
+            size={"regular"}
+          />
+        )}
+        {isErrorGreenBeerCard && !isErrorPinkBeerCard && (
+          <Alert
+            variant="warning"
+            description={t("bestuur.beer_card.fetch_error_green")}
+            size={"regular"}
+          />
+        )}
+        {isErrorPinkBeerCard && !isErrorGreenBeerCard && (
+          <Alert
+            variant="warning"
+            description={t("bestuur.beer_card.fetch_error_pink")}
+            size={"regular"}
+          />
+        )}
         {(greenBeerCardUrl || pinkBeerCardUrl) && (
           <Group>
             {greenBeerCardUrl && (
