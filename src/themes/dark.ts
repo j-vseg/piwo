@@ -1,14 +1,19 @@
 const colors = {
   button: {
     primaryActiveBG: "#A63A4A",
+    secondaryActiveBG: "#2A2117",
+    tertiaryDefaultBG: "#2A2117",
+    tertiaryActiveBG: "#C4935A",
   },
   dark: {
     black: "#FFFFFF",
     black_4: "#FFFFFF0A",
     black_10: "#FFFFFF1A",
+    black_30: "#FFFFFF4D",
     greyDark: "#E0E0E0",
     greyLight: "#2A2A2E",
     greyMedium: "#9E9AAB",
+    greyMedium_60: "#9E9AAB60",
   },
   light: {
     offWhite: "#1A1A1C",
@@ -17,13 +22,17 @@ const colors = {
   },
   primitives: {
     primary: "#C4935A",
-    secondary: "#7A8360",
-    tertairy: "#8B2A2D",
+    primary_AA: "#C4935A",
+    quaternary_48: "#3A2A1A",
+    quaternary: "#2A2117",
+    quinaryDarker: "#2A2A2E",
     quinary: "#1E1D18",
-
-    background: {
-      primary: "#2A2117",
-    },
+    secondary: "#7A8360",
+    secondary_AA: "#E0E0E0",
+    secondary_AA_40: "#E0E0E040",
+    secondaryLight: "#3A4030",
+    senary: "#2A2A2E",
+    tertiary: "#3A2A1A",
   },
   transparent: "#00000000",
   category: {
@@ -33,15 +42,13 @@ const colors = {
     action: "#3A6B34",
   },
   warnings: {
-    negative: "#d32f2f",
-    warning: "#e68a00",
-    positive: "#388e3c",
-
-    background: {
-      neutral: "#1A2F40",
-      success: "#1B3A1E",
-      error: "#3A1A18",
-    },
+    negative: "#3A1A18",
+    neutral: "#1A2F40",
+    positive: "#1B3A1E",
+    positiveActive: "#388E3C",
+  },
+  chip: {
+    selected: "#3A5A6B",
   },
 };
 
@@ -54,23 +61,23 @@ const fontWeight = {
 };
 
 export const font = {
-  crimsonPro: {
+  niramit: {
     semibold: {
-      fontFamily: "Crimson Pro",
+      fontFamily: "Niramit",
       fontWeight: fontWeight.semiBold,
     },
   },
-  poppins: {
+  googleSansFlex: {
     regular: {
-      fontFamily: "Poppins",
+      fontFamily: "Google Sans Flex",
       fontWeight: fontWeight.light,
     },
-    regularLarge: {
-      fontFamily: "Poppins",
+    medium: {
+      fontFamily: "Google Sans Flex",
       fontWeight: fontWeight.medium,
     },
     bold: {
-      fontFamily: "Poppins",
+      fontFamily: "Google Sans Flex",
       fontWeight: fontWeight.bold,
     },
   },
@@ -80,77 +87,108 @@ const text = {
   text: {
     color: colors.dark["black"],
     textBreakStrategy: "balanced",
+    includeFontPadding: false,
   },
   h1: {
-    fontFamily: font.crimsonPro.semibold.fontFamily,
-    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontFamily: font.niramit.semibold.fontFamily,
+    fontWeight: font.niramit.semibold.fontWeight,
     fontSize: 48 as const,
-    letterSpacing: -0.5 as const,
+    lineHeight: 62 as const,
+    letterSpacing: -1 as const,
+    color: colors.primitives["secondary_AA"],
   },
   h2: {
-    fontFamily: font.crimsonPro.semibold.fontFamily,
-    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontFamily: font.niramit.semibold.fontFamily,
+    fontWeight: font.niramit.semibold.fontWeight,
     fontSize: 32 as const,
+    lineHeight: 42 as const,
     letterSpacing: -0.5 as const,
+    color: colors.primitives["secondary_AA"],
   },
   h3: {
-    fontFamily: font.crimsonPro.semibold.fontFamily,
-    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontFamily: font.niramit.semibold.fontFamily,
+    fontWeight: font.niramit.semibold.fontWeight,
     fontSize: 20 as const,
+    lineHeight: 26 as const,
     letterSpacing: -0.5 as const,
+    color: colors.primitives["secondary_AA"],
   },
   h4: {
-    fontFamily: font.crimsonPro.semibold.fontFamily,
-    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontFamily: font.niramit.semibold.fontFamily,
+    fontWeight: font.niramit.semibold.fontWeight,
     fontSize: 18 as const,
+    lineHeight: 23 as const,
     letterSpacing: -0.5 as const,
+    color: colors.primitives["secondary_AA"],
   },
   h5: {
-    fontFamily: font.crimsonPro.semibold.fontFamily,
-    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontFamily: font.niramit.semibold.fontFamily,
+    fontWeight: font.niramit.semibold.fontWeight,
     fontSize: 16 as const,
+    lineHeight: 21 as const,
     letterSpacing: -0.5 as const,
+    color: colors.primitives["secondary_AA"],
   },
   bodyLargest: {
-    fontFamily: font.poppins.regularLarge.fontFamily,
-    fontWeight: font.poppins.regularLarge.fontWeight,
+    fontFamily: font.googleSansFlex.medium.fontFamily,
+    fontWeight: font.googleSansFlex.medium.fontWeight,
     fontSize: 40 as const,
+    lineHeight: 50 as const,
   },
   bodyLarge: {
-    fontFamily: font.poppins.regularLarge.fontFamily,
-    fontWeight: font.poppins.regularLarge.fontWeight,
+    fontFamily: font.googleSansFlex.medium.fontFamily,
+    fontWeight: font.googleSansFlex.medium.fontWeight,
     fontSize: 18 as const,
+    lineHeight: 29 as const,
   },
   bodyMedium: {
-    fontFamily: font.poppins.regular.fontFamily,
-    fontWeight: font.poppins.regular.fontWeight,
+    fontFamily: font.googleSansFlex.regular.fontFamily,
+    fontWeight: font.googleSansFlex.regular.fontWeight,
     fontSize: 16 as const,
+    lineHeight: 20 as const,
   },
   bodySmall: {
-    fontFamily: font.poppins.regular.fontFamily,
-    fontWeight: font.poppins.regular.fontWeight,
+    fontFamily: font.googleSansFlex.regular.fontFamily,
+    fontWeight: font.googleSansFlex.regular.fontWeight,
     fontSize: 14 as const,
+    lineHeight: 20 as const,
   },
   bodySmaller: {
-    fontFamily: font.poppins.regular.fontFamily,
-    fontWeight: font.poppins.regular.fontWeight,
+    fontFamily: font.googleSansFlex.regular.fontFamily,
+    fontWeight: font.googleSansFlex.regular.fontWeight,
     fontSize: 12 as const,
+    lineHeight: 15 as const,
+  },
+  tag: {
+    fontFamily: font.googleSansFlex.bold.fontFamily,
+    fontWeight: font.googleSansFlex.bold.fontWeight,
+    fontSize: 11 as const,
+    lineHeight: 14 as const,
+    letterSpacing: 0.7 as const,
   },
   menu: {
-    fontFamily: font.poppins.bold.fontFamily,
-    fontWeight: font.poppins.bold.fontWeight,
+    fontFamily: font.googleSansFlex.regular.fontFamily,
+    fontWeight: font.googleSansFlex.regular.fontWeight,
     fontSize: 11 as const,
-    letterSpacing: 0.2 as const,
+    lineHeight: 18 as const,
   },
   button: {
-    fontFamily: font.crimsonPro.semibold.fontFamily,
-    fontWeight: font.crimsonPro.semibold.fontWeight,
+    fontFamily: font.googleSansFlex.medium.fontFamily,
+    fontWeight: font.googleSansFlex.medium.fontWeight,
     fontSize: 16 as const,
+    lineHeight: 20 as const,
   },
   span: {
-    fontFamily: font.poppins.regular.fontFamily,
-    fontWeight: font.poppins.regular.fontWeight,
+    fontFamily: font.googleSansFlex.regular.fontFamily,
+    fontWeight: font.googleSansFlex.regular.fontWeight,
     fontSize: 32 as const,
+    lineHeight: 40 as const,
+  },
+  tabButtonLabel: {
+    fontSize: 14 as const,
+    fontFamily: font.googleSansFlex.bold.fontFamily,
+    fontWeight: font.googleSansFlex.bold.fontWeight,
+    lineHeight: 20 as const,
   },
 } as const;
 
@@ -159,59 +197,157 @@ export const darkTheme = {
   font,
   fontWeight,
   text,
+  borderRadius: {
+    none: 0,
+    sm: 4,
+    md: 8,
+    lg: 18,
+    xl: 24,
+    xxl: 32,
+    full: 80,
+  },
   tabBar: {
-    inactiveTintColor: colors.dark.black,
+    inactiveTintColor: colors.dark["black"],
     activeTintColor: colors.primitives["primary"],
     backgroundColor: colors.light["white"],
     shadow: "0px -0.33px 0px rgba(255, 255, 255, 0.1)",
   },
   screen: {
     default: {
-      backgroundColor: colors.primitives.background["primary"],
+      backgroundColor: colors.primitives["quinary"],
       headerTintColor: colors.dark["black"],
+    },
+    modal: {
+      backgroundColor: colors.light["offWhite"],
+      headerTintColor: colors.primitives["secondary_AA"],
     },
   },
   button: {
     primary: {
       default: {
-        backgroundColor: colors.primitives["tertairy"],
-        borderColor: colors.primitives["tertairy"],
-        iconColor: colors.dark["black"],
-        textColor: colors.dark["black"],
+        backgroundColor: colors.primitives["secondary"],
+        borderColor: colors.primitives["secondary"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+        innerShadow: {
+          color: colors.primitives["primary_AA"],
+          x: 0,
+          y: -4,
+          blur: 0,
+          spread: 0,
+        },
       },
       active: {
-        backgroundColor: colors.button["primaryActiveBG"],
-        borderColor: colors.button["primaryActiveBG"],
-        iconColor: colors.light["white"],
-        textColor: colors.light["white"],
+        backgroundColor: colors.primitives["primary"],
+        borderColor: colors.primitives["primary"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+        innerShadow: {
+          color: "#00000066",
+          x: 0,
+          y: -4,
+          blur: 0,
+          spread: 0,
+        },
       },
       disabled: {
         backgroundColor: colors.dark["greyLight"],
         borderColor: colors.dark["greyLight"],
-        iconColor: colors.dark["greyMedium"],
-        textColor: colors.dark["greyMedium"],
+        iconColor: colors.dark["greyMedium_60"],
+        textColor: colors.dark["greyMedium_60"],
       },
     },
     secondary: {
       default: {
-        backgroundColor: colors.primitives["secondary"],
-        borderColor: colors.primitives["secondary"],
-        iconColor: colors.light["white"],
-        textColor: colors.light["white"],
+        backgroundColor: colors.primitives["quinaryDarker"],
+        borderColor: colors.primitives["quinaryDarker"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+        innerShadow: {
+          color: "#00000066",
+          x: 0,
+          y: -4,
+          blur: 0,
+          spread: 0,
+        },
       },
       active: {
-        backgroundColor: colors.button["primaryActiveBG"],
-        borderColor: colors.button["primaryActiveBG"],
-        iconColor: colors.dark["black"],
-        textColor: colors.dark["black"],
+        backgroundColor: colors.primitives["secondary_AA"],
+        borderColor: colors.primitives["secondary_AA"],
+        iconColor: colors.light["offWhite"],
+        textColor: colors.light["offWhite"],
+        innerShadow: {
+          color: colors.dark["black"],
+          x: 0,
+          y: -4,
+          blur: 0,
+          spread: 0,
+        },
       },
       disabled: {
         backgroundColor: colors.dark["greyLight"],
         borderColor: colors.dark["greyLight"],
-        iconColor: colors.dark["greyMedium"],
-        textColor: colors.dark["greyMedium"],
+        iconColor: colors.primitives["secondary_AA_40"],
+        textColor: colors.primitives["secondary_AA_40"],
+      },
+    },
+    tertiary: {
+      default: {
+        backgroundColor: colors.primitives["secondary_AA"],
+        borderColor: colors.primitives["secondary_AA"],
+        iconColor: colors.light["offWhite"],
+        textColor: colors.light["offWhite"],
+        innerShadow: {
+          color: colors.dark["black"],
+          x: 0,
+          y: -4,
+          blur: 0,
+          spread: 0,
+        },
+      },
+      active: {
+        backgroundColor: colors.primitives["primary_AA"],
+        borderColor: colors.primitives["primary_AA"],
+        iconColor: colors.primitives["secondary_AA"],
+        textColor: colors.primitives["secondary_AA"],
+        innerShadow: {
+          color: "#00000066",
+          x: 0,
+          y: -4,
+          blur: 0,
+          spread: 0,
+        },
+      },
+      disabled: {
+        backgroundColor: colors.dark["greyLight"],
+        borderColor: colors.dark["greyLight"],
+        iconColor: colors.dark["greyMedium_60"],
+        textColor: colors.dark["greyMedium_60"],
       },
     },
   },
+  sections: {
+    home: {
+      headerBackgroundColor: colors.primitives["quaternary"],
+      headerTintColor: colors.dark["black"],
+    },
+    insight: {
+      headerBackgroundColor: colors.primitives["quaternary"],
+      headerTintColor: colors.dark["black"],
+    },
+  },
+  insight: {
+    chart: {
+      legend: {
+        backgroundColor: colors.light.white,
+        tintColor: colors.dark.black,
+      },
+    },
+  },
+  shadow: {
+    boxShadow: "0px 0px 19px 0px #0000003D",
+  },
   spacing: (v: number) => v * 4,
 };
+
+export type ThemeSection = keyof typeof darkTheme.sections;

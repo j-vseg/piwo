@@ -38,7 +38,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   label: {
     marginBottom: theme.spacing(1),
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
+    fontFamily: theme.font.niramit.semibold.fontFamily,
   },
   dot: {
     backgroundColor: theme.colors.primitives.primary,

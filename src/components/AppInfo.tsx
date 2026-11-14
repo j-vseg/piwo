@@ -140,7 +140,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   title: {
     textAlign: "center",
     marginBottom: theme.spacing(1),
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
+    fontFamily: theme.font.niramit.semibold.fontFamily,
   },
   messageText: {
     textAlign: "center",

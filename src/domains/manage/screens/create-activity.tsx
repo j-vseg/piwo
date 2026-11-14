@@ -252,8 +252,8 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "space-between",
   },
   previewButtonText: {
-    fontFamily: theme.font.poppins.regular.fontFamily,
-    fontWeight: theme.font.poppins.regular.fontWeight,
+    fontFamily: theme.font.googleSansFlex.regular.fontFamily,
+    fontWeight: theme.font.googleSansFlex.regular.fontWeight,
     fontSize: 16,
   },
 }));

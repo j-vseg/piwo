@@ -92,6 +92,6 @@ const styles = StyleSheet.create((theme) => ({
     marginVertical: theme.spacing(12),
     textAlign: "center",
     color: theme.colors.dark.greyMedium,
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
+    fontFamily: theme.font.niramit.semibold.fontFamily,
   },
 }));

@@ -57,10 +57,45 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       "expo-font",
       {
         fonts: [
-          "node_modules/@expo-google-fonts/crimson-pro/600SemiBold/CrimsonPro_600SemiBold.ttf",
-          "node_modules/@expo-google-fonts/poppins/400Regular/Poppins_400Regular.ttf",
-          "node_modules/@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf",
+          "node_modules/@expo-google-fonts/niramit/600SemiBold/Niramit_600SemiBold.ttf",
+          "node_modules/@expo-google-fonts/google-sans-flex/400Regular/GoogleSansFlex_400Regular.ttf",
+          "node_modules/@expo-google-fonts/google-sans-flex/500Medium/GoogleSansFlex_500Medium.ttf",
+          "node_modules/@expo-google-fonts/google-sans-flex/700Bold/GoogleSansFlex_700Bold.ttf",
+          "./assets/fonts/MaterialSymbolsOutlined-200.ttf",
+          "./assets/fonts/MaterialSymbolsOutlined-400.ttf",
+          "./assets/fonts/MaterialSymbolsOutlined-500.ttf",
+          "./assets/fonts/MaterialSymbolsOutlined-600.ttf",
         ],
+        android: {
+          fonts: [
+            {
+              fontFamily: "Niramit",
+              fontDefinitions: [
+                {
+                  path: "node_modules/@expo-google-fonts/niramit/600SemiBold/Niramit_600SemiBold.ttf",
+                  weight: 600,
+                },
+              ],
+            },
+            {
+              fontFamily: "Google Sans Flex",
+              fontDefinitions: [
+                {
+                  path: "node_modules/@expo-google-fonts/google-sans-flex/700Bold/GoogleSansFlex_700Bold.ttf",
+                  weight: 700,
+                },
+                {
+                  path: "node_modules/@expo-google-fonts/google-sans-flex/500Medium/GoogleSansFlex_500Medium.ttf",
+                  weight: 500,
+                },
+                {
+                  path: "node_modules/@expo-google-fonts/google-sans-flex/400Regular/GoogleSansFlex_400Regular.ttf",
+                  weight: 400,
+                },
+              ],
+            },
+          ],
+        },
       },
     ],
     "expo-sharing",

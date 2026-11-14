@@ -71,7 +71,7 @@ export default function TabsLayout() {
             tabBarIcon: ({ color }) => (
               <MaterialIcons name="cabin" size={24} color={color} />
             ),
-            tabBarLabelStyle: { fontFamily: "Poppins" },
+            tabBarLabelStyle: { fontFamily: "Google Sans Flex" },
           }}
         />
 
@@ -89,7 +89,7 @@ export default function TabsLayout() {
               <MaterialIcons name="groups" size={24} color={color} />
             ),
             tabBarLabelStyle: {
-              fontFamily: "Poppins",
+              fontFamily: "Google Sans Flex",
               backgroundColor: theme.colors.warnings.negative,
             },
             href:
@@ -106,7 +106,7 @@ export default function TabsLayout() {
             tabBarIcon: ({ color }) => (
               <MaterialIcons name="settings" size={24} color={color} />
             ),
-            tabBarLabelStyle: { fontFamily: "Poppins" },
+            tabBarLabelStyle: { fontFamily: "Google Sans Flex" },
           }}
         />
       </Tabs>

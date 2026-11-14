@@ -33,7 +33,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   label: {
     textTransform: "uppercase",
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
+    fontFamily: theme.font.niramit.semibold.fontFamily,
     color: theme.colors.dark.greyMedium,
   },
 }));

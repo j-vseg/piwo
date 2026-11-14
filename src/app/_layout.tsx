@@ -23,9 +23,10 @@ export default function RootLayout() {
   const approval = useAppStore((s) => s.approval);
   // expo-font config plugin only embeds fonts for native; web needs runtime loading
   const [fontsLoaded] = useFonts({
-    "Crimson Pro": require("@expo-google-fonts/crimson-pro/600SemiBold/CrimsonPro_600SemiBold.ttf"),
-    Poppins: require("@expo-google-fonts/poppins/400Regular/Poppins_400Regular.ttf"),
-    "Poppins-SemiBold": require("@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf"),
+    "Google Sans Flex": require("@expo-google-fonts/google-sans-flex/400Regular/GoogleSansFlex_400Regular.ttf"),
+    "Google Sans Flex SemiBold": require("@expo-google-fonts/google-sans-flex/600SemiBold/GoogleSansFlex_600SemiBold.ttf"),
+    Niramit: require("@expo-google-fonts/niramit/400Regular/Niramit_400Regular.ttf"),
+    "Niramit-SemiBold": require("@expo-google-fonts/niramit/600SemiBold/Niramit_600SemiBold.ttf"),
   });
 
   const isSupported = useQuery(

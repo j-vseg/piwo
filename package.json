@@ -3,8 +3,10 @@
   "main": "index.ts",
   "version": "2.6.0",
   "dependencies": {
-    "@expo-google-fonts/crimson-pro": "catalog:expo",
-    "@expo-google-fonts/poppins": "catalog:expo",
+    "@capsizecss/core": "catalog:",
+    "@capsizecss/metrics": "catalog:",
+    "@expo-google-fonts/google-sans-flex": "catalog:expo",
+    "@expo-google-fonts/niramit": "catalog:expo",
     "@expo/ui": "catalog:expo",
     "@expo/vector-icons": "catalog:expo",
     "@lottiefiles/dotlottie-react": "catalog:default",
