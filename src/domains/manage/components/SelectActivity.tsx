@@ -66,7 +66,7 @@ export function SelectActivity({
               onPress={() => {
                 setEditActivityOpen(false);
                 router.push({
-                  pathname: "/(tabs)/settings/update-activity",
+                  pathname: "/(tabs)/bestuur/update-activity",
                   params: { id: event.id },
                 });
               }}

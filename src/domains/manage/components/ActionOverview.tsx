@@ -47,6 +47,7 @@ export function ActionOverview({
       queryClient.invalidateQueries({
         queryKey: ["accounts"],
       });
+      setOpen(undefined);
     },
     onError: (error) => {
       console.log(error);
@@ -107,7 +108,7 @@ export function ActionOverview({
 
         <ThemedText>
           <Trans
-            i18nKey="manage.accountOverview.currentRole"
+            i18nKey="bestuur.manageUsers.accountOverview.currentRole"
             values={{ name: user.firstName, role: user.role }}
             components={{ bold: <ThemedText weight="bold" /> }}
           />
@@ -115,7 +116,7 @@ export function ActionOverview({
 
         <ThemedView style={{ gap: theme.spacing(4) }}>
           <Picker
-            label={t("manage.accountOverview.roleLabel")}
+            label={t("bestuur.manageUsers.accountOverview.roleLabel")}
             control={methods.control}
             name="role"
             required={false}
@@ -123,24 +124,30 @@ export function ActionOverview({
           />
 
           <Button
-            content={t("manage.accountOverview.saveButton")}
-            accessibilityLabel={t("manage.accountOverview.saveLabel")}
-            accessibilityHint={t("manage.accountOverview.saveHint")}
+            content={t("bestuur.manageUsers.accountOverview.saveButton")}
+            accessibilityLabel={t(
+              "bestuur.manageUsers.accountOverview.saveLabel",
+            )}
+            accessibilityHint={t(
+              "bestuur.manageUsers.accountOverview.saveHint",
+            )}
             isPending={isPending}
             disabled={!methods.formState.isDirty}
             iconLeft="edit"
-            onPress={() =>
-              methods.handleSubmit((data) =>
-                mutate({ userId: user.id, role: data.role! }),
-              )
-            }
+            onPress={methods.handleSubmit((data) =>
+              mutate({ userId: user.id, role: data.role! }),
+            )}
           />
         </ThemedView>
 
         <Button
-          content={t("manage.accountOverview.revokeButton")}
-          accessibilityLabel={t("manage.accountOverview.revokeLabel")}
-          accessibilityHint={t("manage.accountOverview.revokeHint")}
+          content={t("bestuur.manageUsers.accountOverview.revokeButton")}
+          accessibilityLabel={t(
+            "bestuur.manageUsers.accountOverview.revokeLabel",
+          )}
+          accessibilityHint={t(
+            "bestuur.manageUsers.accountOverview.revokeHint",
+          )}
           isPending={isRevokePending}
           iconLeft="close"
           onPress={() => revokeMutate({ userId: user.id })}

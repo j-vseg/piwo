@@ -21,7 +21,10 @@
     },
     "login": "Login",
     "signUp": "Creër een account",
-    "manage": "Beheren"
+    "bestuur": {
+      "title": "Bestuur",
+      "manageUsers": "Gebruikers beheren"
+    }
   },
   "home": {
     "thisWeek": "Deze week",
@@ -91,25 +94,7 @@
     "installWebAppAndroid": "Hoe installeer ik een web-app? (Android)",
     "installWebAppApple": "Hoe installeer ik een web-app? (Apple)",
     "downloadApk": "Download de Android app (APK-bestand)",
-    "installApk": "Hoe installeer ik een APK-bestand? (Android)",
-    "beer_card": {
-      "title": "Bierkaart",
-      "description": "Pas hier de link voor de bierkaart kopen aan. Dit is een Rabobank Betaalverzoek link.",
-      "buy_beer_card": "Bierkaart kopen",
-      "buy_beer_card_url": "Link Bierkaart kopen aanpassen (Penningmeester)",
-      "input": {
-        "label": "Rabobank betaalverzoek link",
-        "placeholder": "https://",
-        "required": "Rabobank betaalverzoek link is verplicht",
-        "invalid": "Dit is geen Rabobank betaalverzoek link"
-      },
-      "button": {
-        "label": "Link aanpassen"
-      },
-      "success": "Link is aangepast!",
-      "error": "Het is niet gelukt om de link aan te passen",
-      "fetch_error": "Het is niet gelukt om de imformatie over de bierkaart op te halen"
-    }
+    "installApk": "Hoe installeer ik een APK-bestand? (Android)"
   },
   "personalDetails": {
     "nameTitle": "Voor- & achternaam",
@@ -245,8 +230,8 @@
       "description": "Installeer de Piwo app als web-app op je telefoon of download de Android-app."
     }
   },
-  "manage": {
-    "manageUsers": "Gebruikers beheren",
+  "bestuur": {
+    "users": "Gebruikers",
     "manageUsersError": "Er is iets missgegaan met het ophalen van alle accounts",
     "you": "Je kan je eigen rechten niet aanpassen",
     "userWaiting": "Gebruiker is in afwachting",
@@ -259,15 +244,35 @@
       "declineLabel": "Afkeuren",
       "declineHint": "Klik om deze gebruiker af te keuren"
     },
-    "accountOverview": {
-      "currentRole": "{{name}} is momenteel <bold>{{role}}</bold>",
-      "roleLabel": "Rechten aanpassen",
-      "saveButton": "Wijzigingen opslaan",
-      "saveLabel": "Wijzigingen opslaan",
-      "saveHint": "Slaat de nieuwe rechten van deze gebruiker op",
-      "revokeButton": "Toegang tot de app intrekken",
-      "revokeLabel": "Toegang intrekken",
-      "revokeHint": "Trekt de toegang van deze gebruiker tot de app in"
+    "manageUsers": {
+      "accountOverview": {
+        "currentRole": "{{name}} is momenteel <bold>{{role}}</bold>",
+        "roleLabel": "Rechten aanpassen",
+        "saveButton": "Wijzigingen opslaan",
+        "saveLabel": "Wijzigingen opslaan",
+        "saveHint": "Slaat de nieuwe rechten van deze gebruiker op",
+        "revokeButton": "Toegang tot de app intrekken",
+        "revokeLabel": "Toegang intrekken",
+        "revokeHint": "Trekt de toegang van deze gebruiker tot de app in"
+      }
+    },
+    "beer_card": {
+      "title": "Bierkaart",
+      "description": "Pas hier de link voor de bierkaart kopen aan. Dit is een Rabobank Betaalverzoek link.",
+      "buy_beer_card": "Bierkaart kopen",
+      "buy_beer_card_url": "Link Bierkaart kopen aanpassen",
+      "input": {
+        "label": "Rabobank betaalverzoek link",
+        "placeholder": "https://",
+        "required": "Rabobank betaalverzoek link is verplicht",
+        "invalid": "Dit is geen Rabobank betaalverzoek link"
+      },
+      "button": {
+        "label": "Link aanpassen"
+      },
+      "success": "Link is aangepast!",
+      "error": "Het is niet gelukt om de link aan te passen",
+      "fetch_error": "Het is niet gelukt om de imformatie over de bierkaart op te halen"
     }
   }
 }

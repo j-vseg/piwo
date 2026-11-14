@@ -1,7 +1,5 @@
-import { Alert } from "@/components/Alert";
 import { Group } from "@/components/Group";
 import ListTile from "@/components/ListTile";
-import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { accountsCollection } from "@/config/firebase";
@@ -9,37 +7,30 @@ import { Approval } from "@/constants/Approval";
 import { OS } from "@/constants/Os";
 import { fetchAllAccounts } from "@/services/firebase/accounts";
 import { useTranslation } from "@/translations/i18n";
-import { getAuth } from "@react-native-firebase/auth";
 import { query, where } from "@react-native-firebase/firestore";
 import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Platform } from "react-native";
-import { useUnistyles } from "react-native-unistyles";
-import { Account, ActionOverview } from "../components/ActionOverview";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ApprovalOverview } from "../components/ApprovalOverview";
+import { BeerCardUrlSheet } from "../components/BeerCardUrlSheet";
+import { SelectActivity } from "../components/SelectActivity";
 
 export default function ManageScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
+  const [editActivityOpen, setEditActivityOpen] = useState(false);
+  const [beerCardUrlOpen, setBeerCardUrlOpen] = useState(false);
   const [approvalOpen, setApprovalOpen] = useState<string | undefined>(
     undefined,
   );
-  const [actionOpen, setActionOpen] = useState<Account | undefined>(undefined);
   const { data: notApprovedData } = useQuery({
     queryKey: ["not-approved-users"],
     queryFn: () =>
       fetchAllAccounts(
         query(accountsCollection, where("approval", "==", Approval.Unknown)),
       ),
-  });
-
-  const {
-    data: accounts,
-    isLoading: isLoadingAccounts,
-    isError: isErrorAccounts,
-  } = useQuery({
-    queryKey: ["accounts"],
-    queryFn: () => fetchAllAccounts(),
   });
 
   return (
@@ -54,7 +45,7 @@ export default function ManageScreen() {
               : rt.insets.top + theme.spacing(4),
         }}
       >
-        <ThemedText type="h1">{t("tabs.manage")}</ThemedText>
+        <ThemedText type="h1">{t("tabs.bestuur.title")}</ThemedText>
 
         {notApprovedData && notApprovedData.length !== 0 && (
           <ThemedView style={{ gap: theme.spacing(4) }}>
@@ -74,45 +65,48 @@ export default function ManageScreen() {
         )}
 
         <ThemedView style={{ gap: theme.spacing(4) }}>
-          <ThemedText type="h3">{t("manage.manageUsers")}</ThemedText>
-          {isLoadingAccounts ? (
-            <LoadingIndicator />
-          ) : isErrorAccounts ? (
-            <Alert
-              variant={"warning"}
-              description={t("manage.manageUsersError")}
-              size={"regular"}
-            />
-          ) : (
-            <ThemedView>
-              <Group>
-                {accounts?.map((user) => {
-                  if (user.approval !== Approval.Declined) {
-                    return (
-                      <ListTile
-                        key={user.id}
-                        title={`${user.firstName} ${user.lastName}`}
-                        onPress={() => setActionOpen(user)}
-                        subtitle={
-                          user.id === getAuth().currentUser?.uid
-                            ? t("manage.you")
-                            : user.approval === Approval.Unknown
-                              ? t("manage.userWaiting")
-                              : undefined
-                        }
-                        disabled={
-                          user.id === getAuth().currentUser?.uid ||
-                          user.approval === Approval.Unknown
-                        }
-                      />
-                    );
-                  }
-                })}
-              </Group>
-            </ThemedView>
-          )}
+          <ThemedText type="h3">Beheren</ThemedText>
+
+          <ThemedView style={styles.group}>
+            <ThemedText type="h5">{t("bestuur.users")}</ThemedText>
+            <Group>
+              <ListTile
+                title={t("tabs.bestuur.manageUsers")}
+                onPress={() => router.push("/(tabs)/bestuur/manage-user")}
+              />
+            </Group>
+          </ThemedView>
+
+          <ThemedView style={styles.group}>
+            <ThemedText type="h5">{t("settings.activitiesHeader")}</ThemedText>
+            <Group>
+              <ListTile
+                title={t("tabs.settings.createActivity")}
+                onPress={() => router.push("/(tabs)/bestuur/create-activity")}
+              />
+              <ListTile
+                title={t("tabs.settings.editActivity")}
+                onPress={() => setEditActivityOpen(true)}
+              />
+            </Group>
+          </ThemedView>
+
+          <ThemedView style={styles.group}>
+            <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
+            <Group>
+              <ListTile
+                title={t("bestuur.beer_card.buy_beer_card_url")}
+                onPress={() => setBeerCardUrlOpen(!beerCardUrlOpen)}
+              />
+            </Group>
+          </ThemedView>
         </ThemedView>
       </ThemedView>
+
+      <SelectActivity
+        editActivityOpen={editActivityOpen}
+        setEditActivityOpen={setEditActivityOpen}
+      />
 
       {approvalOpen && (
         <ApprovalOverview
@@ -123,13 +117,14 @@ export default function ManageScreen() {
         />
       )}
 
-      {actionOpen && (
-        <ActionOverview
-          open={!!actionOpen}
-          setOpen={setActionOpen}
-          user={actionOpen}
-        />
-      )}
+      <BeerCardUrlSheet open={beerCardUrlOpen} setOpen={setBeerCardUrlOpen} />
     </>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  group: {
+    flexDirection: "column",
+    gap: theme.spacing(2),
+  },
+}));

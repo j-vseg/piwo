@@ -46,7 +46,7 @@ export function ApprovalOverview({
 
   return (
     <BottomSheet
-      title={t("manage.actionOverview.title")}
+      title={t("bestuur.actionOverview.title")}
       isPresented={open}
       onDismiss={() => setOpen(undefined)}
     >
@@ -60,18 +60,18 @@ export function ApprovalOverview({
 
       <ThemedView style={styles.container}>
         <Button
-          content={t("manage.actionOverview.approveButton")}
-          accessibilityLabel={t("manage.actionOverview.approveLabel")}
-          accessibilityHint={t("manage.actionOverview.approveHint")}
+          content={t("bestuur.actionOverview.approveButton")}
+          accessibilityLabel={t("bestuur.actionOverview.approveLabel")}
+          accessibilityHint={t("bestuur.actionOverview.approveHint")}
           isPending={isPending}
           iconLeft="check"
           onPress={() => mutate({ userId, approval: Approval.Accepted })}
           buttonStyle={styles.button(Approval.Accepted)}
         />
         <Button
-          content={t("manage.actionOverview.declineButton")}
-          accessibilityLabel={t("manage.actionOverview.declineLabel")}
-          accessibilityHint={t("manage.actionOverview.declineHint")}
+          content={t("bestuur.actionOverview.declineButton")}
+          accessibilityLabel={t("bestuur.actionOverview.declineLabel")}
+          accessibilityHint={t("bestuur.actionOverview.declineHint")}
           isPending={isPending}
           iconLeft="close"
           onPress={() => mutate({ userId, approval: Approval.Declined })}

@@ -5,11 +5,9 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { OS } from "@/constants/Os";
-import { Role } from "@/constants/Role";
 import { deleteUserAccount } from "@/services/firebase/accounts";
 import { getCurrentUser, signOut } from "@/services/firebase/auth";
 import { getBeerCardUrl } from "@/services/firebase/beer-card";
-import { useAppStore } from "@/store/appStore";
 import { Host, Switch } from "@expo/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
@@ -20,8 +18,6 @@ import { useTranslation } from "react-i18next";
 import { AppState, Linking, Platform } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { ConfirmPassword } from "../../../components/ConfirmPassword";
-import { BeerCardUrlSheet } from "../components/BeerCardUrlSheet";
-import { SelectActivity } from "../components/SelectActivity";
 
 type DeleteAccountFormData = {
   oldPassword: string;
@@ -30,15 +26,12 @@ type DeleteAccountFormData = {
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
-  const role = useAppStore((s) => s.role);
-  const [editActivityOpen, setEditActivityOpen] = useState(false);
   const [passwordConfirmOpen, setPasswordConfirmOpen] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [permanentlyDenied, setPermanentlyDenied] = useState(false);
   const [isWebPushSupported, setIsWebPushSupported] = useState(false);
   const [webPermission, setWebPermission] =
     useState<NotificationPermission>("default");
-  const [beerCardUrlOpen, setBeerCardUrlOpen] = useState(false);
   const { data: beerCardUrl, isError: isErrorbeerCardUrl } = useQuery({
     queryKey: ["beer-card-url"],
     queryFn: () => getBeerCardUrl(),
@@ -169,34 +162,18 @@ export default function SettingsScreen() {
       >
         <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
-        {(role === Role.BoardMember || role === Role.Advisor) && (
-          <ThemedView style={styles.group}>
-            <ThemedText type="h5">{t("settings.activitiesHeader")}</ThemedText>
-            <Group>
-              <ListTile
-                title={t("tabs.settings.createActivity")}
-                onPress={() => router.push("/(tabs)/settings/create-activity")}
-              />
-              <ListTile
-                title={t("tabs.settings.editActivity")}
-                onPress={() => setEditActivityOpen(true)}
-              />
-            </Group>
-          </ThemedView>
-        )}
-
         <ThemedView style={styles.group}>
-          <ThemedText type="h5">{t("settings.beer_card.title")}</ThemedText>
+          <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
           {isErrorbeerCardUrl ? (
             <Alert
               variant="warning"
-              description={t("settings.beer_card.fetch_error")}
+              description={t("bestuur.beer_card.fetch_error")}
               size={"regular"}
             />
           ) : (
             <Group>
               <ListTile
-                title={t("settings.beer_card.buy_beer_card")}
+                title={t("bestuur.beer_card.buy_beer_card")}
                 onPress={() => beerCardUrl && openLink(beerCardUrl)}
                 iconLeft={Platform.OS === OS.Web ? "sports-bar" : "sports_bar"}
                 iconRight={
@@ -209,12 +186,6 @@ export default function SettingsScreen() {
                   )
                 }
               />
-              {(role === Role.BoardMember || role === Role.Advisor) && (
-                <ListTile
-                  title={t("settings.beer_card.buy_beer_card_url")}
-                  onPress={() => setBeerCardUrlOpen(!beerCardUrlOpen)}
-                />
-              )}
             </Group>
           )}
         </ThemedView>
@@ -348,23 +319,12 @@ export default function SettingsScreen() {
         </ThemedView>
       </ThemedView>
 
-      <SelectActivity
-        editActivityOpen={editActivityOpen}
-        setEditActivityOpen={setEditActivityOpen}
-      />
-
       <ConfirmPassword
         isOpen={passwordConfirmOpen}
         onDismiss={() => setPasswordConfirmOpen(false)}
         onConfirm={handleDeleteConfirm}
         control={deleteAccountForm.control as unknown as Control<FieldValues>}
         description={t("settings.deleteAccountDescription")}
-      />
-
-      <BeerCardUrlSheet
-        open={beerCardUrlOpen}
-        setOpen={setBeerCardUrlOpen}
-        url={beerCardUrl!}
       />
     </>
   );
