@@ -259,11 +259,17 @@
     "beer_card": {
       "title": "Bierkaart",
       "description": "Pas hier de link voor de bierkaart kopen aan. Dit is een Rabobank Betaalverzoek link.",
-      "buy_beer_card": "Bierkaart kopen",
-      "buy_beer_card_url": "Link Bierkaart kopen aanpassen",
+      "buy_green": "Groene bierkaart kopen",
+      "buy_pink": "Roze bierkaart kopen",
+      "green_url": "Link groene bierkaart aanpassen",
+      "pink_url": "Link roze bierkaart aanpassen",
       "input": {
-        "label": "Rabobank betaalverzoek link",
-        "placeholder": "https://",
+        "label": {
+          "title": "Rabobank betaalverzoek link",
+          "green": "Groene bierkaart link",
+          "pink": "Roze bierkaart link"
+        },
+        "placeholder": "https://betaalverzoek.rabobank.nl/betaalverzoek",
         "required": "Rabobank betaalverzoek link is verplicht",
         "invalid": "Dit is geen Rabobank betaalverzoek link"
       },
@@ -272,7 +278,9 @@
       },
       "success": "Link is aangepast!",
       "error": "Het is niet gelukt om de link aan te passen",
-      "fetch_error": "Het is niet gelukt om de imformatie over de bierkaart op te halen"
+      "fetch_error": "Het is niet gelukt om de bierkaart informatie op te halen",
+      "fetch_error_green": "Het is niet gelukt om de link voor de groene bierkaart op te halen",
+      "fetch_error_pink": "Het is niet gelukt om de link voor de roze bierkaart op te halen"
     }
   }
 }

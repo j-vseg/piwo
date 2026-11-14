@@ -21,7 +21,8 @@ export default function ManageScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
   const [editActivityOpen, setEditActivityOpen] = useState(false);
-  const [beerCardUrlOpen, setBeerCardUrlOpen] = useState(false);
+  const [greenBeerCardUrlOpen, setGreenBeerCardUrlOpen] = useState(false);
+  const [pinkBeerCardUrlOpen, setPinkBeerCardUrlOpen] = useState(false);
   const [approvalOpen, setApprovalOpen] = useState<string | undefined>(
     undefined,
   );
@@ -95,8 +96,14 @@ export default function ManageScreen() {
             <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
             <Group>
               <ListTile
-                title={t("bestuur.beer_card.buy_beer_card_url")}
-                onPress={() => setBeerCardUrlOpen(!beerCardUrlOpen)}
+                title={t("bestuur.beer_card.green_url")}
+                onPress={() => setGreenBeerCardUrlOpen(!greenBeerCardUrlOpen)}
+                iconLeft={Platform.OS === OS.Web ? "sports-bar" : "sports_bar"}
+              />
+              <ListTile
+                title={t("bestuur.beer_card.pink_url")}
+                onPress={() => setPinkBeerCardUrlOpen(!pinkBeerCardUrlOpen)}
+                iconLeft={Platform.OS === OS.Web ? "local-bar" : "local_bar"}
               />
             </Group>
           </ThemedView>
@@ -117,7 +124,16 @@ export default function ManageScreen() {
         />
       )}
 
-      <BeerCardUrlSheet open={beerCardUrlOpen} setOpen={setBeerCardUrlOpen} />
+      <BeerCardUrlSheet
+        open={greenBeerCardUrlOpen}
+        setOpen={setGreenBeerCardUrlOpen}
+        type="green"
+      />
+      <BeerCardUrlSheet
+        open={pinkBeerCardUrlOpen}
+        setOpen={setPinkBeerCardUrlOpen}
+        type="pink"
+      />
     </>
   );
 }

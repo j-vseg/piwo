@@ -7,6 +7,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { queryClient } from "@/queryClient";
 import {
+  type BeerCardType,
   getBeerCardUrl,
   updateBeerCardUrl,
 } from "@/services/firebase/beer-card";
@@ -22,14 +23,16 @@ type UpdateUrlForm = {
 export function BeerCardUrlSheet({
   open,
   setOpen,
+  type,
 }: {
   open: boolean;
   setOpen: (value: boolean) => void;
+  type: BeerCardType;
 }) {
   const { t } = useTranslation();
   const { data: url, isLoading } = useQuery({
-    queryKey: ["beer-card-url"],
-    queryFn: () => getBeerCardUrl(),
+    queryKey: ["beer-card-url", type],
+    queryFn: () => getBeerCardUrl(type),
   });
   const {
     control,
@@ -43,10 +46,10 @@ export function BeerCardUrlSheet({
     mutate,
     reset: resetMutation,
   } = useMutation({
-    mutationFn: ({ url }: { url: string }) => updateBeerCardUrl(url),
+    mutationFn: ({ url }: { url: string }) => updateBeerCardUrl(type, url),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["beer-card-url"],
+        queryKey: ["beer-card-url", type],
       });
     },
     onError: (error) => {
@@ -56,7 +59,7 @@ export function BeerCardUrlSheet({
 
   return (
     <BottomSheet
-      title={t("bestuur.beer_card.input.label")}
+      title={t(`bestuur.beer_card.input.label.${type}`)}
       isPresented={open}
       onDismiss={() => {
         resetForm();
@@ -86,7 +89,7 @@ export function BeerCardUrlSheet({
         <ThemedText>{t("bestuur.beer_card.description")}</ThemedText>
 
         <TextInput
-          label={t("bestuur.beer_card.input.label")}
+          label={t("bestuur.beer_card.input.label.title")}
           control={control}
           name="url"
           rules={{
