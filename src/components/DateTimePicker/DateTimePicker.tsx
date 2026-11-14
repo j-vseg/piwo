@@ -122,12 +122,14 @@ export default function DateTimePicker<T extends FieldValues>({
 
 const styles = StyleSheet.create((theme) => ({
   field: {
-    gap: theme.spacing(1),
+    gap: theme.spacing(2),
   },
   trigger: {
-    backgroundColor: theme.colors.primitives.quinary,
-    borderRadius: theme.spacing(2),
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(2.5),
+    borderRadius: theme.borderRadius["lg"],
+    padding: theme.spacing(5),
+    borderBottomColor: theme.colors.dark["greyDark"],
+    backgroundColor: theme.colors.dark["greyLight"],
+    color: theme.colors.dark["greyDark"],
+    ...theme.text.bodyMedium,
   },
 }));

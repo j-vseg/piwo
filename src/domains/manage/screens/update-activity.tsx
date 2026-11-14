@@ -4,13 +4,12 @@ import DateTimePicker from "@/components/DateTimePicker/DateTimePicker";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import Picker from "@/components/Picker";
+import { StatusButtonGroup } from "@/components/StatusButtonGroup";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
 import { Recurrence } from "@/constants/Recurrence";
-import { AVAILABILITY_SELECTOR_STATUSES } from "@/constants/Status";
-import { useEventColor } from "@/hooks/useEventColor";
 import { queryClient } from "@/queryClient";
 import { deleteEvent, getEvent, updateEvent } from "@/services/firebase/event";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,7 +19,7 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Platform, ScrollView } from "react-native";
+import { Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 type ActivityFormData = {
@@ -56,7 +55,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     }
   }, [methods, occurrence]);
 
-  const [startTime, category] = useWatch({
+  const [startTime] = useWatch({
     control: methods.control,
     name: ["startTime", "category"],
   });
@@ -131,8 +130,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     },
   });
 
-  const eventColor = useEventColor(category);
-
   if (isLoadingOccurrence) {
     return <LoadingIndicator type="screen" />;
   }
@@ -175,7 +172,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
       )}
 
       <ThemedView style={styles.preview}>
-        <ThemedView>
+        <ThemedView style={styles.preview}>
           <ThemedText type="bodyLarge">{occurrence.name || "???"}</ThemedText>
           <ThemedText type="bodySmall" style={styles.subtitle}>
             {occurrence.recurrence &&
@@ -184,22 +181,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
               `${format(occurrence.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endDate.toDate(), isSameDay(occurrence.endDate.toDate(), occurrence.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
           </ThemedText>
         </ThemedView>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.buttonContainer}
-        >
-          {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
-            <ThemedView
-              key={statusOption}
-              style={[styles.previewButton, { backgroundColor: eventColor }]}
-            >
-              <ThemedText type="button" style={styles.previewButtonText}>
-                {statusOption}
-              </ThemedText>
-            </ThemedView>
-          ))}
-        </ScrollView>
+        <StatusButtonGroup disabled onSelect={() => {}} />
       </ThemedView>
 
       <ThemedView style={styles.form}>
@@ -294,35 +276,21 @@ const styles = StyleSheet.create((theme) => ({
   },
   preview: {
     backgroundColor: theme.colors.light.white,
-    borderRadius: 16,
+    borderRadius: theme.borderRadius["lg"],
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
   },
-  previewButton: {
-    borderRadius: 8,
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(1),
-    alignItems: "center",
+  previewText: {
+    gap: theme.spacing(4),
   },
   form: {
     flexDirection: "column",
-    gap: theme.spacing(4),
+    gap: theme.spacing(6),
   },
   recurrence: {
     flexDirection: "column",
-    gap: theme.spacing(1),
-  },
-  buttonContainer: {
-    flexGrow: 1,
-    flexDirection: "row",
     gap: theme.spacing(2),
-    justifyContent: "space-between",
-  },
-  previewButtonText: {
-    fontFamily: theme.font.googleSansFlex.regular.fontFamily,
-    fontWeight: theme.font.googleSansFlex.regular.fontWeight,
-    fontSize: 16,
   },
   subtitle: {
     color: theme.colors.dark.greyMedium,

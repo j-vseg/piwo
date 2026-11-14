@@ -84,20 +84,25 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     gap: theme.spacing(2),
   },
-  option: (selected: boolean) => ({
-    borderRadius: theme.spacing(2),
-    paddingHorizontal: theme.spacing(5),
-    paddingVertical: theme.spacing(2),
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: selected
-      ? theme.colors.primitives.tertairy
-      : theme.colors.primitives.quinary,
-  }),
+  option: (selected: boolean) => {
+    const state = selected
+      ? theme.button.secondary.active
+      : theme.button.secondary.default;
+    return {
+      borderRadius: theme.borderRadius["lg"],
+      paddingHorizontal: theme.spacing(6),
+      paddingVertical: theme.spacing(2.5),
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: state.backgroundColor,
+      borderWidth: 1,
+      borderColor: state.borderColor,
+      minHeight: 48,
+    };
+  },
   optionText: (selected: boolean) => ({
-    fontFamily: theme.text.bodyMedium.fontFamily,
-    fontWeight: theme.text.bodyMedium.fontWeight,
-    fontSize: theme.text.bodySmall.fontSize,
-    color: selected ? theme.colors.light.white : theme.colors.dark.black,
+    color: selected
+      ? theme.button.secondary.active.textColor
+      : theme.button.secondary.default.textColor,
   }),
 }));

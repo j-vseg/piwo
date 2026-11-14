@@ -48,14 +48,12 @@ export default function TextInput<T extends FieldValues>({
             value={value ?? ""}
             onChangeText={onChange}
             style={{
-              padding: theme.spacing(4),
+              padding: theme.spacing(5),
               borderRadius: theme.borderRadius["lg"],
-              backgroundColor: theme.colors.primitives.quinary,
-              borderWidth: 0,
-              fontFamily: theme.text.bodyMedium.fontFamily,
-              fontWeight: String(theme.text.bodyMedium.fontWeight) as "400",
-              fontSize: theme.text.bodyMedium.fontSize,
-              color: theme.text.text.color,
+              borderBottomColor: theme.colors.dark["greyDark"],
+              backgroundColor: theme.colors.dark["greyLight"],
+              color: theme.colors.dark["greyDark"],
+              ...theme.text.bodyMedium,
             }}
             placeholderTextColor={theme.colors.dark.greyMedium}
             {...inputProps}

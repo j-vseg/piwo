@@ -6,7 +6,7 @@ import LoadingIndicator from "./LoadingIndicator";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
-type ButtonType = "primary" | "secondary" | "tertiary";
+type ButtonType = "primary" | "secondary" | "tertiary" | "error" | "warning" | "success";
 
 type ButtonProps = {
   content: ReactNode;
@@ -57,10 +57,8 @@ export default function Button({
             <IconSymbol
               size={24}
               name={iconLeft}
-              style={[
-                styles.leftIcon(type),
-                styles.iconColor(type, pressed, isDisabled),
-              ]}
+              color={styles.iconColor(type, pressed, isDisabled).color}
+              style={styles.leftIcon(type)}
             />
           )}
           {isPending ? (
@@ -80,10 +78,8 @@ export default function Button({
           {iconRight && (
             <IconSymbol
               size={24}
-              style={[
-                styles.rightIcon(type),
-                styles.iconColor(type, pressed, isDisabled),
-              ]}
+              color={styles.iconColor(type, pressed, isDisabled).color}
+              style={styles.rightIcon(type)}
               name={iconRight}
             />
           )}

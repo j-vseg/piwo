@@ -151,7 +151,7 @@ export function ActionOverview({
           isPending={isRevokePending}
           iconLeft="close"
           onPress={() => revokeMutate({ userId: user.id })}
-          buttonStyle={styles.button(Approval.Declined, false)}
+          type="error"
         />
       </ThemedView>
     </BottomSheet>
@@ -163,16 +163,4 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(8),
     flexDirection: "column",
   },
-  button: (approval: Approval, disabled: boolean) => ({
-    flex: 1,
-    backgroundColor: disabled
-      ? theme.button.primary.disabled.backgroundColor
-      : approval === Approval.Accepted
-        ? theme.colors.warnings.positive
-        : theme.colors.warnings.negative,
-    borderColor:
-      approval === Approval.Accepted
-        ? theme.colors.warnings.positive
-        : theme.colors.warnings.negative,
-  }),
 }));

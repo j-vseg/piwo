@@ -17,13 +17,11 @@ export function Switch({ value, disabled }: SwitchProps) {
         value={value}
         disabled={disabled}
         thumbColor={
-          value
-            ? theme.colors.light["white"]
-            : theme.colors.dark["greyMedium"]
+          value ? theme.colors.light["white"] : theme.colors.dark["greyMedium"]
         }
         trackColor={{
           true: theme.colors.primitives["primary"],
-          false: theme.colors.dark["greyLight"],
+          false: theme.colors.light["offWhite"],
         }}
       />
     </ThemedView>

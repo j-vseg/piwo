@@ -2,13 +2,12 @@ import { Alert } from "@/components/Alert";
 import Button from "@/components/Button";
 import DateTimePicker from "@/components/DateTimePicker/DateTimePicker";
 import Picker from "@/components/Picker";
+import { StatusButtonGroup } from "@/components/StatusButtonGroup";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
 import { Recurrence } from "@/constants/Recurrence";
-import { AVAILABILITY_SELECTOR_STATUSES } from "@/constants/Status";
-import { useEventColor } from "@/hooks/useEventColor";
 import { queryClient } from "@/queryClient";
 import { createEvent } from "@/services/firebase/event";
 import { useMutation } from "@tanstack/react-query";
@@ -45,11 +44,11 @@ export default function CreateActivityScreen() {
   const methods = useForm<ActivityFormData>({
     defaultValues: getDefaultFormValues(),
   });
-  const [name, startTime, endTime, category, recurrence] = useWatch({
+  const [name, startTime, endTime, recurrence] = useWatch({
     control: methods.control,
-    name: ["name", "startTime", "endTime", "category", "recurrence"],
+    name: ["name", "startTime", "endTime", "recurrence"],
   });
-  const eventColor = useEventColor(category);
+
   const { mutate, isSuccess, isPending, isError } = useMutation({
     mutationFn: async (data: ActivityFormData) => {
       await createEvent(
@@ -83,7 +82,7 @@ export default function CreateActivityScreen() {
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <ThemedView type="container">
         <ThemedView style={styles.preview}>
-          <ThemedView>
+          <ThemedView style={styles.previewText}>
             <ThemedText type="bodyLarge">{name || "???"}</ThemedText>
             <DisplayTime
               startTime={startTime}
@@ -91,22 +90,7 @@ export default function CreateActivityScreen() {
               recurrence={recurrence}
             />
           </ThemedView>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.buttonContainer}
-          >
-            {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
-              <ThemedView
-                key={statusOption}
-                style={[styles.previewButton, { backgroundColor: eventColor }]}
-              >
-                <ThemedText type="button" style={styles.previewButtonText}>
-                  {statusOption}
-                </ThemedText>
-              </ThemedView>
-            ))}
-          </ScrollView>
+          <StatusButtonGroup disabled onSelect={() => {}} />
         </ThemedView>
 
         {isSuccess && (
@@ -226,34 +210,20 @@ const styles = StyleSheet.create((theme) => ({
   },
   preview: {
     backgroundColor: theme.colors.light.white,
-    borderRadius: 16,
+    borderRadius: theme.borderRadius["lg"],
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
   },
-  previewButton: {
-    borderRadius: 8,
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(1),
-    alignItems: "center",
+  previewText: {
+    gap: theme.spacing(4),
   },
   form: {
     flexDirection: "column",
-    gap: theme.spacing(4),
+    gap: theme.spacing(6),
   },
   recurrence: {
     flexDirection: "column",
-    gap: theme.spacing(1),
-  },
-  buttonContainer: {
-    flexGrow: 1,
-    flexDirection: "row",
     gap: theme.spacing(2),
-    justifyContent: "space-between",
-  },
-  previewButtonText: {
-    fontFamily: theme.font.googleSansFlex.regular.fontFamily,
-    fontWeight: theme.font.googleSansFlex.regular.fontWeight,
-    fontSize: 16,
   },
 }));

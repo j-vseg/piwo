@@ -89,8 +89,7 @@ export default function TabsLayout() {
               <MaterialIcons name="groups" size={24} color={color} />
             ),
             tabBarLabelStyle: {
-              fontFamily: "Google Sans Flex",
-              backgroundColor: theme.colors.warnings.negative,
+              backgroundColor: theme.colors.warnings["error"],
             },
             href:
               role === Role.BoardMember || role === Role.Advisor
