@@ -98,7 +98,8 @@ export default function ListTile({
 
 const styles = StyleSheet.create((theme) => ({
   listTile: (disabled: boolean | undefined) => ({
-    padding: theme.spacing(4),
+    paddingHorizontal: theme.spacing(4),
+    paddingVertical: theme.spacing(2),
     minHeight: 56,
     margin: 0,
     justifyContent: "space-between",
@@ -126,7 +127,6 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.transparent,
     justifyContent: "center",
     flexDirection: "column",
-    gap: theme.spacing(3),
   },
   subtitle: {
     color: theme.colors.dark["greyDark"],

@@ -90,8 +90,8 @@ const styles = StyleSheet.create((theme) => ({
       : theme.button.secondary.default;
     return {
       borderRadius: theme.borderRadius["lg"],
-      paddingHorizontal: theme.spacing(6),
-      paddingVertical: theme.spacing(2.5),
+      paddingHorizontal: theme.spacing(5),
+      paddingVertical: theme.spacing(2),
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: state.backgroundColor,

@@ -56,10 +56,8 @@ export default function DateTimePicker<T extends FieldValues>({
               }}
               disabled={disabled}
               style={{
-                maxHeight: 58,
                 borderRadius: theme.borderRadius["lg"],
-                paddingLeft: theme.spacing(4),
-                paddingRight: theme.spacing(4),
+                padding: theme.spacing(3),
                 borderBottomColor: theme.colors.dark["greyDark"],
                 backgroundColor: theme.colors.dark["greyLight"],
                 color: theme.colors.dark["greyDark"],

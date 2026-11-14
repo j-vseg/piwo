@@ -109,7 +109,7 @@ const styles = StyleSheet.create((theme) => ({
     paddingLeft: theme.spacing(6),
     paddingBottom: theme.spacing(2.5),
     paddingRight: theme.spacing(6),
-    minHeight: 52,
+    minHeight: 48,
     width: "100%",
     justifyContent: "center",
   },

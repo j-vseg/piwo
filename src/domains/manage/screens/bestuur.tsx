@@ -49,7 +49,7 @@ export default function ManageScreen() {
         <ThemedText type="h1">{t("tabs.bestuur.title")}</ThemedText>
 
         {notApprovedData && notApprovedData.length !== 0 && (
-          <ThemedView style={{ gap: theme.spacing(6) }}>
+          <ThemedView style={{ gap: theme.spacing(4) }}>
             <ThemedText type="h3">Gebruikers in afwachting</ThemedText>
             <ThemedView>
               <Group>
@@ -65,7 +65,7 @@ export default function ManageScreen() {
           </ThemedView>
         )}
 
-        <ThemedView style={{ gap: theme.spacing(6) }}>
+        <ThemedView style={{ gap: theme.spacing(4) }}>
           <ThemedText type="h3">Beheren</ThemedText>
 
           <ThemedView style={styles.group}>
@@ -141,6 +141,6 @@ export default function ManageScreen() {
 const styles = StyleSheet.create((theme) => ({
   group: {
     flexDirection: "column",
-    gap: theme.spacing(4),
+    gap: theme.spacing(2),
   },
 }));

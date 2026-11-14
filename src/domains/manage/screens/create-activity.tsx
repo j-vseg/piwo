@@ -7,7 +7,6 @@ import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
-import { OS } from "@/constants/Os";
 import { Recurrence } from "@/constants/Recurrence";
 import { queryClient } from "@/queryClient";
 import { createEvent } from "@/services/firebase/event";
@@ -83,7 +82,7 @@ export default function CreateActivityScreen() {
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <ThemedView type="container">
         <ThemedView style={styles.preview}>
-          <ThemedView style={styles.previewText}>
+          <ThemedView>
             <ThemedText type="bodyLarge">{name || "???"}</ThemedText>
             <DisplayTime
               startTime={startTime}
@@ -217,15 +216,12 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(4),
     ...theme.shadow,
   },
-  previewText: {
-    gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),
-  },
   form: {
     flexDirection: "column",
-    gap: theme.spacing(6),
+    gap: theme.spacing(4),
   },
   recurrence: {
     flexDirection: "column",
-    gap: theme.spacing(2),
+    gap: theme.spacing(1),
   },
 }));

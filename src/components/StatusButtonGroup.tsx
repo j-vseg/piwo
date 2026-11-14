@@ -57,8 +57,14 @@ export function StatusButtonGroup({
                 ? Status.Later
                 : statusOption
             }
-            accessibilityHint={"undefined"}
-            type={isActive ? variant : category ? CATEGORY_BUTTON_VARIANT[category] : "secondary"}
+            accessibilityHint={""}
+            type={
+              isActive
+                ? variant
+                : category
+                  ? CATEGORY_BUTTON_VARIANT[category]
+                  : "secondary"
+            }
             onPress={() => onSelect(statusOption)}
             onLongPress={
               statusOption === Status.Present
@@ -70,7 +76,7 @@ export function StatusButtonGroup({
             content={(_, textColor) => (
               <View style={styles.buttonContent}>
                 <ThemedText
-                  type="bodySmall"
+                  type="button"
                   style={{ color: textColor }}
                   selectable={false}
                 >
@@ -107,12 +113,10 @@ const styles = StyleSheet.create((theme) => ({
   },
   statusButton: {
     width: "auto",
-    minHeight: 48,
-    minWidth: 48,
-    paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(4),
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   buttonContent: {
     flexDirection: "row" as const,

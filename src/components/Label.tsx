@@ -45,7 +45,7 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: theme.borderRadius["full"],
     width: 5,
     height: 5,
-    marginTop: -2,
+    marginTop: 4,
     marginLeft: 2,
   },
 }));

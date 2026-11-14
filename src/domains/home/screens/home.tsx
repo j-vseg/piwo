@@ -45,7 +45,7 @@ export default function HomeScreen() {
       <ThemedText type="h1">{t("tabs.home")}</ThemedText>
       <ThisWeek />
 
-      <ThemedView style={{ gap: theme.spacing(6) }}>
+      <ThemedView style={{ gap: theme.spacing(4) }}>
         <ThemedText type="h3">{t("home.upcomingActivities")}</ThemedText>
 
         {isLoading && <LoadingIndicator />}

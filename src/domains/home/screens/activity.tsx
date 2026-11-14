@@ -5,7 +5,6 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import { StatusButtonGroup } from "@/components/StatusButtonGroup";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { OS } from "@/constants/Os";
 import { Status } from "@/constants/Status";
 import { useEventColor } from "@/hooks/useEventColor";
 import { getOccurrenceAvailability } from "@/services/firebase/availability";
@@ -16,7 +15,6 @@ import { format, isSameDay } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useNavigation } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export default function ActivityScreen({ id }: { id: string }) {
@@ -82,7 +80,7 @@ export default function ActivityScreen({ id }: { id: string }) {
   return (
     <ThemedView type="container">
       <ThemedView style={styles.event}>
-        <ThemedView style={styles.text}>
+        <ThemedView>
           <ThemedText type="bodyLarge">{occurrence.name}</ThemedText>
           <ThemedText
             type="bodySmall"
@@ -190,24 +188,22 @@ const styles = StyleSheet.create((theme) => ({
   },
   availability: {
     flexDirection: "column",
-    gap: theme.spacing(6),
+    gap: theme.spacing(4),
   },
   displayNames: {
     flexDirection: "column",
-    gap: theme.spacing(4),
+    gap: theme.spacing(2),
     marginTop: theme.spacing(4),
   },
   nameItem: {
     backgroundColor: theme.colors.light.white,
     borderRadius: 8,
-    padding: theme.spacing(4),
+    paddingHorizontal: theme.spacing(4),
+    paddingVertical: theme.spacing(2),
     flexDirection: "row",
     justifyContent: "space-between",
   },
   status: {
     color: theme.colors.dark.greyMedium,
-  },
-  text: {
-    gap: Platform.OS === OS.Web ? theme.spacing(1) : theme.spacing(4),
   },
 }));

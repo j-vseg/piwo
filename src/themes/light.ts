@@ -97,8 +97,6 @@ const text = {
   text: {
     color: colors.dark["black"],
     textBreakStrategy: "balanced",
-    // Android otherwise pads the text box with the font's larger win ascent and descent, which
-    // throws off the capsize trims.
     includeFontPadding: false,
   },
   h1: {

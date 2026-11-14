@@ -48,7 +48,7 @@ export default function TextInput<T extends FieldValues>({
             value={value ?? ""}
             onChangeText={onChange}
             style={{
-              padding: theme.spacing(5),
+              padding: theme.spacing(4),
               borderRadius: theme.borderRadius["lg"],
               borderBottomColor: theme.colors.dark["greyDark"],
               backgroundColor: theme.colors.dark["greyLight"],
@@ -67,7 +67,7 @@ export default function TextInput<T extends FieldValues>({
 
 const styles = StyleSheet.create((theme) => ({
   input: {
-    gap: theme.spacing(2),
+    gap: theme.spacing(1),
   },
   dot: {
     backgroundColor: theme.colors.primitives.primary,

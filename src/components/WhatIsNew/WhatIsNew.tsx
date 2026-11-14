@@ -94,7 +94,7 @@ const styles = StyleSheet.create((theme) => ({
   textContainer: {
     flex: 1,
     backgroundColor: theme.colors.transparent,
-    gap: Platform.OS === OS.Web ? theme.spacing(2) : theme.spacing(4),
+    gap: theme.spacing(1),
   },
   description: {
     color: theme.colors.dark.greyMedium,

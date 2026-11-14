@@ -77,8 +77,8 @@ const styles = StyleSheet.create((theme) => ({
           ? theme.colors.warnings["positive"]
           : theme.colors.warnings["neutral"],
     paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(size === "large" ? 8 : 4),
-    gap: theme.spacing(4),
+    paddingVertical: theme.spacing(size === "large" ? 6 : 3),
+    gap: theme.spacing(2),
     flexDirection: size === "large" ? "column" : "row",
     alignItems: size === "large" ? "stretch" : "center",
     ...(hasShadow && theme.shadow),

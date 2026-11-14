@@ -128,7 +128,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   content: {
     alignItems: "center",
-    gap: theme.spacing(8),
+    gap: theme.spacing(2),
   },
   title: {
     textAlign: "center",
@@ -140,6 +140,6 @@ const styles = StyleSheet.create((theme, rt) => ({
     marginBottom: theme.spacing(4),
   },
   button: {
-    gap: theme.spacing(2),
+    gap: theme.spacing(1),
   },
 }));
