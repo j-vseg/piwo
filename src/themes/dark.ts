@@ -305,7 +305,7 @@ export const darkTheme = {
         iconColor: colors.light["offWhite"],
         textColor: colors.light["offWhite"],
         innerShadow: {
-          color: colors.dark["black"],
+          color: colors.dark["greyDark"],
           x: 0,
           y: -4,
           blur: 0,

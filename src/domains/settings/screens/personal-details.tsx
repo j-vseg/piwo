@@ -167,11 +167,6 @@ export default function SettingsScreen() {
                 name="firstname"
                 rules={{
                   required: t("personalDetails.firstnameRequired"),
-                  validate: {
-                    changed: () =>
-                      nameForm.formState.isDirty ||
-                      t("personalDetails.noChanges"),
-                  },
                 }}
                 inputProps={{
                   placeholder: t("personalDetails.firstnamePlaceholder"),
@@ -183,11 +178,6 @@ export default function SettingsScreen() {
                 name="lastname"
                 rules={{
                   required: t("personalDetails.lastnameRequired"),
-                  validate: {
-                    changed: () =>
-                      nameForm.formState.isDirty ||
-                      t("personalDetails.noChanges"),
-                  },
                 }}
                 inputProps={{
                   placeholder: t("personalDetails.lastnamePlaceholder"),
@@ -228,11 +218,6 @@ export default function SettingsScreen() {
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                     message: t("personalDetails.emailInvalid"),
-                  },
-                  validate: {
-                    changed: () =>
-                      emailForm.formState.isDirty ||
-                      t("personalDetails.noChanges"),
                   },
                 }}
                 inputProps={{
@@ -279,11 +264,6 @@ export default function SettingsScreen() {
                   minLength: {
                     value: 8,
                     message: t("personalDetails.newPasswordMinLength"),
-                  },
-                  validate: {
-                    changed: () =>
-                      passwordForm.formState.isDirty ||
-                      t("personalDetails.noChanges"),
                   },
                 }}
                 inputProps={{

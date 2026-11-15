@@ -10,6 +10,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
 import { Recurrence } from "@/constants/Recurrence";
+import { useNow } from "@/hooks/useNow";
 import { queryClient } from "@/queryClient";
 import { deleteEvent, getEvent, updateEvent } from "@/services/firebase/event";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -19,7 +20,6 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useNow } from "@/hooks/useNow";
 import { Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -90,6 +90,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
       queryClient.invalidateQueries({
         queryKey: ["occurrences-grouped"],
       });
+      methods.reset();
     },
     onError: (error) => {
       console.error(error);
@@ -191,10 +192,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
           name="name"
           rules={{
             required: t("createActivity.nameRequired"),
-            validate: {
-              changed: () =>
-                methods.formState.isDirty || t("createActivity.noChanges"),
-            },
           }}
           inputProps={{
             placeholder: t("createActivity.namePlaceholder"),
@@ -217,8 +214,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
                   }
                   return true;
                 },
-                changed: () =>
-                  methods.formState.isDirty || t("createActivity.noChanges"),
               },
             }}
           />
@@ -243,8 +238,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
                   }
                   return true;
                 },
-                changed: () =>
-                  methods.formState.isDirty || t("createActivity.noChanges"),
               },
             }}
           />
@@ -257,17 +250,12 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
           options={Object.values(Category)}
           rules={{
             required: t("createActivity.categoryRequired"),
-            validate: {
-              changed: () =>
-                methods.formState.isDirty || t("createActivity.noChanges"),
-            },
           }}
         />
 
         <Button
           content={t("createActivity.updateButton")}
           isPending={isPendingUpdate}
-          disabled={isSuccessUpdate || isSuccessDelete}
           onPress={methods.handleSubmit((data) => mutateUpdate(data))}
           accessibilityLabel={t("createActivity.updateButton")}
           accessibilityHint={t("createActivity.updateHint")}
@@ -276,7 +264,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
         <Button
           content={t("createActivity.deleteButton")}
           isPending={isPendingDelete}
-          disabled={isSuccessUpdate || isSuccessDelete}
           onPress={() => mutateDelete()}
           accessibilityLabel={t("createActivity.deleteButton")}
           accessibilityHint={t("createActivity.deleteHint")}

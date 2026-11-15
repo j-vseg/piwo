@@ -2,11 +2,13 @@ import "@/themes/unistyles";
 import "@/translations/i18n";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import { ThemeProvider } from "expo-router/react-navigation";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 
 import { Approval } from "@/constants/Approval";
 import { OS } from "@/constants/Os";
+import useNavigationTheme from "@/hooks/useTheme";
 import { queryClient } from "@/queryClient";
 import { getAccount } from "@/services/firebase/accounts";
 import { isVersionAboveOrEqualToSupported } from "@/services/firebase/app-version";
@@ -21,6 +23,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authReady, setAuthReady] = useState(false);
+  const navigationTheme = useNavigationTheme();
   const approval = useAppStore((s) => s.approval);
   // expo-font config plugin only embeds fonts for native; web needs runtime loading
   const [fontsLoaded] = useFonts({
@@ -67,56 +70,62 @@ export default function RootLayout() {
   }, [authReady]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {authReady && fontsLoaded && webFontsReady && (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Protected
-            guard={
-              Platform.OS === OS.Android &&
-              isSupported.isSuccess &&
-              isSupported.data === false
-            }
-          >
+    <ThemeProvider value={navigationTheme}>
+      <QueryClientProvider client={queryClient}>
+        {authReady && fontsLoaded && webFontsReady && (
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Protected
+              guard={
+                Platform.OS === OS.Android &&
+                isSupported.isSuccess &&
+                isSupported.data === false
+              }
+            >
+              <Stack.Screen
+                name="app-update"
+                options={{
+                  headerShown: false,
+                  gestureEnabled: false,
+                }}
+              />
+            </Stack.Protected>
+
+            <Stack.Protected
+              guard={
+                !isLoggedIn &&
+                !(
+                  Platform.OS === OS.Android &&
+                  isSupported.isSuccess &&
+                  isSupported.data === false
+                )
+              }
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="sign-up" />
+            </Stack.Protected>
+
+            <Stack.Protected
+              guard={isLoggedIn && approval === Approval.Accepted}
+            >
+              <Stack.Screen name="(tabs)" />
+            </Stack.Protected>
+
+            <Stack.Protected
+              guard={isLoggedIn && approval !== Approval.Accepted}
+            >
+              <Stack.Screen name="verify" />
+            </Stack.Protected>
+
             <Stack.Screen
-              name="app-update"
+              name="what-is-new"
               options={{
                 headerShown: false,
                 gestureEnabled: false,
               }}
             />
-          </Stack.Protected>
-
-          <Stack.Protected
-            guard={
-              !isLoggedIn &&
-              !(
-                Platform.OS === OS.Android &&
-                isSupported.isSuccess &&
-                isSupported.data === false
-              )
-            }
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="sign-up" />
-          </Stack.Protected>
-
-          <Stack.Protected guard={isLoggedIn && approval === Approval.Accepted}>
-            <Stack.Screen name="(tabs)" />
-          </Stack.Protected>
-
-          <Stack.Protected guard={isLoggedIn && approval !== Approval.Accepted}>
-            <Stack.Screen name="verify" />
-          </Stack.Protected>
-
-          <Stack.Screen
-            name="what-is-new"
-            options={{
-              headerShown: false,
-              gestureEnabled: false,
-            }}
-          />
-        </Stack>
-      )}
-    </QueryClientProvider>
+          </Stack>
+        )}
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
