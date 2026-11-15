@@ -17,7 +17,7 @@ import { ApprovalOverview } from "../components/ApprovalOverview";
 import { BeerCardUrlSheet } from "../components/BeerCardUrlSheet";
 import { SelectActivity } from "../components/SelectActivity";
 
-export default function ManageScreen() {
+export default function BestuurScreen() {
   const { t } = useTranslation();
   const { theme, rt } = useUnistyles();
   const [editActivityOpen, setEditActivityOpen] = useState(false);
