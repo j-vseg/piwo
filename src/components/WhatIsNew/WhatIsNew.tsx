@@ -60,9 +60,7 @@ export default function WhatIsNewOverview() {
               />
             </ThemedView>
             <ThemedView style={styles.textContainer}>
-              <ThemedText type="bodyLarge" weight="600">
-                {feature.title}
-              </ThemedText>
+              <ThemedText type="h4">{feature.title}</ThemedText>
               <ThemedText type="bodySmall" style={styles.description}>
                 {feature.description}
               </ThemedText>

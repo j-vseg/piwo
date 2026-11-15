@@ -38,11 +38,11 @@ const styles = StyleSheet.create((theme) => ({
   },
   label: {
     marginBottom: theme.spacing(1),
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
+    fontFamily: theme.font.niramit.semibold.fontFamily,
   },
   dot: {
     backgroundColor: theme.colors.primitives.primary,
-    borderRadius: 99,
+    borderRadius: theme.borderRadius["full"],
     width: 5,
     height: 5,
     marginTop: 4,

@@ -46,7 +46,9 @@ export default function LoginScreen() {
     <>
       <ThemedView type="container" style={styles.container}>
         <ThemedView style={styles.form}>
-          <ThemedText type="h1">{t("tabs.login")}</ThemedText>
+          <ThemedText type="h1" style={styles.title}>
+            {t("tabs.login")}
+          </ThemedText>
           {isSuccess && (
             <Alert
               variant="success"
@@ -154,5 +156,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   spacing: {
     gap: theme.spacing(1),
+  },
+  title: {
+    marginBottom: theme.spacing(4),
   },
 }));

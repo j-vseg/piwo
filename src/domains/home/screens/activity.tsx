@@ -39,7 +39,12 @@ export default function ActivityScreen({ id }: { id: string }) {
   });
   const eventColor = useEventColor(occurrence?.category);
   const counts = useMemo(() => {
-    if (!availability) return undefined;
+    if (!availability)
+      return {
+        [Status.Present]: 0,
+        [Status.Maybe]: 0,
+        [Status.Absent]: 0,
+      };
     return {
       [Status.Present]:
         (availability[Status.Present]?.length ?? 0) +
@@ -89,12 +94,12 @@ export default function ActivityScreen({ id }: { id: string }) {
         </ThemedView>
         <AvailabilitySelector
           occurrenceId={occurrence.id}
-          occurrenceCategory={occurrence.category}
+          category={occurrence.category}
         />
       </ThemedView>
 
       <ThemedView style={styles.availability}>
-        <ThemedText type="h2">{t("activity.attendance")}</ThemedText>
+        <ThemedText type="h3">{t("activity.attendance")}</ThemedText>
         {isLoadingAvailability ? (
           <LoadingIndicator />
         ) : isErrorAvailability ? (
@@ -107,7 +112,6 @@ export default function ActivityScreen({ id }: { id: string }) {
           <>
             <StatusButtonGroup
               selected={selected}
-              eventColor={eventColor}
               disabled={isLoadingAvailability}
               counts={counts}
               onSelect={setSelected}
@@ -123,7 +127,11 @@ export default function ActivityScreen({ id }: { id: string }) {
                       : (availability?.[selected]?.length ?? 0),
                 })}
               />
-              {!availability || !availability[selected] ? (
+              {!availability ||
+              (selected === Status.Present
+                ? !availability[Status.Present]?.length &&
+                  !availability[Status.Later]?.length
+                : !availability[selected]?.length) ? (
                 <Alert
                   variant={"info"}
                   description={t("activity.noAvailability")}
@@ -178,6 +186,7 @@ const styles = StyleSheet.create((theme) => ({
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
+    ...theme.shadow,
   },
   subtitle: {
     color: theme.colors.dark.greyMedium,
@@ -195,7 +204,7 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.light.white,
     borderRadius: 8,
     paddingHorizontal: theme.spacing(4),
-    paddingVertical: theme.spacing(2),
+    paddingVertical: theme.spacing(3.5),
     flexDirection: "row",
     justifyContent: "space-between",
   },

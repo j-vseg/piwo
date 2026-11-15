@@ -48,14 +48,12 @@ export default function TextInput<T extends FieldValues>({
             value={value ?? ""}
             onChangeText={onChange}
             style={{
-              padding: theme.spacing(3),
-              borderRadius: theme.spacing(2),
-              backgroundColor: theme.colors.primitives.quinary,
-              borderWidth: 0,
-              fontFamily: theme.text.bodyMedium.fontFamily,
-              fontWeight: String(theme.text.bodyMedium.fontWeight) as "400",
-              fontSize: theme.text.bodyMedium.fontSize,
-              color: theme.text.text.color,
+              padding: theme.spacing(4),
+              borderRadius: theme.borderRadius["lg"],
+              borderBottomColor: theme.colors.dark["greyDark"],
+              backgroundColor: theme.colors.dark["greyLight"],
+              color: theme.colors.dark["greyDark"],
+              ...theme.text.bodyMedium,
             }}
             placeholderTextColor={theme.colors.dark.greyMedium}
             {...inputProps}
@@ -73,7 +71,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   dot: {
     backgroundColor: theme.colors.primitives.primary,
-    borderRadius: 99,
+    borderRadius: theme.borderRadius["full"],
     width: 5,
     height: 5,
     marginBottom: 8,

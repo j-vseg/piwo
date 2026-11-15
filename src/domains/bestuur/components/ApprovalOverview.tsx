@@ -65,8 +65,8 @@ export function ApprovalOverview({
           accessibilityHint={t("bestuur.actionOverview.approveHint")}
           isPending={isPending}
           iconLeft="check"
+          type="success"
           onPress={() => mutate({ userId, approval: Approval.Accepted })}
-          buttonStyle={styles.button(Approval.Accepted)}
         />
         <Button
           content={t("bestuur.actionOverview.declineButton")}
@@ -74,8 +74,8 @@ export function ApprovalOverview({
           accessibilityHint={t("bestuur.actionOverview.declineHint")}
           isPending={isPending}
           iconLeft="close"
+          type="error"
           onPress={() => mutate({ userId, approval: Approval.Declined })}
-          buttonStyle={styles.button(Approval.Declined)}
         />
       </ThemedView>
     </BottomSheet>
@@ -85,18 +85,7 @@ export function ApprovalOverview({
 const styles = StyleSheet.create((theme) => ({
   container: {
     gap: theme.spacing(4),
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-around",
   },
-  button: (approval: Approval) => ({
-    flex: 1,
-    backgroundColor:
-      approval === Approval.Accepted
-        ? theme.colors.warnings.positive
-        : theme.colors.warnings.negative,
-    borderColor:
-      approval === Approval.Accepted
-        ? theme.colors.warnings.positive
-        : theme.colors.warnings.negative,
-  }),
 }));

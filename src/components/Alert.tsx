@@ -21,7 +21,7 @@ export function Alert({
       ? "warning"
       : "check",
   size,
-  hasShadow,
+  hasShadow = true,
 }: AlertProps) {
   const { theme } = useUnistyles();
 
@@ -69,21 +69,19 @@ const styles = StyleSheet.create((theme) => ({
     size: AlertProps["size"],
     hasShadow: AlertProps["hasShadow"],
   ) => ({
-    borderRadius: 16,
+    borderRadius: theme.borderRadius["lg"],
     backgroundColor:
       variant === "warning"
-        ? theme.colors.warnings.background.error
+        ? theme.colors.warnings["negative"]
         : variant === "success"
-          ? theme.colors.warnings.background.success
-          : theme.colors.warnings.background.neutral,
+          ? theme.colors.warnings["positive"]
+          : theme.colors.warnings["neutral"],
     paddingHorizontal: theme.spacing(4),
     paddingVertical: theme.spacing(size === "large" ? 6 : 3),
     gap: theme.spacing(2),
     flexDirection: size === "large" ? "column" : "row",
     alignItems: size === "large" ? "stretch" : "center",
-    ...(hasShadow && {
-      boxShadow: `-1px 1px 5px 2px ${theme.colors.dark["black_10"]}`,
-    }),
+    ...(hasShadow && theme.shadow),
   }),
   description: (variant: AlertProps["variant"], size: AlertProps["size"]) => ({
     textAlign: size === "large" ? "center" : "left",

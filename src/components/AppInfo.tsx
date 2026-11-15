@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { Linking, Platform, Pressable } from "react-native";
-import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 import { Alert } from "./Alert";
 import BottomSheet from "./BottomSheet/BottomSheet";
 import Button from "./Button";
@@ -21,7 +21,6 @@ type AppInfoProps = {
 
 export default function AppInfo({ status = "outdated" }: AppInfoProps) {
   const { t } = useTranslation();
-  const { theme } = useUnistyles();
   const [newOpen, setNewOpen] = useState(false);
   const { mutate, isPending, isError, isSuccess } = useMutation({
     mutationFn: downloadAndInstallApk,
@@ -85,14 +84,7 @@ export default function AppInfo({ status = "outdated" }: AppInfoProps) {
             accessibilityHint={""}
             onPress={() => mutate()}
             iconLeft={isSuccess ? "check" : "android"}
-            buttonStyle={
-              isSuccess
-                ? {
-                    backgroundColor: theme.colors.warnings.positive,
-                    borderColor: theme.colors.warnings.positive,
-                  }
-                : undefined
-            }
+            type={isSuccess ? "primary" : "success"}
           />
           <Pressable
             hitSlop={20}
@@ -125,6 +117,7 @@ export default function AppInfo({ status = "outdated" }: AppInfoProps) {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.screen.default.backgroundColor,
     gap: theme.spacing(10),
@@ -140,7 +133,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   title: {
     textAlign: "center",
     marginBottom: theme.spacing(1),
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
+    fontFamily: theme.font.niramit.semibold.fontFamily,
   },
   messageText: {
     textAlign: "center",

@@ -1,9 +1,10 @@
 import { IconSymbol } from "@/components/IconSymbol/IconSymbol";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { OS } from "@/constants/Os";
 import { useTranslation } from "@/translations/i18n";
 import { ReactNode, useState } from "react";
-import { Pressable } from "react-native";
+import { Platform, Pressable } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 export function Accordion({
@@ -42,7 +43,15 @@ export function Accordion({
           {title}
         </ThemedText>
         <IconSymbol
-          name={opened ? "keyboard_arrow_up" : "keyboard_arrow_down"}
+          name={
+            opened
+              ? Platform.OS === OS.Web
+                ? ("keyboard-arrow-up" as any)
+                : "keyboard_arrow_up"
+              : Platform.OS === OS.Web
+                ? ("keyboard-arrow-down" as any)
+                : "keyboard_arrow_down"
+          }
           size={24}
           color={styles.icon.color}
           accessible={false}
@@ -69,7 +78,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   header: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
     gap: theme.spacing(1),
   },
@@ -81,6 +90,5 @@ const styles = StyleSheet.create((theme) => ({
   },
   descriptionContainer: {
     paddingVertical: theme.spacing(6),
-    paddingHorizontal: theme.spacing(4),
   },
 }));

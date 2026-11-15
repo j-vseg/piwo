@@ -4,13 +4,13 @@ import DateTimePicker from "@/components/DateTimePicker/DateTimePicker";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import Picker from "@/components/Picker";
+import { StatusButtonGroup } from "@/components/StatusButtonGroup";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
 import { Recurrence } from "@/constants/Recurrence";
-import { AVAILABILITY_SELECTOR_STATUSES } from "@/constants/Status";
-import { useEventColor } from "@/hooks/useEventColor";
+import { useNow } from "@/hooks/useNow";
 import { queryClient } from "@/queryClient";
 import { deleteEvent, getEvent, updateEvent } from "@/services/firebase/event";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Platform, ScrollView } from "react-native";
+import { Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
 type ActivityFormData = {
@@ -30,10 +30,9 @@ type ActivityFormData = {
   category: Category;
 };
 
-const now = new Date();
-
 export default function UpdateActivityScreen({ id }: { id: string }) {
   const { t } = useTranslation();
+  const now = useNow();
   const {
     data: occurrence,
     isLoading: isLoadingOccurrence,
@@ -60,7 +59,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     control: methods.control,
     name: ["startTime", "category"],
   });
-  const { isDirty } = methods.formState;
   const {
     mutate: mutateUpdate,
     isSuccess: isSuccessUpdate,
@@ -92,6 +90,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
       queryClient.invalidateQueries({
         queryKey: ["occurrences-grouped"],
       });
+      methods.reset();
     },
     onError: (error) => {
       console.error(error);
@@ -125,13 +124,12 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
       setTimeout(() => {
         router.push("/(tabs)/home");
       }, 3000);
+      methods.reset();
     },
     onError: (error) => {
       console.error(error);
     },
   });
-
-  const eventColor = useEventColor(category);
 
   if (isLoadingOccurrence) {
     return <LoadingIndicator type="screen" />;
@@ -184,22 +182,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
               `${format(occurrence.startDate.toDate(), "d LLLL HH:mm", { locale: nl })} - ${format(occurrence.endDate.toDate(), isSameDay(occurrence.endDate.toDate(), occurrence.startDate.toDate()) ? "HH:mm" : "d LLLL HH:mm", { locale: nl })}`}
           </ThemedText>
         </ThemedView>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.buttonContainer}
-        >
-          {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
-            <ThemedView
-              key={statusOption}
-              style={[styles.previewButton, { backgroundColor: eventColor }]}
-            >
-              <ThemedText type="button" style={styles.previewButtonText}>
-                {statusOption}
-              </ThemedText>
-            </ThemedView>
-          ))}
-        </ScrollView>
+        <StatusButtonGroup disabled category={category} onSelect={() => {}} />
       </ThemedView>
 
       <ThemedView style={styles.form}>
@@ -223,12 +206,14 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
             {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.startTimeRequired"),
-              validate: (value) => {
-                if (!value) return t("createActivity.startTimeRequired");
-                if (value < now) {
-                  return t("createActivity.startTimeFuture");
-                }
-                return true;
+              validate: {
+                time: (value) => {
+                  if (!value) return t("createActivity.startTimeRequired");
+                  if (value < now) {
+                    return t("createActivity.startTimeFuture");
+                  }
+                  return true;
+                },
               },
             }}
           />
@@ -242,15 +227,17 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
             {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.endTimeRequired"),
-              validate: (value) => {
-                if (!value) return t("createActivity.endTimeRequired");
-                if (value < now) {
-                  return t("createActivity.endTimeFuture");
-                }
-                if (value < startTime) {
-                  return t("createActivity.endTimeAfterStart");
-                }
-                return true;
+              validate: {
+                time: (value) => {
+                  if (!value) return t("createActivity.endTimeRequired");
+                  if (value < now) {
+                    return t("createActivity.endTimeFuture");
+                  }
+                  if (value < startTime) {
+                    return t("createActivity.endTimeAfterStart");
+                  }
+                  return true;
+                },
               },
             }}
           />
@@ -269,7 +256,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
         <Button
           content={t("createActivity.updateButton")}
           isPending={isPendingUpdate}
-          disabled={!isDirty || isSuccessUpdate || isSuccessDelete}
           onPress={methods.handleSubmit((data) => mutateUpdate(data))}
           accessibilityLabel={t("createActivity.updateButton")}
           accessibilityHint={t("createActivity.updateHint")}
@@ -278,10 +264,10 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
         <Button
           content={t("createActivity.deleteButton")}
           isPending={isPendingDelete}
-          disabled={isSuccessUpdate || isSuccessDelete}
           onPress={() => mutateDelete()}
           accessibilityLabel={t("createActivity.deleteButton")}
           accessibilityHint={t("createActivity.deleteHint")}
+          type="error"
         />
       </ThemedView>
     </ThemedView>
@@ -294,16 +280,11 @@ const styles = StyleSheet.create((theme) => ({
   },
   preview: {
     backgroundColor: theme.colors.light.white,
-    borderRadius: 16,
+    borderRadius: theme.borderRadius["lg"],
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
-  },
-  previewButton: {
-    borderRadius: 8,
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(1),
-    alignItems: "center",
+    ...theme.shadow,
   },
   form: {
     flexDirection: "column",
@@ -312,17 +293,6 @@ const styles = StyleSheet.create((theme) => ({
   recurrence: {
     flexDirection: "column",
     gap: theme.spacing(1),
-  },
-  buttonContainer: {
-    flexGrow: 1,
-    flexDirection: "row",
-    gap: theme.spacing(2),
-    justifyContent: "space-between",
-  },
-  previewButtonText: {
-    fontFamily: theme.font.poppins.regular.fontFamily,
-    fontWeight: theme.font.poppins.regular.fontWeight,
-    fontSize: 16,
   },
   subtitle: {
     color: theme.colors.dark.greyMedium,

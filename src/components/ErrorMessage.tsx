@@ -49,7 +49,7 @@ const styles = StyleSheet.create((theme, rt) => ({
       type === "screen" ? theme.screen.default.backgroundColor : undefined,
   }),
   text: {
-    color: theme.colors.warnings.negative,
+    color: theme.colors.warnings["error"],
     width: "100%",
   },
 }));

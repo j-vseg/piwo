@@ -1,5 +1,5 @@
 import { Text, type TextProps, type TextStyle } from "react-native";
-import { useUnistyles } from "react-native-unistyles";
+import { StyleSheet } from "react-native-unistyles";
 
 export type TypographyVariant =
   | "default"
@@ -13,6 +13,7 @@ export type TypographyVariant =
   | "bodyMedium"
   | "bodySmall"
   | "bodySmaller"
+  | "tag"
   | "menu"
   | "button"
   | "span"
@@ -29,30 +30,38 @@ export function ThemedText({
   weight,
   ...rest
 }: ThemedTextProps) {
-  const { theme } = useUnistyles();
-
   return (
     <Text
       style={[
-        theme.text.text,
-        type === "default" && theme.text.bodyMedium,
-        type === "h1" && theme.text.h1,
-        type === "h2" && theme.text.h2,
-        type === "h3" && theme.text.h3,
-        type === "h4" && theme.text.h4,
-        type === "h5" && theme.text.h5,
-        type === "bodyLargest" && theme.text.bodyLargest,
-        type === "bodyLarge" && theme.text.bodyLarge,
-        type === "bodyMedium" && theme.text.bodyMedium,
-        type === "bodySmall" && theme.text.bodySmall,
-        type === "bodySmaller" && theme.text.bodySmaller,
-        type === "menu" && theme.text.menu,
-        type === "button" && theme.text.button,
-        type === "span" && theme.text.span,
+        styles.text,
+        styles[type],
         style,
-        weight && { fontWeight: weight },
+        weight && styles.weight(weight),
       ]}
       {...rest}
     />
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  text: theme.text.text,
+  default: theme.text.bodyMedium,
+  h1: theme.text.h1,
+  h2: theme.text.h2,
+  h3: theme.text.h3,
+  h4: theme.text.h4,
+  h5: theme.text.h5,
+  bodyLargest: theme.text.bodyLargest,
+  bodyLarge: theme.text.bodyLarge,
+  bodyMedium: theme.text.bodyMedium,
+  bodySmall: theme.text.bodySmall,
+  bodySmaller: theme.text.bodySmaller,
+  tag: theme.text.tag,
+  menu: theme.text.menu,
+  button: theme.text.button,
+  span: theme.text.span,
+  tabButtonLabel: theme.text.tabButtonLabel,
+  weight: (fontWeight: TextStyle["fontWeight"]) => ({
+    fontWeight,
+  }),
+}));

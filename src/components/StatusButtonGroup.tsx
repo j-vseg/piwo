@@ -1,21 +1,40 @@
+import { Category } from "@/constants/Category";
 import { AVAILABILITY_SELECTOR_STATUSES, Status } from "@/constants/Status";
-import { Pressable, ScrollView, View } from "react-native";
+import { lightTheme } from "@/themes/light";
+import { ScrollView, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
+import Button from "./Button";
 import { ThemedText } from "./ThemedText";
+
+type ButtonVariant = keyof typeof lightTheme.button;
+
+const STATUS_BUTTON_VARIANT: Record<Status, ButtonVariant> = {
+  [Status.Present]: "success",
+  [Status.Later]: "success",
+  [Status.Maybe]: "warning",
+  [Status.Absent]: "error",
+};
+
+const CATEGORY_BUTTON_VARIANT: Record<Category, ButtonVariant> = {
+  [Category.Group]: "categoryGroup",
+  [Category.Weekend]: "categoryWeekend",
+  [Category.Camp]: "categoryCamp",
+  [Category.Action]: "categoryAction",
+};
 
 interface StatusButtonGroupProps {
   selected?: Status | null;
-  eventColor: string;
   disabled?: boolean;
   counts?: Partial<Record<Status, number>>;
+  category?: Category;
   onSelect: (status: Status) => void;
 }
 
 export function StatusButtonGroup({
   selected,
-  eventColor,
   disabled,
   counts,
+  category,
   onSelect,
 }: StatusButtonGroupProps) {
   return (
@@ -28,14 +47,24 @@ export function StatusButtonGroup({
         const isActive =
           selected === statusOption ||
           (statusOption === Status.Present && selected === Status.Later);
+        const variant = STATUS_BUTTON_VARIANT[statusOption];
 
         return (
-          <Pressable
+          <Button
             key={statusOption}
-            style={[
-              styles.button(statusOption, isActive ? statusOption : selected),
-              !isActive && { backgroundColor: eventColor },
-            ]}
+            accessibilityLabel={
+              isActive && selected === Status.Later
+                ? Status.Later
+                : statusOption
+            }
+            accessibilityHint={""}
+            type={
+              isActive
+                ? variant
+                : category
+                  ? CATEGORY_BUTTON_VARIANT[category]
+                  : "secondary"
+            }
             onPress={() => onSelect(statusOption)}
             onLongPress={
               statusOption === Status.Present
@@ -43,26 +72,32 @@ export function StatusButtonGroup({
                 : undefined
             }
             disabled={disabled}
-          >
-            <View style={styles.buttonContent}>
-              <ThemedText type="button" style={styles.text} selectable={false}>
-                {isActive && selected === Status.Later
-                  ? Status.Later
-                  : statusOption}
-              </ThemedText>
-              {counts?.[statusOption] != null && (
-                <View style={styles.badge}>
-                  <ThemedText
-                    type="bodySmaller"
-                    style={styles.badgeText}
-                    selectable={false}
-                  >
-                    {counts[statusOption]}
-                  </ThemedText>
-                </View>
-              )}
-            </View>
-          </Pressable>
+            buttonStyle={styles.statusButton}
+            content={(_, textColor) => (
+              <View style={styles.buttonContent}>
+                <ThemedText
+                  type="button"
+                  style={{ color: textColor }}
+                  selectable={false}
+                >
+                  {isActive && selected === Status.Later
+                    ? Status.Later
+                    : statusOption}
+                </ThemedText>
+                {counts?.[statusOption] != null && (
+                  <View style={styles.badge}>
+                    <ThemedText
+                      type="bodySmaller"
+                      style={[styles.badgeText, { color: textColor }]}
+                      selectable={false}
+                    >
+                      {counts[statusOption]}
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+            )}
+          />
         );
       })}
     </ScrollView>
@@ -76,31 +111,17 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(2),
     justifyContent: "space-between",
   },
-  button: (statusOption: Status, selected?: Status | null) => ({
-    borderRadius: 8,
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(1),
-    alignItems: "center" as const,
-    ...(selected === statusOption && {
-      backgroundColor:
-        selected === Status.Present || selected === Status.Later
-          ? theme.colors.warnings.positive
-          : selected === Status.Maybe
-            ? theme.colors.warnings.warning
-            : selected === Status.Absent
-              ? theme.colors.warnings.negative
-              : undefined,
-    }),
-  }),
+  statusButton: {
+    width: "auto",
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
   buttonContent: {
     flexDirection: "row" as const,
     alignItems: "center" as const,
     gap: theme.spacing(2),
-  },
-  text: {
-    fontFamily: theme.font.poppins.regular.fontFamily,
-    fontWeight: theme.font.poppins.regular.fontWeight,
-    fontSize: 16,
   },
   badge: {
     backgroundColor: theme.colors.dark.black_10,
@@ -113,7 +134,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   badgeText: {
     fontSize: 11,
-    fontFamily: theme.font.poppins.bold.fontFamily,
-    fontWeight: theme.font.poppins.bold.fontWeight,
+    fontFamily: theme.font.googleSansFlex.bold.fontFamily,
+    fontWeight: theme.font.googleSansFlex.bold.fontWeight,
   },
 }));

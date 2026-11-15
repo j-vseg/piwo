@@ -1,3 +1,4 @@
+import { lightTheme } from "@/themes/light";
 import { ReactNode } from "react";
 import { Pressable, ViewStyle } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
@@ -6,10 +7,10 @@ import LoadingIndicator from "./LoadingIndicator";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 
-type ButtonType = "primary" | "secondary";
+export type ButtonType = keyof typeof lightTheme.button;
 
 type ButtonProps = {
-  content: ReactNode;
+  content: ReactNode | ((pressed: boolean, textColor: string) => ReactNode);
   accessibilityLabel: string;
   accessibilityHint: string;
   onPress: () => void;
@@ -52,41 +53,47 @@ export default function Button({
         buttonStyle,
       ]}
     >
-      {({ pressed }) => (
-        <>
-          {iconLeft && (
-            <IconSymbol
-              size={24}
-              name={iconLeft}
-              style={styles.leftIcon}
-              color={styles.iconColor(type, pressed, isDisabled).color}
-            />
-          )}
-          {isPending ? (
-            <LoadingIndicator />
-          ) : typeof content === "string" ? (
-            <ThemedText
-              type="button"
-              selectable={false}
-              style={[styles.textStyle, styles.text(type, pressed, isDisabled)]}
-            >
-              {content}
-            </ThemedText>
-          ) : (
-            <ThemedView style={[styles.textStyle, { alignItems: "center" }]}>
-              {content}
-            </ThemedView>
-          )}
-          {iconRight && (
-            <IconSymbol
-              size={24}
-              style={styles.rightIcon}
-              name={iconRight}
-              color={styles.iconColor(type, pressed, isDisabled).color}
-            />
-          )}
-        </>
-      )}
+      {({ pressed }) => {
+        const textColor = String(
+          styles.text(type, pressed, isDisabled).color,
+        );
+        return (
+          <>
+            {iconLeft && (
+              <IconSymbol
+                size={24}
+                name={iconLeft}
+                color={styles.iconColor(type, pressed, isDisabled).color}
+                style={styles.leftIcon(type)}
+              />
+            )}
+            {isPending ? (
+              <LoadingIndicator />
+            ) : typeof content === "function" ? (
+              content(pressed, textColor)
+            ) : typeof content === "string" ? (
+              <ThemedText
+                type="button"
+                style={[styles.textStyle, { color: textColor }]}
+              >
+                {content}
+              </ThemedText>
+            ) : (
+              <ThemedView style={[styles.textStyle, styles.content]}>
+                {content}
+              </ThemedView>
+            )}
+            {iconRight && (
+              <IconSymbol
+                size={24}
+                color={styles.iconColor(type, pressed, isDisabled).color}
+                style={styles.rightIcon(type)}
+                name={iconRight}
+              />
+            )}
+          </>
+        );
+      }}
     </Pressable>
   );
 }
@@ -96,7 +103,7 @@ const styles = StyleSheet.create((theme) => ({
     alignSelf: "flex-start",
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 80,
+    borderRadius: theme.borderRadius["lg"],
     borderWidth: 1,
     paddingTop: theme.spacing(2.5),
     paddingLeft: theme.spacing(6),
@@ -106,40 +113,62 @@ const styles = StyleSheet.create((theme) => ({
     width: "100%",
     justifyContent: "center",
   },
-  leftIcon: {
-    marginRight: -24,
-  },
-  rightIcon: {
-    marginLeft: -24,
-  },
+  leftIcon: (type: ButtonType) => ({
+    marginRight: type === "tertiary" ? theme.spacing(2) : -24,
+  }),
+  rightIcon: (type: ButtonType) => ({
+    marginLeft: type === "tertiary" ? theme.spacing(2) : -24,
+  }),
   textStyle: {
     flex: 1,
     textAlign: "center",
   },
-  button: (type: ButtonType, pressed: boolean, disabled?: boolean) => ({
-    backgroundColor: disabled
-      ? theme.button[type].disabled.backgroundColor
+  content: {
+    alignItems: "center",
+  },
+  loading: {
+    width: 22,
+    height: 22,
+  },
+  button: (type: ButtonType, pressed: boolean, disabled?: boolean) => {
+    const state = disabled
+      ? theme.button[type]["disabled"]
       : pressed
-        ? theme.button[type].active.backgroundColor
-        : theme.button[type].default.backgroundColor,
-    borderColor: disabled
-      ? theme.button[type].disabled.borderColor
-      : pressed
-        ? theme.button[type].active.borderColor
-        : theme.button[type].default.borderColor,
-  }),
+        ? theme.button[type]["active"]
+        : theme.button[type]["default"];
+
+    const base = {
+      backgroundColor: state.backgroundColor,
+      borderColor: state.borderColor,
+    };
+
+    if (!disabled && "innerShadow" in state) {
+      const shadow = state.innerShadow as { color: string; y: number };
+      return {
+        ...base,
+        borderBottomWidth: Math.abs(shadow.y),
+        borderBottomColor: shadow.color,
+      };
+    }
+
+    return base;
+  },
   text: (type: ButtonType, pressed: boolean, disabled?: boolean) => ({
     color: disabled
-      ? theme.button[type].disabled.textColor
+      ? theme.button[type]["disabled"].textColor
       : pressed
-        ? theme.button[type].active.textColor
-        : theme.button[type].default.textColor,
+        ? theme.button[type]["active"].textColor
+        : theme.button[type]["default"].textColor,
+    ...(type === "tertiary" && {
+      fontWeight: theme.fontWeight.medium,
+      flex: 0,
+    }),
   }),
   iconColor: (type: ButtonType, pressed: boolean, disabled?: boolean) => ({
     color: disabled
-      ? theme.button[type].disabled.iconColor
+      ? theme.button[type]["disabled"].iconColor
       : pressed
-        ? theme.button[type].active.iconColor
-        : theme.button[type].default.iconColor,
+        ? theme.button[type]["active"].iconColor
+        : theme.button[type]["default"].iconColor,
   }),
 }));

@@ -1,6 +1,5 @@
 import { Category } from "@/constants/Category";
 import { Status } from "@/constants/Status";
-import { useEventColor } from "@/hooks/useEventColor";
 import { getCurrentUser } from "@/services/firebase/auth";
 import {
   getUserAvailability,
@@ -8,24 +7,24 @@ import {
 } from "@/services/firebase/availability";
 import { useTranslation } from "@/translations/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { StyleSheet } from "react-native-unistyles";
 import { Alert } from "./Alert";
 import LoadingIndicator from "./LoadingIndicator";
 import { StatusButtonGroup } from "./StatusButtonGroup";
+import { ThemedView } from "./ThemedView";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
-  occurrenceCategory?: Category;
+  category?: Category;
 }
 
 export function AvailabilitySelector({
   occurrenceId,
-  occurrenceCategory,
+  category,
 }: AvailabilitySelectorProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const user = getCurrentUser();
-  const eventColor = useEventColor(occurrenceCategory);
-
   const { data: availability } = useQuery({
     queryKey: ["user-availability", occurrenceId, user?.uid],
     queryFn: () => getUserAvailability(occurrenceId, user!.uid),
@@ -55,7 +54,11 @@ export function AvailabilitySelector({
   });
 
   if (updateIsPending) {
-    return <LoadingIndicator />;
+    return (
+      <ThemedView style={styles.loading}>
+        <LoadingIndicator />
+      </ThemedView>
+    );
   }
 
   if (updateIsError) {
@@ -71,8 +74,14 @@ export function AvailabilitySelector({
   return (
     <StatusButtonGroup
       selected={availability}
-      eventColor={eventColor}
+      category={category}
       onSelect={(status) => updateMutate(status)}
     />
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  loading: {
+    minHeight: 48,
+  },
+}));

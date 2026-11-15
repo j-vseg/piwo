@@ -2,13 +2,12 @@ import { Alert } from "@/components/Alert";
 import Button from "@/components/Button";
 import DateTimePicker from "@/components/DateTimePicker/DateTimePicker";
 import Picker from "@/components/Picker";
+import { StatusButtonGroup } from "@/components/StatusButtonGroup";
 import TextInput from "@/components/TextInput";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Category } from "@/constants/Category";
 import { Recurrence } from "@/constants/Recurrence";
-import { AVAILABILITY_SELECTOR_STATUSES } from "@/constants/Status";
-import { useEventColor } from "@/hooks/useEventColor";
 import { queryClient } from "@/queryClient";
 import { createEvent } from "@/services/firebase/event";
 import { useMutation } from "@tanstack/react-query";
@@ -16,6 +15,7 @@ import { addHours } from "date-fns";
 import { router } from "expo-router";
 import { useForm, useWatch } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
+import { useNow } from "@/hooks/useNow";
 import { Platform, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { DisplayTime } from "../../settings/components/DisplayTime";
@@ -28,20 +28,19 @@ type ActivityFormData = {
   category: Category;
 };
 
-const now = new Date();
-
-function getDefaultFormValues(): ActivityFormData {
-  return {
-    name: "",
-    startTime: addHours(now, 1),
-    endTime: addHours(now, 2),
-    recurrence: undefined,
-    category: Category.Group,
-  };
-}
-
 export default function CreateActivityScreen() {
   const { t } = useTranslation();
+  const now = useNow();
+
+  function getDefaultFormValues(): ActivityFormData {
+    return {
+      name: "",
+      startTime: addHours(now, 1),
+      endTime: addHours(now, 2),
+      recurrence: undefined,
+      category: Category.Group,
+    };
+  }
   const methods = useForm<ActivityFormData>({
     defaultValues: getDefaultFormValues(),
   });
@@ -49,7 +48,7 @@ export default function CreateActivityScreen() {
     control: methods.control,
     name: ["name", "startTime", "endTime", "category", "recurrence"],
   });
-  const eventColor = useEventColor(category);
+
   const { mutate, isSuccess, isPending, isError } = useMutation({
     mutationFn: async (data: ActivityFormData) => {
       await createEvent(
@@ -73,6 +72,7 @@ export default function CreateActivityScreen() {
       setTimeout(() => {
         router.push("/(tabs)/home");
       }, 3000);
+      methods.reset();
     },
     onError: (error) => {
       console.error(error);
@@ -91,22 +91,7 @@ export default function CreateActivityScreen() {
               recurrence={recurrence}
             />
           </ThemedView>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.buttonContainer}
-          >
-            {AVAILABILITY_SELECTOR_STATUSES.map((statusOption) => (
-              <ThemedView
-                key={statusOption}
-                style={[styles.previewButton, { backgroundColor: eventColor }]}
-              >
-                <ThemedText type="button" style={styles.previewButtonText}>
-                  {statusOption}
-                </ThemedText>
-              </ThemedView>
-            ))}
-          </ScrollView>
+          <StatusButtonGroup disabled category={category} onSelect={() => {}} />
         </ThemedView>
 
         {isSuccess && (
@@ -226,16 +211,11 @@ const styles = StyleSheet.create((theme) => ({
   },
   preview: {
     backgroundColor: theme.colors.light.white,
-    borderRadius: 16,
+    borderRadius: theme.borderRadius["lg"],
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
-  },
-  previewButton: {
-    borderRadius: 8,
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(1),
-    alignItems: "center",
+    ...theme.shadow,
   },
   form: {
     flexDirection: "column",
@@ -244,16 +224,5 @@ const styles = StyleSheet.create((theme) => ({
   recurrence: {
     flexDirection: "column",
     gap: theme.spacing(1),
-  },
-  buttonContainer: {
-    flexGrow: 1,
-    flexDirection: "row",
-    gap: theme.spacing(2),
-    justifyContent: "space-between",
-  },
-  previewButtonText: {
-    fontFamily: theme.font.poppins.regular.fontFamily,
-    fontWeight: theme.font.poppins.regular.fontWeight,
-    fontSize: 16,
   },
 }));

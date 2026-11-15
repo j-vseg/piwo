@@ -48,7 +48,7 @@ export function DeleteAccountSettings() {
         title={t("settings.deleteAccount")}
         subtitle={isError ? t("settings.deleteAccountError") : undefined}
         onPress={() => setIsOpen(true)}
-        textStyle={{ color: theme.colors.warnings.negative }}
+        textStyle={{ color: theme.colors.warnings["error"] }}
         iconRight={
           isPending ? (
             <LoadingIndicator />

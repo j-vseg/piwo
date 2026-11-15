@@ -56,16 +56,16 @@ export default function DateTimePicker<T extends FieldValues>({
               }}
               disabled={disabled}
               style={{
-                fontFamily: theme.text.bodyMedium.fontFamily,
-                fontWeight: theme.text.bodyMedium.fontWeight,
-                fontSize: theme.text.bodyMedium.fontSize,
-                color: theme.text.text.color,
+                borderRadius: theme.borderRadius["lg"],
                 padding: theme.spacing(3),
-                borderRadius: theme.spacing(2),
-                backgroundColor: theme.colors.primitives.quinary,
+                borderBottomColor: theme.colors.dark["greyDark"],
+                backgroundColor: theme.colors.dark["greyLight"],
+                color: theme.colors.dark["greyDark"],
+                ...theme.text.bodyMedium,
                 border: "none",
                 outline: "none",
                 colorScheme: rt.themeName,
+                height: 36,
               }}
             />
             {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}

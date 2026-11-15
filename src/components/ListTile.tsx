@@ -66,7 +66,7 @@ export default function ListTile({
         {subtitle && (
           <ThemedText
             type="bodySmaller"
-            style={textStyle}
+            style={[styles.subtitle, textStyle]}
             accessible={false}
             importantForAccessibility="no-hide-descendants"
           >
@@ -107,7 +107,7 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     gap: theme.spacing(4),
     backgroundColor: disabled
-      ? theme.button.primary.disabled.backgroundColor
+      ? theme.colors.dark["greyLight"]
       : theme.colors.light["white"],
     borderBottomWidth: 1,
     borderBottomStyle: "solid",
@@ -127,5 +127,8 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.transparent,
     justifyContent: "center",
     flexDirection: "column",
+  },
+  subtitle: {
+    color: theme.colors.dark["greyDark"],
   },
 }));

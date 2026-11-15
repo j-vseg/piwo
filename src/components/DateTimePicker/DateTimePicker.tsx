@@ -94,7 +94,7 @@ export default function DateTimePicker<T extends FieldValues>({
                     }
                   }}
                   onDismissRequest={dismiss}
-                  color={theme.colors.primitives.primary}
+                  color={theme.colors.category.groupDark}
                 />
               </Host>
             )}
@@ -108,7 +108,7 @@ export default function DateTimePicker<T extends FieldValues>({
                     dismiss();
                   }}
                   onDismissRequest={dismiss}
-                  color={theme.colors.primitives.primary}
+                  color={theme.colors.category.groupDark}
                 />
               </Host>
             )}
@@ -125,9 +125,11 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(1),
   },
   trigger: {
-    backgroundColor: theme.colors.primitives.quinary,
-    borderRadius: theme.spacing(2),
-    paddingHorizontal: theme.spacing(3),
-    paddingVertical: theme.spacing(2.5),
+    borderRadius: theme.borderRadius["lg"],
+    padding: theme.spacing(4),
+    borderBottomColor: theme.colors.dark["greyDark"],
+    backgroundColor: theme.colors.dark["greyLight"],
+    color: theme.colors.dark["greyDark"],
+    ...theme.text.bodyMedium,
   },
 }));

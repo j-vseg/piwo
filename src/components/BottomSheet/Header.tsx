@@ -28,8 +28,8 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: theme.spacing(4),
-    paddingVertical: Platform.OS === OS.Web ? theme.spacing(4) : undefined,
-    marginBottom: theme.spacing(3),
+    paddingHorizontal: theme.spacing(6),
+    paddingVertical: Platform.OS === OS.Web ? theme.spacing(2) : undefined,
+    marginBottom: Platform.OS === OS.Web ? theme.spacing(0) : theme.spacing(6),
   },
 }));

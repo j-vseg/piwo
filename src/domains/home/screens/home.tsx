@@ -46,7 +46,7 @@ export default function HomeScreen() {
       <ThisWeek />
 
       <ThemedView style={{ gap: theme.spacing(4) }}>
-        <ThemedText type="h2">{t("home.upcomingActivities")}</ThemedText>
+        <ThemedText type="h3">{t("home.upcomingActivities")}</ThemedText>
 
         {isLoading && <LoadingIndicator />}
         {isError && (
@@ -73,7 +73,9 @@ export default function HomeScreen() {
           </ThemedView>
         ))}
         {groupedOccurrences && groupedOccurrences.length !== 0 && (
-          <ThemedText style={styles.info}>{t("home.moreIncoming")}</ThemedText>
+          <ThemedText type="bodySmall" style={styles.info}>
+            {t("home.moreIncoming")}
+          </ThemedText>
         )}
       </ThemedView>
     </ThemedView>
@@ -92,6 +94,6 @@ const styles = StyleSheet.create((theme) => ({
     marginVertical: theme.spacing(12),
     textAlign: "center",
     color: theme.colors.dark.greyMedium,
-    fontFamily: theme.font.crimsonPro.semibold.fontFamily,
+    fontFamily: theme.font.niramit.semibold.fontFamily,
   },
 }));

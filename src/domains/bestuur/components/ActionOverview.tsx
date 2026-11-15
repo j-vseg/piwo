@@ -119,8 +119,12 @@ export function ActionOverview({
             label={t("bestuur.manageUsers.accountOverview.roleLabel")}
             control={methods.control}
             name="role"
-            required={false}
             options={Object.values(Role).filter((r) => r !== user.role)}
+            rules={{
+              required: t(
+                "bestuur.manageUsers.accountOverview.validation.required",
+              ),
+            }}
           />
 
           <Button
@@ -132,7 +136,6 @@ export function ActionOverview({
               "bestuur.manageUsers.accountOverview.saveHint",
             )}
             isPending={isPending}
-            disabled={!methods.formState.isDirty}
             iconLeft="edit"
             onPress={methods.handleSubmit((data) =>
               mutate({ userId: user.id, role: data.role! }),
@@ -151,7 +154,7 @@ export function ActionOverview({
           isPending={isRevokePending}
           iconLeft="close"
           onPress={() => revokeMutate({ userId: user.id })}
-          buttonStyle={styles.button(Approval.Declined, false)}
+          type="error"
         />
       </ThemedView>
     </BottomSheet>
@@ -163,16 +166,4 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing(8),
     flexDirection: "column",
   },
-  button: (approval: Approval, disabled: boolean) => ({
-    flex: 1,
-    backgroundColor: disabled
-      ? theme.button.primary.disabled.backgroundColor
-      : approval === Approval.Accepted
-        ? theme.colors.warnings.positive
-        : theme.colors.warnings.negative,
-    borderColor:
-      approval === Approval.Accepted
-        ? theme.colors.warnings.positive
-        : theme.colors.warnings.negative,
-  }),
 }));

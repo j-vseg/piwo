@@ -29,7 +29,7 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
 
       <AvailabilitySelector
         occurrenceId={occurrence.id}
-        occurrenceCategory={occurrence.category}
+        category={occurrence.category}
       />
     </Pressable>
   );
@@ -38,11 +38,12 @@ export default function Event({ occurrence }: { occurrence: EventOccurrence }) {
 const styles = StyleSheet.create((theme) => ({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.light.white,
-    borderRadius: 16,
+    backgroundColor: theme.colors.light["white"],
+    borderRadius: theme.borderRadius["lg"],
     padding: theme.spacing(4),
     flexDirection: "column",
     gap: theme.spacing(4),
+    ...theme.shadow,
   },
   subtitle: {
     color: theme.colors.dark.greyMedium,

@@ -70,10 +70,11 @@
     "deleteHint": "Verwijder deze activiteit",
     "deleteSuccess": "Activiteit verwijderd!",
     "deleteError": "Het is niet gelukt om de activiteit te verwijderen",
-    "success": "Activiteit aangemaakt!",
+    "success": "Activiteit aangemaakt! ",
     "error": "Het is niet gelukt om de activiteit aan te maken",
     "getActivitiesError": "Er is een fout opgetreden bij het ophalen van de activiteiten",
-    "getActivitiesEmpty": "Er zijn geen activiteiten gevonden om te wijzigen"
+    "getActivitiesEmpty": "Er zijn geen activiteiten gevonden om te wijzigen",
+    "noChanges": "Wijzig eerst de activiteit"
   },
   "settings": {
     "activitiesHeader": "Activiteiten",
@@ -91,10 +92,9 @@
     "deleteAccountError": "Account verwijderen mislukt, probeer het later nog eens",
     "aboutHeader": "Over de app",
     "whatsNew": "Wat is er nieuw?",
-    "installWebAppAndroid": "Hoe installeer ik een web-app? (Android)",
-    "installWebAppApple": "Hoe installeer ik een web-app? (Apple)",
-    "downloadApk": "Download de Android app (APK-bestand)",
-    "installApk": "Hoe installeer ik een APK-bestand? (Android)"
+    "installWebApp": "Hoe installeer ik een web-app?",
+    "downloadApk": "Download de Android app",
+    "installApk": "Hoe installeer ik een APK-bestand?"
   },
   "personalDetails": {
     "nameTitle": "Voor- & achternaam",
@@ -128,10 +128,14 @@
     "currentPasswordPrompt": "Vul je huidige wachtwoord in",
     "currentPasswordDescription": "Om je gegevens aan te passen hebben we je wachtwoord nodig",
     "confirmButton": "Bevestigen",
-    "confirmHint": "Bevestig je wachtwoord"
+    "confirmHint": "Bevestig je wachtwoord",
+    "noChanges": "Wijzig eerst je gegevens"
   },
   "common": {
-    "unknownError": "Er is een onbekende fout opgetreden"
+    "unknownError": "Er is een onbekende fout opgetreden",
+    "android": "Android",
+    "apple": "Apple",
+    "apk_file": "APK-bestand"
   },
   "login": {
     "emailLabel": "E-mail",
@@ -253,7 +257,10 @@
         "saveHint": "Slaat de nieuwe rechten van deze gebruiker op",
         "revokeButton": "Toegang tot de app intrekken",
         "revokeLabel": "Toegang intrekken",
-        "revokeHint": "Trekt de toegang van deze gebruiker tot de app in"
+        "revokeHint": "Trekt de toegang van deze gebruiker tot de app in",
+        "validation": {
+          "required": "Role is verplicht"
+        }
       }
     },
     "beer_card": {

@@ -34,7 +34,6 @@ export function NotificationSettings() {
     queryKey: WEB_PUSH_SUPPORTED_QUERY_KEY,
     queryFn: async () => {
       const { isSupported } = await import("firebase/messaging");
-      console.log(await isSupported());
       return isSupported();
     },
     networkMode: "always",

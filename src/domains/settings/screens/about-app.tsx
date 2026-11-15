@@ -18,16 +18,50 @@ type FeatureItem = {
 
 const features: FeatureItem[] = [
   { icon: "event", webIcon: "event", translationKey: "viewActivities" },
-  { icon: "check_circle", webIcon: "check-circle", translationKey: "submitAvailability" },
-  { icon: "groups", webIcon: "group", translationKey: "viewOthersAvailability" },
+  {
+    icon: "check_circle",
+    webIcon: "check-circle",
+    translationKey: "submitAvailability",
+  },
+  {
+    icon: "groups",
+    webIcon: "group",
+    translationKey: "viewOthersAvailability",
+  },
   { icon: "today", webIcon: "today", translationKey: "weekOverview" },
-  { icon: "event_repeat", webIcon: "repeat", translationKey: "recurringActivities" },
-  { icon: "edit_calendar", webIcon: "edit", translationKey: "manageActivities", adminOnly: true },
-  { icon: "how_to_reg", webIcon: "how-to-reg", translationKey: "memberManagement", adminOnly: true },
+  {
+    icon: "event_repeat",
+    webIcon: "repeat",
+    translationKey: "recurringActivities",
+  },
+  {
+    icon: "edit_calendar",
+    webIcon: "edit",
+    translationKey: "manageActivities",
+    adminOnly: true,
+  },
+  {
+    icon: "how_to_reg",
+    webIcon: "how-to-reg",
+    translationKey: "memberManagement",
+    adminOnly: true,
+  },
   { icon: "person_edit", webIcon: "person", translationKey: "personalDetails" },
-  { icon: "notifications", webIcon: "notifications", translationKey: "pushNotifications" },
-  { icon: "credit_card", webIcon: "credit-card", translationKey: "buyBeerCard" },
-  { icon: "install_mobile", webIcon: "get-app", translationKey: "installAsApp" },
+  {
+    icon: "notifications",
+    webIcon: "notifications",
+    translationKey: "pushNotifications",
+  },
+  {
+    icon: "credit_card",
+    webIcon: "credit-card",
+    translationKey: "buyBeerCard",
+  },
+  {
+    icon: "install_mobile",
+    webIcon: "get-app",
+    translationKey: "installAsApp",
+  },
 ];
 
 function getIcon(feature: FeatureItem): IconName {
@@ -56,7 +90,7 @@ export default function AboutAppScreen() {
                 />
               </ThemedView>
               <ThemedView style={styles.textContainer}>
-                <ThemedText type="bodyLarge" weight="600">
+                <ThemedText type="h4" weight="600">
                   {t(`aboutApp.${feature.translationKey}.title`)}
                 </ThemedText>
                 <ThemedText type="bodySmall" style={styles.description}>
