@@ -16,27 +16,22 @@ type FeatureItem = {
   adminOnly?: boolean;
 };
 
-export const FEATURES_VERSION = 1;
+export const FEATURES_VERSION = 2;
 
 const features: FeatureItem[] = [
   {
-    icon: "lock",
-    webIcon: "lock",
-    title: "Wachtwoord vergeten",
-    description:
-      "Wachtwoord vergeten? Vraag een herstellink aan via het inlogscherm.",
-  },
-  {
     icon: "credit_card",
     webIcon: "credit-card",
-    title: "Bierkaart kopen",
-    description: "Koop een bierkaart via een betaallink in de instellingen.",
+    title: "Groene en roze bierkaart",
+    description:
+      "Koop nu apart een groene of roze bierkaart via de instellingen.",
   },
   {
-    icon: "edit",
-    webIcon: "edit",
-    title: "Bierkaart-link beheren",
-    description: "Pas als penningmeester de betaallink voor de bierkaart aan.",
+    icon: "groups",
+    webIcon: "group",
+    title: "Bestuur-tab",
+    description:
+      "Bestuursleden vinden alle beheerfuncties nu in een eigen tab.",
     adminOnly: true,
   },
 ];
