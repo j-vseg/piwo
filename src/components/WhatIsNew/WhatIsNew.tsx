@@ -16,9 +16,16 @@ type FeatureItem = {
   adminOnly?: boolean;
 };
 
-export const FEATURES_VERSION = 2;
+export const FEATURES_VERSION = 3;
 
 const features: FeatureItem[] = [
+  {
+    icon: "auto_awesome",
+    webIcon: "auto-awesome",
+    title: "Nieuw uiterlijk",
+    description:
+      "De app heeft een frisse nieuwe look met ondersteuning voor een donker thema.",
+  },
   {
     icon: "credit_card",
     webIcon: "credit-card",
