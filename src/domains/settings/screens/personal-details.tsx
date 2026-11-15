@@ -165,7 +165,14 @@ export default function SettingsScreen() {
                 label={t("personalDetails.firstnameLabel")}
                 control={nameForm.control}
                 name="firstname"
-                rules={{ required: t("personalDetails.firstnameRequired") }}
+                rules={{
+                  required: t("personalDetails.firstnameRequired"),
+                  validate: {
+                    changed: () =>
+                      nameForm.formState.isDirty ||
+                      t("personalDetails.noChanges"),
+                  },
+                }}
                 inputProps={{
                   placeholder: t("personalDetails.firstnamePlaceholder"),
                 }}
@@ -174,7 +181,14 @@ export default function SettingsScreen() {
                 label={t("personalDetails.lastnameLabel")}
                 control={nameForm.control}
                 name="lastname"
-                rules={{ required: t("personalDetails.lastnameRequired") }}
+                rules={{
+                  required: t("personalDetails.lastnameRequired"),
+                  validate: {
+                    changed: () =>
+                      nameForm.formState.isDirty ||
+                      t("personalDetails.noChanges"),
+                  },
+                }}
                 inputProps={{
                   placeholder: t("personalDetails.lastnamePlaceholder"),
                 }}
@@ -182,7 +196,6 @@ export default function SettingsScreen() {
               <Button
                 content={t("personalDetails.saveNameButton")}
                 isPending={isPendingName}
-                disabled={!nameForm.formState.isDirty}
                 onPress={nameForm.handleSubmit((data) => mutateName(data))}
                 accessibilityLabel={t("personalDetails.saveNameButton")}
                 accessibilityHint={t("personalDetails.saveNameHint")}
@@ -216,6 +229,11 @@ export default function SettingsScreen() {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                     message: t("personalDetails.emailInvalid"),
                   },
+                  validate: {
+                    changed: () =>
+                      emailForm.formState.isDirty ||
+                      t("personalDetails.noChanges"),
+                  },
                 }}
                 inputProps={{
                   placeholder: t("personalDetails.emailPlaceholder"),
@@ -227,7 +245,6 @@ export default function SettingsScreen() {
               <Button
                 content={t("personalDetails.saveEmailButton")}
                 isPending={isPendingEmail}
-                disabled={!emailForm.formState.isDirty}
                 onPress={emailForm.handleSubmit(() =>
                   setConfirmPasswordFor("email"),
                 )}
@@ -263,6 +280,11 @@ export default function SettingsScreen() {
                     value: 8,
                     message: t("personalDetails.newPasswordMinLength"),
                   },
+                  validate: {
+                    changed: () =>
+                      passwordForm.formState.isDirty ||
+                      t("personalDetails.noChanges"),
+                  },
                 }}
                 inputProps={{
                   placeholder: t("personalDetails.newPasswordPlaceholder"),
@@ -275,7 +297,6 @@ export default function SettingsScreen() {
               <Button
                 content={t("personalDetails.savePasswordButton")}
                 isPending={isPendingPassword}
-                disabled={!passwordForm.formState.isDirty}
                 onPress={passwordForm.handleSubmit(() =>
                   setConfirmPasswordFor("password"),
                 )}

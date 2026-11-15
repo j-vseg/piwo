@@ -59,7 +59,6 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
     control: methods.control,
     name: ["startTime", "category"],
   });
-  const { isDirty } = methods.formState;
   const {
     mutate: mutateUpdate,
     isSuccess: isSuccessUpdate,
@@ -191,6 +190,10 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
           name="name"
           rules={{
             required: t("createActivity.nameRequired"),
+            validate: {
+              changed: () =>
+                methods.formState.isDirty || t("createActivity.noChanges"),
+            },
           }}
           inputProps={{
             placeholder: t("createActivity.namePlaceholder"),
@@ -205,12 +208,16 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
             {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.startTimeRequired"),
-              validate: (value) => {
-                if (!value) return t("createActivity.startTimeRequired");
-                if (value < now) {
-                  return t("createActivity.startTimeFuture");
-                }
-                return true;
+              validate: {
+                time: (value) => {
+                  if (!value) return t("createActivity.startTimeRequired");
+                  if (value < now) {
+                    return t("createActivity.startTimeFuture");
+                  }
+                  return true;
+                },
+                changed: () =>
+                  methods.formState.isDirty || t("createActivity.noChanges"),
               },
             }}
           />
@@ -224,15 +231,19 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
             {...(Platform.OS === "android" && { mode: "datetime" })}
             rules={{
               required: t("createActivity.endTimeRequired"),
-              validate: (value) => {
-                if (!value) return t("createActivity.endTimeRequired");
-                if (value < now) {
-                  return t("createActivity.endTimeFuture");
-                }
-                if (value < startTime) {
-                  return t("createActivity.endTimeAfterStart");
-                }
-                return true;
+              validate: {
+                time: (value) => {
+                  if (!value) return t("createActivity.endTimeRequired");
+                  if (value < now) {
+                    return t("createActivity.endTimeFuture");
+                  }
+                  if (value < startTime) {
+                    return t("createActivity.endTimeAfterStart");
+                  }
+                  return true;
+                },
+                changed: () =>
+                  methods.formState.isDirty || t("createActivity.noChanges"),
               },
             }}
           />
@@ -245,13 +256,17 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
           options={Object.values(Category)}
           rules={{
             required: t("createActivity.categoryRequired"),
+            validate: {
+              changed: () =>
+                methods.formState.isDirty || t("createActivity.noChanges"),
+            },
           }}
         />
 
         <Button
           content={t("createActivity.updateButton")}
           isPending={isPendingUpdate}
-          disabled={!isDirty || isSuccessUpdate || isSuccessDelete}
+          disabled={isSuccessUpdate || isSuccessDelete}
           onPress={methods.handleSubmit((data) => mutateUpdate(data))}
           accessibilityLabel={t("createActivity.updateButton")}
           accessibilityHint={t("createActivity.updateHint")}

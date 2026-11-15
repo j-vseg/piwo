@@ -119,8 +119,12 @@ export function ActionOverview({
             label={t("bestuur.manageUsers.accountOverview.roleLabel")}
             control={methods.control}
             name="role"
-            required={false}
             options={Object.values(Role).filter((r) => r !== user.role)}
+            rules={{
+              required: t(
+                "bestuur.manageUsers.accountOverview.validation.required",
+              ),
+            }}
           />
 
           <Button
@@ -132,7 +136,6 @@ export function ActionOverview({
               "bestuur.manageUsers.accountOverview.saveHint",
             )}
             isPending={isPending}
-            disabled={!methods.formState.isDirty}
             iconLeft="edit"
             onPress={methods.handleSubmit((data) =>
               mutate({ userId: user.id, role: data.role! }),

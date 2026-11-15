@@ -7,9 +7,11 @@ import {
 } from "@/services/firebase/availability";
 import { useTranslation } from "@/translations/i18n";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { StyleSheet } from "react-native-unistyles";
 import { Alert } from "./Alert";
 import LoadingIndicator from "./LoadingIndicator";
 import { StatusButtonGroup } from "./StatusButtonGroup";
+import { ThemedView } from "./ThemedView";
 
 interface AvailabilitySelectorProps {
   occurrenceId: string;
@@ -52,7 +54,11 @@ export function AvailabilitySelector({
   });
 
   if (updateIsPending) {
-    return <LoadingIndicator />;
+    return (
+      <ThemedView style={styles.loading}>
+        <LoadingIndicator />
+      </ThemedView>
+    );
   }
 
   if (updateIsError) {
@@ -73,3 +79,9 @@ export function AvailabilitySelector({
     />
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  loading: {
+    minHeight: 48,
+  },
+}));

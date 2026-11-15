@@ -73,7 +73,8 @@
     "success": "Activiteit aangemaakt!",
     "error": "Het is niet gelukt om de activiteit aan te maken",
     "getActivitiesError": "Er is een fout opgetreden bij het ophalen van de activiteiten",
-    "getActivitiesEmpty": "Er zijn geen activiteiten gevonden om te wijzigen"
+    "getActivitiesEmpty": "Er zijn geen activiteiten gevonden om te wijzigen",
+    "noChanges": "Wijzig eerst de activiteit"
   },
   "settings": {
     "activitiesHeader": "Activiteiten",
@@ -128,7 +129,8 @@
     "currentPasswordPrompt": "Vul je huidige wachtwoord in",
     "currentPasswordDescription": "Om je gegevens aan te passen hebben we je wachtwoord nodig",
     "confirmButton": "Bevestigen",
-    "confirmHint": "Bevestig je wachtwoord"
+    "confirmHint": "Bevestig je wachtwoord",
+    "noChanges": "Wijzig eerst je gegevens"
   },
   "common": {
     "unknownError": "Er is een onbekende fout opgetreden"
@@ -253,7 +255,10 @@
         "saveHint": "Slaat de nieuwe rechten van deze gebruiker op",
         "revokeButton": "Toegang tot de app intrekken",
         "revokeLabel": "Toegang intrekken",
-        "revokeHint": "Trekt de toegang van deze gebruiker tot de app in"
+        "revokeHint": "Trekt de toegang van deze gebruiker tot de app in",
+        "validation": {
+          "required": "Role is verplicht"
+        }
       }
     },
     "beer_card": {
