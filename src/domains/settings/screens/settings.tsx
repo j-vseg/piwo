@@ -57,30 +57,30 @@ export default function SettingsScreen() {
     >
       <ThemedText type="h1">{t("tabs.settings.main")}</ThemedText>
 
-      <ThemedView style={styles.group}>
-        <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
-        {isErrorGreenBeerCard && isErrorPinkBeerCard && (
-          <Alert
-            variant="warning"
-            description={t("bestuur.beer_card.fetch_error")}
-            size={"regular"}
-          />
-        )}
-        {isErrorGreenBeerCard && !isErrorPinkBeerCard && (
-          <Alert
-            variant="warning"
-            description={t("bestuur.beer_card.fetch_error_green")}
-            size={"regular"}
-          />
-        )}
-        {isErrorPinkBeerCard && !isErrorGreenBeerCard && (
-          <Alert
-            variant="warning"
-            description={t("bestuur.beer_card.fetch_error_pink")}
-            size={"regular"}
-          />
-        )}
-        {(greenBeerCardUrl || pinkBeerCardUrl) && (
+      {(greenBeerCardUrl || pinkBeerCardUrl) && (
+        <ThemedView style={styles.group}>
+          <ThemedText type="h5">{t("bestuur.beer_card.title")}</ThemedText>
+          {isErrorGreenBeerCard && isErrorPinkBeerCard && (
+            <Alert
+              variant="warning"
+              description={t("bestuur.beer_card.fetch_error")}
+              size={"regular"}
+            />
+          )}
+          {isErrorGreenBeerCard && !isErrorPinkBeerCard && (
+            <Alert
+              variant="warning"
+              description={t("bestuur.beer_card.fetch_error_green")}
+              size={"regular"}
+            />
+          )}
+          {isErrorPinkBeerCard && !isErrorGreenBeerCard && (
+            <Alert
+              variant="warning"
+              description={t("bestuur.beer_card.fetch_error_pink")}
+              size={"regular"}
+            />
+          )}
           <Group>
             {greenBeerCardUrl && (
               <ListTile
@@ -115,8 +115,8 @@ export default function SettingsScreen() {
               />
             )}
           </Group>
-        )}
-      </ThemedView>
+        </ThemedView>
+      )}
 
       <ThemedView style={styles.group}>
         <ThemedText type="h5">{t("settings.accountHeader")}</ThemedText>

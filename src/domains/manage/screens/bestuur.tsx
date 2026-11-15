@@ -50,7 +50,14 @@ export default function ManageScreen() {
 
         {notApprovedData && notApprovedData.length !== 0 && (
           <ThemedView style={{ gap: theme.spacing(4) }}>
-            <ThemedText type="h3">Gebruikers in afwachting</ThemedText>
+            <ThemedView style={styles.container}>
+              <ThemedText type="h3">Gebruikers in afwachting</ThemedText>
+              <ThemedView style={styles.badge}>
+                <ThemedText type="bodySmaller" style={styles.badgeText}>
+                  {notApprovedData.length}
+                </ThemedText>
+              </ThemedView>
+            </ThemedView>
             <ThemedView>
               <Group>
                 {notApprovedData.map((user) => (
@@ -142,5 +149,25 @@ const styles = StyleSheet.create((theme) => ({
   group: {
     flexDirection: "column",
     gap: theme.spacing(2),
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing(2),
+  },
+  badge: {
+    backgroundColor: theme.colors.warnings["error"],
+    borderRadius: theme.borderRadius["full"],
+    minWidth: 26,
+    height: 26,
+    paddingHorizontal: theme.spacing(1.5),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  badgeText: {
+    color: theme.colors.light["white"],
+    fontWeight: theme.fontWeight.bold,
+    lineHeight: 26,
+    textAlign: "center",
   },
 }));

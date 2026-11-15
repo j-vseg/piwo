@@ -94,7 +94,7 @@ export default function DateTimePicker<T extends FieldValues>({
                     }
                   }}
                   onDismissRequest={dismiss}
-                  color={theme.colors.primitives.primary}
+                  color={theme.colors.category.groupDark}
                 />
               </Host>
             )}
@@ -108,7 +108,7 @@ export default function DateTimePicker<T extends FieldValues>({
                     dismiss();
                   }}
                   onDismissRequest={dismiss}
-                  color={theme.colors.primitives.primary}
+                  color={theme.colors.category.groupDark}
                 />
               </Host>
             )}

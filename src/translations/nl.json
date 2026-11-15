@@ -92,10 +92,9 @@
     "deleteAccountError": "Account verwijderen mislukt, probeer het later nog eens",
     "aboutHeader": "Over de app",
     "whatsNew": "Wat is er nieuw?",
-    "installWebAppAndroid": "Hoe installeer ik een web-app? (Android)",
-    "installWebAppApple": "Hoe installeer ik een web-app? (Apple)",
-    "downloadApk": "Download de Android app (APK-bestand)",
-    "installApk": "Hoe installeer ik een APK-bestand? (Android)"
+    "installWebApp": "Hoe installeer ik een web-app?",
+    "downloadApk": "Download de Android app",
+    "installApk": "Hoe installeer ik een APK-bestand?"
   },
   "personalDetails": {
     "nameTitle": "Voor- & achternaam",
@@ -133,7 +132,10 @@
     "noChanges": "Wijzig eerst je gegevens"
   },
   "common": {
-    "unknownError": "Er is een onbekende fout opgetreden"
+    "unknownError": "Er is een onbekende fout opgetreden",
+    "android": "Android",
+    "apple": "Apple",
+    "apk_file": "APK-bestand"
   },
   "login": {
     "emailLabel": "E-mail",

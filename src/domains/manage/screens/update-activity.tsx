@@ -19,6 +19,7 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useNow } from "@/hooks/useNow";
 import { Platform } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 
@@ -29,10 +30,9 @@ type ActivityFormData = {
   category: Category;
 };
 
-const now = new Date();
-
 export default function UpdateActivityScreen({ id }: { id: string }) {
   const { t } = useTranslation();
+  const now = useNow();
   const {
     data: occurrence,
     isLoading: isLoadingOccurrence,
@@ -123,6 +123,7 @@ export default function UpdateActivityScreen({ id }: { id: string }) {
       setTimeout(() => {
         router.push("/(tabs)/home");
       }, 3000);
+      methods.reset();
     },
     onError: (error) => {
       console.error(error);

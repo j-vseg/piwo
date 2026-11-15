@@ -15,6 +15,7 @@ import { addHours } from "date-fns";
 import { router } from "expo-router";
 import { useForm, useWatch } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
+import { useNow } from "@/hooks/useNow";
 import { Platform, ScrollView } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
 import { DisplayTime } from "../../settings/components/DisplayTime";
@@ -27,20 +28,19 @@ type ActivityFormData = {
   category: Category;
 };
 
-const now = new Date();
-
-function getDefaultFormValues(): ActivityFormData {
-  return {
-    name: "",
-    startTime: addHours(now, 1),
-    endTime: addHours(now, 2),
-    recurrence: undefined,
-    category: Category.Group,
-  };
-}
-
 export default function CreateActivityScreen() {
   const { t } = useTranslation();
+  const now = useNow();
+
+  function getDefaultFormValues(): ActivityFormData {
+    return {
+      name: "",
+      startTime: addHours(now, 1),
+      endTime: addHours(now, 2),
+      recurrence: undefined,
+      category: Category.Group,
+    };
+  }
   const methods = useForm<ActivityFormData>({
     defaultValues: getDefaultFormValues(),
   });
@@ -72,6 +72,7 @@ export default function CreateActivityScreen() {
       setTimeout(() => {
         router.push("/(tabs)/home");
       }, 3000);
+      methods.reset();
     },
     onError: (error) => {
       console.error(error);
