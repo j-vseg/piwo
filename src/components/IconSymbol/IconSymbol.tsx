@@ -46,7 +46,7 @@ export const IconSymbol = React.memo(function IconSymbol({
 }: {
   name: IconName;
   size?: number;
-  color?: ColorValue;
+  color: ColorValue;
   style?: StyleProp<TextStyle>;
   weight?: keyof typeof Icon;
   accessible?: boolean;

@@ -65,6 +65,7 @@ export default function DateTimePicker<T extends FieldValues>({
                 border: "none",
                 outline: "none",
                 colorScheme: rt.themeName,
+                height: 36,
               }}
             />
             {error?.message && <ErrorMessage>{error.message}</ErrorMessage>}
