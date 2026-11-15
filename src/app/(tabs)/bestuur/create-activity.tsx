@@ -1,4 +1,4 @@
-import CreateActivityScreen from "@/domains/manage/screens/create-activity";
+import CreateActivityScreen from "@/domains/bestuur/screens/create-activity";
 
 export default function Screen() {
   return <CreateActivityScreen />;

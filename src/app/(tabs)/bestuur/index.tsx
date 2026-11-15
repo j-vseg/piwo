@@ -1,4 +1,4 @@
-import ManageScreen from "@/domains/manage/screens/bestuur";
+import ManageScreen from "@/domains/bestuur/screens/bestuur";
 
 export default function Screen() {
   return <ManageScreen />;
